@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { REGIONS } from "@/lib/constants";
 import type { User } from "@supabase/supabase-js";
@@ -122,33 +122,55 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
 
 export default function Nav() {
   const router = useRouter();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileShowsOpen, setMobileShowsOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
 
+  const loadUserAndRole = useCallback(async () => {
+    const supabase = createClient();
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    setUser(currentUser);
+    if (!currentUser) { setRole(null); return; }
+
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", currentUser.id)
+      .single();
+
+    if (error) {
+      console.error("프로필 조회 실패:", error.message);
+      setRole(null);
+      return;
+    }
+    setRole(profile?.role ?? null);
+  }, []);
+
+  // 초기 로드 + 로그인/로그아웃 이벤트 감지
   useEffect(() => {
     const supabase = createClient();
+    loadUserAndRole();
 
-    const loadUserAndRole = async (currentUser: User | null) => {
-      setUser(currentUser);
-      if (!currentUser) { setRole(null); return; }
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", currentUser.id)
-        .single();
-      setRole(profile?.role ?? null);
-    };
-
-    supabase.auth.getUser().then(({ data }) => loadUserAndRole(data.user));
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      loadUserAndRole(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      loadUserAndRole();
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [loadUserAndRole]);
+
+  // 페이지 이동할 때마다 최신 role 재조회 (관리자 승격 반영)
+  useEffect(() => {
+    loadUserAndRole();
+  }, [pathname, loadUserAndRole]);
+
+  // 창 포커스 복귀 시 재조회 (다른 탭에서 역할 변경됐을 때 반영)
+  useEffect(() => {
+    const handleFocus = () => loadUserAndRole();
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [loadUserAndRole]);
 
   const handleLogout = async () => {
     const supabase = createClient();
