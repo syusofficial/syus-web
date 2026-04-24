@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ShowCard from "@/components/ShowCard";
 import { createClient } from "@/lib/supabase/server";
+import { InstitutionSidebar, PartnerAdSidebar } from "@/components/PartnerSidebars";
 
 export const revalidate = 60; // 60초마다 재검증
 
@@ -156,42 +157,57 @@ export default async function HomePage() {
 
       {/* ── Shows Section ── */}
       <section
-        className="px-6 md:px-12 lg:px-20 py-24 md:py-32"
+        className="px-6 md:px-12 lg:px-16 xl:px-8 py-24 md:py-32"
         style={{ backgroundColor: "#F4EDE3" }}
       >
-        <div className="max-w-7xl mx-auto">
-          <div
-            className="flex items-end justify-between mb-12 pb-6"
-            style={{ borderBottom: "1px solid #D4CFC9" }}
-          >
-            <h2
-              className="text-3xl md:text-4xl font-bold"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+        <div className="max-w-[1600px] mx-auto">
+          {/* 섹션 헤더 — 중앙 영역 너비로 정렬 */}
+          <div className="grid grid-cols-1 xl:grid-cols-[200px_1fr_220px] xl:gap-8">
+            <div className="hidden xl:block" />
+            <div
+              className="flex items-end justify-between mb-12 pb-6"
+              style={{ borderBottom: "1px solid #D4CFC9" }}
             >
-              최근 공연
-            </h2>
-            <Link
-              href="/shows"
-              className="text-xs tracking-widest uppercase transition-colors"
-              style={{ fontFamily: "var(--font-inter)", color: "#6D3115" }}
-            >
-              전체 보기 →
-            </Link>
+              <h2
+                className="text-3xl md:text-4xl font-bold"
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+              >
+                최근 공연
+              </h2>
+              <Link
+                href="/shows"
+                className="text-xs tracking-widest uppercase transition-colors"
+                style={{ fontFamily: "var(--font-inter)", color: "#6D3115" }}
+              >
+                전체 보기 →
+              </Link>
+            </div>
+            <div className="hidden xl:block" />
           </div>
 
-          {shows.length === 0 ? (
-            <div className="text-center py-24">
-              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-                등록된 공연이 없습니다.
-              </p>
+          {/* 3열 레이아웃: 좌 기관 · 중앙 공연 · 우 광고 */}
+          <div className="grid grid-cols-1 xl:grid-cols-[200px_1fr_220px] gap-8 xl:gap-8">
+            <InstitutionSidebar />
+
+            {/* 중앙 — 공연 그리드 */}
+            <div>
+              {shows.length === 0 ? (
+                <div className="text-center py-24">
+                  <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                    등록된 공연이 없습니다.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3 gap-x-6 gap-y-12">
+                  {shows.map((show) => (
+                    <ShowCard key={show.id} show={show} />
+                  ))}
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
-              {shows.map((show) => (
-                <ShowCard key={show.id} show={show} />
-              ))}
-            </div>
-          )}
+
+            <PartnerAdSidebar />
+          </div>
         </div>
       </section>
 

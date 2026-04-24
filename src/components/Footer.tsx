@@ -39,9 +39,9 @@ export default function Footer() {
             </p>
             <div className="flex flex-col gap-3">
               {[
-                { href: "/", label: "공연 목록" },
+                { href: "/shows", label: "공연 목록" },
                 { href: "/contact", label: "문의" },
-                { href: "/performer", label: "공연자 신청" },
+                { href: "/performer", label: "공연자 등록" },
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -86,8 +86,27 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* 사업자 정보 */}
         <div
-          className="pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+          className="pt-8 pb-8 mb-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-xs"
+          style={{ borderTop: "1px solid #2C2C2C", fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+        >
+          {[
+            { label: "상호", value: "(주)사유유사" },
+            { label: "대표", value: "이혁호" },
+            { label: "사업자등록번호", value: "168-05-03666" },
+            { label: "이메일", value: "syusflux@gmail.com" },
+          ].map((item) => (
+            <div key={item.label} className="flex gap-3">
+              <span style={{ minWidth: "100px", color: "#6D6560" }}>{item.label}</span>
+              <span>{item.value}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* 저작권 */}
+        <div
+          className="pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
           style={{ borderTop: "1px solid #2C2C2C" }}
         >
           <p
