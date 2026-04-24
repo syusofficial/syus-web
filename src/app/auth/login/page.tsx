@@ -108,6 +108,26 @@ export default function LoginPage() {
           </button>
         </form>
 
+        <div className="mt-6 flex items-center justify-center gap-4 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
+          <Link
+            href="/auth/find-id"
+            style={{ color: "#9B9693" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+          >
+            아이디 찾기
+          </Link>
+          <span style={{ color: "#D4CFC9" }}>|</span>
+          <Link
+            href="/auth/forgot-password"
+            style={{ color: "#9B9693" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+          >
+            비밀번호 찾기
+          </Link>
+        </div>
+
         <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
           아직 계정이 없으신가요?{" "}
           <Link href="/auth/signup" style={{ color: "#6D3115" }}>
