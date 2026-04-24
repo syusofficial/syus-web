@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
 import type { Show, Profile, Contact } from "@/types";
 
-type Tab = "shows" | "members" | "contacts";
+type Tab = "shows" | "applications" | "members" | "contacts";
 
 const StatusBadge = ({ status }: { status: string }) => {
   const map: Record<string, { label: string; bg: string; color: string }> = {
@@ -97,6 +97,34 @@ export default function AdminPage() {
     }
   };
 
+  /** 공연자 신청 승인 — role을 performer로 변경 + status를 approved로 */
+  const approvePerformerApplication = async (id: string) => {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("profiles")
+      .update({ role: "performer", performer_status: "approved" })
+      .eq("id", id);
+    if (!error) {
+      setMembers((prev) => prev.map((m) =>
+        m.id === id ? { ...m, role: "performer", performer_status: "approved" } : m
+      ));
+    }
+  };
+
+  /** 공연자 신청 반려 — role은 그대로 member, status만 rejected */
+  const rejectPerformerApplication = async (id: string) => {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("profiles")
+      .update({ performer_status: "rejected" })
+      .eq("id", id);
+    if (!error) {
+      setMembers((prev) => prev.map((m) =>
+        m.id === id ? { ...m, performer_status: "rejected" } : m
+      ));
+    }
+  };
+
   // ── 상태별 화면 ──────────────────────────────
   if (authState === "loading") {
     return (
@@ -127,6 +155,7 @@ export default function AdminPage() {
   // ── 통계 ──────────────────────────────────────
   const pendingShows = shows.filter((s) => s.status === "pending").length;
   const pendingContacts = contacts.filter((c) => c.status === "pending").length;
+  const pendingApplications = members.filter((m) => m.performer_status === "pending").length;
 
   return (
     <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F4EDE3" }}>
@@ -142,17 +171,25 @@ export default function AdminPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
-            { label: "전체 공연", value: shows.length },
-            { label: "승인 대기", value: pendingShows },
-            { label: "미처리 문의", value: pendingContacts },
+            { label: "공연 승인 대기",  value: pendingShows,        highlight: pendingShows > 0 },
+            { label: "공연자 신청",     value: pendingApplications, highlight: pendingApplications > 0 },
+            { label: "미처리 문의",     value: pendingContacts,     highlight: pendingContacts > 0 },
+            { label: "전체 공연",       value: shows.length,         highlight: false },
           ].map((s) => (
-            <div key={s.label} className="p-6 text-center" style={{ backgroundColor: "#E8DDD0" }}>
-              <p className="text-3xl font-bold mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6D3115" }}>
+            <div
+              key={s.label}
+              className="p-6 text-center"
+              style={{
+                backgroundColor: s.highlight ? "#6D3115" : "#E8DDD0",
+                color: s.highlight ? "#F4EDE3" : "#1A1A1A",
+              }}
+            >
+              <p className="text-3xl font-bold mb-1" style={{ fontFamily: "var(--font-inter)" }}>
                 {dataLoading ? "—" : s.value}
               </p>
-              <p className="text-xs tracking-wide" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+              <p className="text-xs tracking-wide" style={{ fontFamily: "var(--font-noto-sans-kr)", opacity: s.highlight ? 0.9 : 0.6 }}>
                 {s.label}
               </p>
             </div>
@@ -160,11 +197,12 @@ export default function AdminPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-0 mb-8" style={{ borderBottom: "1px solid #D4CFC9" }}>
+        <div className="flex gap-0 mb-8 overflow-x-auto" style={{ borderBottom: "1px solid #D4CFC9" }}>
           {([
-            { key: "shows", label: "공연 승인" },
-            { key: "members", label: "회원 관리" },
-            { key: "contacts", label: "문의 확인" },
+            { key: "shows",        label: `공연 승인${pendingShows ? ` (${pendingShows})` : ""}` },
+            { key: "applications", label: `공연자 신청${pendingApplications ? ` (${pendingApplications})` : ""}` },
+            { key: "members",      label: "회원 관리" },
+            { key: "contacts",     label: `문의 확인${pendingContacts ? ` (${pendingContacts})` : ""}` },
           ] as const).map((t) => (
             <button
               key={t.key}
@@ -253,6 +291,72 @@ export default function AdminPage() {
                     </tbody>
                   </table>
                 )}
+              </div>
+            )}
+
+            {/* ── 공연자 신청 탭 ── */}
+            {tab === "applications" && (
+              <div className="overflow-x-auto">
+                {(() => {
+                  const pendingList = members.filter((m) => m.performer_status === "pending");
+                  if (pendingList.length === 0) {
+                    return (
+                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                        대기 중인 공연자 신청이 없습니다.
+                      </p>
+                    );
+                  }
+                  return (
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid #D4CFC9" }}>
+                          {["이름", "이메일", "가입일", "관리"].map((h) => (
+                            <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                              {h}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pendingList.map((m) => (
+                          <tr key={m.id} style={{ borderBottom: "1px solid #E8DDD0" }}>
+                            <td className="py-4 px-3 font-medium" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
+                              {m.name ?? "—"}
+                            </td>
+                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                              {m.email}
+                            </td>
+                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                              {m.created_at.slice(0, 10)}
+                            </td>
+                            <td className="py-4 px-3">
+                              <div className="flex gap-3">
+                                <button
+                                  onClick={() => approvePerformerApplication(m.id)}
+                                  className="text-xs px-3 py-1 transition-colors"
+                                  style={{ color: "#3A5E42", border: "1px solid #3A5E42" }}
+                                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D4EDD4"; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+                                >
+                                  승인
+                                </button>
+                                <button
+                                  onClick={() => rejectPerformerApplication(m.id)}
+                                  className="text-xs px-3 py-1 transition-colors"
+                                  style={{ color: "#A63D2F", border: "1px solid #A63D2F" }}
+                                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#EDD4D4"; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+                                >
+                                  반려
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  );
+                })()}
               </div>
             )}
 

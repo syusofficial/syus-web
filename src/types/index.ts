@@ -33,6 +33,7 @@ export type Profile = {
   email: string;
   name: string;
   role: "member" | "performer" | "admin";
+  performer_status?: "pending" | "approved" | "rejected" | null;
   created_at: string;
 };
 

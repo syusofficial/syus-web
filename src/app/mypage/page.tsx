@@ -66,9 +66,9 @@ export default function MyPage() {
     const supabase = createClient();
     const { error } = await supabase
       .from("profiles")
-      .update({ role: "performer" })
+      .update({ performer_status: "pending" })
       .eq("id", profile.id);
-    if (!error) setProfile({ ...profile, role: "performer" });
+    if (!error) setProfile({ ...profile, performer_status: "pending" });
     setApplying(false);
   };
 
@@ -229,7 +229,8 @@ export default function MyPage() {
               </div>
             </div>
 
-            {profile.role === "member" && (
+            {/* 일반 회원: 신청 상태별 UI */}
+            {profile.role === "member" && !profile.performer_status && (
               <button
                 onClick={handlePerformerApply}
                 disabled={applying}
@@ -245,6 +246,42 @@ export default function MyPage() {
               >
                 {applying ? "신청 중..." : "공연자 신청하기"}
               </button>
+            )}
+
+            {profile.role === "member" && profile.performer_status === "pending" && (
+              <div className="p-6" style={{ backgroundColor: "#E8DDD0" }}>
+                <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+                  ⏳ 신청이 접수되었습니다
+                </p>
+                <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+                  관리자 검토 후 승인되면 공연자 권한이 부여됩니다. (보통 1~3 영업일 소요)
+                </p>
+              </div>
+            )}
+
+            {profile.role === "member" && profile.performer_status === "rejected" && (
+              <div className="space-y-3">
+                <div className="p-6" style={{ backgroundColor: "#EDD4D4" }}>
+                  <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#A63D2F" }}>
+                    ✕ 신청이 반려되었습니다
+                  </p>
+                  <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F" }}>
+                    반려 사유가 궁금하시면 문의해주세요. 수정 후 재신청하실 수 있습니다.
+                  </p>
+                </div>
+                <button
+                  onClick={handlePerformerApply}
+                  disabled={applying}
+                  className="px-8 py-3 text-sm tracking-wider"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    backgroundColor: applying ? "#9B9693" : "#6D3115",
+                    color: "#F4EDE3",
+                  }}
+                >
+                  {applying ? "신청 중..." : "재신청하기"}
+                </button>
+              </div>
             )}
 
             {profile.role === "performer" && (
