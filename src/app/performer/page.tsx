@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
+import { REGIONS, GENRES } from "@/lib/constants";
 import type { Show } from "@/types";
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -22,9 +23,23 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 const emptyForm = {
-  title: "", subtitle: "", description: "",
-  venue: "", venue_address: "", schedule_start: "", schedule_end: "",
-  cast_members: "", directions: "", ticket_url: "",
+  title: "",
+  subtitle: "",
+  description: "",
+  venue: "",
+  venue_address: "",
+  schedule_start: "",
+  schedule_end: "",
+  cast_members: "",
+  directions: "",
+  ticket_url: "",
+  genre_custom: "",
+  school_department: "",
+  show_time: "",
+  running_time: "",
+  age_rating: "",
+  map_kakao_url: "",
+  map_naver_url: "",
 };
 
 export default function PerformerPage() {
@@ -34,6 +49,8 @@ export default function PerformerPage() {
   const [myShows, setMyShows] = useState<Show[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [genre, setGenre] = useState<string>("");
+  const [region, setRegion] = useState<string>("전체");
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -44,13 +61,11 @@ export default function PerformerPage() {
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) { router.push("/auth/login"); return; }
-
       const { data: shows } = await supabase
         .from("shows")
         .select("*")
         .eq("organizer_id", data.user.id)
         .order("created_at", { ascending: false });
-
       setMyShows((shows as Show[]) ?? []);
       setFetchLoading(false);
     });
@@ -63,9 +78,24 @@ export default function PerformerPage() {
     setPosterPreview(URL.createObjectURL(file));
   };
 
+  const resetForm = () => {
+    setForm(emptyForm);
+    setGenre("");
+    setRegion("전체");
+    setPosterFile(null);
+    setPosterPreview(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!genre) { setError("공연 장르를 선택해주세요."); return; }
+    if (genre === "기타" && !form.genre_custom.trim()) {
+      setError("기타 장르명을 입력해주세요.");
+      return;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
@@ -79,7 +109,6 @@ export default function PerformerPage() {
       .single();
 
     let poster_url: string | null = null;
-
     if (posterFile) {
       const ext = posterFile.name.split(".").pop();
       const filename = `${user.id}-${Date.now()}.${ext}`;
@@ -92,7 +121,6 @@ export default function PerformerPage() {
         setLoading(false);
         return;
       }
-
       const { data: urlData } = supabase.storage.from("posters").getPublicUrl(filename);
       poster_url = urlData.publicUrl;
     }
@@ -119,6 +147,17 @@ export default function PerformerPage() {
         organizer_id: user.id,
         performer_name: profile?.name ?? "",
         status: "pending",
+
+        // 신규 필드
+        genre,
+        genre_custom: genre === "기타" ? form.genre_custom : null,
+        region,
+        school_department: form.school_department || null,
+        show_time: form.show_time || null,
+        running_time: form.running_time || null,
+        age_rating: form.age_rating || null,
+        map_kakao_url: form.map_kakao_url || null,
+        map_naver_url: form.map_naver_url || null,
       })
       .select()
       .single();
@@ -131,9 +170,7 @@ export default function PerformerPage() {
 
     setMyShows((prev) => [newShow as Show, ...prev]);
     setShowForm(false);
-    setForm(emptyForm);
-    setPosterFile(null);
-    setPosterPreview(null);
+    resetForm();
     setLoading(false);
   };
 
@@ -142,6 +179,11 @@ export default function PerformerPage() {
     backgroundColor: "#F4EDE3",
     color: "#1A1A1A",
     border: "1px solid transparent",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontFamily: "var(--font-inter)",
+    color: "#9B9693",
   };
 
   return (
@@ -168,16 +210,17 @@ export default function PerformerPage() {
           </button>
         </div>
 
-        {/* New Show Form */}
+        {/* 등록 폼 */}
         {showForm && (
-          <div className="mb-12 p-8" style={{ backgroundColor: "#E8DDD0" }}>
-            <h2 className="text-xl font-bold mb-6" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+          <div className="mb-12 p-8 space-y-8" style={{ backgroundColor: "#E8DDD0" }}>
+            <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
               새 공연 등록
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* 포스터 업로드 */}
+
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* ── 섹션 1: 포스터 ── */}
               <div>
-                <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                <label className="block text-xs tracking-wider uppercase mb-3" style={labelStyle}>
                   포스터 이미지
                 </label>
                 <div className="flex items-start gap-4">
@@ -201,82 +244,195 @@ export default function PerformerPage() {
                     </span>
                   )}
                 </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {[
-                  { label: "공연명 *", key: "title", required: true },
-                  { label: "영문 제목", key: "subtitle", required: false },
-                  { label: "공연장 *", key: "venue", required: true },
-                  { label: "주소", key: "venue_address", required: false },
-                  { label: "시작일 * (예: 2026.05.10)", key: "schedule_start", required: true },
-                  { label: "종료일 * (예: 2026.05.25)", key: "schedule_end", required: true },
-                  { label: "티켓 링크", key: "ticket_url", required: false },
-                ].map((field) => (
-                  <div key={field.key}>
-                    <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-                      {field.label}
+              {/* ── 섹션 2: 장르 (버튼 선택) ── */}
+              <div>
+                <label className="block text-xs tracking-wider uppercase mb-3" style={labelStyle}>
+                  공연 장르 <span style={{ color: "#A63D2F" }}>*</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {GENRES.map((g) => {
+                    const active = genre === g;
+                    return (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => setGenre(g)}
+                        className="px-5 py-2.5 text-sm transition-colors"
+                        style={{
+                          fontFamily: "var(--font-noto-sans-kr)",
+                          backgroundColor: active ? "#6D3115" : "#F4EDE3",
+                          color: active ? "#F4EDE3" : "#1A1A1A",
+                          border: `1px solid ${active ? "#6D3115" : "#D4CFC9"}`,
+                        }}
+                      >
+                        {g}
+                      </button>
+                    );
+                  })}
+                </div>
+                {genre === "기타" && (
+                  <input
+                    type="text"
+                    value={form.genre_custom}
+                    onChange={(e) => setForm({ ...form, genre_custom: e.target.value })}
+                    placeholder="장르를 직접 입력해주세요 (예: 인형극, 마술쇼)"
+                    className="w-full mt-3 px-4 py-3 text-sm outline-none"
+                    style={inputStyle}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                  />
+                )}
+              </div>
+
+              {/* ── 섹션 3: 지역 (버튼 선택) ── */}
+              <div>
+                <label className="block text-xs tracking-wider uppercase mb-3" style={labelStyle}>
+                  지역 <span style={{ color: "#A63D2F" }}>*</span>
+                  <span className="ml-2 normal-case text-[10px]" style={{ letterSpacing: "normal" }}>
+                    ('전체'를 선택하면 모든 지역에 노출됩니다)
+                  </span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {REGIONS.map((r) => {
+                    const active = region === r;
+                    return (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => setRegion(r)}
+                        className="px-4 py-2 text-sm transition-colors"
+                        style={{
+                          fontFamily: "var(--font-noto-sans-kr)",
+                          backgroundColor: active ? "#6D3115" : "#F4EDE3",
+                          color: active ? "#F4EDE3" : "#1A1A1A",
+                          border: `1px solid ${active ? "#6D3115" : "#D4CFC9"}`,
+                          fontWeight: r === "전체" ? 600 : 400,
+                        }}
+                      >
+                        {r}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* ── 섹션 4: 기본 정보 ── */}
+              <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
+                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+                  기본 정보
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {[
+                    { label: "공연명 *", key: "title", required: true, span: "sm:col-span-2" },
+                    { label: "영문 제목", key: "subtitle", required: false },
+                    { label: "대학 및 학과명", key: "school_department", required: false, placeholder: "예: 한양대학교 연극영화학과" },
+                    { label: "공연 기간 시작 * (예: 2026.05.10)", key: "schedule_start", required: true },
+                    { label: "공연 기간 종료 * (예: 2026.05.25)", key: "schedule_end", required: true },
+                    { label: "공연 시간 (예: 평일 19:30 / 주말 15:00)", key: "show_time", required: false },
+                    { label: "러닝 타임 (예: 100분)", key: "running_time", required: false },
+                    { label: "관람 연령 (예: 7세 이상)", key: "age_rating", required: false },
+                    { label: "티켓 예매 링크", key: "ticket_url", required: false },
+                  ].map((field) => (
+                    <div key={field.key} className={field.span ?? ""}>
+                      <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
+                        {field.label}
+                      </label>
+                      <input
+                        type="text"
+                        value={form[field.key as keyof typeof form]}
+                        onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                        required={field.required}
+                        placeholder={field.placeholder}
+                        className="w-full px-4 py-3 text-sm outline-none"
+                        style={inputStyle}
+                        onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                        onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── 섹션 5: 장소 정보 ── */}
+              <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
+                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+                  장소 · 오시는 길
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {[
+                    { label: "공연장 *", key: "venue", required: true },
+                    { label: "주소", key: "venue_address", required: false },
+                    { label: "오시는 길", key: "directions", required: false, span: "sm:col-span-2", placeholder: "예: 4호선 혜화역 1번 출구 도보 5분" },
+                    { label: "카카오맵 링크", key: "map_kakao_url", required: false, placeholder: "https://place.map.kakao.com/..." },
+                    { label: "네이버지도 링크", key: "map_naver_url", required: false, placeholder: "https://map.naver.com/..." },
+                  ].map((field) => (
+                    <div key={field.key} className={field.span ?? ""}>
+                      <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
+                        {field.label}
+                      </label>
+                      <input
+                        type="text"
+                        value={form[field.key as keyof typeof form]}
+                        onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                        required={field.required}
+                        placeholder={field.placeholder}
+                        className="w-full px-4 py-3 text-sm outline-none"
+                        style={inputStyle}
+                        onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                        onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── 섹션 6: 작품 정보 ── */}
+              <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
+                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+                  작품 정보
+                </h3>
+                <div className="space-y-5">
+                  <div>
+                    <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
+                      출연진 * (쉼표로 구분)
                     </label>
                     <input
                       type="text"
-                      value={form[field.key as keyof typeof form]}
-                      onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                      required={field.required}
+                      value={form.cast_members}
+                      onChange={(e) => setForm({ ...form, cast_members: e.target.value })}
+                      required
+                      placeholder="예: 홍길동(주인공), 김철수(조력자), 박영희(악역)"
                       className="w-full px-4 py-3 text-sm outline-none"
                       style={inputStyle}
                       onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                     />
                   </div>
-                ))}
-              </div>
 
-              {[
-                { label: "출연진 * (쉼표로 구분, 예: 홍길동(주인공), 김철수(조력자))", key: "cast_members", required: true },
-                { label: "오시는 길", key: "directions", required: false },
-              ].map((field) => (
-                <div key={field.key}>
-                  <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-                    {field.label}
-                  </label>
-                  <input
-                    type="text"
-                    value={form[field.key as keyof typeof form]}
-                    onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                    required={field.required}
-                    className="w-full px-4 py-3 text-sm outline-none"
-                    style={inputStyle}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
-                  />
+                  <div>
+                    <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
+                      작품 소개 *
+                    </label>
+                    <textarea
+                      value={form.description}
+                      onChange={(e) => setForm({ ...form, description: e.target.value })}
+                      required
+                      rows={5}
+                      className="w-full px-4 py-3 text-sm outline-none resize-none"
+                      style={inputStyle}
+                      onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                      onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                    />
+                  </div>
                 </div>
-              ))}
-
-              <div>
-                <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-                  작품 소개 *
-                </label>
-                <textarea
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  required
-                  rows={4}
-                  className="w-full px-4 py-3 text-sm outline-none resize-none"
-                  style={inputStyle}
-                  onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
-                  onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
-                />
               </div>
 
+              {/* ── 제출 영역 ── */}
               {error && (
-                <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C0392B" }}>
+                <p className="text-sm p-3" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C0392B", backgroundColor: "#EDD4D4" }}>
                   {error}
                 </p>
               )}
@@ -285,26 +441,42 @@ export default function PerformerPage() {
                 ※ 등록 후 관리자 검토를 거쳐 게시됩니다. (1~3 영업일 소요)
               </p>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-8 py-3 text-sm tracking-wider transition-colors"
-                style={{
-                  fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: loading ? "#9B9693" : "#6D3115",
-                  color: "#F4EDE3",
-                  cursor: loading ? "not-allowed" : "pointer",
-                }}
-                onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#8B4A2A"; }}
-                onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#6D3115"; }}
-              >
-                {loading ? "등록 중..." : "등록 신청"}
-              </button>
+              <div className="pt-4 flex flex-col sm:flex-row gap-3">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 py-4 text-base tracking-wider transition-colors"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    backgroundColor: loading ? "#9B9693" : "#6D3115",
+                    color: "#F4EDE3",
+                    cursor: loading ? "not-allowed" : "pointer",
+                  }}
+                  onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#8B4A2A"; }}
+                  onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#6D3115"; }}
+                >
+                  {loading ? "업로드 중..." : "공연 업로드"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setShowForm(false); resetForm(); setError(""); }}
+                  disabled={loading}
+                  className="px-8 py-4 text-base tracking-wider"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    backgroundColor: "transparent",
+                    color: "#6D3115",
+                    border: "1px solid #D4CFC9",
+                  }}
+                >
+                  취소
+                </button>
+              </div>
             </form>
           </div>
         )}
 
-        {/* My Shows */}
+        {/* 내 공연 목록 */}
         <div>
           <h2 className="text-lg font-semibold mb-6" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
             등록한 공연
@@ -326,7 +498,12 @@ export default function PerformerPage() {
                       {show.title}
                     </p>
                     <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-                      {show.venue}{show.schedule_start ? ` · ${show.schedule_start}` : ""}
+                      {[
+                        show.genre === "기타" ? show.genre_custom : show.genre,
+                        show.region,
+                        show.venue,
+                        show.schedule_start,
+                      ].filter(Boolean).join(" · ")}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">

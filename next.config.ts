@@ -8,7 +8,7 @@ const ContentSecurityPolicy = `
   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com data:;
-  img-src 'self' data: blob: https://${SUPABASE_HOST} https://placehold.co https://www.google-analytics.com https://www.googletagmanager.com;
+  img-src 'self' data: blob: https://${SUPABASE_HOST} https://placehold.co https://images.unsplash.com https://www.google-analytics.com https://www.googletagmanager.com;
   connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST} https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com;
   frame-ancestors 'none';
   base-uri 'self';

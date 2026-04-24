@@ -73,12 +73,32 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               )}
             </div>
 
+            {/* 카테고리 태그 */}
+            {(show.genre || show.region) && (
+              <div className="flex flex-wrap gap-2">
+                {show.genre && (
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}>
+                    {show.genre === "기타" && show.genre_custom ? show.genre_custom : show.genre}
+                  </span>
+                )}
+                {show.region && (
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115", border: "1px solid #6D3115" }}>
+                    {show.region}
+                  </span>
+                )}
+              </div>
+            )}
+
             {/* Meta box */}
             <div className="p-6 space-y-4" style={{ backgroundColor: "#E8DDD0" }}>
               {[
+                show.school_department ? { label: "소속", value: show.school_department } : null,
                 show.schedule_start && show.schedule_end
-                  ? { label: "일정", value: `${show.schedule_start} — ${show.schedule_end}` }
+                  ? { label: "공연 기간", value: `${show.schedule_start} — ${show.schedule_end}` }
                   : null,
+                show.show_time ? { label: "공연 시간", value: show.show_time } : null,
+                show.running_time ? { label: "러닝 타임", value: show.running_time } : null,
+                show.age_rating ? { label: "관람 연령", value: show.age_rating } : null,
                 { label: "장소", value: show.venue },
                 show.venue_address ? { label: "주소", value: show.venue_address } : null,
                 show.cast_members?.length
@@ -87,7 +107,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               ]
                 .filter(Boolean)
                 .map((item) => (
-                  <div key={item!.label} className="grid grid-cols-[72px_1fr] gap-2">
+                  <div key={item!.label} className="grid grid-cols-[88px_1fr] gap-2">
                     <span
                       className="text-xs tracking-wider uppercase pt-0.5"
                       style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
@@ -115,14 +135,40 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             </div>
 
             {/* Directions */}
-            {show.directions && (
+            {(show.directions || show.map_kakao_url || show.map_naver_url) && (
               <div>
                 <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
                   오시는 길
                 </p>
-                <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
-                  {show.directions}
-                </p>
+                {show.directions && (
+                  <p className="text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+                    {show.directions}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  {show.map_kakao_url && (
+                    <a
+                      href={show.map_kakao_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 text-xs"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#FEE500", color: "#1A1A1A" }}
+                    >
+                      카카오맵에서 보기 →
+                    </a>
+                  )}
+                  {show.map_naver_url && (
+                    <a
+                      href={show.map_naver_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 text-xs"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#03C75A", color: "#F4EDE3" }}
+                    >
+                      네이버지도에서 보기 →
+                    </a>
+                  )}
+                </div>
               </div>
             )}
 

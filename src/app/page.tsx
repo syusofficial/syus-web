@@ -10,7 +10,8 @@ export default async function HomePage() {
     .from("shows")
     .select("*")
     .eq("status", "approved")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(6);
 
   const shows = approvedShows ?? [];
 
@@ -18,13 +19,21 @@ export default async function HomePage() {
     <div>
       {/* ── Hero ── */}
       <section
-        className="pt-24 min-h-screen flex flex-col justify-between px-6 md:px-12 lg:px-20"
-        style={{ backgroundColor: "#F4EDE3" }}
+        className="pt-24 min-h-screen flex flex-col justify-between px-6 md:px-12 lg:px-20 relative"
+        style={{
+          backgroundImage: `
+            linear-gradient(180deg, rgba(26, 26, 26, 0.55) 0%, rgba(26, 26, 26, 0.75) 60%, rgba(26, 26, 26, 0.9) 100%),
+            url('https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&q=80&w=2400')
+          `,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
       >
-        <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center py-20">
+        <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center py-20 relative z-10">
           <p
             className="text-xs tracking-[0.35em] uppercase mb-8"
-            style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#F4EDE3", opacity: 0.75 }}
           >
             思惟流沙 · System of Young Unbound Society
           </p>
@@ -32,7 +41,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-end">
             <h1
               className="text-[5rem] md:text-[7rem] lg:text-[9rem] font-black leading-none tracking-tighter"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F4EDE3" }}
             >
               사유
               <br />
@@ -42,7 +51,7 @@ export default async function HomePage() {
             <div className="pb-2 space-y-6">
               <p
                 className="text-lg md:text-xl leading-relaxed"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3" }}
               >
                 깊게 생각하고 오래 머물러,
                 <br />
@@ -52,7 +61,7 @@ export default async function HomePage() {
               </p>
               <p
                 className="text-base italic"
-                style={{ fontFamily: "var(--font-cormorant)", color: "#9B9693" }}
+                style={{ fontFamily: "var(--font-cormorant)", color: "#F4EDE3", opacity: 0.7 }}
               >
                 Think deeply. Speak lightly.
               </p>
@@ -61,8 +70,8 @@ export default async function HomePage() {
                 className="inline-block px-7 py-3 text-sm tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: "#6D3115",
-                  color: "#F4EDE3",
+                  backgroundColor: "#F4EDE3",
+                  color: "#1A1A1A",
                 }}
               >
                 지금 시작하기
@@ -72,18 +81,18 @@ export default async function HomePage() {
         </div>
 
         <div
-          className="max-w-7xl mx-auto w-full flex items-center justify-between py-5"
-          style={{ borderTop: "1px solid #D4CFC9" }}
+          className="max-w-7xl mx-auto w-full flex items-center justify-between py-5 relative z-10"
+          style={{ borderTop: "1px solid rgba(244, 237, 227, 0.2)" }}
         >
           <span
             className="text-xs tracking-[0.2em] uppercase"
-            style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#F4EDE3", opacity: 0.6 }}
           >
             연극 · 뮤지컬 · 연기예술
           </span>
           <span
             className="text-xs tracking-[0.2em] uppercase"
-            style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#F4EDE3", opacity: 0.6 }}
           >
             ↓ 공연 보기
           </span>
@@ -159,14 +168,15 @@ export default async function HomePage() {
               className="text-3xl md:text-4xl font-bold"
               style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
             >
-              공연 목록
+              최근 공연
             </h2>
-            <span
-              className="text-xs tracking-widest uppercase"
-              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            <Link
+              href="/shows"
+              className="text-xs tracking-widest uppercase transition-colors"
+              style={{ fontFamily: "var(--font-inter)", color: "#6D3115" }}
             >
-              {shows.length} Shows
-            </span>
+              전체 보기 →
+            </Link>
           </div>
 
           {shows.length === 0 ? (

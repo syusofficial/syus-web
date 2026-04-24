@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { REGIONS } from "@/lib/constants";
 import type { User } from "@supabase/supabase-js";
 
 /**
@@ -65,9 +66,64 @@ export function SyusLogoSvg({
   );
 }
 
+/** 공연 메뉴 호버 드롭다운 (데스크톱 전용) */
+function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <Link
+        href="/shows"
+        style={linkStyle}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+      >
+        공연
+      </Link>
+      {open && (
+        <div
+          className="absolute top-full left-0 pt-3"
+          style={{ minWidth: "280px" }}
+        >
+          <div
+            className="grid grid-cols-3 gap-x-2 gap-y-1 p-4"
+            style={{
+              backgroundColor: "#F4EDE3",
+              border: "1px solid #D4CFC9",
+              boxShadow: "0 8px 24px rgba(109, 49, 21, 0.08)",
+            }}
+          >
+            {REGIONS.map((region) => (
+              <Link
+                key={region}
+                href={region === "전체" ? "/shows" : `/shows?region=${encodeURIComponent(region)}`}
+                className="px-2 py-1.5 text-xs transition-colors"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  color: "#1A1A1A",
+                  fontWeight: region === "전체" ? 600 : 400,
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+              >
+                {region}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Nav() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileShowsOpen, setMobileShowsOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
 
@@ -118,20 +174,15 @@ export default function Nav() {
       <div className="hidden md:grid grid-cols-3 items-center max-w-7xl mx-auto px-8 py-3">
         {/* Left */}
         <div className="flex items-center gap-8">
-          {[
-            { href: "/", label: "공연" },
-            { href: "/contact", label: "문의" },
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              style={linkStyle}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
-            >
-              {item.label}
-            </Link>
-          ))}
+          <ShowsHoverMenu linkStyle={linkStyle} />
+          <Link
+            href="/contact"
+            style={linkStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+          >
+            문의
+          </Link>
         </div>
 
         {/* Center — Logo */}
@@ -262,19 +313,48 @@ export default function Nav() {
           style={{ borderTop: "1px solid #D4CFC9", backgroundColor: "#F4EDE3" }}
         >
           <div className="flex flex-col px-6 py-4 gap-4">
-            {[
-              { href: "/", label: "공연" },
-              { href: "/contact", label: "문의" },
-            ].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
+            {/* 공연 (지역 펼치기) */}
+            <div>
+              <button
+                className="w-full flex items-center justify-between text-left py-2"
                 style={{ ...linkStyle, padding: "8px 0" }}
-                onClick={() => setMenuOpen(false)}
+                onClick={() => setMobileShowsOpen(!mobileShowsOpen)}
               >
-                {item.label}
-              </Link>
-            ))}
+                공연
+                <span style={{ color: "#9B9693", fontSize: "0.75rem" }}>
+                  {mobileShowsOpen ? "▲" : "▼"}
+                </span>
+              </button>
+              {mobileShowsOpen && (
+                <div className="grid grid-cols-3 gap-1 mt-2 pb-2">
+                  {REGIONS.map((region) => (
+                    <Link
+                      key={region}
+                      href={region === "전체" ? "/shows" : `/shows?region=${encodeURIComponent(region)}`}
+                      className="px-2 py-2 text-xs"
+                      style={{
+                        fontFamily: "var(--font-noto-sans-kr)",
+                        color: "#1A1A1A",
+                        backgroundColor: "#E8DDD0",
+                        textAlign: "center",
+                        fontWeight: region === "전체" ? 600 : 400,
+                      }}
+                      onClick={() => { setMenuOpen(false); setMobileShowsOpen(false); }}
+                    >
+                      {region}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link
+              href="/contact"
+              style={{ ...linkStyle, padding: "8px 0" }}
+              onClick={() => setMenuOpen(false)}
+            >
+              문의
+            </Link>
             {user ? (
               <>
                 {role === "admin" && (
