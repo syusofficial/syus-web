@@ -97,6 +97,32 @@ export default function AdminPage() {
     }
   };
 
+  /** 공연 영구 삭제 — Storage 포스터 + DB row 제거 */
+  const deleteShow = async (show: Show) => {
+    const confirmed = window.confirm(
+      `"${show.title}" 공연을 영구 삭제하시겠습니까?\n\n포스터 이미지와 공연 정보가 완전히 제거되며 복구할 수 없습니다.`
+    );
+    if (!confirmed) return;
+
+    const supabase = createClient();
+
+    // 1. Storage에서 포스터 삭제
+    if (show.poster_url) {
+      const filename = show.poster_url.split("/posters/").pop();
+      if (filename) {
+        await supabase.storage.from("posters").remove([filename]);
+      }
+    }
+
+    // 2. DB에서 공연 row 삭제
+    const { error } = await supabase.from("shows").delete().eq("id", show.id);
+    if (!error) {
+      setShows((prev) => prev.filter((s) => s.id !== show.id));
+    } else {
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
   /** 공연자 신청 승인 — role을 performer로 변경 + status를 approved로 */
   const approvePerformerApplication = async (id: string) => {
     const supabase = createClient();
@@ -261,7 +287,7 @@ export default function AdminPage() {
                             <StatusBadge status={show.status} />
                           </td>
                           <td className="py-4 px-3">
-                            <div className="flex gap-3">
+                            <div className="flex gap-2 flex-wrap">
                               {show.status !== "approved" && (
                                 <button
                                   onClick={() => updateShowStatus(show.id, "approved")}
@@ -284,6 +310,15 @@ export default function AdminPage() {
                                   반려
                                 </button>
                               )}
+                              <button
+                                onClick={() => deleteShow(show)}
+                                className="text-xs px-3 py-1 transition-colors"
+                                style={{ color: "#F4EDE3", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
+                                onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                              >
+                                삭제
+                              </button>
                             </div>
                           </td>
                         </tr>

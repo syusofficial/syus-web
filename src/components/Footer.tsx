@@ -1,8 +1,36 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export default function Footer() {
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
+
+  const linkCls = "text-sm transition-colors";
+  const linkStyle: React.CSSProperties = { fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" };
+
   return (
     <footer style={{ backgroundColor: "#1A1A1A", color: "#F4EDE3" }}>
       <div className="max-w-7xl mx-auto px-6 py-16">
@@ -25,7 +53,7 @@ export default function Footer() {
               className="text-sm leading-relaxed"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
             >
-              깊게 생각하고, 얕게 말합니다.
+              깊이 머물고, 가볍게 흘려보냅니다.
             </p>
           </div>
 
@@ -46,8 +74,8 @@ export default function Footer() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-sm transition-colors"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+                  className={linkCls}
+                  style={linkStyle}
                   onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
                   onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
                 >
@@ -57,7 +85,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Account links */}
+          {/* Account links — 로그인 상태에 따라 조건부 표시 */}
           <div>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-4"
@@ -66,22 +94,49 @@ export default function Footer() {
               Account
             </p>
             <div className="flex flex-col gap-3">
-              {[
-                { href: "/auth/login", label: "로그인" },
-                { href: "/auth/signup", label: "회원가입" },
-                { href: "/mypage", label: "마이페이지" },
-              ].map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-sm transition-colors"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {user ? (
+                <>
+                  <Link
+                    href="/mypage"
+                    className={linkCls}
+                    style={linkStyle}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+                  >
+                    마이페이지
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className={linkCls + " text-left"}
+                    style={{ ...linkStyle, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+                  >
+                    로그아웃
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    className={linkCls}
+                    style={linkStyle}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+                  >
+                    로그인
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className={linkCls}
+                    style={linkStyle}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+                  >
+                    회원가입
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -144,10 +199,10 @@ export default function Footer() {
             © 2026 SYUS · 사유유사. All rights reserved.
           </p>
           <p
-            className="text-xs italic"
-            style={{ fontFamily: "var(--font-cormorant)", color: "#9B9693" }}
+            className="text-xs"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
           >
-            Think deeply. Speak lightly.
+            깊이 머물고, 가볍게 흘려보냅니다.
           </p>
         </div>
       </div>

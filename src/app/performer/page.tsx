@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
-import { REGIONS, GENRES } from "@/lib/constants";
+import { REGIONS_EXCLUDE_ALL, GENRES } from "@/lib/constants";
 import type { Show } from "@/types";
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -50,7 +50,7 @@ export default function PerformerPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [genre, setGenre] = useState<string>("");
-  const [region, setRegion] = useState<string>("전체");
+  const [region, setRegion] = useState<string>("");
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -81,7 +81,7 @@ export default function PerformerPage() {
   const resetForm = () => {
     setForm(emptyForm);
     setGenre("");
-    setRegion("전체");
+    setRegion("");
     setPosterFile(null);
     setPosterPreview(null);
   };
@@ -95,6 +95,7 @@ export default function PerformerPage() {
       setError("기타 장르명을 입력해주세요.");
       return;
     }
+    if (!region) { setError("공연 지역을 선택해주세요."); return; }
 
     setLoading(true);
 
@@ -290,13 +291,13 @@ export default function PerformerPage() {
               {/* ── 섹션 3: 지역 (버튼 선택) ── */}
               <div>
                 <label className="block text-xs tracking-wider uppercase mb-3" style={labelStyle}>
-                  지역 <span style={{ color: "#A63D2F" }}>*</span>
+                  공연 지역 <span style={{ color: "#A63D2F" }}>*</span>
                   <span className="ml-2 normal-case text-[10px]" style={{ letterSpacing: "normal" }}>
-                    ('전체'를 선택하면 모든 지역에 노출됩니다)
+                    (공연이 실제로 열리는 지역을 선택하세요)
                   </span>
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {REGIONS.map((r) => {
+                  {REGIONS_EXCLUDE_ALL.map((r) => {
                     const active = region === r;
                     return (
                       <button
@@ -309,7 +310,6 @@ export default function PerformerPage() {
                           backgroundColor: active ? "#6D3115" : "#F4EDE3",
                           color: active ? "#F4EDE3" : "#1A1A1A",
                           border: `1px solid ${active ? "#6D3115" : "#D4CFC9"}`,
-                          fontWeight: r === "전체" ? 600 : 400,
                         }}
                       >
                         {r}

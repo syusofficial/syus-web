@@ -15,9 +15,10 @@ export default async function ShowsPage({
 
   let query = supabase.from("shows").select("*").eq("status", "approved");
 
-  // 지역 필터: 특정 지역이면 해당 지역 OR "전체" (전국 상영)
+  // 지역 필터: 정확히 일치하는 지역만 표시
+  // ('전체' 메뉴는 파라미터 없이 /shows로 이동하여 모든 공연 노출)
   if (region && region !== "전체") {
-    query = query.or(`region.eq.${region},region.eq.전체`);
+    query = query.eq("region", region);
   }
 
   // 장르 필터

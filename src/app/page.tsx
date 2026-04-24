@@ -61,10 +61,10 @@ export default async function HomePage() {
                 젊은 무대 위에 쌓이는 공간.
               </p>
               <p
-                className="text-base italic"
-                style={{ fontFamily: "var(--font-cormorant)", color: "#F4EDE3", opacity: 0.7 }}
+                className="text-base"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", opacity: 0.7 }}
               >
-                Think deeply. Speak lightly.
+                깊이 머물고, 가볍게 흘려보냅니다.
               </p>
               <Link
                 href="/auth/signup"
