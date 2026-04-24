@@ -14,18 +14,45 @@ export default function ContactPage() {
     setError("");
     setLoading(true);
 
+    // 클라이언트 측 쿨다운 (즉시 피드백)
+    const LAST_KEY = "syus-last-contact";
+    const COOLDOWN_MS = 5 * 60 * 1000;
+    const last = typeof window !== "undefined" ? localStorage.getItem(LAST_KEY) : null;
+    if (last && Date.now() - parseInt(last) < COOLDOWN_MS) {
+      const remaining = Math.ceil((COOLDOWN_MS - (Date.now() - parseInt(last))) / 60000);
+      setError(`잠시 후 다시 시도해주세요. (약 ${remaining}분 후 가능)`);
+      setLoading(false);
+      return;
+    }
+
+    // 서버 측 rate limit (Supabase RPC 함수)
     const supabase = createClient();
-    const { error } = await supabase.from("contacts").insert({
-      name: form.name,
-      email: form.email,
-      message: form.message,
-      status: "pending",
+    const { data, error } = await supabase.rpc("submit_contact", {
+      p_name: form.name,
+      p_email: form.email,
+      p_message: form.message,
     });
 
     if (error) {
       setError("전송 중 오류가 발생했습니다. 다시 시도해주세요.");
       setLoading(false);
       return;
+    }
+
+    if (data === "rate_limited") {
+      setError("같은 이메일로 5분 내 재문의는 제한됩니다. 잠시 후 다시 시도해주세요.");
+      setLoading(false);
+      return;
+    }
+
+    if (data === "invalid_input") {
+      setError("입력 내용을 확인해주세요.");
+      setLoading(false);
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(LAST_KEY, Date.now().toString());
     }
 
     setSubmitted(true);

@@ -5,11 +5,11 @@ const SUPABASE_HOST = "mmosvdjautcliafinahd.supabase.co";
 /** Content Security Policy - 사이트에서 로드·실행 가능한 리소스를 제한 */
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com data:;
-  img-src 'self' data: blob: https://${SUPABASE_HOST} https://placehold.co;
-  connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST};
+  img-src 'self' data: blob: https://${SUPABASE_HOST} https://placehold.co https://www.google-analytics.com https://www.googletagmanager.com;
+  connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST} https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
