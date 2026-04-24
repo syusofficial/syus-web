@@ -190,24 +190,24 @@ export default function PerformerPage() {
     <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F4EDE3" }}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-start justify-between mb-12">
-          <div>
-            <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-              Performer
-            </p>
+        <div className="mb-12">
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+            Performer
+          </p>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
             <h1 className="text-4xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
               내 공연 관리
             </h1>
+            <button
+              onClick={() => { setShowForm(!showForm); setError(""); }}
+              className="px-6 py-3 text-sm tracking-wider transition-colors"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#8B4A2A")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#6D3115")}
+            >
+              {showForm ? "취소" : "+ 공연 등록"}
+            </button>
           </div>
-          <button
-            onClick={() => { setShowForm(!showForm); setError(""); }}
-            className="px-6 py-3 text-sm tracking-wider transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#8B4A2A")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#6D3115")}
-          >
-            {showForm ? "취소" : "+ 공연 등록"}
-          </button>
         </div>
 
         {/* 등록 폼 */}

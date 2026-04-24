@@ -22,8 +22,8 @@ export default async function HomePage() {
         className="pt-24 min-h-screen flex flex-col justify-between px-6 md:px-12 lg:px-20 relative"
         style={{
           backgroundImage: `
-            linear-gradient(180deg, rgba(26, 26, 26, 0.55) 0%, rgba(26, 26, 26, 0.75) 60%, rgba(26, 26, 26, 0.9) 100%),
-            url('https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&q=80&w=2400')
+            linear-gradient(180deg, rgba(26, 26, 26, 0.5) 0%, rgba(26, 26, 26, 0.7) 55%, rgba(26, 26, 26, 0.88) 100%),
+            url('https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&q=80&w=2400')
           `,
           backgroundSize: "cover",
           backgroundPosition: "center",
