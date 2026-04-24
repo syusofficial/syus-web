@@ -6,6 +6,12 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
 
+type Consents = {
+  terms: boolean;       // 이용약관 (필수)
+  privacy: boolean;     // 개인정보 (필수)
+  marketing: boolean;   // 마케팅 (선택)
+};
+
 export default function SignupPage() {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -14,17 +20,47 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [consents, setConsents] = useState<Consents>({
+    terms: false,
+    privacy: false,
+    marketing: false,
+  });
+
+  const allChecked = consents.terms && consents.privacy && consents.marketing;
+  const requiredChecked = consents.terms && consents.privacy;
+
+  const toggleAll = () => {
+    const next = !allChecked;
+    setConsents({ terms: next, privacy: next, marketing: next });
+  };
+
+  const toggleOne = (key: keyof Consents) => {
+    setConsents((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!requiredChecked) {
+      setError("필수 약관에 모두 동의해주세요.");
+      return;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: {
+        data: {
+          name,
+          marketing_opt_in: consents.marketing,
+          terms_agreed_at: new Date().toISOString(),
+          privacy_agreed_at: new Date().toISOString(),
+        },
+      },
     });
 
     if (error) {
@@ -74,7 +110,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F4EDE3" }}>
+    <div className="pt-24 min-h-screen flex items-center justify-center px-6 py-12" style={{ backgroundColor: "#F4EDE3" }}>
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
@@ -134,24 +170,67 @@ export default function SignupPage() {
             <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>8자 이상</p>
           </div>
 
+          {/* ─── 약관 동의 섹션 ─── */}
+          <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #D4CFC9" }}>
+            <ConsentRow
+              checked={allChecked}
+              onChange={toggleAll}
+              label="전체 동의"
+              bold
+            />
+            <div className="pl-1 space-y-2" style={{ borderLeft: "2px solid #E8DDD0", paddingLeft: "12px" }}>
+              <ConsentRow
+                checked={consents.terms}
+                onChange={() => toggleOne("terms")}
+                required
+                label={
+                  <>
+                    이용약관 동의{" "}
+                    <Link href="/terms" target="_blank" className="underline" style={{ color: "#6D3115" }}>
+                      보기
+                    </Link>
+                  </>
+                }
+              />
+              <ConsentRow
+                checked={consents.privacy}
+                onChange={() => toggleOne("privacy")}
+                required
+                label={
+                  <>
+                    개인정보 수집 및 이용 동의{" "}
+                    <Link href="/privacy" target="_blank" className="underline" style={{ color: "#6D3115" }}>
+                      보기
+                    </Link>
+                  </>
+                }
+              />
+              <ConsentRow
+                checked={consents.marketing}
+                onChange={() => toggleOne("marketing")}
+                label="새 공연 · 소식 알림 수신 (선택)"
+              />
+            </div>
+          </div>
+
           {error && (
-            <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C0392B" }}>
+            <p className="text-xs p-3" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C0392B", backgroundColor: "#EDD4D4" }}>
               {error}
             </p>
           )}
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !requiredChecked}
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#9B9693" : "#6D3115",
+              backgroundColor: loading || !requiredChecked ? "#9B9693" : "#6D3115",
               color: "#F4EDE3",
-              cursor: loading ? "not-allowed" : "pointer",
+              cursor: loading || !requiredChecked ? "not-allowed" : "pointer",
             }}
-            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#8B4A2A"; }}
-            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#6D3115"; }}
+            onMouseEnter={(e) => { if (!loading && requiredChecked) e.currentTarget.style.backgroundColor = "#8B4A2A"; }}
+            onMouseLeave={(e) => { if (!loading && requiredChecked) e.currentTarget.style.backgroundColor = "#6D3115"; }}
           >
             {loading ? "처리 중..." : "가입하기"}
           </button>
@@ -165,5 +244,50 @@ export default function SignupPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+/** 동의 체크박스 한 줄 */
+function ConsentRow({
+  checked,
+  onChange,
+  label,
+  required,
+  bold,
+}: {
+  checked: boolean;
+  onChange: () => void;
+  label: React.ReactNode;
+  required?: boolean;
+  bold?: boolean;
+}) {
+  return (
+    <label className="flex items-center gap-2.5 cursor-pointer select-none">
+      <span
+        className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors"
+        style={{
+          backgroundColor: checked ? "#6D3115" : "transparent",
+          border: `1.5px solid ${checked ? "#6D3115" : "#9B9693"}`,
+        }}
+      >
+        {checked && (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F4EDE3" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
+      </span>
+      <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" />
+      <span
+        className="text-xs leading-relaxed"
+        style={{
+          fontFamily: "var(--font-noto-sans-kr)",
+          color: "#1A1A1A",
+          fontWeight: bold ? 600 : 400,
+        }}
+      >
+        {required && <span style={{ color: "#A63D2F", marginRight: "4px" }}>[필수]</span>}
+        {label}
+      </span>
+    </label>
   );
 }
