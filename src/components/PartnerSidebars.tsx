@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { INSTITUTIONS, PARTNER_ADS } from "@/lib/partners";
 
