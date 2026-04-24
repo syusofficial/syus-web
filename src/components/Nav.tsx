@@ -69,14 +69,26 @@ export default function Nav() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
 
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const loadUserAndRole = async (currentUser: User | null) => {
+      setUser(currentUser);
+      if (!currentUser) { setRole(null); return; }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", currentUser.id)
+        .single();
+      setRole(profile?.role ?? null);
+    };
+
+    supabase.auth.getUser().then(({ data }) => loadUserAndRole(data.user));
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      loadUserAndRole(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
@@ -141,6 +153,16 @@ export default function Nav() {
         <div className="flex items-center gap-6 justify-end">
           {user ? (
             <>
+              {role === "admin" && (
+                <Link
+                  href="/admin"
+                  style={{ ...linkStyle, color: "#6D3115", fontWeight: 600 }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                >
+                  관리자
+                </Link>
+              )}
               <Link
                 href="/mypage"
                 style={linkStyle}
@@ -255,6 +277,15 @@ export default function Nav() {
             ))}
             {user ? (
               <>
+                {role === "admin" && (
+                  <Link
+                    href="/admin"
+                    style={{ ...linkStyle, padding: "8px 0", color: "#6D3115", fontWeight: 600 }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    관리자
+                  </Link>
+                )}
                 <Link
                   href="/mypage"
                   style={{ ...linkStyle, padding: "8px 0" }}
