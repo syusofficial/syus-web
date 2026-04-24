@@ -104,11 +104,39 @@ export default function Footer() {
           ))}
         </div>
 
+        {/* 정책 링크 */}
+        <div className="pt-6 flex flex-wrap gap-x-4 gap-y-2" style={{ borderTop: "1px solid #2C2C2C" }}>
+          <Link
+            href="/terms"
+            className="text-xs transition-colors"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+          >
+            이용약관
+          </Link>
+          <Link
+            href="/privacy"
+            className="text-xs transition-colors"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", fontWeight: 600 }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          >
+            개인정보처리방침
+          </Link>
+          <Link
+            href="/contact"
+            className="text-xs transition-colors"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+          >
+            문의하기
+          </Link>
+        </div>
+
         {/* 저작권 */}
-        <div
-          className="pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-          style={{ borderTop: "1px solid #2C2C2C" }}
-        >
+        <div className="pt-6 mt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <p
             className="text-xs tracking-wider"
             style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
