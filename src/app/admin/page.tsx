@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import PageLoader from "@/components/PageLoader";
 import type { Show, Profile, Contact } from "@/types";
 
 type Tab = "shows" | "members" | "contacts";
@@ -99,8 +100,8 @@ export default function AdminPage() {
   // ── 상태별 화면 ──────────────────────────────
   if (authState === "loading") {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center" style={{ backgroundColor: "#F4EDE3" }}>
-        <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>확인 중...</p>
+      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F4EDE3" }}>
+        <PageLoader />
       </div>
     );
   }
@@ -182,9 +183,7 @@ export default function AdminPage() {
         </div>
 
         {dataLoading ? (
-          <div className="text-center py-20">
-            <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>불러오는 중...</p>
-          </div>
+          <PageLoader />
         ) : (
           <>
             {/* ── 공연 승인 탭 ── */}

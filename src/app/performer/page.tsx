@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import PageLoader from "@/components/PageLoader";
 import type { Show } from "@/types";
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -309,9 +310,7 @@ export default function PerformerPage() {
             등록한 공연
           </h2>
           {fetchLoading ? (
-            <div className="text-center py-20">
-              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>불러오는 중...</p>
-            </div>
+            <PageLoader />
           ) : myShows.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>

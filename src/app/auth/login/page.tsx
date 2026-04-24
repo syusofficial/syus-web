@@ -19,15 +19,26 @@ export default function LoginPage() {
     setLoading(true);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
+    if (error || !data.user) {
       setError("이메일 또는 비밀번호가 올바르지 않습니다.");
       setLoading(false);
       return;
     }
 
-    router.push("/");
+    // 역할 확인 후 리다이렉트
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single();
+
+    if (profile?.role === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/");
+    }
     router.refresh();
   };
 

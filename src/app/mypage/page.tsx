@@ -4,12 +4,19 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import type { Profile } from "@/types";
+import { getRecentIds } from "@/lib/recentViews";
+import PageLoader from "@/components/PageLoader";
+import ShowCard from "@/components/ShowCard";
+import type { Profile, Show } from "@/types";
+
+type Tab = "info" | "likes" | "recent" | "performer";
 
 export default function MyPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [tab, setTab] = useState<"info" | "performer">("info");
+  const [likedShows, setLikedShows] = useState<Show[]>([]);
+  const [recentShows, setRecentShows] = useState<Show[]>([]);
+  const [tab, setTab] = useState<Tab>("info");
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
 
@@ -18,13 +25,37 @@ export default function MyPage() {
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) { router.push("/auth/login"); return; }
 
-      const { data: prof } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", data.user.id)
-        .single();
+      const [profileRes, likesRes] = await Promise.all([
+        supabase.from("profiles").select("*").eq("id", data.user.id).single(),
+        supabase
+          .from("likes")
+          .select("show_id, shows(*)")
+          .eq("user_id", data.user.id)
+          .order("created_at", { ascending: false }),
+      ]);
 
-      setProfile(prof as Profile);
+      setProfile(profileRes.data as Profile);
+
+      const liked = (likesRes.data ?? [])
+        .map((row) => row.shows as unknown as Show)
+        .filter((s) => s && s.status === "approved");
+      setLikedShows(liked);
+
+      // 최근 본 공연 - localStorage → DB 조회
+      const recentIds = getRecentIds();
+      if (recentIds.length > 0) {
+        const { data: recents } = await supabase
+          .from("shows")
+          .select("*")
+          .in("id", recentIds)
+          .eq("status", "approved");
+
+        const ordered = recentIds
+          .map((id) => (recents ?? []).find((s) => s.id === id))
+          .filter(Boolean) as Show[];
+        setRecentShows(ordered);
+      }
+
       setLoading(false);
     });
   }, [router]);
@@ -37,17 +68,14 @@ export default function MyPage() {
       .from("profiles")
       .update({ role: "performer" })
       .eq("id", profile.id);
-
-    if (!error) {
-      setProfile({ ...profile, role: "performer" });
-    }
+    if (!error) setProfile({ ...profile, role: "performer" });
     setApplying(false);
   };
 
   if (loading) {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center" style={{ backgroundColor: "#F4EDE3" }}>
-        <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>불러오는 중...</p>
+      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F4EDE3" }}>
+        <PageLoader />
       </div>
     );
   }
@@ -58,7 +86,7 @@ export default function MyPage() {
 
   return (
     <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F4EDE3" }}>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
@@ -73,15 +101,17 @@ export default function MyPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-0 mb-10" style={{ borderBottom: "1px solid #D4CFC9" }}>
+        <div className="flex gap-0 mb-10 overflow-x-auto" style={{ borderBottom: "1px solid #D4CFC9" }}>
           {[
-            { key: "info", label: "내 정보" },
+            { key: "info",      label: "내 정보" },
+            { key: "likes",     label: `찜한 공연${likedShows.length ? ` (${likedShows.length})` : ""}` },
+            { key: "recent",    label: `최근 본 공연${recentShows.length ? ` (${recentShows.length})` : ""}` },
             { key: "performer", label: "공연자 신청" },
           ].map((t) => (
             <button
               key={t.key}
-              onClick={() => setTab(t.key as "info" | "performer")}
-              className="px-6 py-3 text-sm tracking-wide transition-colors"
+              onClick={() => setTab(t.key as Tab)}
+              className="px-5 py-3 text-sm tracking-wide transition-colors whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 color: tab === t.key ? "#6D3115" : "#9B9693",
@@ -94,7 +124,7 @@ export default function MyPage() {
           ))}
         </div>
 
-        {/* Tab: Info */}
+        {/* Tab: 내 정보 */}
         {tab === "info" && (
           <div className="space-y-6">
             <div className="p-6" style={{ backgroundColor: "#E8DDD0" }}>
@@ -129,7 +159,52 @@ export default function MyPage() {
           </div>
         )}
 
-        {/* Tab: Performer */}
+        {/* Tab: 찜한 공연 */}
+        {tab === "likes" && (
+          <>
+            {likedShows.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                  아직 찜한 공연이 없습니다.
+                </p>
+                <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+                  공연 보러 가기 →
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+                {likedShows.map((show) => <ShowCard key={show.id} show={show} />)}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Tab: 최근 본 공연 */}
+        {tab === "recent" && (
+          <>
+            {recentShows.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                  최근 본 공연이 없습니다.
+                </p>
+                <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+                  공연 둘러보기 →
+                </Link>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs mb-6" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                  이 기기에서 본 최근 10개 공연이 표시됩니다.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+                  {recentShows.map((show) => <ShowCard key={show.id} show={show} />)}
+                </div>
+              </>
+            )}
+          </>
+        )}
+
+        {/* Tab: 공연자 신청 */}
         {tab === "performer" && (
           <div>
             <div className="p-8 mb-6" style={{ backgroundColor: "#E8DDD0" }}>
@@ -182,11 +257,7 @@ export default function MyPage() {
                     공연자 페이지에서 공연을 등록할 수 있습니다.
                   </p>
                 </div>
-                <Link
-                  href="/performer"
-                  className="text-sm tracking-wider"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3A5E42" }}
-                >
+                <Link href="/performer" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3A5E42" }}>
                   바로가기 →
                 </Link>
               </div>

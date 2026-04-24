@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import ShowViewTracker from "@/components/ShowViewTracker";
+import LikeButton from "@/components/LikeButton";
 
 export default async function ShowDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,6 +20,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F4EDE3" }}>
+      <ShowViewTracker showId={show.id} />
       {/* Back */}
       <div className="px-6 md:px-12 lg:px-20 py-8 max-w-7xl mx-auto">
         <Link
@@ -32,16 +35,21 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
       <div className="px-6 md:px-12 lg:px-20 pb-24 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Poster */}
-          <div className="aspect-[3/4] relative w-full max-w-sm mx-auto md:max-w-none" style={{ backgroundColor: "#E8DDD0" }}>
-            {show.poster_url ? (
-              <Image src={show.poster_url} alt={show.title} fill className="object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#9B9693" }}>
-                  포스터 없음
-                </span>
-              </div>
-            )}
+          <div className="relative w-full max-w-sm mx-auto md:max-w-none">
+            <div className="aspect-[3/4] relative" style={{ backgroundColor: "#E8DDD0" }}>
+              {show.poster_url ? (
+                <Image src={show.poster_url} alt={show.title} fill className="object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#9B9693" }}>
+                    포스터 없음
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="absolute top-3 right-3">
+              <LikeButton showId={show.id} size={24} />
+            </div>
           </div>
 
           {/* Info */}
