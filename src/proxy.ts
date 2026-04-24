@@ -1,6 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+/**
+ * Supabase SSR 세션 자동 갱신용.
+ * 보호 페이지 리다이렉트는 각 페이지에서 클라이언트 측으로 처리합니다
+ * (Vercel 환경에서 서버 측 쿠키 접근 불안정 이슈 회피).
+ */
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -25,19 +30,8 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // 로그인 필요 페이지 보호
-  const protectedPaths = ["/performer", "/mypage"];
-  const isProtected = protectedPaths.some((p) =>
-    request.nextUrl.pathname.startsWith(p)
-  );
-
-  if (isProtected && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/auth/login";
-    return NextResponse.redirect(url);
-  }
+  // 세션 갱신만 담당
+  await supabase.auth.getUser();
 
   return supabaseResponse;
 }
