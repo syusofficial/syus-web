@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* SYUS Brand Colors */
+  --color-cream: #F4EDE3;
+  --color-cream-dark: #E8DDD0;
+  --color-syus-brown: #6D3115;
+  --color-syus-brown-light: #8B4A2A;
+  --color-syus-blue: #3D6FC8;
+  --color-syus-navy: #1B2842;
+  --color-syus-red: #A63D2F;
+  --color-syus-green: #3A5E42;
+  --color-syus-charcoal: #1A1A1A;
+  --color-syus-grey: #9B9693;
+  --color-syus-light-grey: #D4CFC9;
+
+  /* SYUS Brand Fonts */
+  --font-kr-serif: var(--font-noto-serif-kr);
+  --font-kr-sans: var(--font-noto-sans-kr);
+  --font-display: var(--font-cormorant);
+  --font-body: var(--font-inter);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F4EDE3;
+  color: #1A1A1A;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #F4EDE3; }
+::-webkit-scrollbar-thumb { background: #6D3115; border-radius: 2px; }
+
+::selection {
+  background: #6D3115;
+  color: #F4EDE3;
+}
