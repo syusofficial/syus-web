@@ -16,48 +16,40 @@ export default async function OGImage() {
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#F4EDE3",
-          position: "relative",
         }}
       >
-        {/* 상단 가로선 */}
-        <div style={{ position: "absolute", top: 230, left: 0, width: "100%", height: 3, backgroundColor: "#6D3115" }} />
-        {/* 하단 가로선 */}
-        <div style={{ position: "absolute", bottom: 220, left: 0, width: "100%", height: 3, backgroundColor: "#6D3115" }} />
-
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", zIndex: 1 }}>
-          <div
-            style={{
-              fontSize: 180,
-              fontWeight: 900,
-              color: "#6D3115",
-              letterSpacing: "0.08em",
-              lineHeight: 1,
-            }}
-          >
-            SYUS
-          </div>
-          <div
-            style={{
-              fontSize: 28,
-              color: "#6D3115",
-              marginTop: 36,
-              letterSpacing: "0.35em",
-              opacity: 0.75,
-            }}
-          >
-            SYSTEM OF YOUNG UNBOUND SOCIETY
-          </div>
-          <div
-            style={{
-              fontSize: 22,
-              color: "#9B9693",
-              marginTop: 20,
-              letterSpacing: "0.15em",
-              fontStyle: "italic",
-            }}
-          >
-            Think deeply. Speak lightly.
-          </div>
+        <div
+          style={{
+            fontSize: 200,
+            fontWeight: 900,
+            color: "#6D3115",
+            letterSpacing: "0.08em",
+            lineHeight: 1,
+          }}
+        >
+          SYUS
+        </div>
+        <div
+          style={{
+            fontSize: 26,
+            color: "#6D3115",
+            marginTop: 48,
+            letterSpacing: "0.4em",
+            opacity: 0.7,
+          }}
+        >
+          SYSTEM OF YOUNG UNBOUND SOCIETY
+        </div>
+        <div
+          style={{
+            fontSize: 22,
+            color: "#9B9693",
+            marginTop: 22,
+            letterSpacing: "0.15em",
+            fontStyle: "italic",
+          }}
+        >
+          Think deeply. Speak lightly.
         </div>
       </div>
     ),
