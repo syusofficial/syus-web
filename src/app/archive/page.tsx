@@ -7,35 +7,38 @@ import type { Show } from "@/types";
 
 export const revalidate = 60;
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 16;
 
-/** 오늘 자정 기준 날짜 비교용 키 (YYYY-MM-DD) */
 function todayKey(): string {
   const t = new Date();
   return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
 }
 
-/** schedule_end 또는 schedule_start를 비교 가능한 키로 정규화 */
 function showEndKey(show: Show): string | null {
   const raw = (show.schedule_end || show.schedule_start || "").trim();
   if (!raw) return null;
-  // "2026.05.10" → "2026-05-10"
   return raw.replace(/\./g, "-");
 }
 
-/** 종료된 공연인지 (schedule_end < 오늘) */
 function isEnded(show: Show, today: string): boolean {
   const key = showEndKey(show);
-  if (!key) return false; // 날짜 없으면 active로 간주
+  if (!key) return false;
   return key < today;
 }
 
-export default async function ShowsPage({
+function extractYear(show: Show): number | null {
+  const key = showEndKey(show);
+  if (!key) return null;
+  const y = parseInt(key.slice(0, 4), 10);
+  return isNaN(y) ? null : y;
+}
+
+export default async function ArchivePage({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string; genre?: string; q?: string; page?: string }>;
+  searchParams: Promise<{ region?: string; genre?: string; q?: string; year?: string; page?: string }>;
 }) {
-  const { region, genre, q, page } = await searchParams;
+  const { region, genre, q, year, page } = await searchParams;
   const supabase = await createClient();
 
   const currentPage = Math.max(1, parseInt(page ?? "1", 10) || 1);
@@ -55,15 +58,37 @@ export default async function ShowsPage({
     query = query.or(`title.ilike.%${search}%,venue.ilike.%${search}%,performer_name.ilike.%${search}%`);
   }
 
-  const { data: showsRaw } = await query.order("created_at", { ascending: false });
+  // 정렬: schedule_end 내림차순 (최근 종료부터). null은 뒤로.
+  const { data: showsRaw } = await query;
 
-  // 진행 중·예정 공연만 필터 (종료된 건 /archive로)
   const today = todayKey();
-  const activeShows = (showsRaw as Show[] ?? []).filter((s) => !isEnded(s, today));
+  const allEnded = (showsRaw as Show[] ?? []).filter((s) => isEnded(s, today));
 
-  const totalCount = activeShows.length;
+  // 연도 필터
+  let filtered = allEnded;
+  const selectedYear = year ? parseInt(year, 10) : null;
+  if (selectedYear) {
+    filtered = filtered.filter((s) => extractYear(s) === selectedYear);
+  }
+
+  // 종료일 내림차순 정렬
+  filtered.sort((a, b) => {
+    const ka = showEndKey(a) ?? "";
+    const kb = showEndKey(b) ?? "";
+    return kb.localeCompare(ka);
+  });
+
+  // 사용 가능한 연도 목록 (필터 옵션 생성용)
+  const yearsSet = new Set<number>();
+  for (const s of allEnded) {
+    const y = extractYear(s);
+    if (y) yearsSet.add(y);
+  }
+  const availableYears = Array.from(yearsSet).sort((a, b) => b - a);
+
+  const totalCount = filtered.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
-  const list = activeShows.slice(from, to);
+  const list = filtered.slice(from, to);
   const activeRegion = region ?? "전체";
 
   // 페이지네이션 URL 생성기
@@ -72,9 +97,10 @@ export default async function ShowsPage({
     if (region) params.set("region", region);
     if (genre) params.set("genre", genre);
     if (q) params.set("q", q);
+    if (year) params.set("year", year);
     if (p > 1) params.set("page", String(p));
     const qs = params.toString();
-    return `/shows${qs ? `?${qs}` : ""}`;
+    return `/archive${qs ? `?${qs}` : ""}`;
   };
 
   return (
@@ -84,52 +110,84 @@ export default async function ShowsPage({
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-10 flex items-end justify-between gap-4 flex-wrap">
+        <div className="mb-12 flex items-end justify-between gap-4 flex-wrap">
           <div>
             <p
               className="text-xs tracking-[0.3em] uppercase mb-3"
               style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
             >
-              Shows
+              Archive
             </p>
             <h1
               className="text-4xl md:text-5xl font-bold mb-3"
               style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
             >
-              {q ? `"${q}" 검색 결과` : (activeRegion === "전체" ? "진행 중 · 예정 공연" : `${activeRegion} 공연`)}
+              머묾의 기록
             </h1>
-            <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-              {totalCount}개의 공연
+            <p
+              className="text-sm leading-relaxed mb-1"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+            >
+              지나갔지만 사라지지 않은 무대들.
+            </p>
+            <p
+              className="text-sm"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+            >
+              {totalCount}개의 기록
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href="/shows/calendar"
-              className="px-4 py-2 text-xs tracking-wide transition-colors"
-              style={{
-                fontFamily: "var(--font-noto-sans-kr)",
-                color: "#6D3115",
-                border: "1px solid #D4CFC9",
-              }}
-            >
-              캘린더로 보기
-            </Link>
-            <Link
-              href="/archive"
-              className="px-4 py-2 text-xs tracking-wide transition-colors"
-              style={{
-                fontFamily: "var(--font-noto-sans-kr)",
-                color: "#6D3115",
-                border: "1px solid #D4CFC9",
-              }}
-            >
-              머묾의 기록 →
-            </Link>
-          </div>
+          <Link
+            href="/shows"
+            className="px-4 py-2 text-xs tracking-wide transition-colors"
+            style={{
+              fontFamily: "var(--font-noto-sans-kr)",
+              color: "#6D3115",
+              border: "1px solid #D4CFC9",
+            }}
+          >
+            진행 중 공연으로
+          </Link>
         </div>
 
         {/* 검색창 */}
         <ShowsSearchBar />
+
+        {/* 연도 필터 */}
+        {availableYears.length > 0 && (
+          <div className="mb-6 flex flex-wrap gap-2 items-center">
+            <span
+              className="text-xs tracking-wider uppercase mr-2"
+              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            >
+              연도
+            </span>
+            {[null, ...availableYears].map((y) => {
+              const isActive = (y === null && !selectedYear) || y === selectedYear;
+              const params = new URLSearchParams();
+              if (region) params.set("region", region);
+              if (genre) params.set("genre", genre);
+              if (q) params.set("q", q);
+              if (y) params.set("year", String(y));
+              const href = `/archive${params.toString() ? `?${params.toString()}` : ""}`;
+              return (
+                <Link
+                  key={y ?? "all"}
+                  href={href}
+                  className="px-3 py-1 text-xs"
+                  style={{
+                    fontFamily: "var(--font-inter)",
+                    backgroundColor: isActive ? "#6D3115" : "transparent",
+                    color: isActive ? "#F4EDE3" : "#9B9693",
+                    border: `1px solid ${isActive ? "#6D3115" : "#D4CFC9"}`,
+                  }}
+                >
+                  {y ?? "전체"}
+                </Link>
+              );
+            })}
+          </div>
+        )}
 
         {/* 지역 필터 */}
         <div className="mb-6 flex flex-wrap gap-2">
@@ -139,7 +197,8 @@ export default async function ShowsPage({
             if (r !== "전체") params.set("region", r);
             if (genre) params.set("genre", genre);
             if (q) params.set("q", q);
-            const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
+            if (year) params.set("year", year);
+            const href = `/archive${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
                 key={r}
@@ -160,7 +219,7 @@ export default async function ShowsPage({
 
         {/* 장르 필터 */}
         <div
-          className="mb-10 pb-6 flex flex-wrap gap-2 items-center"
+          className="mb-12 pb-6 flex flex-wrap gap-2 items-center"
           style={{ borderBottom: "1px solid #D4CFC9" }}
         >
           <span
@@ -175,7 +234,8 @@ export default async function ShowsPage({
             if (region) params.set("region", region);
             if (g) params.set("genre", g);
             if (q) params.set("q", q);
-            const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
+            if (year) params.set("year", year);
+            const href = `/archive${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
                 key={g ?? "all"}
@@ -194,30 +254,19 @@ export default async function ShowsPage({
           })}
         </div>
 
-        {/* 공연 그리드 */}
+        {/* 기록 그리드 — 4열로 좀 더 빽빽하게 (갤러리 느낌) */}
         {list.length === 0 ? (
           <div className="text-center py-24">
             <p className="text-sm mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-              조건에 맞는 진행 중·예정 공연이 없습니다.
+              조건에 맞는 기록이 없습니다.
             </p>
-            <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-              {q ? "다른 검색어로 다시 시도해보세요." : "지나간 공연은 ‘머묾의 기록’에서 만나보실 수 있습니다."}
+            <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+              필터를 바꾸어 다시 살펴보세요.
             </p>
-            <Link
-              href="/archive"
-              className="inline-block px-4 py-2 text-xs tracking-wide"
-              style={{
-                fontFamily: "var(--font-noto-sans-kr)",
-                color: "#6D3115",
-                border: "1px solid #D4CFC9",
-              }}
-            >
-              머묾의 기록으로 →
-            </Link>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
               {list.map((show) => (
                 <ShowCard key={show.id} show={show} />
               ))}
@@ -238,7 +287,6 @@ export default async function ShowsPage({
                   <span className="px-3 py-2 text-xs" style={{ color: "#D4CFC9", border: "1px solid #D4CFC9" }}>← 이전</span>
                 )}
 
-                {/* 페이지 번호 */}
                 {generatePageNumbers(currentPage, totalPages).map((p, i) =>
                   p === "..." ? (
                     <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#9B9693" }}>···</span>
@@ -281,7 +329,6 @@ export default async function ShowsPage({
   );
 }
 
-/** 페이지 번호 표시 로직: 1, 2, 3, ..., N */
 function generatePageNumbers(current: number, total: number): (number | "...")[] {
   if (total <= 7) {
     return Array.from({ length: total }, (_, i) => i + 1);

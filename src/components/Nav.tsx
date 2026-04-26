@@ -206,6 +206,14 @@ export default function Nav() {
         <div className="flex items-center gap-8">
           <ShowsHoverMenu linkStyle={linkStyle} />
           <Link
+            href="/archive"
+            style={linkStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+          >
+            기록
+          </Link>
+          <Link
             href="/contact"
             style={linkStyle}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
@@ -378,6 +386,13 @@ export default function Nav() {
               )}
             </div>
 
+            <Link
+              href="/archive"
+              style={{ ...linkStyle, padding: "8px 0" }}
+              onClick={() => setMenuOpen(false)}
+            >
+              기록
+            </Link>
             <Link
               href="/contact"
               style={{ ...linkStyle, padding: "8px 0" }}

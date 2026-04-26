@@ -1,12 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
-export default function ShowsSearchBar() {
+export default function ShowsSearchBar({ basePath }: { basePath?: string } = {}) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
+
+  // basePath 명시 안 하면 현재 경로 사용 (canlendar 등에서 검색하면 그 경로로 머무르되,
+  // 일반적으로 /shows 또는 /archive에서만 사용됨)
+  const targetPath = basePath ?? (pathname.startsWith("/archive") ? "/archive" : "/shows");
 
   useEffect(() => {
     setQuery(searchParams.get("q") ?? "");
@@ -21,7 +26,7 @@ export default function ShowsSearchBar() {
     }
     params.delete("page"); // 검색하면 첫 페이지로
     const qs = params.toString();
-    return `/shows${qs ? `?${qs}` : ""}`;
+    return `${targetPath}${qs ? `?${qs}` : ""}`;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
