@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getRecentIds } from "@/lib/recentViews";
 import PageLoader from "@/components/PageLoader";
 import ShowCard from "@/components/ShowCard";
+import PasswordInput from "@/components/PasswordInput";
 import type { Profile, Show } from "@/types";
 
 type Tab = "info" | "likes" | "recent" | "performer";
@@ -19,11 +20,28 @@ export default function MyPage() {
   const [tab, setTab] = useState<Tab>("info");
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
+  const [authProvider, setAuthProvider] = useState<string>("email");
+
+  // 이름 수정
+  const [editingName, setEditingName] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [nameSaving, setNameSaving] = useState(false);
+
+  // 비밀번호 변경
+  const [showPwForm, setShowPwForm] = useState(false);
+  const [newPw, setNewPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwMessage, setPwMessage] = useState("");
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) { router.push("/auth/login"); return; }
+
+      // 가입 경로 (email | google | kakao)
+      const provider = data.user.app_metadata?.provider ?? "email";
+      setAuthProvider(provider);
 
       const [profileRes, likesRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("id", data.user.id).single(),
@@ -35,6 +53,7 @@ export default function MyPage() {
       ]);
 
       setProfile(profileRes.data as Profile);
+      setNewName(profileRes.data?.name ?? "");
 
       const liked = (likesRes.data ?? [])
         .map((row) => row.shows as unknown as Show)
@@ -59,6 +78,47 @@ export default function MyPage() {
       setLoading(false);
     });
   }, [router]);
+
+  const handleNameSave = async () => {
+    if (!profile || !newName.trim()) return;
+    setNameSaving(true);
+    const supabase = createClient();
+    const trimmed = newName.trim();
+    const [profileRes, authRes] = await Promise.all([
+      supabase.from("profiles").update({ name: trimmed }).eq("id", profile.id),
+      supabase.auth.updateUser({ data: { name: trimmed } }),
+    ]);
+    if (!profileRes.error && !authRes.error) {
+      setProfile({ ...profile, name: trimmed });
+      setEditingName(false);
+    }
+    setNameSaving(false);
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwMessage("");
+    if (newPw.length < 8) {
+      setPwMessage("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+    if (newPw !== confirmPw) {
+      setPwMessage("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    setPwSaving(true);
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({ password: newPw });
+    if (error) {
+      setPwMessage("비밀번호 변경 중 오류가 발생했습니다.");
+    } else {
+      setPwMessage("비밀번호가 변경되었습니다.");
+      setNewPw("");
+      setConfirmPw("");
+      setShowPwForm(false);
+    }
+    setPwSaving(false);
+  };
 
   const handlePerformerApply = async () => {
     if (!profile) return;
@@ -127,25 +187,123 @@ export default function MyPage() {
         {/* Tab: 내 정보 */}
         {tab === "info" && (
           <div className="space-y-6">
-            <div className="p-6" style={{ backgroundColor: "#E8DDD0" }}>
-              <div className="grid grid-cols-[100px_1fr] gap-4 text-sm">
-                {[
-                  { label: "이름", value: profile.name ?? "—" },
-                  { label: "이메일", value: profile.email ?? "—" },
-                  { label: "회원 등급", value: roleLabel },
-                  { label: "가입일", value: profile.created_at.slice(0, 10) },
-                ].map((item) => (
-                  <div key={item.label} className="contents">
-                    <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-                      {item.label}
-                    </span>
-                    <span style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
-                      {item.value}
-                    </span>
+            <div className="p-6 space-y-4" style={{ backgroundColor: "#E8DDD0" }}>
+              {/* 이름 (수정 가능) */}
+              <div className="grid grid-cols-[100px_1fr] gap-4 items-center">
+                <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                  이름
+                </span>
+                {editingName ? (
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                      className="flex-1 px-3 py-2 text-sm outline-none"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F4EDE3", color: "#1A1A1A", border: "1px solid #6D3115" }}
+                    />
+                    <button
+                      onClick={handleNameSave}
+                      disabled={nameSaving || !newName.trim()}
+                      className="px-3 py-2 text-xs"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+                    >
+                      {nameSaving ? "저장 중..." : "저장"}
+                    </button>
+                    <button
+                      onClick={() => { setEditingName(false); setNewName(profile.name ?? ""); }}
+                      className="px-3 py-2 text-xs"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693", border: "1px solid #D4CFC9" }}
+                    >
+                      취소
+                    </button>
                   </div>
-                ))}
+                ) : (
+                  <div className="flex justify-between items-center">
+                    <span style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>{profile.name ?? "—"}</span>
+                    <button
+                      onClick={() => setEditingName(true)}
+                      className="text-xs"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}
+                    >
+                      수정
+                    </button>
+                  </div>
+                )}
               </div>
+
+              {/* 그 외 정보 (읽기전용) */}
+              {[
+                { label: "이메일", value: profile.email ?? "—" },
+                { label: "회원 등급", value: roleLabel },
+                { label: "가입일", value: profile.created_at.slice(0, 10) },
+                { label: "가입 경로", value: { email: "이메일", google: "Google", kakao: "카카오" }[authProvider] ?? authProvider },
+              ].map((item) => (
+                <div key={item.label} className="grid grid-cols-[100px_1fr] gap-4 text-sm">
+                  <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                    {item.label}
+                  </span>
+                  <span style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+                    {item.value}
+                  </span>
+                </div>
+              ))}
             </div>
+
+            {/* 비밀번호 변경 — 이메일 가입자만 */}
+            {authProvider === "email" && (
+              <div className="p-6" style={{ backgroundColor: "#E8DDD0" }}>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+                    비밀번호 변경
+                  </h3>
+                  {!showPwForm && (
+                    <button
+                      onClick={() => { setShowPwForm(true); setPwMessage(""); }}
+                      className="text-xs"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}
+                    >
+                      변경하기
+                    </button>
+                  )}
+                </div>
+                {showPwForm && (
+                  <form onSubmit={handlePasswordChange} className="space-y-3">
+                    <PasswordInput value={newPw} onChange={setNewPw} required minLength={8} />
+                    <PasswordInput value={confirmPw} onChange={setConfirmPw} required minLength={8} />
+                    {pwMessage && (
+                      <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: pwMessage.includes("변경되었습니다") ? "#3A5E42" : "#C0392B" }}>
+                        {pwMessage}
+                      </p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={pwSaving}
+                        className="px-4 py-2 text-xs"
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+                      >
+                        {pwSaving ? "변경 중..." : "비밀번호 저장"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setShowPwForm(false); setNewPw(""); setConfirmPw(""); setPwMessage(""); }}
+                        className="px-4 py-2 text-xs"
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693", border: "1px solid #D4CFC9" }}
+                      >
+                        취소
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            )}
+
+            {authProvider !== "email" && (
+              <div className="p-4 text-xs" style={{ backgroundColor: "#E8DDD0", color: "#9B9693", fontFamily: "var(--font-noto-sans-kr)" }}>
+                {authProvider === "google" ? "Google" : "카카오"} 계정으로 가입하셨기 때문에 비밀번호는 해당 서비스에서 관리됩니다.
+              </div>
+            )}
 
             {(profile.role === "performer" || profile.role === "admin") && (
               <Link

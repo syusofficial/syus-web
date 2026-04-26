@@ -1,35 +1,58 @@
 import Link from "next/link";
 import ShowCard from "@/components/ShowCard";
+import ShowsSearchBar from "@/components/ShowsSearchBar";
 import { createClient } from "@/lib/supabase/server";
 import { REGIONS, GENRES } from "@/lib/constants";
 
 export const revalidate = 60;
 
+const PAGE_SIZE = 12;
+
 export default async function ShowsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string; genre?: string }>;
+  searchParams: Promise<{ region?: string; genre?: string; q?: string; page?: string }>;
 }) {
-  const { region, genre } = await searchParams;
+  const { region, genre, q, page } = await searchParams;
   const supabase = await createClient();
 
-  let query = supabase.from("shows").select("*").eq("status", "approved");
+  const currentPage = Math.max(1, parseInt(page ?? "1", 10) || 1);
+  const from = (currentPage - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
 
-  // 지역 필터: 정확히 일치하는 지역만 표시
-  // ('전체' 메뉴는 파라미터 없이 /shows로 이동하여 모든 공연 노출)
+  let query = supabase.from("shows").select("*", { count: "exact" }).eq("status", "approved");
+
   if (region && region !== "전체") {
     query = query.eq("region", region);
   }
-
-  // 장르 필터
   if (genre) {
     query = query.eq("genre", genre);
   }
+  if (q && q.trim()) {
+    // 제목 / 장소 / 단체명에서 부분일치 검색
+    const search = q.trim();
+    query = query.or(`title.ilike.%${search}%,venue.ilike.%${search}%,performer_name.ilike.%${search}%`);
+  }
 
-  const { data: shows } = await query.order("created_at", { ascending: false });
+  const { data: shows, count } = await query
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
   const list = shows ?? [];
-
+  const totalCount = count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const activeRegion = region ?? "전체";
+
+  // 페이지네이션 URL 생성기
+  const buildPageUrl = (p: number) => {
+    const params = new URLSearchParams();
+    if (region) params.set("region", region);
+    if (genre) params.set("genre", genre);
+    if (q) params.set("q", q);
+    if (p > 1) params.set("page", String(p));
+    const qs = params.toString();
+    return `/shows${qs ? `?${qs}` : ""}`;
+  };
 
   return (
     <div
@@ -49,21 +72,25 @@ export default async function ShowsPage({
             className="text-4xl md:text-5xl font-bold mb-3"
             style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
           >
-            {activeRegion === "전체" ? "전체 공연" : `${activeRegion} 공연`}
+            {q ? `"${q}" 검색 결과` : (activeRegion === "전체" ? "전체 공연" : `${activeRegion} 공연`)}
           </h1>
           <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-            {list.length}개의 공연
+            {totalCount}개의 공연
           </p>
         </div>
+
+        {/* 검색창 */}
+        <ShowsSearchBar />
 
         {/* 지역 필터 */}
         <div className="mb-6 flex flex-wrap gap-2">
           {REGIONS.map((r) => {
             const isActive = activeRegion === r;
-            const href =
-              r === "전체"
-                ? (genre ? `/shows?genre=${encodeURIComponent(genre)}` : "/shows")
-                : `/shows?region=${encodeURIComponent(r)}${genre ? `&genre=${encodeURIComponent(genre)}` : ""}`;
+            const params = new URLSearchParams();
+            if (r !== "전체") params.set("region", r);
+            if (genre) params.set("genre", genre);
+            if (q) params.set("q", q);
+            const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
                 key={r}
@@ -93,25 +120,17 @@ export default async function ShowsPage({
           >
             장르
           </span>
-          <Link
-            href={region ? `/shows?region=${encodeURIComponent(region)}` : "/shows"}
-            className="px-3 py-1 text-xs"
-            style={{
-              fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: !genre ? "#6D3115" : "transparent",
-              color: !genre ? "#F4EDE3" : "#9B9693",
-              border: `1px solid ${!genre ? "#6D3115" : "#D4CFC9"}`,
-            }}
-          >
-            전체
-          </Link>
-          {GENRES.map((g) => {
-            const isActive = genre === g;
-            const base = region ? `region=${encodeURIComponent(region)}&` : "";
+          {[null, ...GENRES].map((g) => {
+            const isActive = (g === null && !genre) || genre === g;
+            const params = new URLSearchParams();
+            if (region) params.set("region", region);
+            if (g) params.set("genre", g);
+            if (q) params.set("q", q);
+            const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
-                key={g}
-                href={`/shows?${base}genre=${encodeURIComponent(g)}`}
+                key={g ?? "all"}
+                href={href}
                 className="px-3 py-1 text-xs"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
@@ -120,7 +139,7 @@ export default async function ShowsPage({
                   border: `1px solid ${isActive ? "#6D3115" : "#D4CFC9"}`,
                 }}
               >
-                {g}
+                {g ?? "전체"}
               </Link>
             );
           })}
@@ -129,27 +148,90 @@ export default async function ShowsPage({
         {/* 공연 그리드 */}
         {list.length === 0 ? (
           <div className="text-center py-24">
-            <p
-              className="text-sm mb-2"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
-            >
-              조건에 맞는 공연이 아직 없습니다.
+            <p className="text-sm mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+              조건에 맞는 공연이 없습니다.
             </p>
-            <p
-              className="text-xs"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
-            >
-              다른 지역이나 장르를 선택해보세요.
+            <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+              {q ? "다른 검색어로 다시 시도해보세요." : "다른 지역이나 장르를 선택해보세요."}
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
-            {list.map((show) => (
-              <ShowCard key={show.id} show={show} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+              {list.map((show) => (
+                <ShowCard key={show.id} show={show} />
+              ))}
+            </div>
+
+            {/* 페이지네이션 */}
+            {totalPages > 1 && (
+              <div className="mt-16 flex items-center justify-center gap-2 flex-wrap">
+                {currentPage > 1 ? (
+                  <Link
+                    href={buildPageUrl(currentPage - 1)}
+                    className="px-3 py-2 text-xs"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115", border: "1px solid #D4CFC9" }}
+                  >
+                    ← 이전
+                  </Link>
+                ) : (
+                  <span className="px-3 py-2 text-xs" style={{ color: "#D4CFC9", border: "1px solid #D4CFC9" }}>← 이전</span>
+                )}
+
+                {/* 페이지 번호 */}
+                {generatePageNumbers(currentPage, totalPages).map((p, i) =>
+                  p === "..." ? (
+                    <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#9B9693" }}>···</span>
+                  ) : (
+                    <Link
+                      key={p}
+                      href={buildPageUrl(p as number)}
+                      className="px-3 py-2 text-xs"
+                      style={{
+                        fontFamily: "var(--font-inter)",
+                        backgroundColor: p === currentPage ? "#6D3115" : "transparent",
+                        color: p === currentPage ? "#F4EDE3" : "#6D3115",
+                        border: `1px solid ${p === currentPage ? "#6D3115" : "#D4CFC9"}`,
+                        minWidth: "36px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {p}
+                    </Link>
+                  )
+                )}
+
+                {currentPage < totalPages ? (
+                  <Link
+                    href={buildPageUrl(currentPage + 1)}
+                    className="px-3 py-2 text-xs"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115", border: "1px solid #D4CFC9" }}
+                  >
+                    다음 →
+                  </Link>
+                ) : (
+                  <span className="px-3 py-2 text-xs" style={{ color: "#D4CFC9", border: "1px solid #D4CFC9" }}>다음 →</span>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
   );
+}
+
+/** 페이지 번호 표시 로직: 1, 2, 3, ..., N */
+function generatePageNumbers(current: number, total: number): (number | "...")[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  const pages: (number | "...")[] = [1];
+  if (current > 3) pages.push("...");
+  for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+    pages.push(i);
+  }
+  if (current < total - 2) pages.push("...");
+  pages.push(total);
+  return pages;
 }

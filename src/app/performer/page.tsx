@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
 import { REGIONS_EXCLUDE_ALL, GENRES } from "@/lib/constants";
+import { isValidUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
 import type { Show } from "@/types";
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -164,6 +165,20 @@ export default function PerformerPage() {
       return;
     }
     if (!region) { setError("공연 지역을 선택해주세요."); return; }
+
+    // URL 검증
+    if (!isValidUrl(form.ticket_url)) {
+      setError("티켓 예매 링크가 유효하지 않습니다. (http:// 또는 https://로 시작)");
+      return;
+    }
+    if (!isValidUrl(form.map_kakao_url, { allowedHosts: KAKAO_MAP_HOSTS })) {
+      setError("카카오맵 링크는 카카오맵(kakao.com) 도메인만 허용됩니다.");
+      return;
+    }
+    if (!isValidUrl(form.map_naver_url, { allowedHosts: NAVER_MAP_HOSTS })) {
+      setError("네이버지도 링크는 네이버 지도(naver.com) 도메인만 허용됩니다.");
+      return;
+    }
 
     setLoading(true);
 
