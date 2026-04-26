@@ -108,7 +108,18 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               </h1>
               {show.performer_name && (
                 <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-                  by {show.performer_name}
+                  by{" "}
+                  {show.organizer_id ? (
+                    <Link
+                      href={`/performer/${show.organizer_id}`}
+                      className="hover:underline transition-colors"
+                      style={{ color: "#6D3115" }}
+                    >
+                      {show.performer_name}
+                    </Link>
+                  ) : (
+                    show.performer_name
+                  )}
                 </p>
               )}
             </div>

@@ -20,7 +20,6 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
   const [consents, setConsents] = useState<Consents>({
     terms: false,
     privacy: false,
@@ -51,7 +50,7 @@ export default function SignupPage() {
     setLoading(true);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -72,8 +71,14 @@ export default function SignupPage() {
       return;
     }
 
-    setDone(true);
-    setLoading(false);
+    // 이메일 컨펌이 OFF여도 안전을 위해 세션이 있는지 확인
+    if (data.session) {
+      router.push("/");
+      router.refresh();
+    } else {
+      // 컨펌이 ON 상태로 남아있는 경우 — 로그인 페이지로
+      router.push("/auth/login?signup=success");
+    }
   };
 
   const inputStyle: React.CSSProperties = {
@@ -82,33 +87,6 @@ export default function SignupPage() {
     color: "#1A1A1A",
     border: "1px solid transparent",
   };
-
-  if (done) {
-    return (
-      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F4EDE3" }}>
-        <div className="w-full max-w-sm text-center space-y-6">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-            Done
-          </p>
-          <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
-            가입을 환영합니다
-          </h2>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
-            <strong>{email}</strong>으로 인증 메일을 보냈습니다.
-            <br />
-            메일함을 확인해 인증을 완료해주세요.
-          </p>
-          <button
-            onClick={() => router.push("/auth/login")}
-            className="w-full py-3 text-sm tracking-wider"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
-          >
-            로그인 페이지로
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="pt-24 min-h-screen flex items-center justify-center px-6 py-12" style={{ backgroundColor: "#F4EDE3" }}>

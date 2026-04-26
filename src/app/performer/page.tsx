@@ -29,6 +29,7 @@ const emptyForm = {
   cast_members: "", directions: "", ticket_url: "",
   genre_custom: "", school_department: "", show_time: "", running_time: "",
   age_rating: "", map_kakao_url: "", map_naver_url: "",
+  performer_name: "",
 };
 
 export default function PerformerPage() {
@@ -42,6 +43,7 @@ export default function PerformerPage() {
   const [form, setForm] = useState(emptyForm);
   const [genre, setGenre] = useState<string>("");
   const [region, setRegion] = useState<string>("");
+  const [defaultPerformerName, setDefaultPerformerName] = useState<string>("");
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
   const [existingPosterUrl, setExistingPosterUrl] = useState<string | null>(null);
@@ -56,7 +58,7 @@ export default function PerformerPage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("role")
+        .select("role, name")
         .eq("id", data.user.id)
         .single();
 
@@ -64,6 +66,8 @@ export default function PerformerPage() {
         setAuthState("denied");
         return;
       }
+
+      setDefaultPerformerName(profile?.name ?? "");
 
       const { data: shows } = await supabase
         .from("shows")
@@ -115,6 +119,7 @@ export default function PerformerPage() {
       age_rating: show.age_rating ?? "",
       map_kakao_url: show.map_kakao_url ?? "",
       map_naver_url: show.map_naver_url ?? "",
+      performer_name: show.performer_name ?? "",
     });
     setGenre(show.genre ?? "");
     setRegion(show.region ?? "");
@@ -197,6 +202,9 @@ export default function PerformerPage() {
       .eq("id", user.id)
       .single();
 
+    // 단체명 — 사용자가 입력한 값 우선, 없으면 본인 이름
+    const performerNameForShow = (form.performer_name || "").trim() || (profile?.name ?? "");
+
     let poster_url: string | null = existingPosterUrl;
 
     // 새 포스터 업로드
@@ -242,7 +250,7 @@ export default function PerformerPage() {
       ticket_url: ticketUrl || null,
       poster_url,
       organizer_id: user.id,
-      performer_name: profile?.name ?? "",
+      performer_name: performerNameForShow,
       genre,
       genre_custom: genre === "기타" ? form.genre_custom : null,
       region,
@@ -355,6 +363,8 @@ export default function PerformerPage() {
                   resetForm();
                 } else {
                   resetForm();
+                  // 신규 등록 시 단체명 default를 본인 이름으로
+                  setForm((prev) => ({ ...prev, performer_name: defaultPerformerName }));
                   setShowForm(true);
                 }
               }}
@@ -410,6 +420,27 @@ export default function PerformerPage() {
                   )}
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              </div>
+
+              {/* 공연 발표 단체명 */}
+              <div>
+                <label className="block text-xs tracking-wider uppercase mb-3" style={labelStyle}>
+                  공연 발표 단체명 <span style={{ color: "#A63D2F" }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  value={form.performer_name}
+                  onChange={(e) => setForm({ ...form, performer_name: e.target.value })}
+                  required
+                  placeholder="이 공연을 올리는 명의 (예: 한양대 연극영화학과, 극단 노을, 본인 이름)"
+                  className="w-full px-4 py-3 text-sm outline-none"
+                  style={inputStyle}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                />
+                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                  공연마다 다른 명의로 등록할 수 있습니다. 회원가입 시 입력한 본인 이름이 기본값이며, 단체·극단·학과명 등으로 자유롭게 변경 가능합니다.
+                </p>
               </div>
 
               {/* 장르 */}
