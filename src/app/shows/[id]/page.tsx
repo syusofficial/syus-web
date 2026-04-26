@@ -294,12 +294,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
 
             {/* Share */}
             {show.status === "approved" && (
-              <ShareButton
-                title={show.title}
-                description={show.description}
-                posterUrl={show.poster_url}
-                url={`https://syus.co.kr/shows/${show.id}`}
-              />
+              <ShareButton url={`https://syus.co.kr/shows/${show.id}`} />
             )}
 
             {/* CTA */}
