@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin", "/api/", "/auth/callback", "/auth/onboarding", "/mypage", "/performer"],
       },
     ],
-    sitemap: "https://syus-web.vercel.app/sitemap.xml",
-    host: "https://syus-web.vercel.app",
+    sitemap: "https://syus.co.kr/sitemap.xml",
+    host: "https://syus.co.kr",
   };
 }

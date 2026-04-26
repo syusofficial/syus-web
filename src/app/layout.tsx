@@ -34,7 +34,7 @@ const inter = Inter({
   display: "swap",
 });
 
-const SITE_URL = "https://syus-web.vercel.app";
+const SITE_URL = "https://syus.co.kr";
 const SITE_NAME = "사유유사 · SYUS";
 const SITE_DESCRIPTION =
   "思惟流沙 — System of Young Unbound Society. 젊은 예술가들의 무대를 기록하고, 연결하고, 알리는 공간.";
