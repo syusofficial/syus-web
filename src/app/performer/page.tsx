@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
 import { REGIONS_EXCLUDE_ALL, GENRES } from "@/lib/constants";
-import { isValidUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
+import { isValidUrl, normalizeUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
 import type { Show } from "@/types";
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -166,17 +166,22 @@ export default function PerformerPage() {
     }
     if (!region) { setError("공연 지역을 선택해주세요."); return; }
 
+    // URL 정규화 — 프로토콜 없이 입력해도 자동 https:// 보완
+    const ticketUrl = normalizeUrl(form.ticket_url);
+    const mapKakaoUrl = normalizeUrl(form.map_kakao_url);
+    const mapNaverUrl = normalizeUrl(form.map_naver_url);
+
     // URL 검증
-    if (!isValidUrl(form.ticket_url)) {
-      setError("티켓 예매 링크가 유효하지 않습니다. (http:// 또는 https://로 시작)");
+    if (!isValidUrl(ticketUrl)) {
+      setError("티켓 예매 링크가 올바른 주소 형식이 아닙니다. 정확한 링크(예: ticket.interpark.com/...)를 입력하시거나, 사용하지 않으신다면 입력란을 비워주세요.");
       return;
     }
-    if (!isValidUrl(form.map_kakao_url, { allowedHosts: KAKAO_MAP_HOSTS })) {
-      setError("카카오맵 링크는 카카오맵(kakao.com) 도메인만 허용됩니다.");
+    if (!isValidUrl(mapKakaoUrl, { allowedHosts: KAKAO_MAP_HOSTS })) {
+      setError("카카오맵 링크는 카카오맵(kakao.com) 주소만 사용 가능합니다. 비워두시거나 카카오맵에서 복사한 링크를 입력해주세요.");
       return;
     }
-    if (!isValidUrl(form.map_naver_url, { allowedHosts: NAVER_MAP_HOSTS })) {
-      setError("네이버지도 링크는 네이버 지도(naver.com) 도메인만 허용됩니다.");
+    if (!isValidUrl(mapNaverUrl, { allowedHosts: NAVER_MAP_HOSTS })) {
+      setError("네이버지도 링크는 네이버 지도(naver.com / naver.me) 주소만 사용 가능합니다. 비워두시거나 네이버 지도에서 복사한 링크를 입력해주세요.");
       return;
     }
 
@@ -234,7 +239,7 @@ export default function PerformerPage() {
       schedule_end: form.schedule_end,
       cast_members: castArray,
       directions: form.directions || null,
-      ticket_url: form.ticket_url || null,
+      ticket_url: ticketUrl || null,
       poster_url,
       organizer_id: user.id,
       performer_name: profile?.name ?? "",
@@ -245,8 +250,8 @@ export default function PerformerPage() {
       show_time: form.show_time || null,
       running_time: form.running_time || null,
       age_rating: form.age_rating || null,
-      map_kakao_url: form.map_kakao_url || null,
-      map_naver_url: form.map_naver_url || null,
+      map_kakao_url: mapKakaoUrl || null,
+      map_naver_url: mapNaverUrl || null,
     };
 
     if (editingId) {
@@ -483,14 +488,14 @@ export default function PerformerPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {[
                     { label: "공연명 *", key: "title", required: true, span: "sm:col-span-2" },
-                    { label: "영문 제목", key: "subtitle", required: false },
-                    { label: "대학 및 학과명", key: "school_department", required: false, placeholder: "예: 한양대학교 연극영화학과" },
+                    { label: "영문 제목 (선택)", key: "subtitle", required: false },
+                    { label: "대학 및 학과명 (선택)", key: "school_department", required: false, placeholder: "예: 한양대학교 연극영화학과" },
                     { label: "공연 기간 시작 *", key: "schedule_start", required: true, placeholder: "예: 2026.05.10" },
                     { label: "공연 기간 종료 *", key: "schedule_end", required: true, placeholder: "예: 2026.05.25" },
-                    { label: "공연 시간", key: "show_time", required: false, placeholder: "평일 19:30 / 주말 15:00" },
-                    { label: "러닝 타임", key: "running_time", required: false, placeholder: "100분" },
-                    { label: "관람 연령", key: "age_rating", required: false, placeholder: "7세 이상" },
-                    { label: "티켓 예매 링크", key: "ticket_url", required: false },
+                    { label: "공연 시간 (선택)", key: "show_time", required: false, placeholder: "평일 19:30 / 주말 15:00" },
+                    { label: "러닝 타임 (선택)", key: "running_time", required: false, placeholder: "100분" },
+                    { label: "관람 연령 (선택)", key: "age_rating", required: false, placeholder: "7세 이상" },
+                    { label: "티켓 예매 링크 (선택)", key: "ticket_url", required: false, placeholder: "예매처가 없다면 비워두세요" },
                   ].map((field) => (
                     <div key={field.key} className={field.span ?? ""}>
                       <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
@@ -520,10 +525,8 @@ export default function PerformerPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {[
                     { label: "공연장 *", key: "venue", required: true },
-                    { label: "주소", key: "venue_address", required: false },
-                    { label: "오시는 길", key: "directions", required: false, span: "sm:col-span-2", placeholder: "예: 4호선 혜화역 1번 출구 도보 5분" },
-                    { label: "카카오맵 링크", key: "map_kakao_url", required: false, placeholder: "https://place.map.kakao.com/..." },
-                    { label: "네이버지도 링크", key: "map_naver_url", required: false, placeholder: "https://map.naver.com/..." },
+                    { label: "주소 (선택)", key: "venue_address", required: false },
+                    { label: "오시는 길 (선택)", key: "directions", required: false, span: "sm:col-span-2", placeholder: "예: 4호선 혜화역 1번 출구 도보 5분" },
                   ].map((field) => (
                     <div key={field.key} className={field.span ?? ""}>
                       <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
@@ -542,6 +545,51 @@ export default function PerformerPage() {
                       />
                     </div>
                   ))}
+                </div>
+
+                {/* 지도 링크 (선택) — 권장 안내 */}
+                <div className="mt-6 pt-5" style={{ borderTop: "1px dashed #D4CFC9" }}>
+                  <div className="mb-3">
+                    <p className="text-xs tracking-wider uppercase mb-1" style={labelStyle}>
+                      지도 링크 <span style={{ textTransform: "none", color: "#9B9693" }}>(선택)</span>
+                    </p>
+                    <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                      관객이 공연장을 쉽게 찾을 수 있도록 지도 링크 첨부를 권장드립니다.
+                      카카오맵 또는 네이버지도 중 <strong style={{ color: "#6D3115" }}>하나만 입력하셔도 됩니다.</strong>
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
+                        카카오맵 링크
+                      </label>
+                      <input
+                        type="text"
+                        value={form.map_kakao_url}
+                        onChange={(e) => setForm({ ...form, map_kakao_url: e.target.value })}
+                        placeholder="https://place.map.kakao.com/..."
+                        className="w-full px-4 py-3 text-sm outline-none"
+                        style={inputStyle}
+                        onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                        onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
+                        네이버지도 링크
+                      </label>
+                      <input
+                        type="text"
+                        value={form.map_naver_url}
+                        onChange={(e) => setForm({ ...form, map_naver_url: e.target.value })}
+                        placeholder="https://map.naver.com/..."
+                        className="w-full px-4 py-3 text-sm outline-none"
+                        style={inputStyle}
+                        onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                        onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 

@@ -2,9 +2,16 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { CONTACT_CATEGORIES, type ContactCategory } from "@/lib/constants";
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
+  const [form, setForm] = useState<{
+    name: string;
+    email: string;
+    phone: string;
+    category: ContactCategory | "";
+    message: string;
+  }>({ name: "", email: "", phone: "", category: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -12,6 +19,12 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!form.category) {
+      setError("문의 유형을 선택해주세요.");
+      return;
+    }
+
     setLoading(true);
 
     // 클라이언트 측 쿨다운 (즉시 피드백)
@@ -31,6 +44,8 @@ export default function ContactPage() {
       p_name: form.name,
       p_email: form.email,
       p_message: form.message,
+      p_category: form.category,
+      p_phone: form.phone || null,
     });
 
     if (error) {
@@ -91,13 +106,41 @@ export default function ContactPage() {
             문의하기
           </h1>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-            공연자 신청, 협업 제안, 기타 문의를 남겨주세요.
+            아래에서 문의 유형을 선택하시고 내용을 남겨주세요.
             <br />
             평일 기준 2영업일 이내 답변 드립니다.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* 카테고리 선택 */}
+          <div>
+            <label className="block text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+              문의 유형 *
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {CONTACT_CATEGORIES.map((c) => {
+                const isActive = form.category === c;
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setForm({ ...form, category: c })}
+                    className="px-3 py-3 text-xs tracking-wide transition-colors"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      backgroundColor: isActive ? "#6D3115" : "transparent",
+                      color: isActive ? "#F4EDE3" : "#6D3115",
+                      border: `1px solid ${isActive ? "#6D3115" : "#D4CFC9"}`,
+                    }}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>

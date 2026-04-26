@@ -4,9 +4,22 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
+import { CONTACT_CATEGORIES } from "@/lib/constants";
 import type { Show, Profile, Contact } from "@/types";
 
 type Tab = "shows" | "applications" | "members" | "contacts";
+
+const CATEGORY_COLOR: Record<string, { bg: string; color: string }> = {
+  "공연자 신청":     { bg: "#D4E4ED", color: "#2A5E7A" },
+  "공연 등록 문의":  { bg: "#E8DDD0", color: "#6D3115" },
+  "예매 / 환불":     { bg: "#EDE0D4", color: "#7A4A2A" },
+  "협업 / 후원 제안": { bg: "#EDD4E4", color: "#7A2A5E" },
+  "광고 / 제휴":     { bg: "#D4EDE8", color: "#2A7A6A" },
+  "미디어 / 인터뷰": { bg: "#E0D4ED", color: "#4A2A7A" },
+  "사이트 오류 신고": { bg: "#EDD4D4", color: "#A63D2F" },
+  "개인정보 / 계정": { bg: "#D4EDD4", color: "#3A5E42" },
+  "기타":            { bg: "#E0E0E0", color: "#5A5A5A" },
+};
 
 const StatusBadge = ({ status }: { status: string }) => {
   const map: Record<string, { label: string; bg: string; color: string }> = {
@@ -34,7 +47,9 @@ export default function AdminPage() {
   const [shows, setShows] = useState<Show[]>([]);
   const [members, setMembers] = useState<Profile[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [contactFilter, setContactFilter] = useState<string>("전체");
   const [dataLoading, setDataLoading] = useState(true);
+  const [reviewShow, setReviewShow] = useState<Show | null>(null);
 
   const fetchAll = useCallback(async () => {
     const supabase = createClient();
@@ -51,6 +66,21 @@ export default function AdminPage() {
     setContacts((contactsRes.data as Contact[]) ?? []);
     setDataLoading(false);
   }, []);
+
+  // 모달 ESC 닫기 + body 스크롤 잠금
+  useEffect(() => {
+    if (!reviewShow) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setReviewShow(null);
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [reviewShow]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -78,6 +108,7 @@ export default function AdminPage() {
     const { error } = await supabase.from("shows").update({ status }).eq("id", id);
     if (!error) {
       setShows((prev) => prev.map((s) => s.id === id ? { ...s, status } : s));
+      setReviewShow((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
     }
   };
 
@@ -118,6 +149,7 @@ export default function AdminPage() {
     const { error } = await supabase.from("shows").delete().eq("id", show.id);
     if (!error) {
       setShows((prev) => prev.filter((s) => s.id !== show.id));
+      setReviewShow((prev) => (prev && prev.id === show.id ? null : prev));
     } else {
       alert("삭제 중 오류가 발생했습니다.");
     }
@@ -272,7 +304,15 @@ export default function AdminPage() {
                       {shows.map((show) => (
                         <tr key={show.id} style={{ borderBottom: "1px solid #E8DDD0" }}>
                           <td className="py-4 px-3 font-medium" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
-                            {show.title}
+                            <button
+                              type="button"
+                              onClick={() => setReviewShow(show)}
+                              className="text-left hover:underline transition-colors"
+                              style={{ color: "#6D3115", cursor: "pointer" }}
+                              title="클릭하여 상세 검토"
+                            >
+                              {show.title}
+                            </button>
                           </td>
                           <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
                             {show.performer_name ?? "—"}
@@ -450,48 +490,326 @@ export default function AdminPage() {
 
             {/* ── 문의 확인 탭 ── */}
             {tab === "contacts" && (
-              <div className="space-y-4">
-                {contacts.length === 0 ? (
-                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-                    접수된 문의가 없습니다.
-                  </p>
-                ) : (
-                  contacts.map((c) => (
-                    <div key={c.id} className="p-6" style={{ backgroundColor: "#E8DDD0" }}>
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <p className="font-semibold mb-0.5" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
-                            {c.name}
-                          </p>
-                          <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-                            {c.email} · {c.created_at.slice(0, 10)}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <StatusBadge status={c.status} />
-                          {c.status === "pending" && (
-                            <button
-                              onClick={() => resolveContact(c.id)}
-                              className="text-xs px-3 py-1"
-                              style={{ color: "#3A5E42", border: "1px solid #3A5E42" }}
-                              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D4EDD4"; }}
-                              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
-                            >
-                              처리완료
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
-                        {c.message}
+              <div className="space-y-6">
+                {/* 카테고리 필터 */}
+                <div className="flex flex-wrap gap-2">
+                  {(() => {
+                    const categoryCounts: Record<string, number> = { "전체": contacts.length };
+                    for (const c of contacts) {
+                      const key = c.category ?? "기타";
+                      categoryCounts[key] = (categoryCounts[key] ?? 0) + 1;
+                    }
+                    const filterOptions = ["전체", ...CONTACT_CATEGORIES];
+                    return filterOptions.map((opt) => {
+                      const isActive = contactFilter === opt;
+                      const count = categoryCounts[opt] ?? 0;
+                      return (
+                        <button
+                          key={opt}
+                          onClick={() => setContactFilter(opt)}
+                          className="px-3 py-1.5 text-xs tracking-wide transition-colors"
+                          style={{
+                            fontFamily: "var(--font-noto-sans-kr)",
+                            backgroundColor: isActive ? "#6D3115" : "transparent",
+                            color: isActive ? "#F4EDE3" : "#6D3115",
+                            border: `1px solid ${isActive ? "#6D3115" : "#D4CFC9"}`,
+                          }}
+                        >
+                          {opt}{count > 0 && <span style={{ opacity: 0.7, marginLeft: 6 }}>({count})</span>}
+                        </button>
+                      );
+                    });
+                  })()}
+                </div>
+
+                {(() => {
+                  const filteredContacts = contactFilter === "전체"
+                    ? contacts
+                    : contacts.filter((c) => (c.category ?? "기타") === contactFilter);
+
+                  if (filteredContacts.length === 0) {
+                    return (
+                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                        {contactFilter === "전체" ? "접수된 문의가 없습니다." : `"${contactFilter}" 유형의 문의가 없습니다.`}
                       </p>
+                    );
+                  }
+
+                  return (
+                    <div className="space-y-4">
+                      {filteredContacts.map((c) => {
+                        const cat = c.category ?? "기타";
+                        const catColor = CATEGORY_COLOR[cat] ?? { bg: "#E0E0E0", color: "#5A5A5A" };
+                        return (
+                          <div key={c.id} className="p-6" style={{ backgroundColor: "#E8DDD0" }}>
+                            <div className="flex items-start justify-between mb-3 gap-3 flex-wrap">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                                  <span
+                                    className="px-2 py-0.5 text-xs tracking-wide"
+                                    style={{
+                                      fontFamily: "var(--font-noto-sans-kr)",
+                                      backgroundColor: catColor.bg,
+                                      color: catColor.color,
+                                    }}
+                                  >
+                                    {cat}
+                                  </span>
+                                  <p className="font-semibold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
+                                    {c.name}
+                                  </p>
+                                </div>
+                                <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                                  {c.email}
+                                  {c.phone ? ` · ${c.phone}` : ""}
+                                  {" · "}
+                                  {c.created_at.slice(0, 10)}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-3 shrink-0">
+                                <StatusBadge status={c.status} />
+                                {c.status === "pending" && (
+                                  <button
+                                    onClick={() => resolveContact(c.id)}
+                                    className="text-xs px-3 py-1"
+                                    style={{ color: "#3A5E42", border: "1px solid #3A5E42" }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D4EDD4"; }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+                                  >
+                                    처리완료
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                            <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+                              {c.message}
+                            </p>
+                          </div>
+                        );
+                      })}
                     </div>
-                  ))
-                )}
+                  );
+                })()}
               </div>
             )}
           </>
         )}
+      </div>
+
+      {/* ── 공연 상세 검토 모달 ── */}
+      {reviewShow && (
+        <ShowReviewModal
+          show={reviewShow}
+          onClose={() => setReviewShow(null)}
+          onApprove={() => updateShowStatus(reviewShow.id, "approved")}
+          onReject={() => updateShowStatus(reviewShow.id, "rejected")}
+          onDelete={() => deleteShow(reviewShow)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────
+// 공연 상세 검토 모달 — 등록된 모든 정보를 한 화면에서 확인
+// ──────────────────────────────────────────────────────────────
+function ShowReviewModal({
+  show,
+  onClose,
+  onApprove,
+  onReject,
+  onDelete,
+}: {
+  show: Show;
+  onClose: () => void;
+  onApprove: () => void;
+  onReject: () => void;
+  onDelete: () => void;
+}) {
+  const genreLabel = show.genre === "기타" ? (show.genre_custom || "기타") : (show.genre ?? "—");
+
+  const InfoRow = ({ label, value }: { label: string; value?: string | null }) => (
+    <div>
+      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+        {label}
+      </p>
+      <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+        {value && value.trim() !== "" ? value : <span style={{ color: "#9B9693" }}>—</span>}
+      </p>
+    </div>
+  );
+
+  const LinkRow = ({ label, url }: { label: string; url?: string | null }) => (
+    <div>
+      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+        {label}
+      </p>
+      {url && url.trim() !== "" ? (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm break-all hover:underline"
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}
+        >
+          {url} ↗
+        </a>
+      ) : (
+        <p className="text-sm" style={{ color: "#9B9693" }}>—</p>
+      )}
+    </div>
+  );
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+      style={{ backgroundColor: "rgba(26, 26, 26, 0.6)" }}
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+        style={{ backgroundColor: "#F4EDE3" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* 닫기 버튼 */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="닫기"
+          className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center text-lg transition-colors z-10"
+          style={{ color: "#6D3115", backgroundColor: "#E8DDD0" }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D4CFC9"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#E8DDD0"; }}
+        >
+          ✕
+        </button>
+
+        <div className="p-6 sm:p-10 space-y-8">
+          {/* 헤더 */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                Review
+              </p>
+              <StatusBadge status={show.status} />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+              {show.title}
+            </h2>
+            {show.subtitle && (
+              <p className="text-sm" style={{ fontFamily: "var(--font-inter)", color: "#9B9693", letterSpacing: "0.1em" }}>
+                {show.subtitle}
+              </p>
+            )}
+          </div>
+
+          {/* 포스터 + 핵심 정보 */}
+          <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-6">
+            <div className="aspect-[3/4] overflow-hidden" style={{ backgroundColor: "#D4CFC9" }}>
+              {show.poster_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={show.poster_url} alt={show.title} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                    포스터 없음
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-5 content-start">
+              <InfoRow label="공연자" value={show.performer_name} />
+              <InfoRow label="장르" value={genreLabel} />
+              <InfoRow label="지역" value={show.region} />
+              <InfoRow label="대학·학과" value={show.school_department} />
+              <InfoRow label="공연 시작" value={show.schedule_start} />
+              <InfoRow label="공연 종료" value={show.schedule_end} />
+              <InfoRow label="공연 시간" value={show.show_time} />
+              <InfoRow label="러닝 타임" value={show.running_time} />
+              <InfoRow label="관람 연령" value={show.age_rating} />
+              <InfoRow label="등록일" value={show.created_at.slice(0, 10)} />
+            </div>
+          </div>
+
+          {/* 장소 */}
+          <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
+            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+              장소 · 오시는 길
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <InfoRow label="공연장" value={show.venue} />
+              <InfoRow label="주소" value={show.venue_address} />
+              <div className="sm:col-span-2">
+                <InfoRow label="오시는 길" value={show.directions} />
+              </div>
+              <LinkRow label="카카오맵" url={show.map_kakao_url} />
+              <LinkRow label="네이버지도" url={show.map_naver_url} />
+            </div>
+          </div>
+
+          {/* 작품 */}
+          <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
+            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+              작품 정보
+            </h3>
+            <div className="space-y-5">
+              <InfoRow
+                label="출연진"
+                value={show.cast_members && show.cast_members.length > 0 ? show.cast_members.join(", ") : null}
+              />
+              <div>
+                <p className="text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                  작품 소개
+                </p>
+                <p
+                  className="text-sm leading-relaxed whitespace-pre-wrap p-4"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A", backgroundColor: "#E8DDD0" }}
+                >
+                  {show.description || <span style={{ color: "#9B9693" }}>작품 소개가 없습니다.</span>}
+                </p>
+              </div>
+              <LinkRow label="티켓 예매 링크" url={show.ticket_url} />
+            </div>
+          </div>
+
+          {/* 액션 버튼 */}
+          <div className="pt-6 flex flex-col sm:flex-row gap-3" style={{ borderTop: "1px solid #D4CFC9" }}>
+            {show.status !== "approved" && (
+              <button
+                type="button"
+                onClick={onApprove}
+                className="flex-1 py-3 text-sm tracking-wider transition-colors"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#3A5E42", color: "#F4EDE3" }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+              >
+                승인하기
+              </button>
+            )}
+            {show.status !== "rejected" && (
+              <button
+                type="button"
+                onClick={onReject}
+                className="flex-1 py-3 text-sm tracking-wider transition-colors"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "transparent", color: "#A63D2F", border: "1px solid #A63D2F" }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#EDD4D4"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+              >
+                반려하기
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onDelete}
+              className="px-6 py-3 text-sm tracking-wider transition-colors"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#1A1A1A", color: "#F4EDE3" }}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+            >
+              영구 삭제
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
