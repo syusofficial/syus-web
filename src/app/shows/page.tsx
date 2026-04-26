@@ -61,22 +61,35 @@ export default async function ShowsPage({
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-10">
-          <p
-            className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+        <div className="mb-10 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <p
+              className="text-xs tracking-[0.3em] uppercase mb-3"
+              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            >
+              Shows
+            </p>
+            <h1
+              className="text-4xl md:text-5xl font-bold mb-3"
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+            >
+              {q ? `"${q}" 검색 결과` : (activeRegion === "전체" ? "전체 공연" : `${activeRegion} 공연`)}
+            </h1>
+            <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+              {totalCount}개의 공연
+            </p>
+          </div>
+          <Link
+            href="/shows/calendar"
+            className="px-4 py-2 text-xs tracking-wide transition-colors"
+            style={{
+              fontFamily: "var(--font-noto-sans-kr)",
+              color: "#6D3115",
+              border: "1px solid #D4CFC9",
+            }}
           >
-            Shows
-          </p>
-          <h1
-            className="text-4xl md:text-5xl font-bold mb-3"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
-          >
-            {q ? `"${q}" 검색 결과` : (activeRegion === "전체" ? "전체 공연" : `${activeRegion} 공연`)}
-          </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-            {totalCount}개의 공연
-          </p>
+            캘린더로 보기
+          </Link>
         </div>
 
         {/* 검색창 */}
