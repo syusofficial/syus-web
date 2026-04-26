@@ -5,6 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 import ShowViewTracker from "@/components/ShowViewTracker";
 import LikeButton from "@/components/LikeButton";
 import ShareButton from "@/components/ShareButton";
+import ShowCard from "@/components/ShowCard";
+import { isEnded, extractSchoolName, todayKey } from "@/lib/showFilters";
+import type { Show } from "@/types";
 
 export default async function ShowDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -33,6 +36,39 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     const isOwner = show.organizer_id === user.id;
     const isAdmin = profile?.role === "admin";
     if (!isOwner && !isAdmin) notFound();
+  }
+
+  // 추천 공연 — 같은 학교(+3) / 같은 공연자(+3) / 같은 장르(+2) / 같은 지역(+1)
+  // 진행 중·예정 + approved + 자기 자신 제외, 점수 내림차순 상위 6개
+  let recommendations: Show[] = [];
+  if (show.status === "approved") {
+    const { data: candidatesRaw } = await supabase
+      .from("shows")
+      .select("*")
+      .eq("status", "approved")
+      .neq("id", show.id);
+
+    const today = todayKey();
+    const currentSchool = extractSchoolName(show.school_department);
+
+    const scored = ((candidatesRaw as Show[]) ?? [])
+      .filter((s) => !isEnded(s, today))
+      .map((s) => {
+        let score = 0;
+        if (currentSchool) {
+          const sSchool = extractSchoolName(s.school_department);
+          if (sSchool && sSchool === currentSchool) score += 3;
+        }
+        if (show.organizer_id && s.organizer_id === show.organizer_id) score += 3;
+        if (show.genre && s.genre === show.genre) score += 2;
+        if (show.region && s.region === show.region) score += 1;
+        return { show: s, score };
+      })
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6);
+
+    recommendations = scored.map((x) => x.show);
   }
 
   return (
@@ -298,6 +334,34 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             )}
           </div>
         </div>
+
+        {/* 추천 공연 — 매칭 결과 있을 때만 노출 */}
+        {recommendations.length > 0 && (
+          <section
+            className="mt-24 pt-12"
+            style={{ borderTop: "1px solid #D4CFC9" }}
+          >
+            <div className="mb-10">
+              <p
+                className="text-xs tracking-[0.3em] uppercase mb-3"
+                style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+              >
+                Related
+              </p>
+              <h2
+                className="text-2xl md:text-3xl font-bold"
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+              >
+                이런 공연도 어떠세요
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12">
+              {recommendations.map((s) => (
+                <ShowCard key={s.id} show={s} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
