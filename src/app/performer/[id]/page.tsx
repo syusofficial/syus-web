@@ -175,7 +175,7 @@ export default async function PerformerProfilePage({
           </section>
         )}
 
-        {/* 지나간 공연 — "머묾의 기록" */}
+        {/* 지나간 공연 — "지난 공연" */}
         {past.length > 0 && (
           <section className="mb-16">
             <div className="flex items-baseline justify-between mb-8">
@@ -183,7 +183,7 @@ export default async function PerformerProfilePage({
                 className="text-xl font-bold"
                 style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
               >
-                머묾의 기록
+                지난 공연
               </h2>
               <span
                 className="text-xs tracking-wider uppercase"

@@ -122,7 +122,7 @@ export default async function ArchivePage({
               className="text-4xl md:text-5xl font-bold mb-3"
               style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
             >
-              머묾의 기록
+              지난 공연
             </h1>
             <p
               className="text-sm leading-relaxed mb-1"

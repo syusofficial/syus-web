@@ -150,7 +150,7 @@ export default async function ShowsPage({
                 border: "1px solid #D4CFC9",
               }}
             >
-              머묾의 기록 →
+              지난 공연 →
             </Link>
           </div>
         </div>
@@ -269,7 +269,7 @@ export default async function ShowsPage({
               조건에 맞는 진행 중·예정 공연이 없습니다.
             </p>
             <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-              {q ? "다른 검색어로 다시 시도해보세요." : "지나간 공연은 ‘머묾의 기록’에서 만나보실 수 있습니다."}
+              {q ? "다른 검색어로 다시 시도해보세요." : "지나간 공연은 ‘지난 공연’에서 만나보실 수 있습니다."}
             </p>
             <Link
               href="/archive"
@@ -280,7 +280,7 @@ export default async function ShowsPage({
                 border: "1px solid #D4CFC9",
               }}
             >
-              머묾의 기록으로 →
+              지난 공연으로 →
             </Link>
           </div>
         ) : (
