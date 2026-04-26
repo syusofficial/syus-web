@@ -1,21 +1,55 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 
+const SAVED_EMAIL_KEY = "syus-saved-email";
+
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginPageInner />
+    </Suspense>
+  );
+}
+
+function LoginPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberId, setRememberId] = useState(false);
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
   const [attemptCount, setAttemptCount] = useState(0);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [countdown, setCountdown] = useState(0);
+
+  // 자동 로그아웃 메시지 (?reason=absolute|idle|signup)
+  useEffect(() => {
+    const reason = searchParams.get("reason");
+    if (reason === "absolute") {
+      setInfo("보안상 12시간 한도가 지나 자동 로그아웃되었습니다. 다시 로그인해주세요.");
+    } else if (reason === "idle") {
+      setInfo("3시간 동안 활동이 없어 자동 로그아웃되었습니다.");
+    } else if (searchParams.get("signup") === "success") {
+      setInfo("가입이 완료되었습니다. 로그인해주세요.");
+    }
+  }, [searchParams]);
+
+  // 저장된 아이디 자동 채움
+  useEffect(() => {
+    const saved = localStorage.getItem(SAVED_EMAIL_KEY);
+    if (saved) {
+      setEmail(saved);
+      setRememberId(true);
+    }
+  }, []);
 
   // 잠금 카운트다운
   useEffect(() => {
@@ -68,6 +102,13 @@ export default function LoginPage() {
     // 로그인 성공 → 카운터 초기화
     setAttemptCount(0);
     setLockedUntil(null);
+
+    // 아이디 저장 옵션 처리
+    if (rememberId) {
+      localStorage.setItem(SAVED_EMAIL_KEY, email);
+    } else {
+      localStorage.removeItem(SAVED_EMAIL_KEY);
+    }
 
     // 역할 확인 후 리다이렉트
     const { data: profile } = await supabase
@@ -132,6 +173,44 @@ export default function LoginPage() {
             </label>
             <PasswordInput value={password} onChange={setPassword} required />
           </div>
+
+          {/* 아이디 저장 — 한국 사이트 표준 */}
+          <label className="flex items-center gap-2.5 cursor-pointer select-none">
+            <span
+              className="w-4 h-4 shrink-0 flex items-center justify-center transition-colors"
+              style={{
+                backgroundColor: rememberId ? "#6D3115" : "transparent",
+                border: `1.5px solid ${rememberId ? "#6D3115" : "#9B9693"}`,
+              }}
+            >
+              {rememberId && (
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F4EDE3" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              )}
+            </span>
+            <input
+              type="checkbox"
+              checked={rememberId}
+              onChange={(e) => setRememberId(e.target.checked)}
+              className="sr-only"
+            />
+            <span
+              className="text-xs"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+            >
+              아이디 저장
+            </span>
+          </label>
+
+          {info && (
+            <p
+              className="text-xs p-3"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115", backgroundColor: "#E8DDD0" }}
+            >
+              {info}
+            </p>
+          )}
 
           {error && (
             <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C0392B" }}>

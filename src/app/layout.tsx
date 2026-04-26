@@ -5,6 +5,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import LoadingScreen from "@/components/LoadingScreen";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import SessionManager from "@/components/SessionManager";
 
 const notoSerifKR = Noto_Serif_KR({
   variable: "--font-noto-serif-kr",
@@ -103,6 +104,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <GoogleAnalytics />
+        <SessionManager />
       </body>
     </html>
   );
