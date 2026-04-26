@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
+import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -59,6 +60,12 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
             로그인
           </h1>
+        </div>
+
+        {/* 소셜 로그인 — 페이지 상단 배치 (현대 웹 표준) */}
+        <div className="mb-6 space-y-3">
+          <SocialLoginButtons mode="login" />
+          <SocialDivider label="또는 이메일로 로그인" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">

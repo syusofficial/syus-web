@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
+import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 
 type Consents = {
   terms: boolean;       // 이용약관 (필수)
@@ -119,6 +120,12 @@ export default function SignupPage() {
           <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
             회원가입
           </h1>
+        </div>
+
+        {/* 소셜 가입 */}
+        <div className="mb-6 space-y-3">
+          <SocialLoginButtons mode="signup" />
+          <SocialDivider label="또는 이메일로 가입" />
         </div>
 
         <div className="mb-8 p-4 space-y-2" style={{ backgroundColor: "#E8DDD0" }}>
