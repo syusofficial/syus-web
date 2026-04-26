@@ -37,6 +37,12 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/auth/login?error=oauth_failed`);
   }
 
+  // 약관 미동의 시 onboarding으로 강제 이동 (OAuth 신규 가입자)
+  const meta = data.user.user_metadata ?? {};
+  if (!meta.terms_agreed_at || !meta.privacy_agreed_at) {
+    return NextResponse.redirect(`${origin}/auth/onboarding`);
+  }
+
   // 관리자 여부 확인 후 라우팅
   const { data: profile } = await supabase
     .from("profiles")

@@ -359,7 +359,7 @@ export default function AdminPage() {
                               {m.name ?? "—"}
                             </td>
                             <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-                              {m.email}
+                              {m.email ?? <span style={{ fontStyle: "italic" }}>이메일 없음</span>}
                             </td>
                             <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
                               {m.created_at.slice(0, 10)}
@@ -420,7 +420,7 @@ export default function AdminPage() {
                             {m.name ?? "—"}
                           </td>
                           <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-                            {m.email}
+                            {m.email ?? <span style={{ fontStyle: "italic" }}>이메일 없음</span>}
                           </td>
                           <td className="py-4 px-3">
                             <StatusBadge status={m.role} />

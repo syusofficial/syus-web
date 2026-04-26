@@ -83,6 +83,17 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
+        {/* 소셜 로그인 가입자 안내 */}
+        <div className="mb-6 p-4 text-xs leading-relaxed" style={{ backgroundColor: "#E8DDD0", color: "#6D3115", fontFamily: "var(--font-noto-sans-kr)" }}>
+          <strong>Google · 카카오로 가입하셨다면?</strong>
+          <br />
+          비밀번호 재설정이 아닌 해당 서비스에서 직접 로그인해주세요.
+          <br />
+          <Link href="/auth/login" className="underline" style={{ color: "#6D3115" }}>
+            로그인 페이지로 돌아가기 →
+          </Link>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>

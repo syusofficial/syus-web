@@ -134,6 +134,14 @@ export default function Nav() {
     setUser(currentUser);
     if (!currentUser) { setRole(null); return; }
 
+    // 약관 미동의 사용자는 onboarding으로 강제 이동 (인증/온보딩 페이지 자체는 제외)
+    const meta = currentUser.user_metadata ?? {};
+    const isAuthPage = pathname?.startsWith("/auth/");
+    if (!isAuthPage && (!meta.terms_agreed_at || !meta.privacy_agreed_at)) {
+      router.replace("/auth/onboarding");
+      return;
+    }
+
     const { data: profile, error } = await supabase
       .from("profiles")
       .select("role")
@@ -146,7 +154,7 @@ export default function Nav() {
       return;
     }
     setRole(profile?.role ?? null);
-  }, []);
+  }, [pathname, router]);
 
   // 초기 로드 + 로그인/로그아웃 이벤트 감지
   useEffect(() => {

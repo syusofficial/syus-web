@@ -96,7 +96,7 @@ export default function MyPage() {
             {profile.name ?? "회원"}님
           </h1>
           <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-            {profile.email} · {roleLabel}
+            {profile.email ?? "이메일 미제공 (소셜 가입)"} · {roleLabel}
           </p>
         </div>
 
@@ -131,7 +131,7 @@ export default function MyPage() {
               <div className="grid grid-cols-[100px_1fr] gap-4 text-sm">
                 {[
                   { label: "이름", value: profile.name ?? "—" },
-                  { label: "이메일", value: profile.email },
+                  { label: "이메일", value: profile.email ?? "—" },
                   { label: "회원 등급", value: roleLabel },
                   { label: "가입일", value: profile.created_at.slice(0, 10) },
                 ].map((item) => (
