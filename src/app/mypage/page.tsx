@@ -156,6 +156,37 @@ export default function MyPage() {
                 공연자 페이지로 →
               </Link>
             )}
+
+            {/* 회원 탈퇴 섹션 */}
+            <div className="pt-8 mt-8" style={{ borderTop: "1px solid #D4CFC9" }}>
+              <h3 className="text-sm font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#A63D2F" }}>
+                회원 탈퇴
+              </h3>
+              <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                탈퇴 시 모든 정보(공연 등록 내역, 찜 목록, 가입 정보)가 영구 삭제되며 복구할 수 없습니다.
+              </p>
+              <button
+                onClick={async () => {
+                  const ok = window.confirm(
+                    "정말 탈퇴하시겠습니까?\n\n등록한 공연, 찜 목록, 모든 가입 정보가 영구 삭제되며 복구할 수 없습니다."
+                  );
+                  if (!ok) return;
+                  const res = await fetch("/api/account/delete", { method: "POST" });
+                  const json = await res.json();
+                  if (res.ok) {
+                    alert("탈퇴가 완료되었습니다. 그동안 이용해주셔서 감사합니다.");
+                    router.push("/");
+                    router.refresh();
+                  } else {
+                    alert(json.error ?? "탈퇴 중 오류가 발생했습니다.");
+                  }
+                }}
+                className="text-xs px-4 py-2"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F", border: "1px solid #A63D2F" }}
+              >
+                탈퇴하기
+              </button>
+            </div>
           </div>
         )}
 

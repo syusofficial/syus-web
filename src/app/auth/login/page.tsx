@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
@@ -13,20 +13,61 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [attemptCount, setAttemptCount] = useState(0);
+  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
+  const [countdown, setCountdown] = useState(0);
+
+  // 잠금 카운트다운
+  useEffect(() => {
+    if (!lockedUntil) return;
+    const interval = setInterval(() => {
+      const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
+      if (remaining <= 0) {
+        setLockedUntil(null);
+        setAttemptCount(0);
+        setCountdown(0);
+        clearInterval(interval);
+      } else {
+        setCountdown(remaining);
+      }
+    }, 500);
+    return () => clearInterval(interval);
+  }, [lockedUntil]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (lockedUntil && Date.now() < lockedUntil) {
+      setError(`로그인 시도가 너무 많습니다. ${countdown}초 후 다시 시도해주세요.`);
+      return;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error || !data.user) {
-      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      const newCount = attemptCount + 1;
+      setAttemptCount(newCount);
+
+      // 5회 실패 시 60초 잠금
+      if (newCount >= 5) {
+        const until = Date.now() + 60_000;
+        setLockedUntil(until);
+        setError("로그인 시도가 5회 실패하여 60초간 잠금됩니다.");
+      } else {
+        const remaining = 5 - newCount;
+        setError(`이메일 또는 비밀번호가 올바르지 않습니다. (남은 시도: ${remaining}회)`);
+      }
       setLoading(false);
       return;
     }
+
+    // 로그인 성공 → 카운터 초기화
+    setAttemptCount(0);
+    setLockedUntil(null);
 
     // 역할 확인 후 리다이렉트
     const { data: profile } = await supabase
@@ -100,18 +141,18 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !!lockedUntil}
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#9B9693" : "#6D3115",
+              backgroundColor: loading || lockedUntil ? "#9B9693" : "#6D3115",
               color: "#F4EDE3",
-              cursor: loading ? "not-allowed" : "pointer",
+              cursor: loading || lockedUntil ? "not-allowed" : "pointer",
             }}
-            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#8B4A2A"; }}
-            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#6D3115"; }}
+            onMouseEnter={(e) => { if (!loading && !lockedUntil) e.currentTarget.style.backgroundColor = "#8B4A2A"; }}
+            onMouseLeave={(e) => { if (!loading && !lockedUntil) e.currentTarget.style.backgroundColor = "#6D3115"; }}
           >
-            {loading ? "로그인 중..." : "로그인"}
+            {lockedUntil ? `${countdown}초 후 재시도 가능` : (loading ? "로그인 중..." : "로그인")}
           </button>
         </form>
 

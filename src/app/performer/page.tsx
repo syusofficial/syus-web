@@ -23,51 +23,55 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 const emptyForm = {
-  title: "",
-  subtitle: "",
-  description: "",
-  venue: "",
-  venue_address: "",
-  schedule_start: "",
-  schedule_end: "",
-  cast_members: "",
-  directions: "",
-  ticket_url: "",
-  genre_custom: "",
-  school_department: "",
-  show_time: "",
-  running_time: "",
-  age_rating: "",
-  map_kakao_url: "",
-  map_naver_url: "",
+  title: "", subtitle: "", description: "",
+  venue: "", venue_address: "", schedule_start: "", schedule_end: "",
+  cast_members: "", directions: "", ticket_url: "",
+  genre_custom: "", school_department: "", show_time: "", running_time: "",
+  age_rating: "", map_kakao_url: "", map_naver_url: "",
 };
 
 export default function PerformerPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [authState, setAuthState] = useState<"loading" | "denied" | "ready">("loading");
   const [myShows, setMyShows] = useState<Show[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [genre, setGenre] = useState<string>("");
   const [region, setRegion] = useState<string>("");
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
+  const [existingPosterUrl, setExistingPosterUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [fetchLoading, setFetchLoading] = useState(true);
 
+  // 권한 체크 + 내 공연 로딩
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) { router.push("/auth/login"); return; }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profile?.role !== "performer" && profile?.role !== "admin") {
+        setAuthState("denied");
+        return;
+      }
+
       const { data: shows } = await supabase
         .from("shows")
         .select("*")
         .eq("organizer_id", data.user.id)
         .order("created_at", { ascending: false });
+
       setMyShows((shows as Show[]) ?? []);
-      setFetchLoading(false);
+      setAuthState("ready");
     });
   }, [router]);
 
@@ -84,6 +88,70 @@ export default function PerformerPage() {
     setRegion("");
     setPosterFile(null);
     setPosterPreview(null);
+    setExistingPosterUrl(null);
+    setEditingId(null);
+    setError("");
+  };
+
+  // 수정 모드 진입 — 기존 공연 데이터로 폼 채우기
+  const startEditing = (show: Show) => {
+    setEditingId(show.id);
+    setForm({
+      title: show.title ?? "",
+      subtitle: show.subtitle ?? "",
+      description: show.description ?? "",
+      venue: show.venue ?? "",
+      venue_address: show.venue_address ?? "",
+      schedule_start: show.schedule_start ?? "",
+      schedule_end: show.schedule_end ?? "",
+      cast_members: show.cast_members?.join(", ") ?? "",
+      directions: show.directions ?? "",
+      ticket_url: show.ticket_url ?? "",
+      genre_custom: show.genre_custom ?? "",
+      school_department: show.school_department ?? "",
+      show_time: show.show_time ?? "",
+      running_time: show.running_time ?? "",
+      age_rating: show.age_rating ?? "",
+      map_kakao_url: show.map_kakao_url ?? "",
+      map_naver_url: show.map_naver_url ?? "",
+    });
+    setGenre(show.genre ?? "");
+    setRegion(show.region ?? "");
+    setExistingPosterUrl(show.poster_url ?? null);
+    setPosterFile(null);
+    setPosterPreview(null);
+    setShowForm(true);
+    setError("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // 공연 삭제
+  const deleteShow = async (show: Show) => {
+    const confirmed = window.confirm(
+      `"${show.title}" 공연을 삭제하시겠습니까?\n\n포스터 이미지와 공연 정보가 완전히 제거되며 복구할 수 없습니다.`
+    );
+    if (!confirmed) return;
+
+    const supabase = createClient();
+
+    // Storage에서 포스터 삭제
+    if (show.poster_url) {
+      const filename = show.poster_url.split("/posters/").pop();
+      if (filename) {
+        await supabase.storage.from("posters").remove([filename]);
+      }
+    }
+
+    const { error } = await supabase.from("shows").delete().eq("id", show.id);
+    if (!error) {
+      setMyShows((prev) => prev.filter((s) => s.id !== show.id));
+      if (editingId === show.id) {
+        setShowForm(false);
+        resetForm();
+      }
+    } else {
+      alert("삭제 중 오류가 발생했습니다.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,7 +177,9 @@ export default function PerformerPage() {
       .eq("id", user.id)
       .single();
 
-    let poster_url: string | null = null;
+    let poster_url: string | null = existingPosterUrl;
+
+    // 새 포스터 업로드
     if (posterFile) {
       const ext = posterFile.name.split(".").pop();
       const filename = `${user.id}-${Date.now()}.${ext}`;
@@ -123,6 +193,14 @@ export default function PerformerPage() {
         return;
       }
       const { data: urlData } = supabase.storage.from("posters").getPublicUrl(filename);
+
+      // 기존 포스터가 있다면 삭제
+      if (existingPosterUrl) {
+        const oldFilename = existingPosterUrl.split("/posters/").pop();
+        if (oldFilename) {
+          await supabase.storage.from("posters").remove([oldFilename]);
+        }
+      }
       poster_url = urlData.publicUrl;
     }
 
@@ -131,45 +209,62 @@ export default function PerformerPage() {
       .map((s) => s.trim())
       .filter(Boolean);
 
-    const { data: newShow, error: insertError } = await supabase
-      .from("shows")
-      .insert({
-        title: form.title,
-        subtitle: form.subtitle || null,
-        description: form.description,
-        venue: form.venue,
-        venue_address: form.venue_address || null,
-        schedule_start: form.schedule_start,
-        schedule_end: form.schedule_end,
-        cast_members: castArray,
-        directions: form.directions || null,
-        ticket_url: form.ticket_url || null,
-        poster_url,
-        organizer_id: user.id,
-        performer_name: profile?.name ?? "",
-        status: "pending",
+    const payload = {
+      title: form.title,
+      subtitle: form.subtitle || null,
+      description: form.description,
+      venue: form.venue,
+      venue_address: form.venue_address || null,
+      schedule_start: form.schedule_start,
+      schedule_end: form.schedule_end,
+      cast_members: castArray,
+      directions: form.directions || null,
+      ticket_url: form.ticket_url || null,
+      poster_url,
+      organizer_id: user.id,
+      performer_name: profile?.name ?? "",
+      genre,
+      genre_custom: genre === "기타" ? form.genre_custom : null,
+      region,
+      school_department: form.school_department || null,
+      show_time: form.show_time || null,
+      running_time: form.running_time || null,
+      age_rating: form.age_rating || null,
+      map_kakao_url: form.map_kakao_url || null,
+      map_naver_url: form.map_naver_url || null,
+    };
 
-        // 신규 필드
-        genre,
-        genre_custom: genre === "기타" ? form.genre_custom : null,
-        region,
-        school_department: form.school_department || null,
-        show_time: form.show_time || null,
-        running_time: form.running_time || null,
-        age_rating: form.age_rating || null,
-        map_kakao_url: form.map_kakao_url || null,
-        map_naver_url: form.map_naver_url || null,
-      })
-      .select()
-      .single();
+    if (editingId) {
+      // 수정 모드 — 상태는 다시 pending으로 (관리자 재검토)
+      const { data: updated, error: updateError } = await supabase
+        .from("shows")
+        .update({ ...payload, status: "pending" })
+        .eq("id", editingId)
+        .select()
+        .single();
 
-    if (insertError) {
-      setError("공연 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
-      setLoading(false);
-      return;
+      if (updateError) {
+        setError("공연 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+        setLoading(false);
+        return;
+      }
+      setMyShows((prev) => prev.map((s) => s.id === editingId ? (updated as Show) : s));
+    } else {
+      // 신규 등록
+      const { data: newShow, error: insertError } = await supabase
+        .from("shows")
+        .insert({ ...payload, status: "pending" })
+        .select()
+        .single();
+
+      if (insertError) {
+        setError("공연 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+        setLoading(false);
+        return;
+      }
+      setMyShows((prev) => [newShow as Show, ...prev]);
     }
 
-    setMyShows((prev) => [newShow as Show, ...prev]);
     setShowForm(false);
     resetForm();
     setLoading(false);
@@ -181,18 +276,52 @@ export default function PerformerPage() {
     color: "#1A1A1A",
     border: "1px solid transparent",
   };
-
   const labelStyle: React.CSSProperties = {
     fontFamily: "var(--font-inter)",
     color: "#9B9693",
   };
+
+  // 권한 없음 화면
+  if (authState === "loading") {
+    return (
+      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F4EDE3" }}>
+        <PageLoader />
+      </div>
+    );
+  }
+
+  if (authState === "denied") {
+    return (
+      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F4EDE3" }}>
+        <div className="text-center max-w-sm space-y-5">
+          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+            403
+          </p>
+          <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+            공연자 권한이 필요합니다
+          </h1>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+            공연을 등록하려면 마이페이지에서 공연자 신청을 먼저 진행해주세요.
+            관리자 검토 후 권한이 부여됩니다.
+          </p>
+          <Link
+            href="/mypage"
+            className="inline-block px-8 py-3 text-sm tracking-wider"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+          >
+            마이페이지로
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F4EDE3" }}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={labelStyle}>
             Performer
           </p>
           <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -200,7 +329,15 @@ export default function PerformerPage() {
               내 공연 관리
             </h1>
             <button
-              onClick={() => { setShowForm(!showForm); setError(""); }}
+              onClick={() => {
+                if (showForm) {
+                  setShowForm(false);
+                  resetForm();
+                } else {
+                  resetForm();
+                  setShowForm(true);
+                }
+              }}
               className="px-6 py-3 text-sm tracking-wider transition-colors"
               style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#8B4A2A")}
@@ -211,24 +348,31 @@ export default function PerformerPage() {
           </div>
         </div>
 
-        {/* 등록 폼 */}
+        {/* 등록 / 수정 폼 */}
         {showForm && (
           <div className="mb-12 p-8 space-y-8" style={{ backgroundColor: "#E8DDD0" }}>
-            <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
-              새 공연 등록
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+                {editingId ? "공연 수정" : "새 공연 등록"}
+              </h2>
+              {editingId && (
+                <span className="text-xs px-2 py-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F", backgroundColor: "#EDD4D4" }}>
+                  수정 시 다시 관리자 승인 필요
+                </span>
+              )}
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
-              {/* ── 섹션 1: 포스터 ── */}
+              {/* 포스터 */}
               <div>
                 <label className="block text-xs tracking-wider uppercase mb-3" style={labelStyle}>
                   포스터 이미지
                 </label>
                 <div className="flex items-start gap-4">
-                  {posterPreview && (
+                  {(posterPreview || existingPosterUrl) && (
                     <div className="w-24 aspect-[3/4] relative overflow-hidden shrink-0" style={{ backgroundColor: "#D4CFC9" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={posterPreview} alt="미리보기" className="w-full h-full object-cover" />
+                      <img src={posterPreview ?? existingPosterUrl ?? ""} alt="미리보기" className="w-full h-full object-cover" />
                     </div>
                   )}
                   <button
@@ -237,7 +381,7 @@ export default function PerformerPage() {
                     className="px-4 py-3 text-sm"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F4EDE3", color: "#6D3115", border: "1px solid #D4CFC9" }}
                   >
-                    {posterFile ? "파일 변경" : "파일 선택"}
+                    {posterFile ? "파일 변경" : (existingPosterUrl ? "포스터 교체" : "파일 선택")}
                   </button>
                   {posterFile && (
                     <span className="text-xs pt-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
@@ -248,7 +392,7 @@ export default function PerformerPage() {
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
               </div>
 
-              {/* ── 섹션 2: 장르 (버튼 선택) ── */}
+              {/* 장르 */}
               <div>
                 <label className="block text-xs tracking-wider uppercase mb-3" style={labelStyle}>
                   공연 장르 <span style={{ color: "#A63D2F" }}>*</span>
@@ -288,13 +432,10 @@ export default function PerformerPage() {
                 )}
               </div>
 
-              {/* ── 섹션 3: 지역 (버튼 선택) ── */}
+              {/* 지역 */}
               <div>
                 <label className="block text-xs tracking-wider uppercase mb-3" style={labelStyle}>
                   공연 지역 <span style={{ color: "#A63D2F" }}>*</span>
-                  <span className="ml-2 normal-case text-[10px]" style={{ letterSpacing: "normal" }}>
-                    (공연이 실제로 열리는 지역을 선택하세요)
-                  </span>
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {REGIONS_EXCLUDE_ALL.map((r) => {
@@ -319,7 +460,7 @@ export default function PerformerPage() {
                 </div>
               </div>
 
-              {/* ── 섹션 4: 기본 정보 ── */}
+              {/* 기본 정보 */}
               <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
                 <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
                   기본 정보
@@ -329,11 +470,11 @@ export default function PerformerPage() {
                     { label: "공연명 *", key: "title", required: true, span: "sm:col-span-2" },
                     { label: "영문 제목", key: "subtitle", required: false },
                     { label: "대학 및 학과명", key: "school_department", required: false, placeholder: "예: 한양대학교 연극영화학과" },
-                    { label: "공연 기간 시작 * (예: 2026.05.10)", key: "schedule_start", required: true },
-                    { label: "공연 기간 종료 * (예: 2026.05.25)", key: "schedule_end", required: true },
-                    { label: "공연 시간 (예: 평일 19:30 / 주말 15:00)", key: "show_time", required: false },
-                    { label: "러닝 타임 (예: 100분)", key: "running_time", required: false },
-                    { label: "관람 연령 (예: 7세 이상)", key: "age_rating", required: false },
+                    { label: "공연 기간 시작 *", key: "schedule_start", required: true, placeholder: "예: 2026.05.10" },
+                    { label: "공연 기간 종료 *", key: "schedule_end", required: true, placeholder: "예: 2026.05.25" },
+                    { label: "공연 시간", key: "show_time", required: false, placeholder: "평일 19:30 / 주말 15:00" },
+                    { label: "러닝 타임", key: "running_time", required: false, placeholder: "100분" },
+                    { label: "관람 연령", key: "age_rating", required: false, placeholder: "7세 이상" },
                     { label: "티켓 예매 링크", key: "ticket_url", required: false },
                   ].map((field) => (
                     <div key={field.key} className={field.span ?? ""}>
@@ -356,7 +497,7 @@ export default function PerformerPage() {
                 </div>
               </div>
 
-              {/* ── 섹션 5: 장소 정보 ── */}
+              {/* 장소 */}
               <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
                 <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
                   장소 · 오시는 길
@@ -389,7 +530,7 @@ export default function PerformerPage() {
                 </div>
               </div>
 
-              {/* ── 섹션 6: 작품 정보 ── */}
+              {/* 작품 */}
               <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
                 <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
                   작품 정보
@@ -411,7 +552,6 @@ export default function PerformerPage() {
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                     />
                   </div>
-
                   <div>
                     <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
                       작품 소개 *
@@ -430,7 +570,6 @@ export default function PerformerPage() {
                 </div>
               </div>
 
-              {/* ── 제출 영역 ── */}
               {error && (
                 <p className="text-sm p-3" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C0392B", backgroundColor: "#EDD4D4" }}>
                   {error}
@@ -438,7 +577,7 @@ export default function PerformerPage() {
               )}
 
               <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-                ※ 등록 후 관리자 검토를 거쳐 게시됩니다. (1~3 영업일 소요)
+                ※ {editingId ? "수정한 공연은 다시 관리자 검토 후 게시됩니다." : "등록 후 관리자 검토를 거쳐 게시됩니다."} (1~3 영업일 소요)
               </p>
 
               <div className="pt-4 flex flex-col sm:flex-row gap-3">
@@ -455,11 +594,11 @@ export default function PerformerPage() {
                   onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#8B4A2A"; }}
                   onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#6D3115"; }}
                 >
-                  {loading ? "업로드 중..." : "공연 업로드"}
+                  {loading ? "처리 중..." : (editingId ? "수정 완료" : "공연 업로드")}
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setShowForm(false); resetForm(); setError(""); }}
+                  onClick={() => { setShowForm(false); resetForm(); }}
                   disabled={loading}
                   className="px-8 py-4 text-base tracking-wider"
                   style={{
@@ -481,9 +620,7 @@ export default function PerformerPage() {
           <h2 className="text-lg font-semibold mb-6" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
             등록한 공연
           </h2>
-          {fetchLoading ? (
-            <PageLoader />
-          ) : myShows.length === 0 ? (
+          {myShows.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
                 등록한 공연이 없습니다.
@@ -492,12 +629,12 @@ export default function PerformerPage() {
           ) : (
             <div className="space-y-3">
               {myShows.map((show) => (
-                <div key={show.id} className="p-5 flex items-center justify-between" style={{ backgroundColor: "#E8DDD0" }}>
-                  <div>
-                    <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
+                <div key={show.id} className="p-5 flex items-center justify-between gap-3 flex-wrap" style={{ backgroundColor: "#E8DDD0" }}>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold mb-1 truncate" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
                       {show.title}
                     </p>
-                    <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                    <p className="text-xs truncate" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
                       {[
                         show.genre === "기타" ? show.genre_custom : show.genre,
                         show.region,
@@ -506,17 +643,33 @@ export default function PerformerPage() {
                       ].filter(Boolean).join(" · ")}
                     </p>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <StatusBadge status={show.status} />
-                    {show.status === "approved" && (
-                      <Link
-                        href={`/shows/${show.id}`}
-                        className="text-xs tracking-wide"
-                        style={{ fontFamily: "var(--font-inter)", color: "#6D3115" }}
-                      >
-                        보기 →
-                      </Link>
-                    )}
+                    <Link
+                      href={`/shows/${show.id}`}
+                      className="text-xs px-2 py-1"
+                      style={{ fontFamily: "var(--font-inter)", color: "#6D3115" }}
+                    >
+                      미리보기
+                    </Link>
+                    <button
+                      onClick={() => startEditing(show)}
+                      className="text-xs px-3 py-1 transition-colors"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115", border: "1px solid #6D3115" }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#6D3115"; e.currentTarget.style.color = "#F4EDE3"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#6D3115"; }}
+                    >
+                      수정
+                    </button>
+                    <button
+                      onClick={() => deleteShow(show)}
+                      className="text-xs px-3 py-1 transition-colors"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F", border: "1px solid #A63D2F" }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#EDD4D4"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+                    >
+                      삭제
+                    </button>
                   </div>
                 </div>
               ))}
