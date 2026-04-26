@@ -520,7 +520,7 @@ export default function PerformerPage() {
                   {[
                     { label: "공연명 *", key: "title", required: true, span: "sm:col-span-2" },
                     { label: "영문 제목 (선택)", key: "subtitle", required: false },
-                    { label: "대학 및 학과명 (선택)", key: "school_department", required: false, placeholder: "예: 한양대학교 연극영화학과" },
+                    { label: "학교명 (선택)", key: "school_department", required: false, placeholder: "예: 한양대학교, 동국대학교 (학과명 제외)" },
                     { label: "공연 기간 시작 *", key: "schedule_start", required: true, placeholder: "예: 2026.05.10" },
                     { label: "공연 기간 종료 *", key: "schedule_end", required: true, placeholder: "예: 2026.05.25" },
                     { label: "공연 시간 (선택)", key: "show_time", required: false, placeholder: "평일 19:30 / 주말 15:00" },

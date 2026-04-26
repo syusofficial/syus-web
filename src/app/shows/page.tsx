@@ -33,9 +33,9 @@ function isEnded(show: Show, today: string): boolean {
 export default async function ShowsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string; genre?: string; q?: string; page?: string }>;
+  searchParams: Promise<{ region?: string; genre?: string; q?: string; school?: string; page?: string }>;
 }) {
-  const { region, genre, q, page } = await searchParams;
+  const { region, genre, q, school, page } = await searchParams;
   const supabase = await createClient();
 
   const currentPage = Math.max(1, parseInt(page ?? "1", 10) || 1);
@@ -49,6 +49,10 @@ export default async function ShowsPage({
   }
   if (genre) {
     query = query.eq("genre", genre);
+  }
+  if (school) {
+    // 부분 일치로 검색 — "한양대학교 연극영화학과"처럼 학과까지 적힌 기존 데이터도 매칭
+    query = query.ilike("school_department", `%${school}%`);
   }
   if (q && q.trim()) {
     const search = q.trim();
@@ -66,11 +70,30 @@ export default async function ShowsPage({
   const list = activeShows.slice(from, to);
   const activeRegion = region ?? "전체";
 
+  // 등록된 학교 목록 자동 추출 (학과 텍스트가 같이 있어도 첫 단어로 그룹핑)
+  // 예: "한양대학교 연극영화학과" → "한양대학교"
+  const { data: allActiveForSchools } = await supabase
+    .from("shows")
+    .select("school_department")
+    .eq("status", "approved")
+    .not("school_department", "is", null);
+
+  const schoolsSet = new Set<string>();
+  for (const row of (allActiveForSchools as { school_department: string | null }[] ?? [])) {
+    const raw = (row.school_department ?? "").trim();
+    if (!raw) continue;
+    // 첫 어절(공백 또는 콤마 전까지)만 학교명으로 인식
+    const schoolName = raw.split(/[\s,·/]/)[0].trim();
+    if (schoolName) schoolsSet.add(schoolName);
+  }
+  const availableSchools = Array.from(schoolsSet).sort((a, b) => a.localeCompare(b, "ko"));
+
   // 페이지네이션 URL 생성기
   const buildPageUrl = (p: number) => {
     const params = new URLSearchParams();
     if (region) params.set("region", region);
     if (genre) params.set("genre", genre);
+    if (school) params.set("school", school);
     if (q) params.set("q", q);
     if (p > 1) params.set("page", String(p));
     const qs = params.toString();
@@ -96,7 +119,11 @@ export default async function ShowsPage({
               className="text-4xl md:text-5xl font-bold mb-3"
               style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
             >
-              {q ? `"${q}" 검색 결과` : (activeRegion === "전체" ? "진행 중 · 예정 공연" : `${activeRegion} 공연`)}
+              {q
+                ? `"${q}" 검색 결과`
+                : school
+                ? `${school} 공연`
+                : (activeRegion === "전체" ? "진행 중 · 예정 공연" : `${activeRegion} 공연`)}
             </h1>
             <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
               {totalCount}개의 공연
@@ -138,6 +165,7 @@ export default async function ShowsPage({
             const params = new URLSearchParams();
             if (r !== "전체") params.set("region", r);
             if (genre) params.set("genre", genre);
+            if (school) params.set("school", school);
             if (q) params.set("q", q);
             const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
             return (
@@ -160,8 +188,8 @@ export default async function ShowsPage({
 
         {/* 장르 필터 */}
         <div
-          className="mb-10 pb-6 flex flex-wrap gap-2 items-center"
-          style={{ borderBottom: "1px solid #D4CFC9" }}
+          className={`${availableSchools.length > 0 ? "mb-6" : "mb-10 pb-6"} flex flex-wrap gap-2 items-center`}
+          style={availableSchools.length > 0 ? undefined : { borderBottom: "1px solid #D4CFC9" }}
         >
           <span
             className="text-xs tracking-wider uppercase mr-2"
@@ -174,6 +202,7 @@ export default async function ShowsPage({
             const params = new URLSearchParams();
             if (region) params.set("region", region);
             if (g) params.set("genre", g);
+            if (school) params.set("school", school);
             if (q) params.set("q", q);
             const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
             return (
@@ -193,6 +222,45 @@ export default async function ShowsPage({
             );
           })}
         </div>
+
+        {/* 학교 필터 — 등록된 학교가 있을 때만 노출 */}
+        {availableSchools.length > 0 && (
+          <div
+            className="mb-10 pb-6 flex flex-wrap gap-2 items-center"
+            style={{ borderBottom: "1px solid #D4CFC9" }}
+          >
+            <span
+              className="text-xs tracking-wider uppercase mr-2"
+              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            >
+              학교
+            </span>
+            {[null, ...availableSchools].map((sch) => {
+              const isActive = (sch === null && !school) || sch === school;
+              const params = new URLSearchParams();
+              if (region) params.set("region", region);
+              if (genre) params.set("genre", genre);
+              if (sch) params.set("school", sch);
+              if (q) params.set("q", q);
+              const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
+              return (
+                <Link
+                  key={sch ?? "all-schools"}
+                  href={href}
+                  className="px-3 py-1 text-xs"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    backgroundColor: isActive ? "#6D3115" : "transparent",
+                    color: isActive ? "#F4EDE3" : "#9B9693",
+                    border: `1px solid ${isActive ? "#6D3115" : "#D4CFC9"}`,
+                  }}
+                >
+                  {sch ?? "전체"}
+                </Link>
+              );
+            })}
+          </div>
+        )}
 
         {/* 공연 그리드 */}
         {list.length === 0 ? (

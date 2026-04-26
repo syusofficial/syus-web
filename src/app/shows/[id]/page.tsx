@@ -142,8 +142,41 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
 
             {/* Meta box */}
             <div className="p-6 space-y-4" style={{ backgroundColor: "#E8DDD0" }}>
+              {/* 소속 — 학교명만 추출하여 필터 링크로 (학과명은 함께 표기) */}
+              {show.school_department && (
+                <div className="grid grid-cols-[88px_1fr] gap-2">
+                  <span
+                    className="text-xs tracking-wider uppercase pt-0.5"
+                    style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+                  >
+                    소속
+                  </span>
+                  <span
+                    className="text-sm leading-relaxed"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+                  >
+                    {(() => {
+                      const raw = show.school_department.trim();
+                      const schoolName = raw.split(/[\s,·/]/)[0].trim();
+                      const rest = raw.slice(schoolName.length).trim();
+                      return (
+                        <>
+                          <Link
+                            href={`/shows?school=${encodeURIComponent(schoolName)}`}
+                            className="hover:underline"
+                            style={{ color: "#6D3115" }}
+                          >
+                            {schoolName}
+                          </Link>
+                          {rest && <span style={{ color: "#9B9693", marginLeft: 4 }}>{rest}</span>}
+                        </>
+                      );
+                    })()}
+                  </span>
+                </div>
+              )}
+
               {[
-                show.school_department ? { label: "소속", value: show.school_department } : null,
                 show.schedule_start && show.schedule_end
                   ? { label: "공연 기간", value: `${show.schedule_start} — ${show.schedule_end}` }
                   : null,
