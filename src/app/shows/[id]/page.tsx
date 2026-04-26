@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ShowViewTracker from "@/components/ShowViewTracker";
 import LikeButton from "@/components/LikeButton";
+import ShareButton from "@/components/ShareButton";
 
 export default async function ShowDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -209,6 +210,16 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   )}
                 </div>
               </div>
+            )}
+
+            {/* Share */}
+            {show.status === "approved" && (
+              <ShareButton
+                title={show.title}
+                description={show.description}
+                posterUrl={show.poster_url}
+                url={`https://syus.co.kr/shows/${show.id}`}
+              />
             )}
 
             {/* CTA */}
