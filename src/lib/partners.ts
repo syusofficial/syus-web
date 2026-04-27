@@ -41,3 +41,25 @@ export type PartnerAd = {
 export const PARTNER_ADS: PartnerAd[] = [
   // 실제 광고 체결 후 이곳에 추가합니다.
 ];
+
+/**
+ * 런칭 협력사 (베타기 광고주)
+ *
+ * SYUS 베타기(2026-04~08)에 참여한 광고주 — 푸터에 'Launch Partners' 영역으로 노출.
+ * 빈 배열이면 푸터에서 자동 숨김. 협력사가 확보되면 이 배열에 추가하세요.
+ *
+ * - name: 협력사명 (필수)
+ * - category: 카테고리 (예: "공연 의상", "연기 학원", "소극장")
+ * - url: 협력사 홈페이지·인스타 등 (선택)
+ */
+export type LaunchPartner = {
+  name: string;
+  category?: string;
+  url?: string;
+};
+
+export const LAUNCH_PARTNERS: LaunchPartner[] = [
+  // 협력사가 확보되면 여기에 추가
+  // 예시:
+  // { name: "OO 의상 대여", category: "공연 의상", url: "https://example.com" },
+];

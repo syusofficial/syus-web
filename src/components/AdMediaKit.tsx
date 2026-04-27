@@ -173,35 +173,129 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
       {/* ── 3. 광고 상품 ──────────────────────── */}
       <section className="ad-section mb-12 ad-page-break">
         <SectionTitle no="03" title="광고 상품 · 단가" />
-        <table className="w-full text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
-          <thead>
-            <tr style={{ borderBottom: "2px solid #6D3115" }}>
-              {["코드", "상품명", "위치", "기간", "노출", "단가 (VAT 별도)"].map((h) => (
-                <th
-                  key={h}
-                  className="text-left py-3 px-3 text-xs tracking-wider uppercase"
-                  style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <ProductRow code="A" name="메인 히어로 배너" placement="홈 첫 화면" period="월" exposure="전체" price="₩ ____,000" />
-            <ProductRow code="B" name="공연 목록 사이드 배너" placement="/shows · /shows/calendar" period="월" exposure="전체" price="₩ ____,000" />
-            <ProductRow code="C" name="공연 상세 하단 배너" placement="/shows/[id]" period="월" exposure="전체" price="₩ ____,000" />
-            <ProductRow code="D" name="검색 결과 스폰서드" placement="/shows + 키워드" period="월" exposure="키워드 매칭" price="₩ ____,000" />
-            <ProductRow code="E" name="아카이브 / 프로필 노출" placement="/archive · /performer/[id]" period="월" exposure="장기" price="₩ ____,000" />
-            <ProductRow code="F" name="카드뉴스 광고" placement="월간 발행물" period="회" exposure="구독자 + 사이트" price="₩ ____,000" />
-            <ProductRow code="*" name="패키지 (A+B+F)" placement="복합" period="월" exposure="브랜드 캠페인용" price="₩ ____,000" highlight />
-          </tbody>
-        </table>
+
+        {/* 시기별 단가 안내 박스 */}
+        <div className="mb-6 p-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs" style={{ backgroundColor: "#E8DDD0" }}>
+          <div>
+            <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#A63D2F" }}>
+              ① 베타가 (현재 ~ 2026년 8월)
+            </p>
+            <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+              런칭 협력사 모집 중. 후기·데이터 공유 동의 시 무료~할인 게재
+            </p>
+          </div>
+          <div>
+            <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+              ② 시작가 (2026년 9~12월)
+            </p>
+            <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+              정식 출시 단가. 회원 1,000명+ 기준 합리적 가격대
+            </p>
+          </div>
+          <div>
+            <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A5E42" }}>
+              ③ 안정가 (2027년 이후)
+            </p>
+            <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+              회원 5,000명+, MAU 3,000+ 가정. 시장 안착 단가
+            </p>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
+            <thead>
+              <tr style={{ borderBottom: "2px solid #6D3115" }}>
+                {["코드", "상품 (기간)", "① 베타가", "② 시작가", "③ 안정가"].map((h) => (
+                  <th
+                    key={h}
+                    className="text-left py-3 px-3 text-xs tracking-wider uppercase"
+                    style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <PriceRow code="A" name="메인 히어로 배너 (월)"        beta="무료 ~ ₩200,000"  start="₩300,000 ~ ₩500,000"   stable="₩800,000 ~ ₩1,500,000" />
+              <PriceRow code="B" name="공연 목록 사이드 배너 (월)"   beta="무료 ~ ₩100,000"  start="₩150,000 ~ ₩250,000"   stable="₩400,000 ~ ₩800,000" />
+              <PriceRow code="C" name="공연 상세 하단 배너 (월)"     beta="무료 ~ ₩100,000"  start="₩100,000 ~ ₩200,000"   stable="₩300,000 ~ ₩600,000" />
+              <PriceRow code="D" name="검색 결과 스폰서드 (월)"      beta="무료 ~ ₩100,000"  start="₩100,000 ~ ₩200,000"   stable="₩300,000 ~ ₩600,000" />
+              <PriceRow code="E" name="아카이브 / 프로필 (월)"       beta="무료 ~ ₩100,000"  start="₩80,000 ~ ₩150,000"    stable="₩250,000 ~ ₩500,000" />
+              <PriceRow code="F" name="카드뉴스 광고 (회당)"         beta="무료 ~ ₩300,000"  start="₩300,000 ~ ₩500,000"   stable="₩800,000 ~ ₩1,500,000" />
+              <PriceRow code="★" name="패키지 (A+B+F · 월)"          beta="무료 ~ ₩500,000"  start="₩800,000 ~ ₩1,200,000" stable="₩2,000,000 ~ ₩3,000,000" highlight />
+            </tbody>
+          </table>
+        </div>
         <p
-          className="text-xs mt-4"
+          className="text-xs mt-4 leading-relaxed"
           style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
         >
-          ※ 게재 직전까지 사장님과 광고 톤·디자인 협의 후 진행. SYUS의 비상업적 톤을 해치는 광고는 정중히 사양됩니다.
+          ※ 모든 단가는 VAT 별도, 협의 가능. 게재 직전까지 광고 톤·디자인 협의 후 진행.
+          <br />
+          ※ SYUS의 비상업적 톤을 해치는 광고(과도한 자극·허위 광고 등)는 정중히 사양됩니다.
+        </p>
+      </section>
+
+      {/* ── 3+. 런칭 협력사 모집 ────────────────── */}
+      <section className="ad-section mb-12 p-6" style={{ border: "2px solid #6D3115" }}>
+        <div className="flex items-baseline gap-3 mb-4">
+          <span
+            className="text-xs px-2 py-0.5"
+            style={{
+              fontFamily: "var(--font-inter)",
+              backgroundColor: "#6D3115",
+              color: "#F4EDE3",
+              letterSpacing: "0.2em",
+            }}
+          >
+            BETA
+          </span>
+          <h3
+            className="text-xl font-bold"
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+          >
+            런칭 협력사 5사 모집
+          </h3>
+        </div>
+        <p
+          className="text-sm leading-relaxed mb-4"
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+        >
+          SYUS 정식 출시(2026년 9월) 이전까지 첫 5개 광고주를 <strong>런칭 협력사</strong>로 모집합니다.
+          베타가(무료~할인) 게재 + SYUS 푸터 상시 노출 + &lsquo;런칭 협력사&rsquo; 라벨이 부여됩니다.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+          <div className="p-4" style={{ backgroundColor: "#E8DDD0" }}>
+            <p className="text-xs font-semibold mb-2 tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#6D3115", letterSpacing: "0.15em" }}>
+              협력사 혜택
+            </p>
+            <ul className="text-xs leading-relaxed space-y-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+              <li>· 베타가(무료~할인) 게재 — 시장 최저가</li>
+              <li>· SYUS 사이트 푸터 상시 노출 (모든 페이지)</li>
+              <li>· &lsquo;런칭 협력사&rsquo; 공식 라벨 부여</li>
+              <li>· 후기 인터뷰 콘텐츠 제작 (선택)</li>
+              <li>· 정식 출시 후 가격 인상에서 1년간 동결</li>
+            </ul>
+          </div>
+          <div className="p-4" style={{ backgroundColor: "#E8DDD0" }}>
+            <p className="text-xs font-semibold mb-2 tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#6D3115", letterSpacing: "0.15em" }}>
+              참여 조건
+            </p>
+            <ul className="text-xs leading-relaxed space-y-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+              <li>· SYUS 톤과 어울리는 광고 콘텐츠 (공연·문화 인접 권장)</li>
+              <li>· 게재 후 효과 데이터 공유 동의</li>
+              <li>· 후기·인터뷰 가능 (선택, 비강제)</li>
+              <li>· 게재 기간 최소 1개월</li>
+            </ul>
+          </div>
+        </div>
+        <p
+          className="text-xs"
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+        >
+          모집 기간: 즉시 ~ 5사 마감 시까지 / 문의: syusflux@gmail.com
         </p>
       </section>
 
@@ -355,21 +449,19 @@ function PlacementRow({
   );
 }
 
-function ProductRow({
+function PriceRow({
   code,
   name,
-  placement,
-  period,
-  exposure,
-  price,
+  beta,
+  start,
+  stable,
   highlight,
 }: {
   code: string;
   name: string;
-  placement: string;
-  period: string;
-  exposure: string;
-  price: string;
+  beta: string;
+  start: string;
+  stable: string;
   highlight?: boolean;
 }) {
   return (
@@ -390,7 +482,7 @@ function ProductRow({
         {code}
       </td>
       <td
-        className="py-3 px-3"
+        className="py-3 px-3 text-sm"
         style={{
           fontFamily: "var(--font-noto-serif-kr)",
           color: "#1A1A1A",
@@ -400,28 +492,22 @@ function ProductRow({
         {name}
       </td>
       <td
-        className="py-3 px-3 text-xs"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+        className="py-3 px-3 text-xs whitespace-nowrap"
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F" }}
       >
-        {placement}
+        {beta}
       </td>
       <td
-        className="py-3 px-3 text-xs"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+        className="py-3 px-3 text-xs whitespace-nowrap font-semibold"
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}
       >
-        {period}
+        {start}
       </td>
       <td
-        className="py-3 px-3 text-xs"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+        className="py-3 px-3 text-xs whitespace-nowrap"
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3A5E42" }}
       >
-        {exposure}
-      </td>
-      <td
-        className="py-3 px-3 text-sm font-semibold"
-        style={{ fontFamily: "var(--font-inter)", color: "#6D3115" }}
-      >
-        {price}
+        {stable}
       </td>
     </tr>
   );

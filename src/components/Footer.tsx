@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { LAUNCH_PARTNERS } from "@/lib/partners";
 import type { User } from "@supabase/supabase-js";
 
 export default function Footer() {
@@ -140,6 +141,59 @@ export default function Footer() {
             </div>
           </div>
         </div>
+
+        {/* 런칭 협력사 (LAUNCH_PARTNERS 비어있으면 자동 숨김) */}
+        {LAUNCH_PARTNERS.length > 0 && (
+          <div className="pt-8 pb-2" style={{ borderTop: "1px solid #2C2C2C" }}>
+            <p
+              className="text-xs tracking-[0.25em] uppercase mb-4"
+              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            >
+              Launch Partners
+            </p>
+            <div className="flex flex-wrap gap-x-6 gap-y-3">
+              {LAUNCH_PARTNERS.map((p) => {
+                const content = (
+                  <span className="inline-flex items-baseline gap-2">
+                    <span
+                      className="text-sm"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3" }}
+                    >
+                      {p.name}
+                    </span>
+                    {p.category && (
+                      <span
+                        className="text-xs"
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D6560" }}
+                      >
+                        {p.category}
+                      </span>
+                    )}
+                  </span>
+                );
+                return p.url ? (
+                  <a
+                    key={p.name}
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-opacity hover:opacity-70"
+                  >
+                    {content}
+                  </a>
+                ) : (
+                  <span key={p.name}>{content}</span>
+                );
+              })}
+            </div>
+            <p
+              className="text-xs mt-4"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D6560" }}
+            >
+              SYUS 런칭과 함께해주신 협력사입니다.
+            </p>
+          </div>
+        )}
 
         {/* 사업자 정보 */}
         <div
