@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { CONTACT_CATEGORIES, type ContactCategory } from "@/lib/constants";
@@ -98,18 +99,52 @@ export default function ContactPage() {
     <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F4EDE3" }}>
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="mb-14">
+        <div className="mb-10">
           <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-            Contact
+            1:1 Contact
           </p>
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
-            문의하기
+            1:1 문의
           </h1>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
             아래에서 문의 유형을 선택하시고 내용을 남겨주세요.
             <br />
-            평일 기준 2영업일 이내 답변 드립니다.
+            평일 기준 1~2영업일 이내 답변 드립니다.
           </p>
+        </div>
+
+        {/* FAQ 안내 배너 */}
+        <div
+          className="mb-10 p-5 flex items-center justify-between gap-4 flex-wrap"
+          style={{ backgroundColor: "#E8DDD0" }}
+        >
+          <div className="flex-1 min-w-0">
+            <p
+              className="text-xs tracking-wider uppercase mb-1"
+              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            >
+              먼저 확인해보세요
+            </p>
+            <p
+              className="text-sm leading-relaxed"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+            >
+              자주 묻는 질문에 답변이 있을 수 있습니다. 빠른 해결을 위해 FAQ를 먼저 살펴보세요.
+            </p>
+          </div>
+          <Link
+            href="/faq"
+            className="px-4 py-2 text-xs tracking-wider transition-colors shrink-0"
+            style={{
+              fontFamily: "var(--font-noto-sans-kr)",
+              backgroundColor: "#6D3115",
+              color: "#F4EDE3",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#8B4A2A")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#6D3115")}
+          >
+            FAQ 보기 →
+          </Link>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">

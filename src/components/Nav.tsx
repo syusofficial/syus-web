@@ -66,6 +66,59 @@ export function SyusLogoSvg({
   );
 }
 
+/** 문의 메뉴 호버 드롭다운 — FAQ / 1:1 문의 두 옵션 (데스크톱 전용) */
+function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <Link
+        href="/faq"
+        style={linkStyle}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+      >
+        도움말
+      </Link>
+      {open && (
+        <div className="absolute top-full left-0 pt-3" style={{ minWidth: "180px" }}>
+          <div
+            className="flex flex-col p-2"
+            style={{
+              backgroundColor: "#F4EDE3",
+              border: "1px solid #D4CFC9",
+              boxShadow: "0 8px 24px rgba(109, 49, 21, 0.08)",
+            }}
+          >
+            <Link
+              href="/faq"
+              className="px-3 py-2 text-xs transition-colors"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+            >
+              자주 묻는 질문 (FAQ)
+            </Link>
+            <Link
+              href="/contact"
+              className="px-3 py-2 text-xs transition-colors"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+            >
+              1:1 문의
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** 공연 메뉴 호버 드롭다운 (데스크톱 전용) */
 function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
   const [open, setOpen] = useState(false);
@@ -213,14 +266,7 @@ export default function Nav() {
           >
             기록
           </Link>
-          <Link
-            href="/contact"
-            style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
-          >
-            문의
-          </Link>
+          <ContactHoverMenu linkStyle={linkStyle} />
         </div>
 
         {/* Center — Logo */}
@@ -394,11 +440,18 @@ export default function Nav() {
               기록
             </Link>
             <Link
+              href="/faq"
+              style={{ ...linkStyle, padding: "8px 0" }}
+              onClick={() => setMenuOpen(false)}
+            >
+              자주 묻는 질문
+            </Link>
+            <Link
               href="/contact"
               style={{ ...linkStyle, padding: "8px 0" }}
               onClick={() => setMenuOpen(false)}
             >
-              문의
+              1:1 문의
             </Link>
             {user ? (
               <>

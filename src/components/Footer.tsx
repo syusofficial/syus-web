@@ -69,7 +69,9 @@ export default function Footer() {
             <div className="flex flex-col gap-3">
               {[
                 { href: "/shows", label: "공연 목록" },
-                { href: "/contact", label: "문의" },
+                { href: "/archive", label: "지난 공연" },
+                { href: "/faq", label: "자주 묻는 질문" },
+                { href: "/contact", label: "1:1 문의" },
                 { href: "/performer", label: "공연자 등록" },
               ].map((item) => (
                 <Link
@@ -248,13 +250,22 @@ export default function Footer() {
             개인정보처리방침
           </Link>
           <Link
+            href="/faq"
+            className="text-xs transition-colors"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+          >
+            자주 묻는 질문
+          </Link>
+          <Link
             href="/contact"
             className="text-xs transition-colors"
             style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
           >
-            문의하기
+            1:1 문의
           </Link>
         </div>
 
