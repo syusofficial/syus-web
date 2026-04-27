@@ -228,12 +228,44 @@ export default function ContactPage() {
           </button>
         </form>
 
-        <div className="mt-16 pt-8" style={{ borderTop: "1px solid #D4CFC9" }}>
-          <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
-            이메일로도 연락하실 수 있습니다 —{" "}
-            <a href="mailto:syusflux@gmail.com" style={{ color: "#6D3115" }}>
-              syusflux@gmail.com
+        <div className="mt-16 pt-8 space-y-4" style={{ borderTop: "1px solid #D4CFC9" }}>
+          <p className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+            Other Channels
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <a
+              href="mailto:syusflux@gmail.com"
+              className="block p-4 transition-colors"
+              style={{ backgroundColor: "#E8DDD0" }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D4CFC9")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E8DDD0")}
+            >
+              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                Email
+              </p>
+              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+                syusflux@gmail.com
+              </p>
             </a>
+            <a
+              href="http://pf.kakao.com/_xkPVTX"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block p-4 transition-colors"
+              style={{ backgroundColor: "#E8DDD0" }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D4CFC9")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E8DDD0")}
+            >
+              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                KakaoTalk
+              </p>
+              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+                사유유사 SYUS 채널 →
+              </p>
+            </a>
+          </div>
+          <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+            카카오톡 채널은 1:1 채팅으로 응대드립니다. 평일 기준 1~2일 이내 답변드리겠습니다.
           </p>
         </div>
       </div>

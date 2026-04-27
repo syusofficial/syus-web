@@ -211,6 +211,20 @@ export default function Footer() {
               <span>{item.value}</span>
             </div>
           ))}
+          <div className="flex gap-3">
+            <span style={{ minWidth: "100px", color: "#6D6560" }}>카카오톡</span>
+            <a
+              href="http://pf.kakao.com/_xkPVTX"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors"
+              style={{ color: "#9B9693" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+            >
+              사유유사 SYUS 채널 →
+            </a>
+          </div>
         </div>
 
         {/* 정책 링크 */}
