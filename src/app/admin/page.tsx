@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
 import AdminStats from "@/components/AdminStats";
+import AdMediaKit from "@/components/AdMediaKit";
 import { CONTACT_CATEGORIES } from "@/lib/constants";
 import type { Show, Profile, Contact } from "@/types";
 
-type Tab = "stats" | "shows" | "applications" | "members" | "contacts";
+type Tab = "stats" | "media-kit" | "shows" | "applications" | "members" | "contacts";
 
 const CATEGORY_COLOR: Record<string, { bg: string; color: string }> = {
   "공연자 신청":     { bg: "#D4E4ED", color: "#2A5E7A" },
@@ -262,6 +263,7 @@ export default function AdminPage() {
         <div className="flex gap-0 mb-8 overflow-x-auto" style={{ borderBottom: "1px solid #D4CFC9" }}>
           {([
             { key: "stats",        label: "통계" },
+            { key: "media-kit",    label: "광고" },
             { key: "shows",        label: `공연 승인${pendingShows ? ` (${pendingShows})` : ""}` },
             { key: "applications", label: `공연자 신청${pendingApplications ? ` (${pendingApplications})` : ""}` },
             { key: "members",      label: "회원 관리" },
@@ -290,6 +292,11 @@ export default function AdminPage() {
             {/* ── 통계 탭 ── */}
             {tab === "stats" && (
               <AdminStats shows={shows} members={members} likes={likes} />
+            )}
+
+            {/* ── 광고 탭 (미디어킷) ── */}
+            {tab === "media-kit" && (
+              <AdMediaKit shows={shows} members={members} />
             )}
 
             {/* ── 공연 승인 탭 ── */}
