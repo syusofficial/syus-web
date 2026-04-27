@@ -69,6 +69,16 @@ export default function FAQPage() {
 
   const toggle = (id: string) => setOpenId(openId === id ? null : id);
 
+  /** 인기 질문 클릭 — 해당 FAQ를 펼치고 그 위치로 부드럽게 스크롤 */
+  const expandAndScroll = (id: string) => {
+    setOpenId(id); // 항상 펼침 (토글 아님)
+    // DOM 업데이트 후 스크롤
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`faq-${id}`);
+      el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
   return (
     <div
       className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16"
@@ -142,7 +152,7 @@ export default function FAQPage() {
               {popularFaqs.map((faq) => (
                 <button
                   key={faq.id}
-                  onClick={() => toggle(faq.id)}
+                  onClick={() => expandAndScroll(faq.id)}
                   className="w-full text-left px-5 py-3 transition-colors"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
@@ -219,7 +229,8 @@ export default function FAQPage() {
               return (
                 <div
                   key={faq.id}
-                  style={{ border: "1px solid #D4CFC9" }}
+                  id={`faq-${faq.id}`}
+                  style={{ border: "1px solid #D4CFC9", scrollMarginTop: "6rem" }}
                 >
                   <button
                     type="button"
