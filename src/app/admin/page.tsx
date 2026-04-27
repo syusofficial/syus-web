@@ -4,10 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
+import AdminStats from "@/components/AdminStats";
 import { CONTACT_CATEGORIES } from "@/lib/constants";
 import type { Show, Profile, Contact } from "@/types";
 
-type Tab = "shows" | "applications" | "members" | "contacts";
+type Tab = "stats" | "shows" | "applications" | "members" | "contacts";
 
 const CATEGORY_COLOR: Record<string, { bg: string; color: string }> = {
   "공연자 신청":     { bg: "#D4E4ED", color: "#2A5E7A" },
@@ -47,6 +48,7 @@ export default function AdminPage() {
   const [shows, setShows] = useState<Show[]>([]);
   const [members, setMembers] = useState<Profile[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [likes, setLikes] = useState<{ show_id: string }[]>([]);
   const [contactFilter, setContactFilter] = useState<string>("전체");
   const [dataLoading, setDataLoading] = useState(true);
   const [reviewShow, setReviewShow] = useState<Show | null>(null);
@@ -55,15 +57,17 @@ export default function AdminPage() {
     const supabase = createClient();
     setDataLoading(true);
 
-    const [showsRes, membersRes, contactsRes] = await Promise.all([
+    const [showsRes, membersRes, contactsRes, likesRes] = await Promise.all([
       supabase.from("shows").select("*").order("created_at", { ascending: false }),
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("contacts").select("*").order("created_at", { ascending: false }),
+      supabase.from("likes").select("show_id"),
     ]);
 
     setShows((showsRes.data as Show[]) ?? []);
     setMembers((membersRes.data as Profile[]) ?? []);
     setContacts((contactsRes.data as Contact[]) ?? []);
+    setLikes((likesRes.data as { show_id: string }[]) ?? []);
     setDataLoading(false);
   }, []);
 
@@ -257,6 +261,7 @@ export default function AdminPage() {
         {/* Tabs */}
         <div className="flex gap-0 mb-8 overflow-x-auto" style={{ borderBottom: "1px solid #D4CFC9" }}>
           {([
+            { key: "stats",        label: "통계" },
             { key: "shows",        label: `공연 승인${pendingShows ? ` (${pendingShows})` : ""}` },
             { key: "applications", label: `공연자 신청${pendingApplications ? ` (${pendingApplications})` : ""}` },
             { key: "members",      label: "회원 관리" },
@@ -282,6 +287,11 @@ export default function AdminPage() {
           <PageLoader />
         ) : (
           <>
+            {/* ── 통계 탭 ── */}
+            {tab === "stats" && (
+              <AdminStats shows={shows} members={members} likes={likes} />
+            )}
+
             {/* ── 공연 승인 탭 ── */}
             {tab === "shows" && (
               <div className="overflow-x-auto">
