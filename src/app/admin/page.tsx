@@ -127,6 +127,52 @@ export default function AdminPage() {
     }
   };
 
+  /** 관리자 강제 탈퇴 — Storage 포스터 + auth.users + CASCADE 데이터 삭제 */
+  const forceDeleteMember = async (member: Profile) => {
+    const confirmed = window.confirm(
+      `정말로 "${member.name ?? member.email ?? member.id}" 회원을 강제 탈퇴시키겠습니까?\n\n` +
+      `이 작업은 되돌릴 수 없으며, 해당 회원이 등록한 모든 공연·좋아요·문의 등이 영구 삭제됩니다.`
+    );
+    if (!confirmed) return;
+
+    const res = await fetch("/api/admin/delete-user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ targetUserId: member.id }),
+    });
+
+    if (!res.ok) {
+      const { error } = await res.json().catch(() => ({ error: "오류가 발생했습니다." }));
+      alert(error ?? "탈퇴 처리 중 오류가 발생했습니다.");
+      return;
+    }
+
+    // 회원·공연·문의 목록에서 즉시 반영 (탈퇴된 회원의 데이터 모두 cascade 삭제됨)
+    setMembers((prev) => prev.filter((m) => m.id !== member.id));
+    setShows((prev) => prev.filter((s) => s.organizer_id !== member.id));
+    alert("회원 탈퇴가 완료되었습니다.");
+  };
+
+  /** 처리완료된 문의 영구 삭제 */
+  const deleteContact = async (contact: Contact) => {
+    if (contact.status !== "resolved") {
+      alert("처리완료된 문의만 삭제할 수 있습니다.");
+      return;
+    }
+    const confirmed = window.confirm(
+      `"${contact.name}"님의 문의를 영구 삭제하시겠습니까?\n\n복구할 수 없습니다.`
+    );
+    if (!confirmed) return;
+
+    const supabase = createClient();
+    const { error } = await supabase.from("contacts").delete().eq("id", contact.id);
+    if (error) {
+      alert("삭제 중 오류가 발생했습니다. RLS 정책을 확인해주세요.");
+      return;
+    }
+    setContacts((prev) => prev.filter((c) => c.id !== contact.id));
+  };
+
   const updateMemberRole = async (id: string, role: "member" | "performer" | "admin") => {
     const supabase = createClient();
     const { error } = await supabase.from("profiles").update({ role }).eq("id", id);
@@ -473,7 +519,7 @@ export default function AdminPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr style={{ borderBottom: "1px solid #D4CFC9" }}>
-                        {["이름", "이메일", "역할", "가입일", "역할 변경"].map((h) => (
+                        {["이름", "이메일", "역할", "가입일", "역할 변경", "관리"].map((h) => (
                           <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
                             {h}
                           </th>
@@ -506,6 +552,17 @@ export default function AdminPage() {
                               <option value="performer">공연자</option>
                               <option value="admin">관리자</option>
                             </select>
+                          </td>
+                          <td className="py-4 px-3">
+                            <button
+                              onClick={() => forceDeleteMember(m)}
+                              className="text-xs px-3 py-1 transition-colors"
+                              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
+                              onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                            >
+                              강제 탈퇴
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -593,17 +650,28 @@ export default function AdminPage() {
                                   {c.created_at.slice(0, 10)}
                                 </p>
                               </div>
-                              <div className="flex items-center gap-3 shrink-0">
+                              <div className="flex items-center gap-2 shrink-0 flex-wrap">
                                 <StatusBadge status={c.status} />
                                 {c.status === "pending" && (
                                   <button
                                     onClick={() => resolveContact(c.id)}
-                                    className="text-xs px-3 py-1"
+                                    className="text-xs px-3 py-1 transition-colors"
                                     style={{ color: "#3A5E42", border: "1px solid #3A5E42" }}
                                     onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D4EDD4"; }}
                                     onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
                                   >
                                     처리완료
+                                  </button>
+                                )}
+                                {c.status === "resolved" && (
+                                  <button
+                                    onClick={() => deleteContact(c)}
+                                    className="text-xs px-3 py-1 transition-colors"
+                                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                                  >
+                                    삭제
                                   </button>
                                 )}
                               </div>
