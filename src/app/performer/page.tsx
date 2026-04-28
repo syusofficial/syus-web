@@ -804,7 +804,7 @@ export default function PerformerPage() {
                     <p className="font-semibold mb-1 truncate" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
                       {show.title}
                     </p>
-                    <p className="text-xs truncate" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                    <p className="text-xs truncate mb-1" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
                       {[
                         show.genre === "기타" ? show.genre_custom : show.genre,
                         show.region,
@@ -812,6 +812,23 @@ export default function PerformerPage() {
                         show.schedule_start,
                       ].filter(Boolean).join(" · ")}
                     </p>
+                    {/* 통계: 조회수 (approved 공연만 표시) */}
+                    {show.status === "approved" && (
+                      <p className="text-xs flex items-center gap-3" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+                        <span>
+                          <span style={{ color: "#9B9693" }}>조회수</span>{" "}
+                          <strong style={{ fontFamily: "var(--font-inter)" }}>{show.view_count ?? 0}</strong>
+                        </span>
+                        {show.featured && (
+                          <span
+                            className="px-2 py-0.5 text-[10px]"
+                            style={{ backgroundColor: "#6D3115", color: "#F4EDE3", letterSpacing: "0.1em" }}
+                          >
+                            ★ EDITOR&apos;S PICK
+                          </span>
+                        )}
+                      </p>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <StatusBadge status={show.status} />

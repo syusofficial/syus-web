@@ -26,6 +26,10 @@ export type Show = {
   age_rating?: string;         // 관람 연령 (예: 7세 이상)
   map_kakao_url?: string;      // 카카오맵 링크
   map_naver_url?: string;      // 네이버지도 링크
+
+  // 운영·통계 필드
+  featured?: boolean;          // 운영자 픽 (메인 페이지 노출)
+  view_count?: number;         // 누적 조회수
 };
 
 export type Profile = {

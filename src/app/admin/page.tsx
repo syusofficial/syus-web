@@ -117,6 +117,16 @@ export default function AdminPage() {
     }
   };
 
+  /** 운영자 픽 토글 — 메인 페이지 노출 여부 */
+  const toggleFeatured = async (id: string, featured: boolean) => {
+    const supabase = createClient();
+    const { error } = await supabase.from("shows").update({ featured }).eq("id", id);
+    if (!error) {
+      setShows((prev) => prev.map((s) => s.id === id ? { ...s, featured } : s));
+      setReviewShow((prev) => (prev && prev.id === id ? { ...prev, featured } : prev));
+    }
+  };
+
   const updateMemberRole = async (id: string, role: "member" | "performer" | "admin") => {
     const supabase = createClient();
     const { error } = await supabase.from("profiles").update({ role }).eq("id", id);
@@ -621,6 +631,7 @@ export default function AdminPage() {
           onApprove={() => updateShowStatus(reviewShow.id, "approved")}
           onReject={() => updateShowStatus(reviewShow.id, "rejected")}
           onDelete={() => deleteShow(reviewShow)}
+          onToggleFeatured={() => toggleFeatured(reviewShow.id, !reviewShow.featured)}
         />
       )}
     </div>
@@ -636,12 +647,14 @@ function ShowReviewModal({
   onApprove,
   onReject,
   onDelete,
+  onToggleFeatured,
 }: {
   show: Show;
   onClose: () => void;
   onApprove: () => void;
   onReject: () => void;
   onDelete: () => void;
+  onToggleFeatured: () => void;
 }) {
   const genreLabel = show.genre === "기타" ? (show.genre_custom || "기타") : (show.genre ?? "—");
 
@@ -788,6 +801,36 @@ function ShowReviewModal({
               <LinkRow label="티켓 예매 링크" url={show.ticket_url} />
             </div>
           </div>
+
+          {/* 운영자 픽 토글 — approved 공연만 활성 */}
+          {show.status === "approved" && (
+            <div
+              className="pt-6 flex items-center justify-between gap-4 flex-wrap"
+              style={{ borderTop: "1px solid #D4CFC9" }}
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                  Editor&apos;s Pick
+                </p>
+                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+                  메인 페이지 &lsquo;이번 달 주목할 만한 공연&rsquo; 영역에 노출
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={onToggleFeatured}
+                className="px-5 py-2 text-xs tracking-wider transition-colors shrink-0"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  backgroundColor: show.featured ? "#6D3115" : "transparent",
+                  color: show.featured ? "#F4EDE3" : "#6D3115",
+                  border: `1px solid #6D3115`,
+                }}
+              >
+                {show.featured ? "✓ 픽 등록됨 (해제)" : "픽 등록하기"}
+              </button>
+            </div>
+          )}
 
           {/* 액션 버튼 */}
           <div className="pt-6 flex flex-col sm:flex-row gap-3" style={{ borderTop: "1px solid #D4CFC9" }}>
