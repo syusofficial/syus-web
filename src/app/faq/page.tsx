@@ -312,7 +312,7 @@ export default function FAQPage() {
             className="text-sm leading-relaxed mb-6"
             style={{ fontFamily: "var(--font-noto-sans-kr)", opacity: 0.85 }}
           >
-            1:1 문의를 통해 직접 연락 주세요. 보통 1일, 늦어도 2일 안에 답변드립니다.
+            1:1 문의를 통해 직접 연락 주세요. 1~2일 이내에 답변드립니다.
           </p>
           <Link
             href="/contact"
