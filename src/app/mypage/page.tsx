@@ -443,7 +443,7 @@ export default function MyPage() {
                   ⏳ 신청이 접수되었습니다
                 </p>
                 <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
-                  관리자 검토 후 승인되면 공연자 권한이 부여됩니다. (보통 1~3 영업일 소요)
+                  관리자 검토 후 승인되면 공연자 권한이 부여됩니다. (보통 1~3일 소요)
                 </p>
               </div>
             )}

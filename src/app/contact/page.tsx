@@ -109,7 +109,7 @@ export default function ContactPage() {
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
             아래에서 문의 유형을 선택하시고 내용을 남겨주세요.
             <br />
-            평일 기준 1~2영업일 이내 답변 드립니다.
+            보통 1일, 늦어도 2일 안에 답변드리겠습니다.
           </p>
         </div>
 
@@ -316,7 +316,7 @@ export default function ContactPage() {
             </a>
           </div>
           <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
-            카카오톡 채널과 인스타그램 DM은 평일 기준 1~2일 이내 답변드리겠습니다.
+            카카오톡 채널과 인스타그램 DM은 보통 1일, 늦어도 2일 안에 답변드리겠습니다.
           </p>
         </div>
       </div>
