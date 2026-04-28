@@ -71,8 +71,48 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     recommendations = scored.map((x) => x.show);
   }
 
+  // JSON-LD 구조화 데이터 — Schema.org TheaterEvent (Google 검색 Rich Result)
+  const normalizeDate = (d?: string) => d?.replace(/\./g, "-") ?? undefined;
+  const eventStructuredData = show.status === "approved" ? {
+    "@context": "https://schema.org",
+    "@type": "TheaterEvent",
+    name: show.title,
+    description: show.description,
+    image: show.poster_url ?? undefined,
+    startDate: normalizeDate(show.schedule_start),
+    endDate: normalizeDate(show.schedule_end ?? show.schedule_start),
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    location: {
+      "@type": "Place",
+      name: show.venue,
+      address: show.venue_address ?? show.venue,
+    },
+    performer: show.performer_name ? {
+      "@type": "PerformingGroup",
+      name: show.performer_name,
+    } : undefined,
+    organizer: {
+      "@type": "Organization",
+      name: "사유유사 SYUS",
+      url: "https://syus.co.kr",
+    },
+    offers: show.ticket_url ? {
+      "@type": "Offer",
+      url: show.ticket_url,
+      availability: "https://schema.org/InStock",
+    } : undefined,
+    inLanguage: "ko",
+  } : null;
+
   return (
     <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F4EDE3" }}>
+      {eventStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(eventStructuredData) }}
+        />
+      )}
       <ShowViewTracker showId={show.id} />
 
       {/* 비공개 상태 알림 (소유자/관리자에게만 노출됨) */}

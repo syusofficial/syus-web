@@ -44,11 +44,15 @@ export default function PerformerPage() {
   const [genre, setGenre] = useState<string>("");
   const [region, setRegion] = useState<string>("");
   const [defaultPerformerName, setDefaultPerformerName] = useState<string>("");
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [hasDraft, setHasDraft] = useState(false);
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
   const [existingPosterUrl, setExistingPosterUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const draftKey = currentUserId ? `syus-performer-draft-${currentUserId}` : null;
 
   // 권한 체크 + 내 공연 로딩
   useEffect(() => {
@@ -68,6 +72,7 @@ export default function PerformerPage() {
       }
 
       setDefaultPerformerName(profile?.name ?? "");
+      setCurrentUserId(data.user.id);
 
       const { data: shows } = await supabase
         .from("shows")
@@ -79,6 +84,45 @@ export default function PerformerPage() {
       setAuthState("ready");
     });
   }, [router]);
+
+  // 임시저장 — 신규 등록 모드에서만, 폼 변경 1초 debounce
+  useEffect(() => {
+    if (!showForm || editingId || !draftKey) return;
+    const timer = setTimeout(() => {
+      localStorage.setItem(draftKey, JSON.stringify({ form, genre, region }));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [form, genre, region, showForm, editingId, draftKey]);
+
+  // 신규 등록 모드 진입 시 저장된 draft 감지
+  useEffect(() => {
+    if (showForm && !editingId && draftKey) {
+      const draft = localStorage.getItem(draftKey);
+      setHasDraft(!!draft);
+    } else {
+      setHasDraft(false);
+    }
+  }, [showForm, editingId, draftKey]);
+
+  const restoreDraft = () => {
+    if (!draftKey) return;
+    const raw = localStorage.getItem(draftKey);
+    if (!raw) return;
+    try {
+      const draft = JSON.parse(raw);
+      if (draft.form) setForm(draft.form);
+      if (draft.genre) setGenre(draft.genre);
+      if (draft.region) setRegion(draft.region);
+    } catch {
+      // 잘못된 JSON이면 무시
+    }
+    setHasDraft(false);
+  };
+
+  const discardDraft = () => {
+    if (draftKey) localStorage.removeItem(draftKey);
+    setHasDraft(false);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -291,6 +335,8 @@ export default function PerformerPage() {
         return;
       }
       setMyShows((prev) => [newShow as Show, ...prev]);
+      // 등록 성공 → 임시저장 삭제
+      if (draftKey) localStorage.removeItem(draftKey);
     }
 
     setShowForm(false);
@@ -391,6 +437,36 @@ export default function PerformerPage() {
                 </span>
               )}
             </div>
+
+            {/* 임시저장 복원 안내 */}
+            {hasDraft && !editingId && (
+              <div
+                className="p-4 flex items-center justify-between gap-4 flex-wrap"
+                style={{ backgroundColor: "#F4EDE3", border: "1px solid #6D3115" }}
+              >
+                <p className="text-xs leading-relaxed flex-1 min-w-0" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+                  이전에 작성하던 내용이 있습니다. 이어서 작성하시겠어요?
+                </p>
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={restoreDraft}
+                    className="px-3 py-1.5 text-xs"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+                  >
+                    이어서 작성
+                  </button>
+                  <button
+                    type="button"
+                    onClick={discardDraft}
+                    className="px-3 py-1.5 text-xs"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "transparent", color: "#9B9693", border: "1px solid #D4CFC9" }}
+                  >
+                    버리고 새로 시작
+                  </button>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* 포스터 */}
