@@ -2,7 +2,7 @@ import Link from "next/link";
 import ShowCard from "@/components/ShowCard";
 import ShowsSearchBar from "@/components/ShowsSearchBar";
 import { createClient } from "@/lib/supabase/server";
-import { REGIONS, GENRES } from "@/lib/constants";
+import { REGIONS, GENRES, SHOW_CATEGORIES } from "@/lib/constants";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
@@ -33,9 +33,9 @@ function isEnded(show: Show, today: string): boolean {
 export default async function ShowsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string; genre?: string; q?: string; school?: string; page?: string }>;
+  searchParams: Promise<{ region?: string; genre?: string; category?: string; q?: string; school?: string; page?: string }>;
 }) {
-  const { region, genre, q, school, page } = await searchParams;
+  const { region, genre, category, q, school, page } = await searchParams;
   const supabase = await createClient();
 
   const currentPage = Math.max(1, parseInt(page ?? "1", 10) || 1);
@@ -49,6 +49,9 @@ export default async function ShowsPage({
   }
   if (genre) {
     query = query.eq("genre", genre);
+  }
+  if (category) {
+    query = query.eq("show_category", category);
   }
   if (school) {
     // 부분 일치로 검색 — "한양대학교 연극영화학과"처럼 학과까지 적힌 기존 데이터도 매칭
@@ -93,6 +96,7 @@ export default async function ShowsPage({
     const params = new URLSearchParams();
     if (region) params.set("region", region);
     if (genre) params.set("genre", genre);
+    if (category) params.set("category", category);
     if (school) params.set("school", school);
     if (q) params.set("q", q);
     if (p > 1) params.set("page", String(p));
@@ -165,6 +169,7 @@ export default async function ShowsPage({
             const params = new URLSearchParams();
             if (r !== "전체") params.set("region", r);
             if (genre) params.set("genre", genre);
+            if (category) params.set("category", category);
             if (school) params.set("school", school);
             if (q) params.set("q", q);
             const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
@@ -202,6 +207,7 @@ export default async function ShowsPage({
             const params = new URLSearchParams();
             if (region) params.set("region", region);
             if (g) params.set("genre", g);
+            if (category) params.set("category", category);
             if (school) params.set("school", school);
             if (q) params.set("q", q);
             const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
@@ -218,6 +224,41 @@ export default async function ShowsPage({
                 }}
               >
                 {g ?? "전체"}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* 공연 구분 필터 */}
+        <div className="mb-6 flex flex-wrap gap-2 items-center">
+          <span
+            className="text-xs tracking-wider uppercase mr-2"
+            style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+          >
+            구분
+          </span>
+          {[null, ...SHOW_CATEGORIES].map((c) => {
+            const isActive = (c === null && !category) || c === category;
+            const params = new URLSearchParams();
+            if (region) params.set("region", region);
+            if (genre) params.set("genre", genre);
+            if (c) params.set("category", c);
+            if (school) params.set("school", school);
+            if (q) params.set("q", q);
+            const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
+            return (
+              <Link
+                key={c ?? "all-cat"}
+                href={href}
+                className="px-3 py-1 text-xs"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  backgroundColor: isActive ? "#6D3115" : "transparent",
+                  color: isActive ? "#F4EDE3" : "#9B9693",
+                  border: `1px solid ${isActive ? "#6D3115" : "#D4CFC9"}`,
+                }}
+              >
+                {c ?? "전체"}
               </Link>
             );
           })}
@@ -240,6 +281,7 @@ export default async function ShowsPage({
               const params = new URLSearchParams();
               if (region) params.set("region", region);
               if (genre) params.set("genre", genre);
+              if (category) params.set("category", category);
               if (sch) params.set("school", sch);
               if (q) params.set("q", q);
               const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;

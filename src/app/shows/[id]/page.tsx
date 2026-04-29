@@ -201,11 +201,16 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             </div>
 
             {/* 카테고리 태그 */}
-            {(show.genre || show.region) && (
+            {(show.genre || show.region || show.show_category) && (
               <div className="flex flex-wrap gap-2">
                 {show.genre && (
                   <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}>
                     {show.genre === "기타" && show.genre_custom ? show.genre_custom : show.genre}
+                  </span>
+                )}
+                {show.show_category && (
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E8DDD0", color: "#6D3115" }}>
+                    {show.show_category}
                   </span>
                 )}
                 {show.region && (

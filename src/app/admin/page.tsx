@@ -818,6 +818,7 @@ function ShowReviewModal({
             <div className="grid grid-cols-2 gap-x-6 gap-y-5 content-start">
               <InfoRow label="공연자" value={show.performer_name} />
               <InfoRow label="장르" value={genreLabel} />
+              <InfoRow label="구분" value={show.show_category} />
               <InfoRow label="지역" value={show.region} />
               <InfoRow label="대학·학과" value={show.school_department} />
               <InfoRow label="공연 시작" value={show.schedule_start} />

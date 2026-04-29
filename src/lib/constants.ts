@@ -9,10 +9,14 @@ export const REGIONS = [
 
 export const REGIONS_EXCLUDE_ALL = REGIONS.slice(1);
 
-export const GENRES = ["연극", "뮤지컬", "넌버벌", "기타"] as const;
+export const GENRES = ["연극", "뮤지컬", "기타"] as const;
+
+/** 공연 구분 — 등록 시 필수 선택. 장르(작품 형식)와 별개로 공연의 성격을 분류. */
+export const SHOW_CATEGORIES = ["교내 공연", "외부 공연", "워크샵"] as const;
 
 export type Region = typeof REGIONS[number];
 export type Genre = typeof GENRES[number];
+export type ShowCategory = typeof SHOW_CATEGORIES[number];
 
 export const CONTACT_CATEGORIES = [
   "공연자 신청",

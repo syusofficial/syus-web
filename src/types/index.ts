@@ -17,8 +17,9 @@ export type Show = {
   performer_name?: string;
 
   // 신규 카테고리 / 상세 필드
-  genre?: string;              // 연극 | 뮤지컬 | 넌버벌 | 기타
+  genre?: string;              // 연극 | 뮤지컬 | 기타
   genre_custom?: string;       // 기타 선택 시 직접 입력
+  show_category?: string;      // 교내 공연 | 외부 공연 | 워크샵
   region?: string;             // 전체 | 서울 | 경기 | ...
   school_department?: string;  // 대학 및 학과명
   show_time?: string;          // 공연 시간 (예: 평일 19:30)

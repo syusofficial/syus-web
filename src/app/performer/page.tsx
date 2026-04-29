@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
-import { REGIONS_EXCLUDE_ALL, GENRES } from "@/lib/constants";
+import { REGIONS_EXCLUDE_ALL, GENRES, SHOW_CATEGORIES } from "@/lib/constants";
 import { isValidUrl, normalizeUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
 import type { Show } from "@/types";
 
@@ -42,6 +42,7 @@ export default function PerformerPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [genre, setGenre] = useState<string>("");
+  const [showCategory, setShowCategory] = useState<string>("");
   const [region, setRegion] = useState<string>("");
   const [defaultPerformerName, setDefaultPerformerName] = useState<string>("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -89,10 +90,10 @@ export default function PerformerPage() {
   useEffect(() => {
     if (!showForm || editingId || !draftKey) return;
     const timer = setTimeout(() => {
-      localStorage.setItem(draftKey, JSON.stringify({ form, genre, region }));
+      localStorage.setItem(draftKey, JSON.stringify({ form, genre, showCategory, region }));
     }, 1000);
     return () => clearTimeout(timer);
-  }, [form, genre, region, showForm, editingId, draftKey]);
+  }, [form, genre, showCategory, region, showForm, editingId, draftKey]);
 
   // 신규 등록 모드 진입 시 저장된 draft 감지
   useEffect(() => {
@@ -112,6 +113,7 @@ export default function PerformerPage() {
       const draft = JSON.parse(raw);
       if (draft.form) setForm(draft.form);
       if (draft.genre) setGenre(draft.genre);
+      if (draft.showCategory) setShowCategory(draft.showCategory);
       if (draft.region) setRegion(draft.region);
     } catch {
       // 잘못된 JSON이면 무시
@@ -134,6 +136,7 @@ export default function PerformerPage() {
   const resetForm = () => {
     setForm(emptyForm);
     setGenre("");
+    setShowCategory("");
     setRegion("");
     setPosterFile(null);
     setPosterPreview(null);
@@ -166,6 +169,7 @@ export default function PerformerPage() {
       performer_name: show.performer_name ?? "",
     });
     setGenre(show.genre ?? "");
+    setShowCategory(show.show_category ?? "");
     setRegion(show.region ?? "");
     setExistingPosterUrl(show.poster_url ?? null);
     setPosterFile(null);
@@ -213,6 +217,7 @@ export default function PerformerPage() {
       setError("기타 장르명을 입력해주세요.");
       return;
     }
+    if (!showCategory) { setError("공연 구분을 선택해주세요."); return; }
     if (!region) { setError("공연 지역을 선택해주세요."); return; }
 
     // URL 정규화 — 프로토콜 없이 입력해도 자동 https:// 보완
@@ -297,6 +302,7 @@ export default function PerformerPage() {
       performer_name: performerNameForShow,
       genre,
       genre_custom: genre === "기타" ? form.genre_custom : null,
+      show_category: showCategory,
       region,
       school_department: form.school_department || null,
       show_time: form.show_time || null,
@@ -550,13 +556,44 @@ export default function PerformerPage() {
                     type="text"
                     value={form.genre_custom}
                     onChange={(e) => setForm({ ...form, genre_custom: e.target.value })}
-                    placeholder="장르를 직접 입력해주세요 (예: 인형극, 마술쇼)"
+                    placeholder="장르를 직접 입력해주세요 (예: 인형극, 마술쇼, 넌버벌)"
                     className="w-full mt-3 px-4 py-3 text-sm outline-none"
                     style={inputStyle}
                     onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
                     onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                   />
                 )}
+              </div>
+
+              {/* 공연 구분 */}
+              <div>
+                <label className="block text-xs tracking-wider uppercase mb-3" style={labelStyle}>
+                  공연 구분 <span style={{ color: "#A63D2F" }}>*</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {SHOW_CATEGORIES.map((c) => {
+                    const active = showCategory === c;
+                    return (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => setShowCategory(c)}
+                        className="px-5 py-2.5 text-sm transition-colors"
+                        style={{
+                          fontFamily: "var(--font-noto-sans-kr)",
+                          backgroundColor: active ? "#6D3115" : "#F4EDE3",
+                          color: active ? "#F4EDE3" : "#1A1A1A",
+                          border: `1px solid ${active ? "#6D3115" : "#D4CFC9"}`,
+                        }}
+                      >
+                        {c}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                  교내 공연 (학교 정기·졸업 공연), 외부 공연 (학교 외부 무대), 워크샵 (수업·연습 단계 공연) 중 선택해주세요.
+                </p>
               </div>
 
               {/* 지역 */}
