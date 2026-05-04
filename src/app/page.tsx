@@ -75,17 +75,25 @@ export default async function HomePage() {
                 className="text-lg md:text-xl leading-relaxed"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3" }}
               >
-                깊게 생각하고 오래 머물러,
+                젊은 예술가들의 무대를
                 <br />
-                자연스럽게 흘러
+                기록하고, 연결하고,
+                <br />
+                알리는 공간입니다.
+              </p>
+              <p
+                className="text-base leading-relaxed"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", opacity: 0.8 }}
+              >
+                깊게 생각하고 오래 머물러, 자연스럽게 흘러
                 <br />
                 젊은 무대 위에 쌓이는 공간.
               </p>
               <p
-                className="text-base"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", opacity: 0.7 }}
+                className="text-sm tracking-wider"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", opacity: 0.55 }}
               >
-                깊이 머물고, 가볍게 흘려보냅니다.
+                젊은 예술가들의 큐레이션 플랫폼
               </p>
               <Link
                 href="/auth/signup"
@@ -143,6 +151,12 @@ export default async function HomePage() {
             </div>
 
             <div className="space-y-10">
+              <p
+                className="text-sm tracking-[0.3em] uppercase pb-2"
+                style={{ fontFamily: "var(--font-inter)", color: "#F4EDE3", opacity: 0.55, borderBottom: "1px solid rgba(244, 237, 227, 0.18)" }}
+              >
+                사유유사는
+              </p>
               {[
                 { num: "01", title: "기록합니다", desc: "공연 포스터, 일정, 출연진 정보를 체계적으로 기록합니다." },
                 { num: "02", title: "연결합니다", desc: "예술가와 관객이 자연스럽게 만날 수 있는 공간을 만듭니다." },
