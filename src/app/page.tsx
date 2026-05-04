@@ -130,14 +130,15 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div>
               <p
-                className="text-[1.75rem] md:text-[2.25rem] leading-snug font-light mb-10"
-                style={{ fontFamily: "var(--font-cormorant)", color: "#F4EDE3" }}
+                className="text-[1.5rem] sm:text-[1.75rem] md:text-[2.25rem] leading-snug font-light mb-10 max-w-[28ch]"
+                style={{
+                  fontFamily: "var(--font-cormorant)",
+                  color: "#F4EDE3",
+                  textWrap: "balance",
+                  wordBreak: "keep-all",
+                }}
               >
-                &ldquo;깊게 생각하고 오래 머물러,
-                <br />
-                자연스럽게 흘러
-                <br />
-                젊은 무대 위에 쌓이는 공간.&rdquo;
+                &ldquo;깊게 생각하고 오래 머물러, 자연스럽게 흘러 젊은 무대 위에 쌓이는 공간.&rdquo;
               </p>
               <div style={{ width: 48, height: 1, backgroundColor: "#F4EDE3", opacity: 0.3 }} />
             </div>
