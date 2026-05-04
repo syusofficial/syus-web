@@ -82,14 +82,6 @@ export default async function HomePage() {
                 알리는 공간입니다.
               </p>
               <p
-                className="text-base leading-relaxed"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", opacity: 0.8 }}
-              >
-                깊게 생각하고 오래 머물러, 자연스럽게 흘러
-                <br />
-                젊은 무대 위에 쌓이는 공간.
-              </p>
-              <p
                 className="text-sm tracking-wider"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", opacity: 0.55 }}
               >
@@ -141,11 +133,11 @@ export default async function HomePage() {
                 className="text-[1.75rem] md:text-[2.25rem] leading-snug font-light mb-10"
                 style={{ fontFamily: "var(--font-cormorant)", color: "#F4EDE3" }}
               >
-                &ldquo;젊은 예술가들의 무대를
+                &ldquo;깊게 생각하고 오래 머물러,
                 <br />
-                기록하고, 연결하고,
+                자연스럽게 흘러
                 <br />
-                알리는 공간입니다.&rdquo;
+                젊은 무대 위에 쌓이는 공간.&rdquo;
               </p>
               <div style={{ width: 48, height: 1, backgroundColor: "#F4EDE3", opacity: 0.3 }} />
             </div>
