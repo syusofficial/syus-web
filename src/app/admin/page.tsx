@@ -49,8 +49,10 @@ export default function AdminPage() {
   const [shows, setShows] = useState<Show[]>([]);
   const [members, setMembers] = useState<Profile[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [trashedContacts, setTrashedContacts] = useState<Contact[]>([]);
   const [likes, setLikes] = useState<{ show_id: string }[]>([]);
   const [contactFilter, setContactFilter] = useState<string>("전체");
+  const [contactView, setContactView] = useState<"active" | "trash">("active");
   const [dataLoading, setDataLoading] = useState(true);
   const [reviewShow, setReviewShow] = useState<Show | null>(null);
 
@@ -65,9 +67,11 @@ export default function AdminPage() {
       supabase.from("likes").select("show_id"),
     ]);
 
+    const allContacts = (contactsRes.data as Contact[]) ?? [];
     setShows((showsRes.data as Show[]) ?? []);
     setMembers((membersRes.data as Profile[]) ?? []);
-    setContacts((contactsRes.data as Contact[]) ?? []);
+    setContacts(allContacts.filter((c) => !c.deleted_at));
+    setTrashedContacts(allContacts.filter((c) => !!c.deleted_at));
     setLikes((likesRes.data as { show_id: string }[]) ?? []);
     setDataLoading(false);
   }, []);
@@ -153,24 +157,91 @@ export default function AdminPage() {
     alert("회원 탈퇴가 완료되었습니다.");
   };
 
-  /** 처리완료된 문의 영구 삭제 */
-  const deleteContact = async (contact: Contact) => {
+  /** 처리완료된 문의를 휴지통으로 이동 (소프트 삭제) */
+  const trashContact = async (contact: Contact) => {
     if (contact.status !== "resolved") {
       alert("처리완료된 문의만 삭제할 수 있습니다.");
       return;
     }
     const confirmed = window.confirm(
-      `"${contact.name}"님의 문의를 영구 삭제하시겠습니까?\n\n복구할 수 없습니다.`
+      `"${contact.name}"님의 문의를 휴지통으로 이동하시겠습니까?\n\n휴지통에서 복구하거나 영구 삭제할 수 있습니다.`
     );
     if (!confirmed) return;
 
     const supabase = createClient();
-    const { error } = await supabase.from("contacts").delete().eq("id", contact.id);
-    if (error) {
-      alert("삭제 중 오류가 발생했습니다. RLS 정책을 확인해주세요.");
+    const now = new Date().toISOString();
+    const { error, data } = await supabase
+      .from("contacts")
+      .update({ deleted_at: now })
+      .eq("id", contact.id)
+      .select();
+    if (error || !data || data.length === 0) {
+      alert("삭제 중 오류가 발생했습니다. (deleted_at 컬럼·RLS 정책 확인 필요)");
       return;
     }
     setContacts((prev) => prev.filter((c) => c.id !== contact.id));
+    setTrashedContacts((prev) => [{ ...contact, deleted_at: now }, ...prev]);
+  };
+
+  /** 휴지통에 있는 문의를 복구 */
+  const restoreContact = async (contact: Contact) => {
+    const supabase = createClient();
+    const { error, data } = await supabase
+      .from("contacts")
+      .update({ deleted_at: null })
+      .eq("id", contact.id)
+      .select();
+    if (error || !data || data.length === 0) {
+      alert("복구 중 오류가 발생했습니다.");
+      return;
+    }
+    setTrashedContacts((prev) => prev.filter((c) => c.id !== contact.id));
+    setContacts((prev) => [{ ...contact, deleted_at: null }, ...prev]);
+  };
+
+  /** 휴지통에 있는 문의를 영구 삭제 */
+  const permanentlyDeleteContact = async (contact: Contact) => {
+    const confirmed = window.confirm(
+      `"${contact.name}"님의 문의를 영구 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`
+    );
+    if (!confirmed) return;
+
+    const supabase = createClient();
+    const { error, data } = await supabase
+      .from("contacts")
+      .delete()
+      .eq("id", contact.id)
+      .select();
+    if (error || !data || data.length === 0) {
+      alert("영구 삭제 중 오류가 발생했습니다. RLS DELETE 정책이 필요합니다.");
+      return;
+    }
+    setTrashedContacts((prev) => prev.filter((c) => c.id !== contact.id));
+  };
+
+  /** 휴지통 전체 비우기 */
+  const emptyContactTrash = async () => {
+    if (trashedContacts.length === 0) return;
+    const confirmed = window.confirm(
+      `휴지통의 ${trashedContacts.length}건을 모두 영구 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`
+    );
+    if (!confirmed) return;
+
+    const supabase = createClient();
+    const { error, data } = await supabase
+      .from("contacts")
+      .delete()
+      .not("deleted_at", "is", null)
+      .select();
+    if (error) {
+      alert("휴지통 비우기 중 오류가 발생했습니다.");
+      return;
+    }
+    if (!data || data.length === 0) {
+      alert("삭제된 항목이 없습니다. RLS DELETE 정책이 필요합니다.");
+      return;
+    }
+    setTrashedContacts([]);
   };
 
   const updateMemberRole = async (id: string, role: "member" | "performer" | "admin") => {
@@ -575,6 +646,33 @@ export default function AdminPage() {
             {/* ── 문의 확인 탭 ── */}
             {tab === "contacts" && (
               <div className="space-y-6">
+                {/* 활성 / 휴지통 서브 토글 */}
+                <div className="flex flex-wrap gap-2 pb-3" style={{ borderBottom: "1px solid #D4CFC9" }}>
+                  {([
+                    { key: "active", label: "활성 문의", count: contacts.length },
+                    { key: "trash",  label: "휴지통",    count: trashedContacts.length },
+                  ] as const).map(({ key, label, count }) => {
+                    const isActive = contactView === key;
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => setContactView(key)}
+                        className="px-4 py-1.5 text-xs tracking-wide transition-colors"
+                        style={{
+                          fontFamily: "var(--font-noto-sans-kr)",
+                          backgroundColor: isActive ? "#1A1A1A" : "transparent",
+                          color: isActive ? "#F4EDE3" : "#1A1A1A",
+                          border: `1px solid ${isActive ? "#1A1A1A" : "#D4CFC9"}`,
+                        }}
+                      >
+                        {label}{count > 0 && <span style={{ opacity: 0.7, marginLeft: 6 }}>({count})</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {contactView === "active" && (
+                  <>
                 {/* 카테고리 필터 */}
                 <div className="flex flex-wrap gap-2">
                   {(() => {
@@ -665,13 +763,13 @@ export default function AdminPage() {
                                 )}
                                 {c.status === "resolved" && (
                                   <button
-                                    onClick={() => deleteContact(c)}
+                                    onClick={() => trashContact(c)}
                                     className="text-xs px-3 py-1 transition-colors"
                                     style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
                                     onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
                                     onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
                                   >
-                                    삭제
+                                    휴지통으로 이동
                                   </button>
                                 )}
                               </div>
@@ -685,6 +783,91 @@ export default function AdminPage() {
                     </div>
                   );
                 })()}
+                  </>
+                )}
+
+                {contactView === "trash" && (
+                  <>
+                    {trashedContacts.length === 0 ? (
+                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                        휴지통이 비어 있습니다.
+                      </p>
+                    ) : (
+                      <>
+                        <div className="flex justify-end">
+                          <button
+                            onClick={emptyContactTrash}
+                            className="text-xs px-4 py-1.5 transition-colors"
+                            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F", border: "1px solid #A63D2F" }}
+                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#EDD4D4"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+                          >
+                            휴지통 비우기 ({trashedContacts.length}건 영구 삭제)
+                          </button>
+                        </div>
+                        <div className="space-y-4">
+                          {trashedContacts.map((c) => {
+                            const cat = c.category ?? "기타";
+                            const catColor = CATEGORY_COLOR[cat] ?? { bg: "#E0E0E0", color: "#5A5A5A" };
+                            return (
+                              <div key={c.id} className="p-6" style={{ backgroundColor: "#E8DDD0", opacity: 0.75 }}>
+                                <div className="flex items-start justify-between mb-3 gap-3 flex-wrap">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                                      <span
+                                        className="px-2 py-0.5 text-xs tracking-wide"
+                                        style={{
+                                          fontFamily: "var(--font-noto-sans-kr)",
+                                          backgroundColor: catColor.bg,
+                                          color: catColor.color,
+                                        }}
+                                      >
+                                        {cat}
+                                      </span>
+                                      <p className="font-semibold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
+                                        {c.name}
+                                      </p>
+                                    </div>
+                                    <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                                      {c.email}
+                                      {c.phone ? ` · ${c.phone}` : ""}
+                                      {" · 접수: "}
+                                      {c.created_at.slice(0, 10)}
+                                      {c.deleted_at && ` · 삭제: ${c.deleted_at.slice(0, 10)}`}
+                                    </p>
+                                  </div>
+                                  <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                                    <button
+                                      onClick={() => restoreContact(c)}
+                                      className="text-xs px-3 py-1 transition-colors"
+                                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3A5E42", border: "1px solid #3A5E42" }}
+                                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D4EDD4"; }}
+                                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+                                    >
+                                      복구
+                                    </button>
+                                    <button
+                                      onClick={() => permanentlyDeleteContact(c)}
+                                      className="text-xs px-3 py-1 transition-colors"
+                                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", backgroundColor: "#A63D2F", border: "1px solid #A63D2F" }}
+                                      onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                                      onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                                    >
+                                      영구 삭제
+                                    </button>
+                                  </div>
+                                </div>
+                                <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+                                  {c.message}
+                                </p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </>
+                )}
               </div>
             )}
           </>

@@ -51,4 +51,5 @@ export type Contact = {
   message: string;
   status: "pending" | "resolved";
   created_at: string;
+  deleted_at?: string | null;
 };
