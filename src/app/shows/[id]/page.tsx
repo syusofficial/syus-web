@@ -7,6 +7,7 @@ import LikeButton from "@/components/LikeButton";
 import ShareButton from "@/components/ShareButton";
 import ShowCard from "@/components/ShowCard";
 import { isEnded, extractSchoolName, todayKey } from "@/lib/showFilters";
+import { buildBreadcrumbList } from "@/lib/structuredData";
 import type { Show } from "@/types";
 
 export default async function ShowDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -105,12 +106,26 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     inLanguage: "ko",
   } : null;
 
+  const breadcrumbData = show.status === "approved"
+    ? buildBreadcrumbList([
+        { name: "홈", path: "/" },
+        { name: "공연", path: "/shows" },
+        { name: show.title },
+      ])
+    : null;
+
   return (
     <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F4EDE3" }}>
       {eventStructuredData && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(eventStructuredData) }}
+        />
+      )}
+      {breadcrumbData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
         />
       )}
       <ShowViewTracker showId={show.id} />

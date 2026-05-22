@@ -3,6 +3,8 @@ import ShowCard from "@/components/ShowCard";
 import ShowsSearchBar from "@/components/ShowsSearchBar";
 import { createClient } from "@/lib/supabase/server";
 import { REGIONS, GENRES, SHOW_CATEGORIES } from "@/lib/constants";
+import { sanitizeSearchTerm } from "@/lib/showFilters";
+import { buildBreadcrumbList } from "@/lib/structuredData";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
@@ -57,8 +59,10 @@ export default async function ArchivePage({
     query = query.eq("show_category", category);
   }
   if (q && q.trim()) {
-    const search = q.trim();
-    query = query.or(`title.ilike.%${search}%,venue.ilike.%${search}%,performer_name.ilike.%${search}%`);
+    const search = sanitizeSearchTerm(q);
+    if (search) {
+      query = query.or(`title.ilike.%${search}%,venue.ilike.%${search}%,performer_name.ilike.%${search}%`);
+    }
   }
 
   // 정렬: schedule_end 내림차순 (최근 종료부터). null은 뒤로.
@@ -107,11 +111,20 @@ export default async function ArchivePage({
     return `/archive${qs ? `?${qs}` : ""}`;
   };
 
+  const breadcrumbData = buildBreadcrumbList([
+    { name: "홈", path: "/" },
+    { name: "아카이브" },
+  ]);
+
   return (
     <div
       className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16"
       style={{ backgroundColor: "#F4EDE3" }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+      />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12 flex items-end justify-between gap-4 flex-wrap">

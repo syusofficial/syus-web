@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ShowsCalendar from "@/components/ShowsCalendar";
+import { buildBreadcrumbList } from "@/lib/structuredData";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
@@ -16,11 +17,21 @@ export default async function ShowsCalendarPage() {
 
   const list = (shows as Show[]) ?? [];
 
+  const breadcrumbData = buildBreadcrumbList([
+    { name: "홈", path: "/" },
+    { name: "공연", path: "/shows" },
+    { name: "캘린더" },
+  ]);
+
   return (
     <div
       className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16"
       style={{ backgroundColor: "#F4EDE3" }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+      />
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-10 flex items-end justify-between gap-4 flex-wrap">

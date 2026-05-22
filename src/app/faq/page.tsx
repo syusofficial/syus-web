@@ -43,6 +43,27 @@ function renderAnswer(answer: string): React.ReactNode {
   });
 }
 
+/** 마크다운 링크 표기 [텍스트](URL) 와 줄바꿈을 제거해 검색엔진용 평문으로 정제 */
+function plainAnswer(answer: string): string {
+  return answer
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const FAQ_STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: plainAnswer(f.answer),
+    },
+  })),
+};
+
 export default function FAQPage() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<FAQCategory | "전체">("전체");
@@ -84,6 +105,10 @@ export default function FAQPage() {
       className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16"
       style={{ backgroundColor: "#F4EDE3" }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_STRUCTURED_DATA) }}
+      />
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-12">
