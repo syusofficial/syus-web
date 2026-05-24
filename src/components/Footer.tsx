@@ -68,6 +68,7 @@ export default function Footer() {
             </p>
             <div className="flex flex-col gap-3">
               {[
+                { href: "/about", label: "사유유사 소개" },
                 { href: "/shows", label: "공연 목록" },
                 { href: "/archive", label: "지난 공연" },
                 { href: "/faq", label: "자주 묻는 질문" },

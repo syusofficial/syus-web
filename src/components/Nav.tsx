@@ -266,6 +266,14 @@ export default function Nav() {
           >
             기록
           </Link>
+          <Link
+            href="/about"
+            style={linkStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+          >
+            소개
+          </Link>
           <ContactHoverMenu linkStyle={linkStyle} />
         </div>
 
@@ -438,6 +446,13 @@ export default function Nav() {
               onClick={() => setMenuOpen(false)}
             >
               기록
+            </Link>
+            <Link
+              href="/about"
+              style={{ ...linkStyle, padding: "8px 0" }}
+              onClick={() => setMenuOpen(false)}
+            >
+              소개
             </Link>
             <Link
               href="/faq"
