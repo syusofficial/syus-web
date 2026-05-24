@@ -120,8 +120,9 @@ export default function AboutPage() {
                   className="pt-3 italic"
                   style={{ borderTop: "1px solid #D4CFC9", color: "#5A5A5A" }}
                 >
-                  개념·구성·판단·추리를 행하는 배우의 이성 작용이 상상과 질문에 의하여 채워지는
-                  무대. 그리고 그 무대를 공유하여 연기 예술의 다양성을 함께 누리는 흐름.
+                  개념·구성·판단·추리를 행하는 배우의 이성 작용이 상상과 질문에 의하여 채워지는 무대.
+                  <br />
+                  그리고 그 무대를 공유하여 연기 예술의 다양성을 함께 누리는 흐름.
                 </p>
               </div>
             </div>
@@ -135,7 +136,7 @@ export default function AboutPage() {
                 className="text-sm tracking-[0.2em]"
                 style={{ fontFamily: "var(--font-inter)", color: "#6D3115", fontWeight: 600 }}
               >
-                SYUS · SaYouUSa
+                SYUS
               </p>
               <div
                 className="text-base leading-[1.9]"
@@ -145,9 +146,10 @@ export default function AboutPage() {
                   <strong style={{ color: "#6D3115" }}>System of Young Unbound Society</strong>
                 </p>
                 <p>
-                  한글 초성에서 따왔지만, 한문과는 별개의 독립된 의미를 가집니다. 젊고 무언가에
-                  얽매이지 않은 사회의 시스템 — 자유롭고 창의적인 예술 세계를 지향하는 예술가들의
-                  사회·플랫폼.
+                  한글 초성에서 따왔지만, 한문과는 별개의 독립된 의미를 가집니다.
+                  <br />
+                  젊고 무언가에 얽매이지 않은 사회의 시스템 — 자유롭고 창의적인 예술 세계를
+                  지향하는 예술가들의 사회·플랫폼.
                 </p>
               </div>
             </div>
@@ -176,17 +178,27 @@ export default function AboutPage() {
               {
                 num: "1",
                 title: "묻혀버리는 공연 정보",
-                body: "기존 공연 플랫폼은 대형 상업 공연 중심이라, 대학과 소극장에서 올라가는 무대는 좀처럼 발견되지 않습니다. 관객 한 사람이 좋은 공연 하나를 찾기까지 너무 멀고, 너무 많은 노력이 듭니다.",
+                lines: [
+                  "기존 공연 플랫폼은 대형 상업 공연 중심이라, 대학과 소극장에서 올라가는 무대는 좀처럼 발견되지 않습니다.",
+                  "관객 한 사람이 좋은 공연 하나를 찾기까지 너무 멀고, 너무 많은 노력이 듭니다.",
+                ],
               },
               {
                 num: "2",
                 title: "무대를 알릴 곳이 없는 공연자",
-                body: "SNS는 흘러가고, 동아리 온라인은 닫혀 있습니다. 대학·신진 예술가가 자신의 무대를 정성스레 소개할 수 있는 전용 공간이 필요했습니다.",
+                lines: [
+                  "정보화 시대에서 공연의 정보 가치는 매우 소중합니다.",
+                  "젊은 예술가가 자신의 무대를 정성스레 소개할 수 있는 전용 공간이 필요했습니다.",
+                ],
               },
               {
                 num: "3",
                 title: "한 번 끝나면 사라지는 기록",
-                body: "막이 내리면 모든 게 흩어집니다. 다음 학번이, 다음 세대가 참고하고 영감을 받을 기록이 남지 않습니다. 그 순간의 무대를 흐름으로 잇고 싶었습니다.",
+                lines: [
+                  "막이 내리면 모든 게 흩어집니다.",
+                  "다음 학번이, 다음 세대가 참고하고 영감을 받을 기록이 남지 않습니다.",
+                  "그 순간의 무대를 흐름으로 잇고 싶었습니다.",
+                ],
               },
             ].map((item) => (
               <div key={item.num} className="flex gap-6 md:gap-10">
@@ -211,26 +223,18 @@ export default function AboutPage() {
                       wordBreak: "keep-all",
                     }}
                   >
-                    {item.body}
+                    {item.lines.map((line, idx) => (
+                      <span key={idx}>
+                        {line}
+                        {idx < item.lines.length - 1 && <br />}
+                      </span>
+                    ))}
                   </p>
                 </div>
               </div>
             ))}
           </div>
 
-          <p
-            className="text-sm leading-relaxed mt-12 pt-6 italic"
-            style={{
-              fontFamily: "var(--font-noto-sans-kr)",
-              color: "#5A5A5A",
-              borderTop: "1px solid #D4CFC9",
-              wordBreak: "keep-all",
-            }}
-          >
-            * 사유유사는 대학·신진 정체성을 가진 무대를 다룹니다. 영리를 목적으로 운영되는 소형
-            상업 공연은 사이트의 취지와 결이 달라 다루지 않습니다. 단, 대학생이 학교 안이나 외부
-            소극장을 대관하여 올리는 공연은 포함합니다.
-          </p>
         </div>
       </section>
 
@@ -270,8 +274,9 @@ export default function AboutPage() {
                   wordBreak: "keep-all",
                 }}
               >
-                대학에서 무대를 올리는 연극·뮤지컬·연기예술 동아리, 학과 공연. 졸업 후 자신만의
-                작업을 이어가는 20–30대 신진 예술가. 막을 올리는 모든 젊은 손이 SYUS의 동료입니다.
+                대학에서 무대를 올리는 연극·뮤지컬·연기예술 동아리, 학과 공연.
+                <br />
+                막을 올리는 모든 젊은 예술가가 SYUS의 동료입니다.
               </p>
             </div>
             <div>
@@ -290,8 +295,11 @@ export default function AboutPage() {
                   wordBreak: "keep-all",
                 }}
               >
-                젊은 무대의 공기를 직접 느껴보고 싶은 관객. 다음 세대 배우의 처음을 곁에서 지켜보고
-                싶은 사람. 그리고 무대 너머의 사유에 머무르고 싶은 모든 이.
+                젊은 무대의 에너지와 열정을 직접 느껴보고 싶은 관객.
+                <br />
+                다음 세대 배우의 처음을 곁에서 지켜보고 싶은 사람.
+                <br />
+                그리고 무대 너머의 사유에 머무르고 싶은 모든 이.
               </p>
             </div>
           </div>
@@ -339,8 +347,9 @@ export default function AboutPage() {
                   wordBreak: "keep-all",
                 }}
               >
-                대학생 공연자가 익명 비방으로 상처받는 일은 만들지 않습니다. 평가의 자유보다 무대에
-                선 사람의 첫 마음을 더 소중히 여깁니다.
+                대학생 공연자가 익명 비방으로 상처받는 일은 만들지 않습니다.
+                <br />
+                평가의 자유보다 무대에 선 사람의 첫 마음을 더 소중히 여깁니다.
               </p>
             </div>
 
@@ -362,8 +371,10 @@ export default function AboutPage() {
                   wordBreak: "keep-all",
                 }}
               >
-                TOP 10, 베스트, 명예의 전당 같은 말은 쓰지 않습니다. ‘이번 달 주목할 만한 공연’
-                정도의 부드러운 큐레이션만 두고, 모든 무대를 같은 높이에 둡니다.
+                TOP 10, 베스트, 명예의 전당 같은 말은 쓰지 않습니다.
+                <br />
+                ‘이번 달 주목할 만한 공연’ 정도의 부드러운 큐레이션만 두고, 모든 무대를 같은 높이에
+                둡니다.
               </p>
             </div>
           </div>
@@ -443,7 +454,9 @@ export default function AboutPage() {
               >
                 단순한 홍보 도구를 넘어, 국내 모든 연기 전공자와 신진 예술가가 서로의 가치관을
                 공유하고 함께 성장하는 — 이름 그대로의 ‘System of Young Unbound Society’ 생태계가
-                되는 것. 그것이 사유유사가 향하는 자리입니다.
+                되는 것.
+                <br />
+                그것이 사유유사가 향하는 자리입니다.
               </p>
             </div>
           </div>
