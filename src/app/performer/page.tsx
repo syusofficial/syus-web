@@ -752,7 +752,7 @@ export default function PerformerPage() {
                       value={form.cast_members}
                       onChange={(e) => setForm({ ...form, cast_members: e.target.value })}
                       required
-                      placeholder="예: 홍길동(주인공), 김철수(조력자), 박영희(악역)"
+                      placeholder="예: 홍길동(배역명), 김철수(배역명), 박영희(배역명)"
                       className="w-full px-4 py-3 text-sm outline-none"
                       style={inputStyle}
                       onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
