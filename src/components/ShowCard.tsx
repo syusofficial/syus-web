@@ -21,7 +21,7 @@ export default function ShowCard({
         <Link href={`/shows/${show.id}`}>
           <div
             className="aspect-[3/4] overflow-hidden mb-4 relative"
-            style={{ backgroundColor: "#E7ECF5" }}
+            style={{ backgroundColor: "#F0EBE0" }}
           >
             {show.poster_url ? (
               <Image
@@ -32,7 +32,7 @@ export default function ShowCard({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6B7385" }}>
+                <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#7A746C" }}>
                   포스터 없음
                 </span>
               </div>
@@ -48,7 +48,7 @@ export default function ShowCard({
             className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1"
             style={{
               backgroundColor: "rgba(27, 40, 66, 0.85)",
-              color: "#F5C84F",
+              color: "#C8D96F",
               fontFamily: "var(--font-inter)",
               fontSize: "0.7rem",
               fontWeight: 600,
@@ -56,7 +56,7 @@ export default function ShowCard({
             }}
           >
             <span style={{ lineHeight: 1 }}>★</span>
-            <span style={{ color: "#F8F9FC", lineHeight: 1 }}>
+            <span style={{ color: "#FBF8F1", lineHeight: 1 }}>
               {rating.avg.toFixed(1)}
             </span>
             <span style={{ color: "rgba(248,249,252,0.6)", fontSize: "0.62rem", marginLeft: 1, lineHeight: 1 }}>
@@ -71,23 +71,23 @@ export default function ShowCard({
           <div className="flex items-start justify-between gap-2">
             <h3
               className="text-base font-semibold leading-snug transition-colors group-hover:opacity-70"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
             >
               {show.title}
             </h3>
             {show.subtitle && (
               <span
                 className="text-xs italic shrink-0 pt-0.5"
-                style={{ fontFamily: "var(--font-cormorant)", color: "#6B7385" }}
+                style={{ fontFamily: "var(--font-cormorant)", color: "#7A746C" }}
               >
                 {show.subtitle}
               </span>
             )}
           </div>
-          <p className="text-xs tracking-wide" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+          <p className="text-xs tracking-wide" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
             {show.venue}
           </p>
-          <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+          <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             {show.schedule_start} — {show.schedule_end}
           </p>
         </div>

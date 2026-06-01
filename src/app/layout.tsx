@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Serif_KR, Noto_Sans_KR, Cormorant_Garamond, Inter } from "next/font/google";
+import { Noto_Serif_KR, Noto_Sans_KR, Cormorant_Garamond, Geist } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -29,9 +29,10 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const inter = Inter({
+const geist = Geist({
   variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -86,7 +87,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F8F9FC",
+  themeColor: "#FBF8F1",
   width: "device-width",
   initialScale: 1,
 };
@@ -97,9 +98,9 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${notoSerifKR.variable} ${notoSansKR.variable} ${cormorant.variable} ${inter.variable}`}
+      className={`${notoSerifKR.variable} ${notoSansKR.variable} ${cormorant.variable} ${geist.variable}`}
     >
-      <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: "#F8F9FC", color: "#1A1A1A" }}>
+      <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: "#FBF8F1", color: "#202833" }}>
         <LoadingScreen />
         <Nav />
         <main className="flex-1">{children}</main>

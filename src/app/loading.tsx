@@ -4,7 +4,7 @@ export default function Loading() {
   return (
     <div
       className="pt-24 min-h-screen flex items-center justify-center"
-      style={{ backgroundColor: "#F8F9FC" }}
+      style={{ backgroundColor: "#FBF8F1" }}
     >
       <PageLoader />
     </div>

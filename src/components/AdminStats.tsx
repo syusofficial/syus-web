@@ -123,7 +123,7 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
       <section>
         <SectionLabel>회원 분포</SectionLabel>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <RoleCard label="일반 회원" value={stats.roleCount.member} total={stats.totalMembers} bg="#E7ECF5" color="#274E9B" />
+          <RoleCard label="일반 회원" value={stats.roleCount.member} total={stats.totalMembers} bg="#F0EBE0" color="#3B5A6B" />
           <RoleCard label="공연자" value={stats.roleCount.performer} total={stats.totalMembers} bg="#D4E4ED" color="#2A5E7A" />
           <RoleCard label="관리자" value={stats.roleCount.admin} total={stats.totalMembers} bg="#EDD4E4" color="#7A2A5E" />
         </div>
@@ -176,12 +176,12 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
               <li
                 key={x.show.id}
                 className="flex items-center justify-between p-4"
-                style={{ backgroundColor: "#E7ECF5" }}
+                style={{ backgroundColor: "#F0EBE0" }}
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <span
                     className="text-lg font-bold w-6 text-center shrink-0"
-                    style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+                    style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
                   >
                     {i + 1}
                   </span>
@@ -194,7 +194,7 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
                     </p>
                     <p
                       className="text-xs truncate"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
                     >
                       {[x.show.performer_name, x.show.region, x.show.venue].filter(Boolean).join(" · ")}
                     </p>
@@ -204,8 +204,8 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
                   className="px-3 py-1 text-xs shrink-0 ml-3"
                   style={{
                     fontFamily: "var(--font-inter)",
-                    backgroundColor: "#274E9B",
-                    color: "#F8F9FC",
+                    backgroundColor: "#3B5A6B",
+                    color: "#FBF8F1",
                   }}
                 >
                   ♥ {x.likes}
@@ -221,8 +221,8 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
         className="text-xs pt-6"
         style={{
           fontFamily: "var(--font-noto-sans-kr)",
-          color: "#6B7385",
-          borderTop: "1px solid #C5CCD9",
+          color: "#7A746C",
+          borderTop: "1px solid #D8D3C9",
         }}
       >
         ※ 페이지뷰 / 세션 / 트래픽 데이터는 Google Analytics에서 별도 확인. 통계는 60초 단위로 캐시됩니다.
@@ -239,7 +239,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <p
       className="text-xs tracking-[0.3em] uppercase mb-4"
-      style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+      style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
     >
       {children}
     </p>
@@ -250,7 +250,7 @@ function EmptyText({ children }: { children: React.ReactNode }) {
   return (
     <p
       className="text-sm py-8 text-center"
-      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385", backgroundColor: "#E7ECF5" }}
+      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", backgroundColor: "#F0EBE0" }}
     >
       {children}
     </p>
@@ -272,8 +272,8 @@ function SummaryCard({
     <div
       className="p-6 text-center"
       style={{
-        backgroundColor: accent ? "#274E9B" : "#E7ECF5",
-        color: accent ? "#F8F9FC" : "#1A1A1A",
+        backgroundColor: accent ? "#3B5A6B" : "#F0EBE0",
+        color: accent ? "#FBF8F1" : "#1A1A1A",
       }}
     >
       <p
@@ -349,14 +349,14 @@ function BarList({ items }: { items: [string, number][] }) {
             >
               {label}
             </div>
-            <div className="flex-1 h-7 relative" style={{ backgroundColor: "#E7ECF5" }}>
+            <div className="flex-1 h-7 relative" style={{ backgroundColor: "#F0EBE0" }}>
               <div
                 className="h-full transition-all"
-                style={{ width: `${percent}%`, backgroundColor: "#274E9B" }}
+                style={{ width: `${percent}%`, backgroundColor: "#3B5A6B" }}
               />
               <span
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
-                style={{ fontFamily: "var(--font-inter)", color: percent > 50 ? "#F8F9FC" : "#1A1A1A" }}
+                style={{ fontFamily: "var(--font-inter)", color: percent > 50 ? "#FBF8F1" : "#1A1A1A" }}
               >
                 {value}
               </span>
@@ -379,7 +379,7 @@ function MonthlyChart({
   );
 
   return (
-    <div className="p-6" style={{ backgroundColor: "#E7ECF5" }}>
+    <div className="p-6" style={{ backgroundColor: "#F0EBE0" }}>
       <div className="flex items-end gap-3 h-40 mb-3">
         {months.map((m) => {
           const signupHeight = (m.signups / max) * 100;
@@ -391,7 +391,7 @@ function MonthlyChart({
                   className="flex-1 transition-all relative group"
                   style={{
                     height: `${signupHeight}%`,
-                    backgroundColor: "#274E9B",
+                    backgroundColor: "#3B5A6B",
                     minHeight: m.signups > 0 ? "4px" : "0",
                   }}
                   title={`신규 가입: ${m.signups}`}
@@ -399,7 +399,7 @@ function MonthlyChart({
                   {m.signups > 0 && (
                     <span
                       className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs"
-                      style={{ fontFamily: "var(--font-inter)", color: "#274E9B" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}
                     >
                       {m.signups}
                     </span>
@@ -409,7 +409,7 @@ function MonthlyChart({
                   className="flex-1 transition-all relative group"
                   style={{
                     height: `${showHeight}%`,
-                    backgroundColor: "#6B7385",
+                    backgroundColor: "#7A746C",
                     minHeight: m.shows > 0 ? "4px" : "0",
                   }}
                   title={`공연 등록: ${m.shows}`}
@@ -417,7 +417,7 @@ function MonthlyChart({
                   {m.shows > 0 && (
                     <span
                       className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs"
-                      style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
                     >
                       {m.shows}
                     </span>
@@ -426,7 +426,7 @@ function MonthlyChart({
               </div>
               <span
                 className="text-xs"
-                style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
               >
                 {m.label}
               </span>
@@ -436,11 +436,11 @@ function MonthlyChart({
       </div>
       <div className="flex gap-4 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#274E9B" }} />
+          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#3B5A6B" }} />
           <span style={{ color: "#1A1A1A" }}>신규 가입</span>
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#6B7385" }} />
+          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#7A746C" }} />
           <span style={{ color: "#1A1A1A" }}>공연 등록</span>
         </span>
       </div>

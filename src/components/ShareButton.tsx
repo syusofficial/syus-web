@@ -36,7 +36,7 @@ export default function ShareButton({ url }: ShareButtonProps) {
     <div>
       <p
         className="text-xs tracking-[0.2em] uppercase mb-3"
-        style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
       >
         Share
       </p>
@@ -46,21 +46,21 @@ export default function ShareButton({ url }: ShareButtonProps) {
         className="px-4 py-2 text-xs tracking-wide transition-colors"
         style={{
           fontFamily: "var(--font-noto-sans-kr)",
-          backgroundColor: copied ? "#274E9B" : "transparent",
-          color: copied ? "#F8F9FC" : "#274E9B",
-          border: `1px solid ${copied ? "#274E9B" : "#C5CCD9"}`,
+          backgroundColor: copied ? "#3B5A6B" : "transparent",
+          color: copied ? "#FBF8F1" : "#3B5A6B",
+          border: `1px solid ${copied ? "#3B5A6B" : "#D8D3C9"}`,
         }}
         onMouseEnter={(e) => {
           if (copied) return;
-          e.currentTarget.style.backgroundColor = "#274E9B";
-          e.currentTarget.style.color = "#F8F9FC";
-          e.currentTarget.style.borderColor = "#274E9B";
+          e.currentTarget.style.backgroundColor = "#3B5A6B";
+          e.currentTarget.style.color = "#FBF8F1";
+          e.currentTarget.style.borderColor = "#3B5A6B";
         }}
         onMouseLeave={(e) => {
           if (copied) return;
           e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.color = "#274E9B";
-          e.currentTarget.style.borderColor = "#C5CCD9";
+          e.currentTarget.style.color = "#3B5A6B";
+          e.currentTarget.style.borderColor = "#D8D3C9";
         }}
       >
         {copied ? "✓ 복사됨" : "링크 복사"}

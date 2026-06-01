@@ -34,22 +34,22 @@ export default function FindIdPage() {
 
   const inputStyle: React.CSSProperties = {
     fontFamily: "var(--font-noto-sans-kr)",
-    backgroundColor: "#E7ECF5",
+    backgroundColor: "#F0EBE0",
     color: "#1A1A1A",
     border: "1px solid transparent",
   };
 
   return (
-    <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F8F9FC" }}>
+    <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             Find ID
           </p>
-          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             아이디 찾기
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
             가입 시 사용한 이름을 입력하시면
             <br />
             일부 가려진 이메일을 안내해드립니다.
@@ -58,7 +58,7 @@ export default function FindIdPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
               이름
             </label>
             <input
@@ -68,7 +68,7 @@ export default function FindIdPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none transition-colors"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -85,8 +85,8 @@ export default function FindIdPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#6B7385" : "#274E9B",
-              color: "#F8F9FC",
+              backgroundColor: loading ? "#7A746C" : "#3B5A6B",
+              color: "#FBF8F1",
               cursor: loading ? "not-allowed" : "pointer",
             }}
           >
@@ -96,29 +96,29 @@ export default function FindIdPage() {
 
         {/* 결과 영역 */}
         {results !== null && (
-          <div className="mt-8 p-5" style={{ backgroundColor: "#E7ECF5" }}>
+          <div className="mt-8 p-5" style={{ backgroundColor: "#F0EBE0" }}>
             {results.length === 0 ? (
               <div className="text-center space-y-2">
-                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
+                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
                   일치하는 계정이 없습니다
                 </p>
-                <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                   이름을 다시 확인해주세요.
                 </p>
               </div>
             ) : (
               <div>
-                <p className="text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                <p className="text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                   가입된 이메일
                 </p>
                 <div className="space-y-2">
                   {results.map((email, i) => (
-                    <p key={i} className="text-base font-semibold" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
+                    <p key={i} className="text-base font-semibold" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
                       {email}
                     </p>
                   ))}
                 </div>
-                <p className="mt-4 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                <p className="mt-4 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                   보안을 위해 일부만 표시됩니다.
                   <br />
                   전체 이메일은 가입 시 사용한 메일함에서 확인해주세요.
@@ -129,9 +129,9 @@ export default function FindIdPage() {
         )}
 
         <div className="mt-8 flex items-center justify-center gap-4 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
-          <Link href="/auth/login" style={{ color: "#274E9B" }}>로그인</Link>
-          <span style={{ color: "#C5CCD9" }}>|</span>
-          <Link href="/auth/forgot-password" style={{ color: "#274E9B" }}>비밀번호 찾기</Link>
+          <Link href="/auth/login" style={{ color: "#3B5A6B" }}>로그인</Link>
+          <span style={{ color: "#D8D3C9" }}>|</span>
+          <Link href="/auth/forgot-password" style={{ color: "#3B5A6B" }}>비밀번호 찾기</Link>
         </div>
       </div>
     </div>

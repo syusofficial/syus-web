@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { REGIONS } from "@/lib/constants";
+import { REGIONS, GENRES } from "@/lib/constants";
 import type { User } from "@supabase/supabase-js";
 
 /**
@@ -36,37 +36,62 @@ export function SyusLogoSvg({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* 상단 가로선 */}
       <line x1="0" y1="120" x2="1000" y2="120" stroke={color} strokeWidth={sw} />
-      {/* 하단 가로선 */}
       <line x1="0" y1="380" x2="1000" y2="380" stroke={color} strokeWidth={sw} />
-
-      {/* 좌측 삼각형 (峰 x=165) */}
       <line x1="55"  y1="380" x2="165" y2="120" stroke={color} strokeWidth={sw} />
       <line x1="165" y1="120" x2="275" y2="380" stroke={color} strokeWidth={sw} />
-
-      {/* ─── 왼쪽 인물 그룹 ─── */}
       <line x1="305" y1="120" x2="305" y2="380" stroke={color} strokeWidth={sw} />
       <line x1="305" y1="252" x2="358" y2="252" stroke={color} strokeWidth={swd} />
       <line x1="390" y1="120" x2="390" y2="380" stroke={color} strokeWidth={sw} />
       <circle cx="428" cy="72" r="48" stroke={color} strokeWidth={swc} fill="none" />
       <line x1="465" y1="120" x2="465" y2="380" stroke={color} strokeWidth={sw} />
-
-      {/* ─── 오른쪽 인물 그룹 ─── */}
       <line x1="535" y1="120" x2="535" y2="380" stroke={color} strokeWidth={sw} />
       <circle cx="572" cy="72" r="48" stroke={color} strokeWidth={swc} fill="none" />
       <line x1="610" y1="120" x2="610" y2="380" stroke={color} strokeWidth={sw} />
       <line x1="642" y1="252" x2="695" y2="252" stroke={color} strokeWidth={swd} />
       <line x1="695" y1="120" x2="695" y2="380" stroke={color} strokeWidth={sw} />
-
-      {/* 우측 삼각형 (峰 x=835) */}
       <line x1="725" y1="380" x2="835" y2="120" stroke={color} strokeWidth={sw} />
       <line x1="835" y1="120" x2="945" y2="380" stroke={color} strokeWidth={sw} />
     </svg>
   );
 }
 
-/** 문의 메뉴 호버 드롭다운 — FAQ / 1:1 문의 두 옵션 (데스크톱 전용) */
+/**
+ * 메뉴별 호버 컬러 차별화 (사장님 요청: 4메뉴 시각 구분)
+ * 공연=미네랄 슬레이트(메인) / 기록=웜 그레이 / 소개=딥 인디고 / 도움말=페일 라임
+ */
+const MENU_HOVER = {
+  shows: "#3B5A6B",
+  archive: "#7A746C",
+  about: "#202833",
+  help: "#7BA86F",
+} as const;
+
+/** 호버 메뉴 — 메뉴별 hoverColor 지정 가능 */
+function NavMenuLink({
+  href,
+  label,
+  hoverColor,
+  linkStyle,
+}: {
+  href: string;
+  label: string;
+  hoverColor: string;
+  linkStyle: React.CSSProperties;
+}) {
+  return (
+    <Link
+      href={href}
+      style={linkStyle}
+      onMouseEnter={(e) => (e.currentTarget.style.color = hoverColor)}
+      onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
+    >
+      {label}
+    </Link>
+  );
+}
+
+/** 도움말 메뉴 호버 드롭다운 — FAQ / 1:1 문의 (데스크톱) */
 function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
   const [open, setOpen] = useState(false);
 
@@ -79,8 +104,8 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
       <Link
         href="/faq"
         style={linkStyle}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+        onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.help)}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
       >
         도움말
       </Link>
@@ -89,26 +114,26 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
           <div
             className="flex flex-col p-2"
             style={{
-              backgroundColor: "#F8F9FC",
-              border: "1px solid #C5CCD9",
-              boxShadow: "0 8px 24px rgba(109, 49, 21, 0.08)",
+              backgroundColor: "#FBF8F1",
+              border: "1px solid #D8D3C9",
+              boxShadow: "0 8px 24px rgba(32, 40, 51, 0.10)",
             }}
           >
             <Link
               href="/faq"
               className="px-3 py-2 text-xs transition-colors"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#202833" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.help)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
             >
               자주 묻는 질문 (FAQ)
             </Link>
             <Link
               href="/contact"
               className="px-3 py-2 text-xs transition-colors"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#202833" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.help)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
             >
               1:1 문의
             </Link>
@@ -119,7 +144,7 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
   );
 }
 
-/** 공연 메뉴 호버 드롭다운 (데스크톱 전용) */
+/** 공연 메뉴 호버 드롭다운 — 지역 16개 (데스크톱) */
 function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
   const [open, setOpen] = useState(false);
 
@@ -132,8 +157,8 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
       <Link
         href="/shows"
         style={linkStyle}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+        onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.shows)}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
       >
         공연
       </Link>
@@ -145,9 +170,9 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
           <div
             className="grid grid-cols-3 gap-x-2 gap-y-1 p-4"
             style={{
-              backgroundColor: "#F8F9FC",
-              border: "1px solid #C5CCD9",
-              boxShadow: "0 8px 24px rgba(109, 49, 21, 0.08)",
+              backgroundColor: "#FBF8F1",
+              border: "1px solid #D8D3C9",
+              boxShadow: "0 8px 24px rgba(32, 40, 51, 0.10)",
             }}
           >
             {REGIONS.map((region) => (
@@ -157,11 +182,11 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
                 className="px-2 py-1.5 text-xs transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  color: "#1A1A1A",
+                  color: "#202833",
                   fontWeight: region === "전체" ? 600 : 400,
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.shows)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
               >
                 {region}
               </Link>
@@ -178,6 +203,7 @@ export default function Nav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileShowsOpen, setMobileShowsOpen] = useState(false);
+  const [mobileGenresOpen, setMobileGenresOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
 
@@ -187,7 +213,6 @@ export default function Nav() {
     setUser(currentUser);
     if (!currentUser) { setRole(null); return; }
 
-    // 약관 미동의 사용자는 onboarding으로 강제 이동 (인증/온보딩 페이지 자체는 제외)
     const meta = currentUser.user_metadata ?? {};
     const isAuthPage = pathname?.startsWith("/auth/");
     if (!isAuthPage && (!meta.terms_agreed_at || !meta.privacy_agreed_at)) {
@@ -209,7 +234,6 @@ export default function Nav() {
     setRole(profile?.role ?? null);
   }, [pathname, router]);
 
-  // 초기 로드 + 로그인/로그아웃 이벤트 감지
   useEffect(() => {
     const supabase = createClient();
     loadUserAndRole();
@@ -221,12 +245,10 @@ export default function Nav() {
     return () => subscription.unsubscribe();
   }, [loadUserAndRole]);
 
-  // 페이지 이동할 때마다 최신 role 재조회 (관리자 승격 반영)
   useEffect(() => {
     loadUserAndRole();
   }, [pathname, loadUserAndRole]);
 
-  // 창 포커스 복귀 시 재조회 (다른 탭에서 역할 변경됐을 때 반영)
   useEffect(() => {
     const handleFocus = () => loadUserAndRole();
     window.addEventListener("focus", handleFocus);
@@ -243,7 +265,7 @@ export default function Nav() {
 
   const linkStyle: React.CSSProperties = {
     fontFamily: "var(--font-noto-sans-kr)",
-    color: "#1A1A1A",
+    color: "#202833",
     fontSize: "0.8125rem",
     letterSpacing: "0.08em",
   };
@@ -251,29 +273,15 @@ export default function Nav() {
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50"
-      style={{ backgroundColor: "#F8F9FC", borderBottom: "1px solid #C5CCD9" }}
+      style={{ backgroundColor: "#FBF8F1", borderBottom: "1px solid #D8D3C9" }}
     >
-      {/* Desktop — 3열 그리드 */}
-      <div className="hidden md:grid grid-cols-3 items-center max-w-7xl mx-auto px-8 py-3">
+      {/* Desktop — 3열 그리드 (메인 행) */}
+      <div className="hidden md:grid grid-cols-3 items-center max-w-7xl mx-auto px-8 pt-3 pb-2">
         {/* Left */}
         <div className="flex items-center gap-8">
           <ShowsHoverMenu linkStyle={linkStyle} />
-          <Link
-            href="/archive"
-            style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
-          >
-            기록
-          </Link>
-          <Link
-            href="/about"
-            style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
-          >
-            소개
-          </Link>
+          <NavMenuLink href="/archive" label="기록" hoverColor={MENU_HOVER.archive} linkStyle={linkStyle} />
+          <NavMenuLink href="/about" label="소개" hoverColor={MENU_HOVER.about} linkStyle={linkStyle} />
           <ContactHoverMenu linkStyle={linkStyle} />
         </div>
 
@@ -283,7 +291,7 @@ export default function Nav() {
           <span
             style={{
               fontFamily: "var(--font-noto-serif-kr)",
-              color: "#274E9B",
+              color: "#3B5A6B",
               fontSize: "0.95rem",
               fontWeight: 700,
               letterSpacing: "0.05em",
@@ -301,7 +309,7 @@ export default function Nav() {
               {role === "admin" && (
                 <Link
                   href="/admin"
-                  style={{ ...linkStyle, color: "#274E9B", fontWeight: 600 }}
+                  style={{ ...linkStyle, color: "#3B5A6B", fontWeight: 600 }}
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
                   onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
                 >
@@ -311,8 +319,8 @@ export default function Nav() {
               <Link
                 href="/mypage"
                 style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.shows)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
               >
                 마이페이지
               </Link>
@@ -321,11 +329,11 @@ export default function Nav() {
                 className="px-4 py-2 text-xs tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: "#274E9B",
-                  color: "#F8F9FC",
+                  backgroundColor: "#3B5A6B",
+                  color: "#FBF8F1",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#2B60CA")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#274E9B")}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#5C7C8E")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#3B5A6B")}
               >
                 로그아웃
               </button>
@@ -335,8 +343,8 @@ export default function Nav() {
               <Link
                 href="/auth/login"
                 style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.shows)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
               >
                 로그인
               </Link>
@@ -345,16 +353,51 @@ export default function Nav() {
                 className="px-4 py-2 text-xs tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: "#274E9B",
-                  color: "#F8F9FC",
+                  backgroundColor: "#3B5A6B",
+                  color: "#FBF8F1",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#2B60CA")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#274E9B")}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#5C7C8E")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#3B5A6B")}
               >
                 회원가입
               </Link>
             </>
           )}
+        </div>
+      </div>
+
+      {/* Desktop — 보조행: 장르 8개 직접 노출 (사장님 요청 — 1클릭 접근) */}
+      <div
+        className="hidden md:block"
+        style={{ borderTop: "1px solid rgba(216, 211, 201, 0.5)" }}
+      >
+        <div className="max-w-7xl mx-auto px-8 py-2 flex items-center justify-center gap-x-6 gap-y-1 flex-wrap">
+          <span
+            className="text-[0.65rem] tracking-[0.3em] uppercase"
+            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+          >
+            Genres
+          </span>
+          {GENRES.map((g) => (
+            <Link
+              key={g}
+              href={`/shows?genre=${encodeURIComponent(g)}`}
+              className="text-xs transition-colors"
+              style={{
+                fontFamily: "var(--font-noto-sans-kr)",
+                color: "#7A746C",
+                letterSpacing: "0.05em",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = MENU_HOVER.shows;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#7A746C";
+              }}
+            >
+              {g}
+            </Link>
+          ))}
         </div>
       </div>
 
@@ -366,7 +409,7 @@ export default function Nav() {
           <span
             style={{
               fontFamily: "var(--font-noto-serif-kr)",
-              color: "#274E9B",
+              color: "#3B5A6B",
               fontSize: "0.75rem",
               fontWeight: 700,
               letterSpacing: "0.05em",
@@ -384,31 +427,39 @@ export default function Nav() {
           <span
             className="block h-px w-5 transition-all duration-200"
             style={{
-              backgroundColor: "#1A1A1A",
+              backgroundColor: "#202833",
               transform: menuOpen ? "rotate(45deg) translateY(6px)" : "none",
             }}
           />
           <span
             className="block h-px w-5 transition-all duration-200"
-            style={{ backgroundColor: "#1A1A1A", opacity: menuOpen ? 0 : 1 }}
+            style={{ backgroundColor: "#202833", opacity: menuOpen ? 0 : 1 }}
           />
           <span
             className="block h-px w-5 transition-all duration-200"
             style={{
-              backgroundColor: "#1A1A1A",
+              backgroundColor: "#202833",
               transform: menuOpen ? "rotate(-45deg) translateY(-6px)" : "none",
             }}
           />
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — 2단(기능 / 장르) */}
       {menuOpen && (
         <div
           className="md:hidden"
-          style={{ borderTop: "1px solid #C5CCD9", backgroundColor: "#F8F9FC" }}
+          style={{ borderTop: "1px solid #D8D3C9", backgroundColor: "#FBF8F1" }}
         >
           <div className="flex flex-col px-6 py-4 gap-4">
+            {/* — 기능 섹션 — */}
+            <p
+              className="text-[0.65rem] tracking-[0.3em] uppercase"
+              style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+            >
+              Menu
+            </p>
+
             {/* 공연 (지역 펼치기) */}
             <div>
               <button
@@ -416,8 +467,8 @@ export default function Nav() {
                 style={{ ...linkStyle, padding: "8px 0" }}
                 onClick={() => setMobileShowsOpen(!mobileShowsOpen)}
               >
-                공연
-                <span style={{ color: "#6B7385", fontSize: "0.75rem" }}>
+                <span>공연 <span style={{ color: MENU_HOVER.shows, fontSize: "0.7rem", marginLeft: 4 }}>· 지역별</span></span>
+                <span style={{ color: "#7A746C", fontSize: "0.75rem" }}>
                   {mobileShowsOpen ? "▲" : "▼"}
                 </span>
               </button>
@@ -430,8 +481,8 @@ export default function Nav() {
                       className="px-2 py-2 text-xs"
                       style={{
                         fontFamily: "var(--font-noto-sans-kr)",
-                        color: "#1A1A1A",
-                        backgroundColor: "#E7ECF5",
+                        color: "#202833",
+                        backgroundColor: "#F0EBE0",
                         textAlign: "center",
                         fontWeight: region === "전체" ? 600 : 400,
                       }}
@@ -446,14 +497,14 @@ export default function Nav() {
 
             <Link
               href="/archive"
-              style={{ ...linkStyle, padding: "8px 0" }}
+              style={{ ...linkStyle, padding: "8px 0", color: MENU_HOVER.archive }}
               onClick={() => setMenuOpen(false)}
             >
               기록
             </Link>
             <Link
               href="/about"
-              style={{ ...linkStyle, padding: "8px 0" }}
+              style={{ ...linkStyle, padding: "8px 0", color: MENU_HOVER.about, fontWeight: 600 }}
               onClick={() => setMenuOpen(false)}
             >
               소개
@@ -472,59 +523,102 @@ export default function Nav() {
             >
               1:1 문의
             </Link>
-            {user ? (
-              <>
-                {role === "admin" && (
+
+            {/* — 장르 섹션 — */}
+            <div className="pt-3 mt-2" style={{ borderTop: "1px solid #D8D3C9" }}>
+              <button
+                className="w-full flex items-center justify-between text-left py-2"
+                style={{ ...linkStyle, padding: "8px 0" }}
+                onClick={() => setMobileGenresOpen(!mobileGenresOpen)}
+              >
+                <span>
+                  <span className="text-[0.65rem] tracking-[0.3em] uppercase mr-2" style={{ color: "#7A746C" }}>
+                    Genres
+                  </span>
+                  장르별 공연
+                </span>
+                <span style={{ color: "#7A746C", fontSize: "0.75rem" }}>
+                  {mobileGenresOpen ? "▲" : "▼"}
+                </span>
+              </button>
+              {mobileGenresOpen && (
+                <div className="grid grid-cols-2 gap-1 mt-2 pb-2">
+                  {GENRES.map((g) => (
+                    <Link
+                      key={g}
+                      href={`/shows?genre=${encodeURIComponent(g)}`}
+                      className="px-2 py-2 text-xs"
+                      style={{
+                        fontFamily: "var(--font-noto-sans-kr)",
+                        color: "#202833",
+                        backgroundColor: "#F0EBE0",
+                        textAlign: "center",
+                      }}
+                      onClick={() => { setMenuOpen(false); setMobileGenresOpen(false); }}
+                    >
+                      {g}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* — 계정 섹션 — */}
+            <div className="pt-3 mt-2" style={{ borderTop: "1px solid #D8D3C9" }}>
+              {user ? (
+                <div className="flex flex-col gap-3">
+                  {role === "admin" && (
+                    <Link
+                      href="/admin"
+                      style={{ ...linkStyle, padding: "8px 0", color: "#3B5A6B", fontWeight: 600 }}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      관리자
+                    </Link>
+                  )}
                   <Link
-                    href="/admin"
-                    style={{ ...linkStyle, padding: "8px 0", color: "#274E9B", fontWeight: 600 }}
+                    href="/mypage"
+                    style={{ ...linkStyle, padding: "8px 0" }}
                     onClick={() => setMenuOpen(false)}
                   >
-                    관리자
+                    마이페이지
                   </Link>
-                )}
-                <Link
-                  href="/mypage"
-                  style={{ ...linkStyle, padding: "8px 0" }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  마이페이지
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="py-3 text-sm tracking-wider text-center"
-                  style={{
-                    fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: "#274E9B",
-                    color: "#F8F9FC",
-                  }}
-                >
-                  로그아웃
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/auth/login"
-                  style={{ ...linkStyle, padding: "8px 0" }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  로그인
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="py-3 text-sm tracking-wider text-center"
-                  style={{
-                    fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: "#274E9B",
-                    color: "#F8F9FC",
-                  }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  회원가입
-                </Link>
-              </>
-            )}
+                  <button
+                    onClick={handleLogout}
+                    className="py-3 text-sm tracking-wider text-center"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      backgroundColor: "#3B5A6B",
+                      color: "#FBF8F1",
+                    }}
+                  >
+                    로그아웃
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <Link
+                    href="/auth/login"
+                    style={{ ...linkStyle, padding: "8px 0" }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    로그인
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className="py-3 text-sm tracking-wider text-center"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      backgroundColor: "#3B5A6B",
+                      color: "#FBF8F1",
+                    }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    회원가입
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

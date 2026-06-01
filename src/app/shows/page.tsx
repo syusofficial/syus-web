@@ -122,7 +122,7 @@ export default async function ShowsPage({
   return (
     <div
       className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16"
-      style={{ backgroundColor: "#F8F9FC" }}
+      style={{ backgroundColor: "#FBF8F1" }}
     >
       <script
         type="application/ld+json"
@@ -134,13 +134,13 @@ export default async function ShowsPage({
           <div>
             <p
               className="text-xs tracking-[0.3em] uppercase mb-3"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
             >
               Shows
             </p>
             <h1
               className="text-4xl md:text-5xl font-bold mb-3"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
             >
               {q
                 ? `"${q}" 검색 결과`
@@ -148,7 +148,7 @@ export default async function ShowsPage({
                 ? `${school} 공연`
                 : (activeRegion === "전체" ? "진행 중 · 예정 공연" : `${activeRegion} 공연`)}
             </h1>
-            <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+            <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
               {totalCount}개의 공연
             </p>
           </div>
@@ -158,8 +158,8 @@ export default async function ShowsPage({
               className="px-4 py-2 text-xs tracking-wide transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#274E9B",
-                border: "1px solid #C5CCD9",
+                color: "#3B5A6B",
+                border: "1px solid #D8D3C9",
               }}
             >
               캘린더로 보기
@@ -169,8 +169,8 @@ export default async function ShowsPage({
               className="px-4 py-2 text-xs tracking-wide transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#274E9B",
-                border: "1px solid #C5CCD9",
+                color: "#3B5A6B",
+                border: "1px solid #D8D3C9",
               }}
             >
               지난 공연 →
@@ -199,9 +199,9 @@ export default async function ShowsPage({
                 className="px-3 py-1.5 text-xs tracking-wide transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#274E9B" : "transparent",
-                  color: isActive ? "#F8F9FC" : "#274E9B",
-                  border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
+                  backgroundColor: isActive ? "#3B5A6B" : "transparent",
+                  color: isActive ? "#FBF8F1" : "#3B5A6B",
+                  border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
                 }}
               >
                 {r}
@@ -213,11 +213,11 @@ export default async function ShowsPage({
         {/* 장르 필터 */}
         <div
           className={`${availableSchools.length > 0 ? "mb-6" : "mb-10 pb-6"} flex flex-wrap gap-2 items-center`}
-          style={availableSchools.length > 0 ? undefined : { borderBottom: "1px solid #C5CCD9" }}
+          style={availableSchools.length > 0 ? undefined : { borderBottom: "1px solid #D8D3C9" }}
         >
           <span
             className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
           >
             장르
           </span>
@@ -237,9 +237,9 @@ export default async function ShowsPage({
                 className="px-3 py-1 text-xs"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#274E9B" : "transparent",
-                  color: isActive ? "#F8F9FC" : "#6B7385",
-                  border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
+                  backgroundColor: isActive ? "#3B5A6B" : "transparent",
+                  color: isActive ? "#FBF8F1" : "#7A746C",
+                  border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
                 }}
               >
                 {g ?? "전체"}
@@ -252,7 +252,7 @@ export default async function ShowsPage({
         <div className="mb-6 flex flex-wrap gap-2 items-center">
           <span
             className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
           >
             구분
           </span>
@@ -272,9 +272,9 @@ export default async function ShowsPage({
                 className="px-3 py-1 text-xs"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#274E9B" : "transparent",
-                  color: isActive ? "#F8F9FC" : "#6B7385",
-                  border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
+                  backgroundColor: isActive ? "#3B5A6B" : "transparent",
+                  color: isActive ? "#FBF8F1" : "#7A746C",
+                  border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
                 }}
               >
                 {c ?? "전체"}
@@ -287,11 +287,11 @@ export default async function ShowsPage({
         {availableSchools.length > 0 && (
           <div
             className="mb-10 pb-6 flex flex-wrap gap-2 items-center"
-            style={{ borderBottom: "1px solid #C5CCD9" }}
+            style={{ borderBottom: "1px solid #D8D3C9" }}
           >
             <span
               className="text-xs tracking-wider uppercase mr-2"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
             >
               학교
             </span>
@@ -311,9 +311,9 @@ export default async function ShowsPage({
                   className="px-3 py-1 text-xs"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: isActive ? "#274E9B" : "transparent",
-                    color: isActive ? "#F8F9FC" : "#6B7385",
-                    border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
+                    backgroundColor: isActive ? "#3B5A6B" : "transparent",
+                    color: isActive ? "#FBF8F1" : "#7A746C",
+                    border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
                   }}
                 >
                   {sch ?? "전체"}
@@ -326,10 +326,10 @@ export default async function ShowsPage({
         {/* 공연 그리드 */}
         {list.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+            <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
               {q ? "조건에 맞는 무대를 아직 찾지 못했습니다." : "곧 첫 무대가 오릅니다."}
             </p>
-            <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+            <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
               {q ? "다른 검색어로 다시 시도해보세요." : "지나간 공연은 ‘지난 공연’에서 만나보실 수 있습니다."}
             </p>
             <Link
@@ -337,8 +337,8 @@ export default async function ShowsPage({
               className="inline-block px-4 py-2 text-xs tracking-wide"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#274E9B",
-                border: "1px solid #C5CCD9",
+                color: "#3B5A6B",
+                border: "1px solid #D8D3C9",
               }}
             >
               지난 공연으로 →
@@ -359,18 +359,18 @@ export default async function ShowsPage({
                   <Link
                     href={buildPageUrl(currentPage - 1)}
                     className="px-3 py-2 text-xs"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B", border: "1px solid #C5CCD9" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B", border: "1px solid #D8D3C9" }}
                   >
                     ← 이전
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs" style={{ color: "#C5CCD9", border: "1px solid #C5CCD9" }}>← 이전</span>
+                  <span className="px-3 py-2 text-xs" style={{ color: "#D8D3C9", border: "1px solid #D8D3C9" }}>← 이전</span>
                 )}
 
                 {/* 페이지 번호 */}
                 {generatePageNumbers(currentPage, totalPages).map((p, i) =>
                   p === "..." ? (
-                    <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#6B7385" }}>···</span>
+                    <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#7A746C" }}>···</span>
                   ) : (
                     <Link
                       key={p}
@@ -378,9 +378,9 @@ export default async function ShowsPage({
                       className="px-3 py-2 text-xs"
                       style={{
                         fontFamily: "var(--font-inter)",
-                        backgroundColor: p === currentPage ? "#274E9B" : "transparent",
-                        color: p === currentPage ? "#F8F9FC" : "#274E9B",
-                        border: `1px solid ${p === currentPage ? "#274E9B" : "#C5CCD9"}`,
+                        backgroundColor: p === currentPage ? "#3B5A6B" : "transparent",
+                        color: p === currentPage ? "#FBF8F1" : "#3B5A6B",
+                        border: `1px solid ${p === currentPage ? "#3B5A6B" : "#D8D3C9"}`,
                         minWidth: "36px",
                         textAlign: "center",
                       }}
@@ -394,12 +394,12 @@ export default async function ShowsPage({
                   <Link
                     href={buildPageUrl(currentPage + 1)}
                     className="px-3 py-2 text-xs"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B", border: "1px solid #C5CCD9" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B", border: "1px solid #D8D3C9" }}
                   >
                     다음 →
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs" style={{ color: "#C5CCD9", border: "1px solid #C5CCD9" }}>다음 →</span>
+                  <span className="px-3 py-2 text-xs" style={{ color: "#D8D3C9", border: "1px solid #D8D3C9" }}>다음 →</span>
                 )}
               </div>
             )}

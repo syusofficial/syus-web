@@ -24,7 +24,7 @@ function renderAnswer(answer: string): React.ReactNode {
           href={match[2]}
           {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
           className="hover:underline"
-          style={{ color: "#274E9B", fontWeight: 500 }}
+          style={{ color: "#3B5A6B", fontWeight: 500 }}
         >
           {match[1]}
         </Link>
@@ -103,7 +103,7 @@ export default function FAQPage() {
   return (
     <div
       className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16"
-      style={{ backgroundColor: "#F8F9FC" }}
+      style={{ backgroundColor: "#FBF8F1" }}
     >
       <script
         type="application/ld+json"
@@ -114,19 +114,19 @@ export default function FAQPage() {
         <div className="mb-12">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
           >
             FAQ
           </p>
           <h1
             className="text-4xl md:text-5xl font-bold mb-3"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
           >
             자주 묻는 질문
           </h1>
           <p
             className="text-sm leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
           >
             궁금한 내용을 검색하시거나 카테고리에서 찾아보세요. 답을 못 찾으셨다면 1:1 문의를 이용해주세요.
           </p>
@@ -143,11 +143,11 @@ export default function FAQPage() {
               className="w-full px-5 py-4 pr-12 text-sm outline-none transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                backgroundColor: "#E7ECF5",
+                backgroundColor: "#F0EBE0",
                 color: "#1A1A1A",
                 border: "1px solid transparent",
               }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
             {query && (
@@ -155,7 +155,7 @@ export default function FAQPage() {
                 type="button"
                 onClick={() => setQuery("")}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-sm"
-                style={{ color: "#6B7385" }}
+                style={{ color: "#7A746C" }}
                 aria-label="검색어 지우기"
               >
                 ✕
@@ -169,7 +169,7 @@ export default function FAQPage() {
           <div className="mb-10">
             <p
               className="text-xs tracking-[0.2em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
             >
               ★ 가장 많이 묻는 질문
             </p>
@@ -181,8 +181,8 @@ export default function FAQPage() {
                   className="w-full text-left px-5 py-3 transition-colors"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: "#274E9B",
-                    color: "#F8F9FC",
+                    backgroundColor: "#3B5A6B",
+                    color: "#FBF8F1",
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
                   onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
@@ -208,9 +208,9 @@ export default function FAQPage() {
                 className="px-3 py-1.5 text-xs tracking-wide transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#274E9B" : "transparent",
-                  color: isActive ? "#F8F9FC" : "#274E9B",
-                  border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
+                  backgroundColor: isActive ? "#3B5A6B" : "transparent",
+                  color: isActive ? "#FBF8F1" : "#3B5A6B",
+                  border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
                 }}
               >
                 {c}
@@ -222,7 +222,7 @@ export default function FAQPage() {
         {/* 결과 카운트 */}
         <p
           className="text-xs mb-4"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
         >
           {filteredFaqs.length}개의 질문
           {query && ` · "${query}" 검색`}
@@ -232,17 +232,17 @@ export default function FAQPage() {
         {filteredFaqs.length === 0 ? (
           <div
             className="text-center py-16"
-            style={{ backgroundColor: "#E7ECF5" }}
+            style={{ backgroundColor: "#F0EBE0" }}
           >
             <p
               className="text-sm mb-2"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
             >
               검색 결과가 없습니다.
             </p>
             <p
               className="text-xs"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
             >
               다른 검색어를 시도하시거나 1:1 문의를 이용해주세요.
             </p>
@@ -255,7 +255,7 @@ export default function FAQPage() {
                 <div
                   key={faq.id}
                   id={`faq-${faq.id}`}
-                  style={{ border: "1px solid #C5CCD9", scrollMarginTop: "6rem" }}
+                  style={{ border: "1px solid #D8D3C9", scrollMarginTop: "6rem" }}
                 >
                   <button
                     type="button"
@@ -263,10 +263,10 @@ export default function FAQPage() {
                     className="w-full text-left px-5 py-4 flex items-start justify-between gap-4 transition-colors"
                     style={{
                       fontFamily: "var(--font-noto-sans-kr)",
-                      backgroundColor: isOpen ? "#E7ECF5" : "transparent",
+                      backgroundColor: isOpen ? "#F0EBE0" : "transparent",
                     }}
                     onMouseEnter={(e) => {
-                      if (!isOpen) e.currentTarget.style.backgroundColor = "#E7ECF5";
+                      if (!isOpen) e.currentTarget.style.backgroundColor = "#F0EBE0";
                     }}
                     onMouseLeave={(e) => {
                       if (!isOpen) e.currentTarget.style.backgroundColor = "transparent";
@@ -276,7 +276,7 @@ export default function FAQPage() {
                     <div className="flex-1 min-w-0">
                       <p
                         className="text-xs mb-1"
-                        style={{ fontFamily: "var(--font-inter)", color: "#6B7385", letterSpacing: "0.1em" }}
+                        style={{ fontFamily: "var(--font-inter)", color: "#7A746C", letterSpacing: "0.1em" }}
                       >
                         {faq.category}
                       </p>
@@ -290,7 +290,7 @@ export default function FAQPage() {
                     <span
                       className="text-base shrink-0 mt-0.5 transition-transform"
                       style={{
-                        color: "#274E9B",
+                        color: "#3B5A6B",
                         transform: isOpen ? "rotate(45deg)" : "rotate(0)",
                       }}
                     >
@@ -300,7 +300,7 @@ export default function FAQPage() {
                   {isOpen && (
                     <div
                       className="px-5 py-5 border-t"
-                      style={{ backgroundColor: "#F8F9FC", borderColor: "#C5CCD9" }}
+                      style={{ backgroundColor: "#FBF8F1", borderColor: "#D8D3C9" }}
                     >
                       <p
                         className="text-sm leading-relaxed whitespace-pre-line"
@@ -319,7 +319,7 @@ export default function FAQPage() {
         {/* 1:1 문의 안내 */}
         <div
           className="mt-16 p-8 text-center"
-          style={{ backgroundColor: "#274E9B", color: "#F8F9FC" }}
+          style={{ backgroundColor: "#3B5A6B", color: "#FBF8F1" }}
         >
           <p
             className="text-xs tracking-[0.3em] uppercase mb-2"
@@ -344,8 +344,8 @@ export default function FAQPage() {
             className="inline-block px-8 py-3 text-sm tracking-wider transition-opacity"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: "#F8F9FC",
-              color: "#274E9B",
+              backgroundColor: "#FBF8F1",
+              color: "#3B5A6B",
             }}
           >
             1:1 문의하기 →

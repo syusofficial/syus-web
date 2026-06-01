@@ -82,12 +82,12 @@ export default function RatingInput({ showId, isLoggedIn, initialMyScore }: Prop
   // 비로그인 — 안내 + 로그인 링크
   if (!isLoggedIn) {
     return (
-      <div className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+      <div className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
         별점을 부여하시려면{" "}
         <Link
           href="/auth/login"
           className="underline"
-          style={{ color: "#274E9B", fontWeight: 600 }}
+          style={{ color: "#3B5A6B", fontWeight: 600 }}
         >
           로그인
         </Link>
@@ -144,7 +144,7 @@ export default function RatingInput({ showId, isLoggedIn, initialMyScore }: Prop
       </div>
       <p
         className="text-xs mt-2"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
       >
         {myScore !== null
           ? `회원님의 평가: ${myScore}점 · 다시 누르면 점수가 갱신됩니다.`
@@ -169,8 +169,8 @@ function Star({ size = 24, filled = false }: { size?: number; filled?: boolean }
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill={filled ? "#F5C84F" : "none"}
-      stroke={filled ? "#F5C84F" : "#C5CCD9"}
+      fill={filled ? "#C8D96F" : "none"}
+      stroke={filled ? "#C8D96F" : "#D8D3C9"}
       strokeWidth="1.5"
       strokeLinejoin="round"
     >

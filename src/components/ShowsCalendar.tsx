@@ -133,8 +133,8 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
             type="button"
             onClick={goPrevMonth}
             className="w-9 h-9 flex items-center justify-center transition-colors"
-            style={{ color: "#274E9B", border: "1px solid #C5CCD9" }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#E7ECF5"; }}
+            style={{ color: "#3B5A6B", border: "1px solid #D8D3C9" }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F0EBE0"; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
             aria-label="이전 달"
           >
@@ -142,7 +142,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
           </button>
           <h2
             className="text-xl font-bold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B", minWidth: 140, textAlign: "center" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B", minWidth: 140, textAlign: "center" }}
           >
             {viewYear}년 {viewMonth + 1}월
           </h2>
@@ -150,8 +150,8 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
             type="button"
             onClick={goNextMonth}
             className="w-9 h-9 flex items-center justify-center transition-colors"
-            style={{ color: "#274E9B", border: "1px solid #C5CCD9" }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#E7ECF5"; }}
+            style={{ color: "#3B5A6B", border: "1px solid #D8D3C9" }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F0EBE0"; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
             aria-label="다음 달"
           >
@@ -164,19 +164,19 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
           className="px-3 py-1.5 text-xs tracking-wide transition-colors"
           style={{
             fontFamily: "var(--font-noto-sans-kr)",
-            color: "#274E9B",
-            border: "1px solid #C5CCD9",
+            color: "#3B5A6B",
+            border: "1px solid #D8D3C9",
             backgroundColor: "transparent",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#274E9B";
-            e.currentTarget.style.color = "#F8F9FC";
-            e.currentTarget.style.borderColor = "#274E9B";
+            e.currentTarget.style.backgroundColor = "#3B5A6B";
+            e.currentTarget.style.color = "#FBF8F1";
+            e.currentTarget.style.borderColor = "#3B5A6B";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.color = "#274E9B";
-            e.currentTarget.style.borderColor = "#C5CCD9";
+            e.currentTarget.style.color = "#3B5A6B";
+            e.currentTarget.style.borderColor = "#D8D3C9";
           }}
         >
           오늘로
@@ -191,7 +191,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
             className="text-center text-xs tracking-wider py-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              color: i === 0 ? "#A63D2F" : "#6B7385",
+              color: i === 0 ? "#A63D2F" : "#7A746C",
             }}
           >
             {w}
@@ -221,27 +221,27 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
               className="aspect-square flex flex-col items-center justify-start pt-2 pb-1 px-1 transition-colors relative"
               style={{
                 backgroundColor: isSelected
-                  ? "#274E9B"
+                  ? "#3B5A6B"
                   : isToday
-                  ? "#E7ECF5"
+                  ? "#F0EBE0"
                   : "transparent",
                 color: isSelected
-                  ? "#F8F9FC"
+                  ? "#FBF8F1"
                   : isSunday
                   ? "#A63D2F"
                   : "#1A1A1A",
-                border: `1px solid ${isSelected ? "#274E9B" : "#C5CCD9"}`,
+                border: `1px solid ${isSelected ? "#3B5A6B" : "#D8D3C9"}`,
                 cursor: "pointer",
                 fontFamily: "var(--font-inter)",
               }}
               onMouseEnter={(e) => {
                 if (!isSelected) {
-                  e.currentTarget.style.backgroundColor = isToday ? "#C5CCD9" : "#E7ECF5";
+                  e.currentTarget.style.backgroundColor = isToday ? "#D8D3C9" : "#F0EBE0";
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isSelected) {
-                  e.currentTarget.style.backgroundColor = isToday ? "#E7ECF5" : "transparent";
+                  e.currentTarget.style.backgroundColor = isToday ? "#F0EBE0" : "transparent";
                 }
               }}
             >
@@ -250,8 +250,8 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
                 <span
                   className="mt-1 text-[10px] tracking-wide px-1.5 py-0.5"
                   style={{
-                    backgroundColor: isSelected ? "#F8F9FC" : "#274E9B",
-                    color: isSelected ? "#274E9B" : "#F8F9FC",
+                    backgroundColor: isSelected ? "#FBF8F1" : "#3B5A6B",
+                    color: isSelected ? "#3B5A6B" : "#FBF8F1",
                     fontFamily: "var(--font-inter)",
                     minWidth: 18,
                     textAlign: "center",
@@ -266,16 +266,16 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
       </div>
 
       {/* 선택된 날짜의 공연 목록 */}
-      <div className="pt-8" style={{ borderTop: "1px solid #C5CCD9" }}>
+      <div className="pt-8" style={{ borderTop: "1px solid #D8D3C9" }}>
         <p
           className="text-xs tracking-[0.3em] uppercase mb-3"
-          style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
         >
           Selected
         </p>
         <h3
           className="text-2xl font-bold mb-6"
-          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
         >
           {selectedDateLabel}
         </h3>
@@ -283,7 +283,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
         {selectedShows.length === 0 ? (
           <p
             className="text-sm py-12 text-center"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
           >
             이 날짜에 진행되는 공연이 없습니다.
           </p>
@@ -294,21 +294,21 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
                 <Link
                   href={`/shows/${show.id}`}
                   className="block p-5 transition-colors"
-                  style={{ backgroundColor: "#E7ECF5" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#C5CCD9"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#E7ECF5"; }}
+                  style={{ backgroundColor: "#F0EBE0" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D8D3C9"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#F0EBE0"; }}
                 >
                   <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div className="flex-1 min-w-0">
                       <h4
                         className="text-base font-semibold mb-1"
-                        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+                        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
                       >
                         {show.title}
                       </h4>
                       <p
                         className="text-xs"
-                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
                       >
                         {[
                           show.performer_name,
@@ -319,7 +319,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
                       {show.show_time && (
                         <p
                           className="text-xs mt-1"
-                          style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+                          style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
                         >
                           {show.show_time}
                         </p>
@@ -331,8 +331,8 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
                           className="px-2 py-0.5 text-xs"
                           style={{
                             fontFamily: "var(--font-noto-sans-kr)",
-                            backgroundColor: "#274E9B",
-                            color: "#F8F9FC",
+                            backgroundColor: "#3B5A6B",
+                            color: "#FBF8F1",
                           }}
                         >
                           {show.genre === "기타" && show.genre_custom ? show.genre_custom : show.genre}

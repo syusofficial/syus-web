@@ -1,48 +1,56 @@
 @import "tailwindcss";
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@import url("https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css");
 
 @theme inline {
-  /* 무대올림 / 사유유사 SYUS — 컬러 팔레트 (2026-06-01 전환)
-   * 메인: 파랑 (SYUS 로고 코발트 추출)
-   * 포인트: 초록·빨강·노랑 (CTA·태그·강조에만 절제)
-   * 중립: 페이퍼·미스트·스톤·차콜
-   * legacy alias 유지: --color-cream 등은 기존 컴포넌트 호환용
+  /* 무대올림 / 사유유사 SYUS — 컬러 팔레트 (2026-06-02 Mineral Stage 전환)
+   * 사장님 결정: 안 ② Mineral Stage — 2026 Future Dusk 트렌드.
+   * 메인: 미네랄 슬레이트 (차분한 청회색)
+   * 배경: 웜 크림 (오프화이트가 살짝 따뜻해진)
+   * CTA: 페일 라임 (보색 강조)
+   * 톤: 무대올림(과감)·사유유사(차분) 한 화면 공존
    */
-  --color-paper: #F8F9FC;          /* 메인 배경 */
-  --color-paper-dark: #E7ECF5;     /* 카드·서브 배경 */
-  --color-mist: #C5CCD9;           /* 라인·구분 */
-  --color-stone: #6B7385;          /* 서브 텍스트 */
-  --color-charcoal: #1A1A1A;       /* 본문 텍스트·강조 */
+  --color-paper: #FBF8F1;          /* 메인 배경 — 웜 크림 */
+  --color-paper-dark: #F0EBE0;     /* 카드·서브 배경 — 크림 다크 */
+  --color-mist: #D8D3C9;           /* 라인·구분 — 웜 라인 */
+  --color-stone: #7A746C;          /* 서브 텍스트 — 웜 그레이 */
+  --color-charcoal: #202833;       /* 본문 텍스트·강조 — 딥 인디고 */
 
-  --color-blue: #274E9B;           /* 메인 파랑 (코발트) */
-  --color-blue-light: #2B60CA;     /* 호버·서브 강조 */
-  --color-navy: #1B2842;           /* 딥 네이비 (헤딩·풋터) */
+  --color-blue: #3B5A6B;           /* 메인 — 미네랄 슬레이트 (코발트 대체) */
+  --color-blue-light: #5C7C8E;     /* 호버·서브 강조 — 미네랄 라이트 */
+  --color-navy: #202833;           /* 딥 인디고 (헤딩·풋터) */
 
-  --color-accent-green: #3A9C5C;   /* 포인트 초록 (성공·확인) */
-  --color-accent-red: #D54545;     /* 포인트 빨강 (CTA·강조) */
-  --color-accent-yellow: #F5C84F;  /* 포인트 노랑 (하이라이트·태그) */
+  --color-accent-green: #7BA86F;   /* 세이지 그린 (성공·확인) */
+  --color-accent-red: #D54545;     /* 포인트 빨강 (경고·삭제) */
+  --color-accent-yellow: #C8D96F;  /* 페일 라임 (CTA — 노랑 대체) */
+  --color-accent-yellow-hover: #D5E482;
 
-  /* legacy alias — 기존 컴포넌트가 --color-cream 등을 참조하므로 유지 */
-  --color-cream: #F8F9FC;
-  --color-cream-dark: #E7ECF5;
-  --color-syus-brown: #274E9B;
-  --color-syus-brown-light: #2B60CA;
-  --color-syus-blue: #274E9B;
-  --color-syus-navy: #1B2842;
+  /* SYUS 원 정체성 브라운 — 로고만 유지 (사장님 결정) */
+  --color-syus-logo: #6D3115;
+
+  /* legacy alias — 기존 컴포넌트 호환용 (이름 유지, 값만 변경) */
+  --color-cream: #FBF8F1;
+  --color-cream-dark: #F0EBE0;
+  --color-syus-brown: #3B5A6B;
+  --color-syus-brown-light: #5C7C8E;
+  --color-syus-blue: #3B5A6B;
+  --color-syus-navy: #202833;
   --color-syus-red: #D54545;
-  --color-syus-green: #3A9C5C;
-  --color-syus-yellow: #F5C84F;
-  --color-syus-charcoal: #1A1A1A;
-  --color-syus-grey: #6B7385;
-  --color-syus-light-grey: #C5CCD9;
+  --color-syus-green: #7BA86F;
+  --color-syus-yellow: #C8D96F;
+  --color-syus-charcoal: #202833;
+  --color-syus-grey: #7A746C;
+  --color-syus-light-grey: #D8D3C9;
 
-  /* Fonts */
-  --font-kr-serif: var(--font-noto-serif-kr);
-  --font-kr-sans: var(--font-noto-sans-kr);
+  /* Fonts — 마뗑킴 톤 (Spoqa Han Sans Neo Thin + Geist Thin)
+   * 토큰 이름은 유지(코드 영향 최소화), 값만 슬림 톤으로 교체
+   */
+  --font-spoqa: "Spoqa Han Sans Neo", -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-kr-serif: "Spoqa Han Sans Neo", var(--font-noto-serif-kr), serif;
+  --font-kr-sans: "Spoqa Han Sans Neo", var(--font-noto-sans-kr), sans-serif;
   --font-display: var(--font-cormorant);
-  --font-body: var(--font-inter);
-  /* 2026-06-01 마케팅·제작팀 합의: 미니멀·트렌드 한글 디스플레이 — Pretendard Variable (SIL OFL 1.1) */
-  --font-pretendard: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-body: var(--font-inter); /* layout.tsx에서 Geist로 매핑됨 */
+  --font-pretendard: "Spoqa Han Sans Neo", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
 html {
@@ -50,15 +58,58 @@ html {
 }
 
 body {
-  background-color: #F8F9FC;
-  color: #1A1A1A;
+  background-color: #FBF8F1;
+  color: #202833;
+  font-family: "Spoqa Han Sans Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 300; /* 마뗑킴 톤 — 슬림 weight 기본 */
 }
 
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #F8F9FC; }
-::-webkit-scrollbar-thumb { background: #274E9B; border-radius: 2px; }
+::-webkit-scrollbar-track { background: #FBF8F1; }
+::-webkit-scrollbar-thumb { background: #3B5A6B; border-radius: 2px; }
 
 ::selection {
-  background: #274E9B;
-  color: #F8F9FC;
+  background: #3B5A6B;
+  color: #FBF8F1;
 }
+
+/* ──────────────────────────────────────────────────
+ * 그라데이션 + 그레인 효과 (사장님 요청)
+ * 사용: <div className="grad-grain grad-mineral">…</div>
+ * 외부 파일 0, SVG noise 인라인.
+ * ────────────────────────────────────────────────── */
+
+.grad-mineral {
+  background: linear-gradient(135deg, #5C7C8E 0%, #3B5A6B 45%, #202833 100%);
+}
+.grad-mineral-soft {
+  background: linear-gradient(180deg, #FBF8F1 0%, #F0EBE0 100%);
+}
+.grad-mineral-radial {
+  background: radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%);
+}
+.grad-lime {
+  background: linear-gradient(135deg, #D5E482 0%, #C8D96F 100%);
+}
+
+.grad-grain {
+  position: relative;
+  isolation: isolate;
+}
+.grad-grain > * {
+  position: relative;
+  z-index: 1;
+}
+.grad-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+  z-index: 0;
+}
+.grad-grain-soft::after { opacity: 0.10; }
+.grad-grain-strong::after { opacity: 0.28; }

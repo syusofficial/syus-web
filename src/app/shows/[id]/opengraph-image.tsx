@@ -29,7 +29,7 @@ export default async function Image({ params }: { params: { id: string } }) {
             width: 1200,
             height: 630,
             background:
-              "radial-gradient(ellipse at top left, #2B60CA 0%, #274E9B 35%, #1B2842 100%)",
+              "radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -37,10 +37,10 @@ export default async function Image({ params }: { params: { id: string } }) {
             fontFamily: "serif",
           }}
         >
-          <div style={{ fontSize: 96, fontWeight: 700, color: "#F8F9FC", letterSpacing: -2 }}>
+          <div style={{ fontSize: 96, fontWeight: 700, color: "#FBF8F1", letterSpacing: -2 }}>
             무대올림
           </div>
-          <div style={{ fontSize: 24, color: "#F5C84F", marginTop: 24, letterSpacing: 6 }}>
+          <div style={{ fontSize: 24, color: "#C8D96F", marginTop: 24, letterSpacing: 6 }}>
             운영 · 사유유사 SYUS
           </div>
         </div>
@@ -60,7 +60,7 @@ export default async function Image({ params }: { params: { id: string } }) {
         style={{
           width: 1200,
           height: 630,
-          background: "#F8F9FC",
+          background: "#FBF8F1",
           display: "flex",
           flexDirection: "column",
           padding: "70px 80px",
@@ -72,15 +72,15 @@ export default async function Image({ params }: { params: { id: string } }) {
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             {/* 미니 무대올림 마크: 두 구체 + 가로선 */}
             <svg width="60" height="42" viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <line x1="6" y1="55" x2="94" y2="55" stroke="#274E9B" strokeWidth="5" />
-              <circle cx="35" cy="32" r="14" stroke="#274E9B" strokeWidth="4.5" fill="none" />
-              <circle cx="65" cy="32" r="14" stroke="#274E9B" strokeWidth="4.5" fill="none" />
+              <line x1="6" y1="55" x2="94" y2="55" stroke="#3B5A6B" strokeWidth="5" />
+              <circle cx="35" cy="32" r="14" stroke="#3B5A6B" strokeWidth="4.5" fill="none" />
+              <circle cx="65" cy="32" r="14" stroke="#3B5A6B" strokeWidth="4.5" fill="none" />
             </svg>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 24, color: "#274E9B", letterSpacing: 1, fontWeight: 700 }}>
+              <span style={{ fontSize: 24, color: "#3B5A6B", letterSpacing: 1, fontWeight: 700 }}>
                 무대올림
               </span>
-              <span style={{ fontSize: 13, color: "#6B7385", letterSpacing: 2, marginTop: 2 }}>
+              <span style={{ fontSize: 13, color: "#7A746C", letterSpacing: 2, marginTop: 2 }}>
                 운영 · 사유유사 SYUS
               </span>
             </div>
@@ -91,8 +91,8 @@ export default async function Image({ params }: { params: { id: string } }) {
                 style={{
                   fontSize: 18,
                   padding: "8px 18px",
-                  background: "#274E9B",
-                  color: "#F8F9FC",
+                  background: "#3B5A6B",
+                  color: "#FBF8F1",
                   letterSpacing: 1,
                 }}
               >
@@ -105,8 +105,8 @@ export default async function Image({ params }: { params: { id: string } }) {
                   fontSize: 18,
                   padding: "8px 18px",
                   background: "transparent",
-                  color: "#274E9B",
-                  border: "1px solid #274E9B",
+                  color: "#3B5A6B",
+                  border: "1px solid #3B5A6B",
                   letterSpacing: 1,
                 }}
               >
@@ -119,7 +119,7 @@ export default async function Image({ params }: { params: { id: string } }) {
         {/* 중앙: 공연명 */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", marginTop: 30 }}>
           {show.subtitle && (
-            <div style={{ fontSize: 22, color: "#6B7385", marginBottom: 18, fontStyle: "italic" }}>
+            <div style={{ fontSize: 22, color: "#7A746C", marginBottom: 18, fontStyle: "italic" }}>
               {show.subtitle}
             </div>
           )}
@@ -127,7 +127,7 @@ export default async function Image({ params }: { params: { id: string } }) {
             style={{
               fontSize: show.title.length > 18 ? 64 : show.title.length > 12 ? 78 : 96,
               fontWeight: 700,
-              color: "#274E9B",
+              color: "#3B5A6B",
               lineHeight: 1.1,
               letterSpacing: -2,
               display: "flex",
@@ -136,7 +136,7 @@ export default async function Image({ params }: { params: { id: string } }) {
             {show.title}
           </div>
           {show.performer_name && (
-            <div style={{ fontSize: 26, color: "#6B7385", marginTop: 20, letterSpacing: 1 }}>
+            <div style={{ fontSize: 26, color: "#7A746C", marginTop: 20, letterSpacing: 1 }}>
               by {show.performer_name}
             </div>
           )}
@@ -148,13 +148,13 @@ export default async function Image({ params }: { params: { id: string } }) {
             display: "flex",
             justifyContent: "space-between",
             paddingTop: 24,
-            borderTop: "1px solid #C5CCD9",
+            borderTop: "1px solid #D8D3C9",
             color: "#1A1A1A",
             fontSize: 22,
           }}
         >
           <span>{dateRange}</span>
-          <span style={{ color: "#274E9B" }}>{show.venue}</span>
+          <span style={{ color: "#3B5A6B" }}>{show.venue}</span>
         </div>
       </div>
     ),

@@ -6,11 +6,14 @@ import ShowViewTracker from "@/components/ShowViewTracker";
 import LikeButton from "@/components/LikeButton";
 import ShareButton from "@/components/ShareButton";
 import RatingInput from "@/components/RatingInput";
+import ReviewInput from "@/components/ReviewInput";
+import ReviewList from "@/components/ReviewList";
 import ShowCard from "@/components/ShowCard";
 import { isEnded, extractSchoolName, todayKey } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
-import type { Show } from "@/types";
+import { toReviewView, type ReviewView } from "@/lib/reviews";
+import type { Show, Review } from "@/types";
 
 export default async function ShowDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -90,6 +93,57 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     recommendations = scored.map((x) => x.show);
   }
 
+  // 후기 데이터 — 공개 + 본인 hidden/pending (수정 가능하도록)
+  let reviewViews: ReviewView[] = [];
+  let myReviewBody: string | null = null;
+  if (show.status === "approved") {
+    const { data: publicReviews } = await supabase
+      .from("reviews")
+      .select("id, show_id, user_id, body, status, report_count, created_at, profiles!inner(name)")
+      .eq("show_id", id)
+      .eq("status", "public")
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    // 본인 후기 (status 무관) — 수정·삭제 가능하도록
+    let myReviewRow: Review | null = null;
+    if (user) {
+      const { data: mine } = await supabase
+        .from("reviews")
+        .select("id, show_id, user_id, body, status, report_count, created_at")
+        .eq("show_id", id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      myReviewRow = (mine as Review | null) ?? null;
+      myReviewBody = myReviewRow?.body ?? null;
+    }
+
+    // 본인 신고 review_id 목록 — reportedByMe 판정
+    const reportedSet = new Set<string>();
+    if (user) {
+      const { data: reportedRows } = await supabase
+        .from("review_reports")
+        .select("review_id")
+        .eq("reporter_id", user.id);
+      ((reportedRows as { review_id: string }[] | null) ?? []).forEach((r) =>
+        reportedSet.add(r.review_id)
+      );
+    }
+
+    type PublicRow = Review & { profiles: { name: string | null } | null };
+    const publicViews = ((publicReviews as PublicRow[] | null) ?? []).map((r) =>
+      toReviewView(r, user?.id ?? null, reportedSet)
+    );
+
+    // 본인 후기가 hidden/pending 상태면 본인용으로 추가 (public이면 이미 위 목록에 포함됨)
+    if (myReviewRow && myReviewRow.status !== "public") {
+      const myView = toReviewView(myReviewRow, user!.id, reportedSet);
+      reviewViews = [myView, ...publicViews.filter((v) => v.id !== myView.id)];
+    } else {
+      reviewViews = publicViews;
+    }
+  }
+
   // 추천 공연들의 별점 요약 (있을 때만 쿼리)
   let recRatingMap = new Map<string, { avg: number; count: number }>();
   if (recommendations.length > 0) {
@@ -146,7 +200,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     : null;
 
   return (
-    <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F8F9FC" }}>
+    <div className="pt-24 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
       {eventStructuredData && (
         <script
           type="application/ld+json"
@@ -166,8 +220,8 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
         <div
           className="px-6 md:px-12 lg:px-20 py-3"
           style={{
-            backgroundColor: show.status === "pending" ? "#E7ECF5" : "#EDD4D4",
-            color: show.status === "pending" ? "#274E9B" : "#A63D2F",
+            backgroundColor: show.status === "pending" ? "#F0EBE0" : "#EDD4D4",
+            color: show.status === "pending" ? "#3B5A6B" : "#A63D2F",
           }}
         >
           <div className="max-w-7xl mx-auto text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
@@ -186,7 +240,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
         <Link
           href={show.status === "approved" ? "/shows" : "/performer"}
           className="text-xs tracking-[0.2em] uppercase transition-colors"
-          style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
         >
           ← {show.status === "approved" ? "공연 목록으로" : "공연 관리로"}
         </Link>
@@ -196,12 +250,12 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Poster */}
           <div className="relative w-full max-w-sm mx-auto md:max-w-none">
-            <div className="aspect-[3/4] relative" style={{ backgroundColor: "#E7ECF5" }}>
+            <div className="aspect-[3/4] relative" style={{ backgroundColor: "#F0EBE0" }}>
               {show.poster_url ? (
                 <Image src={show.poster_url} alt={show.title} fill className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6B7385" }}>
+                  <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#7A746C" }}>
                     포스터 없음
                   </span>
                 </div>
@@ -218,24 +272,24 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
           <div className="space-y-8">
             <div>
               {show.subtitle && (
-                <p className="text-sm italic mb-2" style={{ fontFamily: "var(--font-cormorant)", color: "#6B7385" }}>
+                <p className="text-sm italic mb-2" style={{ fontFamily: "var(--font-cormorant)", color: "#7A746C" }}>
                   {show.subtitle}
                 </p>
               )}
               <h1
                 className="text-4xl md:text-5xl font-bold leading-tight mb-2"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
               >
                 {show.title}
               </h1>
               {show.performer_name && (
-                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                   by{" "}
                   {show.organizer_id ? (
                     <Link
                       href={`/performer/${show.organizer_id}`}
                       className="hover:underline transition-colors"
-                      style={{ color: "#274E9B" }}
+                      style={{ color: "#3B5A6B" }}
                     >
                       {show.performer_name}
                     </Link>
@@ -250,17 +304,17 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {(show.genre || show.region || show.show_category) && (
               <div className="flex flex-wrap gap-2">
                 {show.genre && (
-                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}>
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#3B5A6B", color: "#FBF8F1" }}>
                     {show.genre === "기타" && show.genre_custom ? show.genre_custom : show.genre}
                   </span>
                 )}
                 {show.show_category && (
-                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#274E9B" }}>
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F0EBE0", color: "#3B5A6B" }}>
                     {show.show_category}
                   </span>
                 )}
                 {show.region && (
-                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B", border: "1px solid #274E9B" }}>
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B", border: "1px solid #3B5A6B" }}>
                     {show.region}
                   </span>
                 )}
@@ -268,13 +322,13 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* Meta box */}
-            <div className="p-6 space-y-4" style={{ backgroundColor: "#E7ECF5" }}>
+            <div className="p-6 space-y-4" style={{ backgroundColor: "#F0EBE0" }}>
               {/* 소속 — 학교명만 추출하여 필터 링크로 (학과명은 함께 표기) */}
               {show.school_department && (
                 <div className="grid grid-cols-[88px_1fr] gap-2">
                   <span
                     className="text-xs tracking-wider uppercase pt-0.5"
-                    style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+                    style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
                   >
                     소속
                   </span>
@@ -291,11 +345,11 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                           <Link
                             href={`/shows?school=${encodeURIComponent(schoolName)}`}
                             className="hover:underline"
-                            style={{ color: "#274E9B" }}
+                            style={{ color: "#3B5A6B" }}
                           >
                             {schoolName}
                           </Link>
-                          {rest && <span style={{ color: "#6B7385", marginLeft: 4 }}>{rest}</span>}
+                          {rest && <span style={{ color: "#7A746C", marginLeft: 4 }}>{rest}</span>}
                         </>
                       );
                     })()}
@@ -321,7 +375,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   <div key={item!.label} className="grid grid-cols-[88px_1fr] gap-2">
                     <span
                       className="text-xs tracking-wider uppercase pt-0.5"
-                      style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
                     >
                       {item!.label}
                     </span>
@@ -337,7 +391,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
 
             {/* Description */}
             <div>
-              <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+              <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                 작품 소개
               </p>
               <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
@@ -348,7 +402,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {/* Directions */}
             {(show.directions || show.map_kakao_url || show.map_naver_url) && (
               <div>
-                <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                   오시는 길
                 </p>
                 {show.directions && (
@@ -374,7 +428,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-4 py-2 text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#03C75A", color: "#F8F9FC" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#03C75A", color: "#FBF8F1" }}
                     >
                       네이버지도에서 보기 →
                     </a>
@@ -385,20 +439,20 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
 
             {/* Rating — 관람 후 별점 (1인 1평) */}
             {show.status === "approved" && (
-              <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
+              <div className="pt-6" style={{ borderTop: "1px solid #D8D3C9" }}>
                 <div className="flex items-baseline justify-between gap-3 flex-wrap mb-2">
                   <p
                     className="text-sm tracking-wide"
-                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B", fontWeight: 600 }}
+                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B", fontWeight: 600 }}
                   >
                     관람하셨나요? 별점을 남겨주세요.
                   </p>
                   {ratingAvg !== null && (
                     <p
                       className="text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
                     >
-                      <span style={{ color: "#F5C84F", fontSize: "0.95rem", marginRight: 4 }}>★</span>
+                      <span style={{ color: "#C8D96F", fontSize: "0.95rem", marginRight: 4 }}>★</span>
                       <span style={{ color: "#1A1A1A", fontWeight: 600 }}>{ratingAvg.toFixed(1)}</span>
                       <span style={{ marginLeft: 4 }}>· {ratingCount}명 평가</span>
                     </p>
@@ -406,7 +460,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 </div>
                 <p
                   className="text-[0.7rem] mb-4 leading-relaxed"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385", wordBreak: "keep-all" }}
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", wordBreak: "keep-all" }}
                 >
                   한 공연당 한 명이 한 번 평가합니다. 다시 누르시면 점수가 갱신되고, 본인 점수는
                   언제든 삭제하실 수 있습니다.
@@ -416,6 +470,46 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   isLoggedIn={!!user}
                   initialMyScore={myScore}
                 />
+              </div>
+            )}
+
+            {/* Reviews — 공연 후기 (자동 검열 A 사전 + C OpenAI Moderation 2단) */}
+            {show.status === "approved" && (
+              <div
+                className="mt-6 pt-6"
+                style={{ borderTop: "1px solid #D8D3C9" }}
+              >
+                <div className="flex items-baseline justify-between mb-2">
+                  <p
+                    className="text-sm tracking-wide"
+                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B", fontWeight: 600 }}
+                  >
+                    공연 후기
+                  </p>
+                  <p
+                    className="text-[0.7rem]"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+                  >
+                    {reviewViews.filter((r) => r.status === "public").length}개
+                  </p>
+                </div>
+                <p
+                  className="text-[0.7rem] mb-4 leading-relaxed"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", wordBreak: "keep-all" }}
+                >
+                  비방·욕설·차별 표현은 자동 차단되며, 누락된 부적절 후기는 신고하시면 운영자가 24시간 내 확인합니다.
+                  본인이 작성한 후기는 언제든 삭제할 수 있습니다.
+                </p>
+
+                <div className="mb-6">
+                  <ReviewInput
+                    showId={show.id}
+                    isLoggedIn={!!user}
+                    initialBody={myReviewBody}
+                  />
+                </div>
+
+                <ReviewList showId={show.id} reviews={reviewViews} />
               </div>
             )}
 
@@ -435,8 +529,8 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
                     style={{
                       fontFamily: "var(--font-noto-sans-kr)",
-                      backgroundColor: "#F5C84F",
-                      color: "#1B2842",
+                      backgroundColor: "#C8D96F",
+                      color: "#202833",
                       fontWeight: 600,
                     }}
                   >
@@ -448,14 +542,14 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#3B5A6B", color: "#FBF8F1" }}
                   >
                     티켓 예매하기 →
                   </a>
                 ) : (
                   <span
                     className="px-8 py-4 text-sm tracking-wider text-center"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#C5CCD9", color: "#6B7385" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#D8D3C9", color: "#7A746C" }}
                   >
                     예약 링크 없음
                   </span>
@@ -463,7 +557,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 <Link
                   href="/contact"
                   className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #C5CCD9", color: "#1A1A1A" }}
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #D8D3C9", color: "#1A1A1A" }}
                 >
                   문의하기
                 </Link>
@@ -474,7 +568,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {show.status === "approved" && show.reservation_url && (
               <p
                 className="text-xs leading-relaxed pt-2"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385", wordBreak: "keep-all" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", wordBreak: "keep-all" }}
               >
                 ⓘ 외부 예약 폼(구글폼·네이버폼 등)으로 이동합니다. 입력하신 개인정보는 무대올림이
                 보관하지 않으며, 해당 폼을 운영하는 공연자(주최 측)가 직접 관리합니다.
@@ -487,18 +581,18 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
         {recommendations.length > 0 && (
           <section
             className="mt-24 pt-12"
-            style={{ borderTop: "1px solid #C5CCD9" }}
+            style={{ borderTop: "1px solid #D8D3C9" }}
           >
             <div className="mb-10">
               <p
                 className="text-xs tracking-[0.3em] uppercase mb-3"
-                style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
               >
                 Related
               </p>
               <h2
                 className="text-2xl md:text-3xl font-bold"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
               >
                 이런 공연도 어떠세요
               </h2>

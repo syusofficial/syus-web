@@ -83,8 +83,8 @@ export default async function HomePage() {
         className="pt-24 relative overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse at top left, #2B60CA 0%, #274E9B 35%, #1B2842 100%)",
-          color: "#F8F9FC",
+            "radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%)",
+          color: "#FBF8F1",
         }}
       >
         {/* 상단: 라벨 + 슬로건 (한 줄, 미니멀 Pretendard) */}
@@ -102,13 +102,13 @@ export default async function HomePage() {
               style={{
                 fontFamily: "var(--font-pretendard)",
                 fontWeight: 700,
-                color: "#F8F9FC",
+                color: "#FBF8F1",
                 letterSpacing: "-0.035em",
                 wordBreak: "keep-all",
                 textWrap: "balance",
               }}
             >
-              오늘, 어느 대학의 <span style={{ color: "#F5C84F", fontWeight: 800 }}>막</span>이 오른다.
+              오늘, 어느 대학의 <span style={{ color: "#C8D96F", fontWeight: 800 }}>막</span>이 오른다.
             </h1>
 
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
@@ -118,7 +118,7 @@ export default async function HomePage() {
                   style={{
                     fontFamily: "var(--font-pretendard)",
                     fontWeight: 400,
-                    color: "#F8F9FC",
+                    color: "#FBF8F1",
                     wordBreak: "keep-all",
                   }}
                 >
@@ -129,7 +129,7 @@ export default async function HomePage() {
                   style={{
                     fontFamily: "var(--font-pretendard)",
                     fontWeight: 400,
-                    color: "#F8F9FC",
+                    color: "#FBF8F1",
                     opacity: 0.55,
                   }}
                 >
@@ -144,8 +144,8 @@ export default async function HomePage() {
                   style={{
                     fontFamily: "var(--font-pretendard)",
                     fontWeight: 600,
-                    backgroundColor: "#F5C84F",
-                    color: "#1B2842",
+                    backgroundColor: "#C8D96F",
+                    color: "#202833",
                   }}
                 >
                   공연 둘러보기 →
@@ -157,7 +157,7 @@ export default async function HomePage() {
                     fontFamily: "var(--font-pretendard)",
                     fontWeight: 500,
                     border: "1px solid rgba(248, 249, 252, 0.4)",
-                    color: "#F8F9FC",
+                    color: "#FBF8F1",
                   }}
                 >
                   무대 올리기
@@ -174,7 +174,7 @@ export default async function HomePage() {
               <div className="max-w-[1600px] mx-auto flex items-baseline justify-between gap-4 flex-wrap">
                 <p
                   className="text-[0.7rem] tracking-[0.35em] uppercase"
-                  style={{ fontFamily: "var(--font-pretendard)", color: "#F5C84F", fontWeight: 600 }}
+                  style={{ fontFamily: "var(--font-pretendard)", color: "#C8D96F", fontWeight: 600 }}
                 >
                   Top 5 · 지금 가장 주목받는 무대
                 </p>
@@ -215,14 +215,14 @@ export default async function HomePage() {
       {/* ── 정체성 띠 ── */}
       <section
         className="px-6 md:px-12 lg:px-20 py-20 md:py-24"
-        style={{ backgroundColor: "#274E9B", color: "#F8F9FC" }}
+        style={{ backgroundColor: "#3B5A6B", color: "#FBF8F1" }}
       >
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-[1fr_1.3fr] gap-12 md:gap-20 items-start">
             <div>
               <p
                 className="text-xs tracking-[0.4em] uppercase mb-6"
-                style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
+                style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}
               >
                 About 무대올림
               </p>
@@ -230,7 +230,7 @@ export default async function HomePage() {
                 className="text-[1.5rem] sm:text-[1.85rem] md:text-[2.25rem] leading-snug font-light"
                 style={{
                   fontFamily: "var(--font-noto-serif-kr)",
-                  color: "#F8F9FC",
+                  color: "#FBF8F1",
                   wordBreak: "keep-all",
                   textWrap: "balance",
                 }}
@@ -270,7 +270,7 @@ export default async function HomePage() {
                     className="text-2xl"
                     style={{
                       fontFamily: "var(--font-cormorant)",
-                      color: "#F5C84F",
+                      color: "#C8D96F",
                       opacity: 0.85,
                       lineHeight: 1,
                     }}
@@ -280,7 +280,7 @@ export default async function HomePage() {
                   <div>
                     <h3
                       className="text-xl font-semibold mb-2"
-                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC" }}
+                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1" }}
                     >
                       {item.title}
                     </h3>
@@ -288,7 +288,7 @@ export default async function HomePage() {
                       className="text-sm leading-relaxed"
                       style={{
                         fontFamily: "var(--font-noto-sans-kr)",
-                        color: "#F8F9FC",
+                        color: "#FBF8F1",
                         opacity: 0.72,
                         wordBreak: "keep-all",
                       }}
@@ -306,7 +306,7 @@ export default async function HomePage() {
       {/* ── Shows Section ── */}
       <section
         className="px-6 md:px-12 lg:px-16 xl:px-8 py-24 md:py-32"
-        style={{ backgroundColor: "#F8F9FC" }}
+        style={{ backgroundColor: "#FBF8F1" }}
       >
         <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 xl:grid-cols-[200px_1fr_220px] gap-8 xl:gap-8">
@@ -343,23 +343,23 @@ export default async function HomePage() {
 
               {featured.length === 0 && upcoming.length === 0 && recent.length === 0 && (
                 <div className="text-center py-24">
-                  <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+                  <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
                     곧 첫 무대가 오릅니다.
                   </p>
-                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                     공연자분들의 무대를 가장 먼저 만나보실 수 있도록 준비 중입니다.
                   </p>
                 </div>
               )}
 
-              <div className="pt-8 text-center" style={{ borderTop: "1px solid #C5CCD9" }}>
+              <div className="pt-8 text-center" style={{ borderTop: "1px solid #D8D3C9" }}>
                 <Link
                   href="/shows"
                   className="inline-block px-8 py-3 text-xs tracking-widest uppercase transition-colors"
                   style={{
                     fontFamily: "var(--font-inter)",
-                    color: "#274E9B",
-                    border: "1px solid #274E9B",
+                    color: "#3B5A6B",
+                    border: "1px solid #3B5A6B",
                   }}
                 >
                   전체 공연 보기 →
@@ -373,17 +373,17 @@ export default async function HomePage() {
       </section>
 
       {/* ── CTA Section ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-24" style={{ backgroundColor: "#1B2842" }}>
+      <section className="px-6 md:px-12 lg:px-20 py-24" style={{ backgroundColor: "#202833" }}>
         <div className="max-w-7xl mx-auto text-center">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"
-            style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}
           >
             Join 무대올림
           </p>
           <h2
             className="text-[2rem] md:text-[3rem] font-light mb-5"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC", wordBreak: "keep-all", textWrap: "balance" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1", wordBreak: "keep-all", textWrap: "balance" }}
           >
             당신의 무대를, 누군가의 주말로.
           </h2>
@@ -401,8 +401,8 @@ export default async function HomePage() {
               className="px-8 py-3 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                backgroundColor: "#F5C84F",
-                color: "#1B2842",
+                backgroundColor: "#C8D96F",
+                color: "#202833",
                 fontWeight: 600,
               }}
             >
@@ -411,7 +411,7 @@ export default async function HomePage() {
             <Link
               href="/contact"
               className="px-8 py-3 text-sm tracking-wider"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid rgba(248,249,252,0.45)", color: "#F8F9FC" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid rgba(248,249,252,0.45)", color: "#FBF8F1" }}
             >
               문의하기
             </Link>
@@ -440,13 +440,13 @@ function SectionGroup({
 }) {
   return (
     <div>
-      <div className="flex items-end justify-between mb-8 pb-4" style={{ borderBottom: "1px solid #C5CCD9" }}>
+      <div className="flex items-end justify-between mb-8 pb-4" style={{ borderBottom: "1px solid #D8D3C9" }}>
         <div>
           <p
             className="text-xs tracking-[0.3em] uppercase mb-2"
             style={{
               fontFamily: "var(--font-inter)",
-              color: accent ? "#274E9B" : "#6B7385",
+              color: accent ? "#3B5A6B" : "#7A746C",
               fontWeight: accent ? 600 : 400,
             }}
           >
@@ -454,7 +454,7 @@ function SectionGroup({
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
           >
             {title}
           </h2>

@@ -20,7 +20,7 @@ export default function AboutPage() {
   ]);
 
   return (
-    <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F8F9FC" }}>
+    <div className="pt-24 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
@@ -31,14 +31,14 @@ export default function AboutPage() {
         className="px-6 md:px-12 lg:px-20 pt-16 md:pt-20 pb-24 md:pb-32 relative overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse at top left, #2B60CA 0%, #274E9B 35%, #1B2842 100%)",
-          color: "#F8F9FC",
+            "radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%)",
+          color: "#FBF8F1",
         }}
       >
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.4em] uppercase mb-10"
-            style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}
           >
             About 무대올림
           </p>
@@ -46,7 +46,7 @@ export default function AboutPage() {
             className="text-[3rem] sm:text-[4rem] md:text-[5rem] leading-[1.05] font-black tracking-tighter mb-10"
             style={{
               fontFamily: "var(--font-noto-serif-kr)",
-              color: "#F8F9FC",
+              color: "#FBF8F1",
               wordBreak: "keep-all",
               textWrap: "balance",
             }}
@@ -55,13 +55,13 @@ export default function AboutPage() {
             <br />
             어느 대학의
             <br />
-            <span style={{ color: "#F5C84F" }}>막</span>이 오른다.
+            <span style={{ color: "#C8D96F" }}>막</span>이 오른다.
           </h1>
           <p
             className="text-lg md:text-xl leading-relaxed max-w-2xl"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              color: "#F8F9FC",
+              color: "#FBF8F1",
               opacity: 0.9,
               wordBreak: "keep-all",
             }}
@@ -77,13 +77,13 @@ export default function AboutPage() {
           >
             <span
               className="text-sm tracking-[0.15em]"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", opacity: 0.75 }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", opacity: 0.75 }}
             >
               연극 · 뮤지컬 · 무용 · 발레
             </span>
             <span
               className="text-sm tracking-[0.15em]"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", opacity: 0.75 }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", opacity: 0.75 }}
             >
               국악 · 음악 · 전통연희
             </span>
@@ -96,13 +96,13 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
           >
             01. The Name
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-12"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
           >
             이름의 의미
           </h2>
@@ -110,7 +110,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-4 md:gap-10 items-start">
             <p
               className="text-sm tracking-[0.2em]"
-              style={{ fontFamily: "var(--font-inter)", color: "#274E9B", fontWeight: 600 }}
+              style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B", fontWeight: 600 }}
             >
               무대올림
             </p>
@@ -119,7 +119,7 @@ export default function AboutPage() {
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
             >
               <p className="mb-3">
-                <strong style={{ color: "#274E9B" }}>“무대를 올린다”</strong> — 공연계에서 무대가
+                <strong style={{ color: "#3B5A6B" }}>“무대를 올린다”</strong> — 공연계에서 무대가
                 열린다는 바로 그 말.
               </p>
               <p className="mb-3">
@@ -131,7 +131,7 @@ export default function AboutPage() {
               </p>
               <p
                 className="pt-3 italic"
-                style={{ borderTop: "1px solid #C5CCD9", color: "#6B7385" }}
+                style={{ borderTop: "1px solid #D8D3C9", color: "#7A746C" }}
               >
                 공연자에게는 “내 무대가 올라간다.”
                 <br />
@@ -147,18 +147,18 @@ export default function AboutPage() {
       {/* ── 02. 무엇을 하는가 ── */}
       <section
         className="px-6 md:px-12 lg:px-20 py-24"
-        style={{ backgroundColor: "#274E9B", color: "#F8F9FC" }}
+        style={{ backgroundColor: "#3B5A6B", color: "#FBF8F1" }}
       >
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}
           >
             02. What We Do
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-14"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1" }}
           >
             세 가지 동사
           </h2>
@@ -202,7 +202,7 @@ export default function AboutPage() {
                   className="text-3xl md:text-4xl leading-none"
                   style={{
                     fontFamily: "var(--font-cormorant)",
-                    color: "#F5C84F",
+                    color: "#C8D96F",
                     opacity: 0.85,
                   }}
                 >
@@ -211,7 +211,7 @@ export default function AboutPage() {
                 <div>
                   <h3
                     className="text-xl md:text-2xl font-semibold mb-4"
-                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC" }}
+                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1" }}
                   >
                     {item.title}
                   </h3>
@@ -219,7 +219,7 @@ export default function AboutPage() {
                     className="text-base leading-[1.9]"
                     style={{
                       fontFamily: "var(--font-noto-sans-kr)",
-                      color: "#F8F9FC",
+                      color: "#FBF8F1",
                       opacity: 0.85,
                       wordBreak: "keep-all",
                     }}
@@ -243,19 +243,19 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
           >
             03. What Makes Us Different
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-6"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
           >
             우리만의 자리
           </h2>
           <p
             className="text-base leading-relaxed mb-14 max-w-3xl"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", wordBreak: "keep-all" }}
           >
             큰 플랫폼들이 전국·대형·상업 공연 중심으로 운영하는 동안, 대학 무대는 매번 첫 회를 끝으로
             잊혀집니다. 무대올림은 그 자리를 정확히 들어갑니다.
@@ -282,11 +282,11 @@ export default function AboutPage() {
               <div
                 key={c.tag}
                 className="p-6"
-                style={{ backgroundColor: "#E7ECF5", borderTop: "3px solid #F5C84F" }}
+                style={{ backgroundColor: "#F0EBE0", borderTop: "3px solid #C8D96F" }}
               >
                 <p
                   className="text-xs tracking-[0.25em] uppercase mb-3"
-                  style={{ fontFamily: "var(--font-inter)", color: "#274E9B", fontWeight: 600 }}
+                  style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B", fontWeight: 600 }}
                 >
                   {c.tag}
                 </p>
@@ -316,18 +316,18 @@ export default function AboutPage() {
       {/* ── 04. 누구와 함께 ── */}
       <section
         className="px-6 md:px-12 lg:px-20 py-24"
-        style={{ backgroundColor: "#1B2842", color: "#F8F9FC" }}
+        style={{ backgroundColor: "#202833", color: "#FBF8F1" }}
       >
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}
           >
             04. With
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-14"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1" }}
           >
             누구와 함께하는가
           </h2>
@@ -336,7 +336,7 @@ export default function AboutPage() {
             <div>
               <p
                 className="text-sm tracking-[0.25em] uppercase mb-4"
-                style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", opacity: 0.85 }}
+                style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", opacity: 0.85 }}
               >
                 무대를 만드는 사람
               </p>
@@ -344,7 +344,7 @@ export default function AboutPage() {
                 className="text-base leading-[1.9]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  color: "#F8F9FC",
+                  color: "#FBF8F1",
                   opacity: 0.85,
                   wordBreak: "keep-all",
                 }}
@@ -357,7 +357,7 @@ export default function AboutPage() {
             <div>
               <p
                 className="text-sm tracking-[0.25em] uppercase mb-4"
-                style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", opacity: 0.85 }}
+                style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", opacity: 0.85 }}
               >
                 무대를 만나는 사람
               </p>
@@ -365,7 +365,7 @@ export default function AboutPage() {
                 className="text-base leading-[1.9]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  color: "#F8F9FC",
+                  color: "#FBF8F1",
                   opacity: 0.85,
                   wordBreak: "keep-all",
                 }}
@@ -386,24 +386,24 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
           >
             05. Who Runs This
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-10"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
           >
             운영
           </h2>
 
           <div
             className="p-8 md:p-10"
-            style={{ backgroundColor: "#E7ECF5", borderLeft: "4px solid #274E9B" }}
+            style={{ backgroundColor: "#F0EBE0", borderLeft: "4px solid #3B5A6B" }}
           >
             <p
               className="text-sm tracking-[0.25em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#274E9B", fontWeight: 600 }}
+              style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B", fontWeight: 600 }}
             >
               사유유사 SYUS
             </p>
@@ -421,7 +421,7 @@ export default function AboutPage() {
               className="text-sm leading-relaxed italic"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#6B7385",
+                color: "#7A746C",
                 wordBreak: "keep-all",
               }}
             >
@@ -434,11 +434,11 @@ export default function AboutPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-24" style={{ backgroundColor: "#1B2842" }}>
+      <section className="px-6 md:px-12 lg:px-20 py-24" style={{ backgroundColor: "#202833" }}>
         <div className="max-w-3xl mx-auto text-center">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"
-            style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}
           >
             Stay With Us
           </p>
@@ -446,7 +446,7 @@ export default function AboutPage() {
             className="text-xl md:text-2xl leading-relaxed mb-10"
             style={{
               fontFamily: "var(--font-noto-serif-kr)",
-              color: "#F8F9FC",
+              color: "#FBF8F1",
               wordBreak: "keep-all",
               textWrap: "balance",
             }}
@@ -463,8 +463,8 @@ export default function AboutPage() {
               className="px-8 py-3 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                backgroundColor: "#F5C84F",
-                color: "#1B2842",
+                backgroundColor: "#C8D96F",
+                color: "#202833",
                 fontWeight: 600,
               }}
             >
@@ -476,7 +476,7 @@ export default function AboutPage() {
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 border: "1px solid rgba(248, 249, 252, 0.45)",
-                color: "#F8F9FC",
+                color: "#FBF8F1",
               }}
             >
               무대 올리기

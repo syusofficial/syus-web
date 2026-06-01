@@ -151,8 +151,8 @@ export default function SessionManager() {
     <div
       className="fixed bottom-6 right-6 z-[60] max-w-sm p-5 shadow-lg"
       style={{
-        backgroundColor: "#274E9B",
-        color: "#F8F9FC",
+        backgroundColor: "#3B5A6B",
+        color: "#FBF8F1",
         fontFamily: "var(--font-noto-sans-kr)",
       }}
       role="alert"
@@ -165,8 +165,8 @@ export default function SessionManager() {
             onClick={extend}
             className="px-3 py-1.5 text-xs tracking-wide transition-opacity"
             style={{
-              backgroundColor: "#F8F9FC",
-              color: "#274E9B",
+              backgroundColor: "#FBF8F1",
+              color: "#3B5A6B",
               fontFamily: "var(--font-noto-sans-kr)",
             }}
             onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
@@ -181,8 +181,8 @@ export default function SessionManager() {
           className="px-3 py-1.5 text-xs tracking-wide transition-colors"
           style={{
             backgroundColor: "transparent",
-            color: "#F8F9FC",
-            border: "1px solid #F8F9FC",
+            color: "#FBF8F1",
+            border: "1px solid #FBF8F1",
             fontFamily: "var(--font-noto-sans-kr)",
           }}
           onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}

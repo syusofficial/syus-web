@@ -14,7 +14,7 @@ export default function PageLoader() {
       <p
         style={{
           fontFamily: "var(--font-cormorant)",
-          color: "#274E9B",
+          color: "#3B5A6B",
           fontSize: "0.75rem",
           letterSpacing: "0.4em",
           opacity: 0.6,

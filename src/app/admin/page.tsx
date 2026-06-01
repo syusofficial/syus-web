@@ -7,13 +7,19 @@ import PageLoader from "@/components/PageLoader";
 import AdminStats from "@/components/AdminStats";
 import AdMediaKit from "@/components/AdMediaKit";
 import { CONTACT_CATEGORIES } from "@/lib/constants";
-import type { Show, Profile, Contact } from "@/types";
+import { adminDeleteReview, adminUpdateReviewStatus, adminBanUser } from "@/app/actions/reviews";
+import type { Show, Profile, Contact, Review } from "@/types";
 
-type Tab = "stats" | "media-kit" | "shows" | "applications" | "members" | "contacts";
+type Tab = "stats" | "media-kit" | "shows" | "applications" | "members" | "contacts" | "reviews";
+
+type AdminReviewRow = Review & {
+  profiles?: { name: string | null } | null;
+  shows?: { id: string; title: string } | null;
+};
 
 const CATEGORY_COLOR: Record<string, { bg: string; color: string }> = {
   "공연자 신청":     { bg: "#D4E4ED", color: "#2A5E7A" },
-  "공연 등록 문의":  { bg: "#E7ECF5", color: "#274E9B" },
+  "공연 등록 문의":  { bg: "#F0EBE0", color: "#3B5A6B" },
   "예매 / 환불":     { bg: "#EDE0D4", color: "#7A4A2A" },
   "협업 / 후원 제안": { bg: "#EDD4E4", color: "#7A2A5E" },
   "광고 / 제휴":     { bg: "#D4EDE8", color: "#2A7A6A" },
@@ -25,15 +31,15 @@ const CATEGORY_COLOR: Record<string, { bg: string; color: string }> = {
 
 const StatusBadge = ({ status }: { status: string }) => {
   const map: Record<string, { label: string; bg: string; color: string }> = {
-    pending:  { label: "대기중",  bg: "#E7ECF5", color: "#274E9B" },
+    pending:  { label: "대기중",  bg: "#F0EBE0", color: "#3B5A6B" },
     approved: { label: "승인됨",  bg: "#D4EDD4", color: "#3A5E42" },
     rejected: { label: "반려됨",  bg: "#EDD4D4", color: "#A63D2F" },
     resolved: { label: "처리완료", bg: "#D4EDD4", color: "#3A5E42" },
-    member:   { label: "일반",    bg: "#E7ECF5", color: "#6B7385" },
+    member:   { label: "일반",    bg: "#F0EBE0", color: "#7A746C" },
     performer:{ label: "공연자",  bg: "#D4E4ED", color: "#2A5E7A" },
     admin:    { label: "관리자",  bg: "#EDD4E4", color: "#7A2A5E" },
   };
-  const s = map[status] ?? { label: status, bg: "#E7ECF5", color: "#6B7385" };
+  const s = map[status] ?? { label: status, bg: "#F0EBE0", color: "#7A746C" };
   return (
     <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color, fontFamily: "var(--font-inter)" }}>
       {s.label}
@@ -55,16 +61,23 @@ export default function AdminPage() {
   const [contactView, setContactView] = useState<"active" | "trash">("active");
   const [dataLoading, setDataLoading] = useState(true);
   const [reviewShow, setReviewShow] = useState<Show | null>(null);
+  const [adminReviews, setAdminReviews] = useState<AdminReviewRow[]>([]);
+  const [reviewFilter, setReviewFilter] = useState<"hidden" | "public" | "all">("hidden");
 
   const fetchAll = useCallback(async () => {
     const supabase = createClient();
     setDataLoading(true);
 
-    const [showsRes, membersRes, contactsRes, likesRes] = await Promise.all([
+    const [showsRes, membersRes, contactsRes, likesRes, reviewsRes] = await Promise.all([
       supabase.from("shows").select("*").order("created_at", { ascending: false }),
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("contacts").select("*").order("created_at", { ascending: false }),
       supabase.from("likes").select("show_id"),
+      supabase
+        .from("reviews")
+        .select("id, show_id, user_id, body, status, moderation, report_count, created_at, profiles(name), shows(id, title)")
+        .order("created_at", { ascending: false })
+        .limit(200),
     ]);
 
     const allContacts = (contactsRes.data as Contact[]) ?? [];
@@ -73,6 +86,7 @@ export default function AdminPage() {
     setContacts(allContacts.filter((c) => !c.deleted_at));
     setTrashedContacts(allContacts.filter((c) => !!c.deleted_at));
     setLikes((likesRes.data as { show_id: string }[]) ?? []);
+    setAdminReviews((reviewsRes.data as AdminReviewRow[] | null) ?? []);
     setDataLoading(false);
   }, []);
 
@@ -318,7 +332,7 @@ export default function AdminPage() {
   // ── 상태별 화면 ──────────────────────────────
   if (authState === "loading") {
     return (
-      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F8F9FC" }}>
+      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
         <PageLoader />
       </div>
     );
@@ -326,15 +340,15 @@ export default function AdminPage() {
 
   if (authState === "unauthorized") {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F8F9FC" }}>
+      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
         <div className="text-center space-y-4">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             403
           </p>
-          <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+          <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             접근 권한이 없습니다
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
             관리자 계정으로 로그인해주세요.
           </p>
         </div>
@@ -348,14 +362,14 @@ export default function AdminPage() {
   const pendingApplications = members.filter((m) => m.performer_status === "pending").length;
 
   return (
-    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F8F9FC" }}>
+    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             Admin
           </p>
-          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             관리자 페이지
           </h1>
         </div>
@@ -372,8 +386,8 @@ export default function AdminPage() {
               key={s.label}
               className="p-6 text-center"
               style={{
-                backgroundColor: s.highlight ? "#274E9B" : "#E7ECF5",
-                color: s.highlight ? "#F8F9FC" : "#1A1A1A",
+                backgroundColor: s.highlight ? "#3B5A6B" : "#F0EBE0",
+                color: s.highlight ? "#FBF8F1" : "#1A1A1A",
               }}
             >
               <p className="text-3xl font-bold mb-1" style={{ fontFamily: "var(--font-inter)" }}>
@@ -387,7 +401,7 @@ export default function AdminPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-0 mb-8 overflow-x-auto" style={{ borderBottom: "1px solid #C5CCD9" }}>
+        <div className="flex gap-0 mb-8 overflow-x-auto" style={{ borderBottom: "1px solid #D8D3C9" }}>
           {([
             { key: "stats",        label: "통계" },
             { key: "media-kit",    label: "광고" },
@@ -395,6 +409,7 @@ export default function AdminPage() {
             { key: "applications", label: `공연자 신청${pendingApplications ? ` (${pendingApplications})` : ""}` },
             { key: "members",      label: "회원 관리" },
             { key: "contacts",     label: `문의 확인${pendingContacts ? ` (${pendingContacts})` : ""}` },
+            { key: "reviews",      label: `후기 검토${adminReviews.filter((r) => r.status === "hidden").length ? ` (${adminReviews.filter((r) => r.status === "hidden").length})` : ""}` },
           ] as const).map((t) => (
             <button
               key={t.key}
@@ -402,8 +417,8 @@ export default function AdminPage() {
               className="px-6 py-3 text-sm tracking-wide transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: tab === t.key ? "#274E9B" : "#6B7385",
-                borderBottom: tab === t.key ? "2px solid #274E9B" : "2px solid transparent",
+                color: tab === t.key ? "#3B5A6B" : "#7A746C",
+                borderBottom: tab === t.key ? "2px solid #3B5A6B" : "2px solid transparent",
                 marginBottom: -1,
               }}
             >
@@ -430,15 +445,15 @@ export default function AdminPage() {
             {tab === "shows" && (
               <div className="overflow-x-auto">
                 {shows.length === 0 ? (
-                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                     등록된 공연이 없습니다.
                   </p>
                 ) : (
                   <table className="w-full text-sm">
                     <thead>
-                      <tr style={{ borderBottom: "1px solid #C5CCD9" }}>
+                      <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
                         {["공연명", "공연자", "장소", "일정", "상태", "관리"].map((h) => (
-                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                             {h}
                           </th>
                         ))}
@@ -446,25 +461,25 @@ export default function AdminPage() {
                     </thead>
                     <tbody>
                       {shows.map((show) => (
-                        <tr key={show.id} style={{ borderBottom: "1px solid #E7ECF5" }}>
+                        <tr key={show.id} style={{ borderBottom: "1px solid #F0EBE0" }}>
                           <td className="py-4 px-3 font-medium" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
                             <button
                               type="button"
                               onClick={() => setReviewShow(show)}
                               className="text-left hover:underline transition-colors"
-                              style={{ color: "#274E9B", cursor: "pointer" }}
+                              style={{ color: "#3B5A6B", cursor: "pointer" }}
                               title="클릭하여 상세 검토"
                             >
                               {show.title}
                             </button>
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                             {show.performer_name ?? "—"}
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                             {show.venue}
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                             {show.schedule_start ?? "—"}
                           </td>
                           <td className="py-4 px-3">
@@ -497,7 +512,7 @@ export default function AdminPage() {
                               <button
                                 onClick={() => deleteShow(show)}
                                 className="text-xs px-3 py-1 transition-colors"
-                                style={{ color: "#F8F9FC", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
+                                style={{ color: "#FBF8F1", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
                                 onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
                                 onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
                               >
@@ -520,7 +535,7 @@ export default function AdminPage() {
                   const pendingList = members.filter((m) => m.performer_status === "pending");
                   if (pendingList.length === 0) {
                     return (
-                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                         대기 중인 공연자 신청이 없습니다.
                       </p>
                     );
@@ -528,9 +543,9 @@ export default function AdminPage() {
                   return (
                     <table className="w-full text-sm">
                       <thead>
-                        <tr style={{ borderBottom: "1px solid #C5CCD9" }}>
+                        <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
                           {["이름", "이메일", "가입일", "관리"].map((h) => (
-                            <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                            <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                               {h}
                             </th>
                           ))}
@@ -538,14 +553,14 @@ export default function AdminPage() {
                       </thead>
                       <tbody>
                         {pendingList.map((m) => (
-                          <tr key={m.id} style={{ borderBottom: "1px solid #E7ECF5" }}>
+                          <tr key={m.id} style={{ borderBottom: "1px solid #F0EBE0" }}>
                             <td className="py-4 px-3 font-medium" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
                               {m.name ?? "—"}
                             </td>
-                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                               {m.email ?? <span style={{ fontStyle: "italic" }}>이메일 없음</span>}
                             </td>
-                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                               {m.created_at.slice(0, 10)}
                             </td>
                             <td className="py-4 px-3">
@@ -583,15 +598,15 @@ export default function AdminPage() {
             {tab === "members" && (
               <div className="overflow-x-auto">
                 {members.length === 0 ? (
-                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                     가입된 회원이 없습니다.
                   </p>
                 ) : (
                   <table className="w-full text-sm">
                     <thead>
-                      <tr style={{ borderBottom: "1px solid #C5CCD9" }}>
+                      <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
                         {["이름", "이메일", "역할", "가입일", "역할 변경", "관리"].map((h) => (
-                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                             {h}
                           </th>
                         ))}
@@ -599,17 +614,17 @@ export default function AdminPage() {
                     </thead>
                     <tbody>
                       {members.map((m) => (
-                        <tr key={m.id} style={{ borderBottom: "1px solid #E7ECF5" }}>
+                        <tr key={m.id} style={{ borderBottom: "1px solid #F0EBE0" }}>
                           <td className="py-4 px-3 font-medium" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
                             {m.name ?? "—"}
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                             {m.email ?? <span style={{ fontStyle: "italic" }}>이메일 없음</span>}
                           </td>
                           <td className="py-4 px-3">
                             <StatusBadge status={m.role} />
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                             {m.created_at.slice(0, 10)}
                           </td>
                           <td className="py-4 px-3">
@@ -617,7 +632,7 @@ export default function AdminPage() {
                               value={m.role}
                               onChange={(e) => updateMemberRole(m.id, e.target.value as "member" | "performer" | "admin")}
                               className="text-xs px-2 py-1 outline-none"
-                              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#1A1A1A", border: "1px solid #C5CCD9" }}
+                              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F0EBE0", color: "#1A1A1A", border: "1px solid #D8D3C9" }}
                             >
                               <option value="member">일반</option>
                               <option value="performer">공연자</option>
@@ -628,7 +643,7 @@ export default function AdminPage() {
                             <button
                               onClick={() => forceDeleteMember(m)}
                               className="text-xs px-3 py-1 transition-colors"
-                              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
+                              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
                               onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
                               onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
                             >
@@ -647,7 +662,7 @@ export default function AdminPage() {
             {tab === "contacts" && (
               <div className="space-y-6">
                 {/* 활성 / 휴지통 서브 토글 */}
-                <div className="flex flex-wrap gap-2 pb-3" style={{ borderBottom: "1px solid #C5CCD9" }}>
+                <div className="flex flex-wrap gap-2 pb-3" style={{ borderBottom: "1px solid #D8D3C9" }}>
                   {([
                     { key: "active", label: "활성 문의", count: contacts.length },
                     { key: "trash",  label: "휴지통",    count: trashedContacts.length },
@@ -661,8 +676,8 @@ export default function AdminPage() {
                         style={{
                           fontFamily: "var(--font-noto-sans-kr)",
                           backgroundColor: isActive ? "#1A1A1A" : "transparent",
-                          color: isActive ? "#F8F9FC" : "#1A1A1A",
-                          border: `1px solid ${isActive ? "#1A1A1A" : "#C5CCD9"}`,
+                          color: isActive ? "#FBF8F1" : "#1A1A1A",
+                          border: `1px solid ${isActive ? "#1A1A1A" : "#D8D3C9"}`,
                         }}
                       >
                         {label}{count > 0 && <span style={{ opacity: 0.7, marginLeft: 6 }}>({count})</span>}
@@ -692,9 +707,9 @@ export default function AdminPage() {
                           className="px-3 py-1.5 text-xs tracking-wide transition-colors"
                           style={{
                             fontFamily: "var(--font-noto-sans-kr)",
-                            backgroundColor: isActive ? "#274E9B" : "transparent",
-                            color: isActive ? "#F8F9FC" : "#274E9B",
-                            border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
+                            backgroundColor: isActive ? "#3B5A6B" : "transparent",
+                            color: isActive ? "#FBF8F1" : "#3B5A6B",
+                            border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
                           }}
                         >
                           {opt}{count > 0 && <span style={{ opacity: 0.7, marginLeft: 6 }}>({count})</span>}
@@ -711,7 +726,7 @@ export default function AdminPage() {
 
                   if (filteredContacts.length === 0) {
                     return (
-                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                         {contactFilter === "전체" ? "접수된 문의가 없습니다." : `"${contactFilter}" 유형의 문의가 없습니다.`}
                       </p>
                     );
@@ -723,7 +738,7 @@ export default function AdminPage() {
                         const cat = c.category ?? "기타";
                         const catColor = CATEGORY_COLOR[cat] ?? { bg: "#E0E0E0", color: "#5A5A5A" };
                         return (
-                          <div key={c.id} className="p-6" style={{ backgroundColor: "#E7ECF5" }}>
+                          <div key={c.id} className="p-6" style={{ backgroundColor: "#F0EBE0" }}>
                             <div className="flex items-start justify-between mb-3 gap-3 flex-wrap">
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap mb-1.5">
@@ -741,7 +756,7 @@ export default function AdminPage() {
                                     {c.name}
                                   </p>
                                 </div>
-                                <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                                <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                                   {c.email}
                                   {c.phone ? ` · ${c.phone}` : ""}
                                   {" · "}
@@ -765,7 +780,7 @@ export default function AdminPage() {
                                   <button
                                     onClick={() => trashContact(c)}
                                     className="text-xs px-3 py-1 transition-colors"
-                                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
+                                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", backgroundColor: "#1A1A1A", border: "1px solid #1A1A1A" }}
                                     onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
                                     onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
                                   >
@@ -789,7 +804,7 @@ export default function AdminPage() {
                 {contactView === "trash" && (
                   <>
                     {trashedContacts.length === 0 ? (
-                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                         휴지통이 비어 있습니다.
                       </p>
                     ) : (
@@ -810,7 +825,7 @@ export default function AdminPage() {
                             const cat = c.category ?? "기타";
                             const catColor = CATEGORY_COLOR[cat] ?? { bg: "#E0E0E0", color: "#5A5A5A" };
                             return (
-                              <div key={c.id} className="p-6" style={{ backgroundColor: "#E7ECF5", opacity: 0.75 }}>
+                              <div key={c.id} className="p-6" style={{ backgroundColor: "#F0EBE0", opacity: 0.75 }}>
                                 <div className="flex items-start justify-between mb-3 gap-3 flex-wrap">
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap mb-1.5">
@@ -828,7 +843,7 @@ export default function AdminPage() {
                                         {c.name}
                                       </p>
                                     </div>
-                                    <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                                    <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                                       {c.email}
                                       {c.phone ? ` · ${c.phone}` : ""}
                                       {" · 접수: "}
@@ -849,7 +864,7 @@ export default function AdminPage() {
                                     <button
                                       onClick={() => permanentlyDeleteContact(c)}
                                       className="text-xs px-3 py-1 transition-colors"
-                                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", backgroundColor: "#A63D2F", border: "1px solid #A63D2F" }}
+                                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", backgroundColor: "#A63D2F", border: "1px solid #A63D2F" }}
                                       onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
                                       onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
                                     >
@@ -869,6 +884,16 @@ export default function AdminPage() {
                   </>
                 )}
               </div>
+            )}
+
+            {/* ── 후기 검토 탭 ── */}
+            {tab === "reviews" && (
+              <ReviewsAdminPanel
+                reviews={adminReviews}
+                filter={reviewFilter}
+                onFilter={setReviewFilter}
+                onRefresh={fetchAll}
+              />
             )}
           </>
         )}
@@ -911,18 +936,18 @@ function ShowReviewModal({
 
   const InfoRow = ({ label, value }: { label: string; value?: string | null }) => (
     <div>
-      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
         {label}
       </p>
       <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
-        {value && value.trim() !== "" ? value : <span style={{ color: "#6B7385" }}>—</span>}
+        {value && value.trim() !== "" ? value : <span style={{ color: "#7A746C" }}>—</span>}
       </p>
     </div>
   );
 
   const LinkRow = ({ label, url }: { label: string; url?: string | null }) => (
     <div>
-      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
         {label}
       </p>
       {url && url.trim() !== "" ? (
@@ -931,12 +956,12 @@ function ShowReviewModal({
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm break-all hover:underline"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}
         >
           {url} ↗
         </a>
       ) : (
-        <p className="text-sm" style={{ color: "#6B7385" }}>—</p>
+        <p className="text-sm" style={{ color: "#7A746C" }}>—</p>
       )}
     </div>
   );
@@ -949,7 +974,7 @@ function ShowReviewModal({
     >
       <div
         className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto"
-        style={{ backgroundColor: "#F8F9FC" }}
+        style={{ backgroundColor: "#FBF8F1" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 닫기 버튼 */}
@@ -958,9 +983,9 @@ function ShowReviewModal({
           onClick={onClose}
           aria-label="닫기"
           className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center text-lg transition-colors z-10"
-          style={{ color: "#274E9B", backgroundColor: "#E7ECF5" }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#C5CCD9"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#E7ECF5"; }}
+          style={{ color: "#3B5A6B", backgroundColor: "#F0EBE0" }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D8D3C9"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#F0EBE0"; }}
         >
           ✕
         </button>
@@ -969,16 +994,16 @@ function ShowReviewModal({
           {/* 헤더 */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+              <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                 Review
               </p>
               <StatusBadge status={show.status} />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
               {show.title}
             </h2>
             {show.subtitle && (
-              <p className="text-sm" style={{ fontFamily: "var(--font-inter)", color: "#6B7385", letterSpacing: "0.1em" }}>
+              <p className="text-sm" style={{ fontFamily: "var(--font-inter)", color: "#7A746C", letterSpacing: "0.1em" }}>
                 {show.subtitle}
               </p>
             )}
@@ -986,13 +1011,13 @@ function ShowReviewModal({
 
           {/* 포스터 + 핵심 정보 */}
           <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-6">
-            <div className="aspect-[3/4] overflow-hidden" style={{ backgroundColor: "#C5CCD9" }}>
+            <div className="aspect-[3/4] overflow-hidden" style={{ backgroundColor: "#D8D3C9" }}>
               {show.poster_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={show.poster_url} alt={show.title} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
                     포스터 없음
                   </p>
                 </div>
@@ -1014,8 +1039,8 @@ function ShowReviewModal({
           </div>
 
           {/* 장소 */}
-          <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
-            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+          <div className="pt-6" style={{ borderTop: "1px solid #D8D3C9" }}>
+            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
               장소 · 오시는 길
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -1030,8 +1055,8 @@ function ShowReviewModal({
           </div>
 
           {/* 작품 */}
-          <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
-            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+          <div className="pt-6" style={{ borderTop: "1px solid #D8D3C9" }}>
+            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
               작품 정보
             </h3>
             <div className="space-y-5">
@@ -1040,14 +1065,14 @@ function ShowReviewModal({
                 value={show.cast_members && show.cast_members.length > 0 ? show.cast_members.join(", ") : null}
               />
               <div>
-                <p className="text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                <p className="text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                   작품 소개
                 </p>
                 <p
                   className="text-sm leading-relaxed whitespace-pre-wrap p-4"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A", backgroundColor: "#E7ECF5" }}
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A", backgroundColor: "#F0EBE0" }}
                 >
-                  {show.description || <span style={{ color: "#6B7385" }}>작품 소개가 없습니다.</span>}
+                  {show.description || <span style={{ color: "#7A746C" }}>작품 소개가 없습니다.</span>}
                 </p>
               </div>
               <LinkRow label="티켓 예매 링크" url={show.ticket_url} />
@@ -1058,10 +1083,10 @@ function ShowReviewModal({
           {show.status === "approved" && (
             <div
               className="pt-6 flex items-center justify-between gap-4 flex-wrap"
-              style={{ borderTop: "1px solid #C5CCD9" }}
+              style={{ borderTop: "1px solid #D8D3C9" }}
             >
               <div className="flex-1 min-w-0">
-                <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+                <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                   Editor&apos;s Pick
                 </p>
                 <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
@@ -1074,9 +1099,9 @@ function ShowReviewModal({
                 className="px-5 py-2 text-xs tracking-wider transition-colors shrink-0"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: show.featured ? "#274E9B" : "transparent",
-                  color: show.featured ? "#F8F9FC" : "#274E9B",
-                  border: `1px solid #274E9B`,
+                  backgroundColor: show.featured ? "#3B5A6B" : "transparent",
+                  color: show.featured ? "#FBF8F1" : "#3B5A6B",
+                  border: `1px solid #3B5A6B`,
                 }}
               >
                 {show.featured ? "✓ 픽 등록됨 (해제)" : "픽 등록하기"}
@@ -1085,13 +1110,13 @@ function ShowReviewModal({
           )}
 
           {/* 액션 버튼 */}
-          <div className="pt-6 flex flex-col sm:flex-row gap-3" style={{ borderTop: "1px solid #C5CCD9" }}>
+          <div className="pt-6 flex flex-col sm:flex-row gap-3" style={{ borderTop: "1px solid #D8D3C9" }}>
             {show.status !== "approved" && (
               <button
                 type="button"
                 onClick={onApprove}
                 className="flex-1 py-3 text-sm tracking-wider transition-colors"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#3A5E42", color: "#F8F9FC" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#3A5E42", color: "#FBF8F1" }}
                 onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
               >
@@ -1114,7 +1139,7 @@ function ShowReviewModal({
               type="button"
               onClick={onDelete}
               className="px-6 py-3 text-sm tracking-wider transition-colors"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#1A1A1A", color: "#F8F9FC" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#1A1A1A", color: "#FBF8F1" }}
               onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
               onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
             >
@@ -1123,6 +1148,177 @@ function ShowReviewModal({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────
+// 후기 검토 패널 — admin reviews 탭
+// 사장님 요청: 자동검열 통과 후 부적절한 후기 즉시 삭제 + 계정 제재
+// ──────────────────────────────────────────────────────────────
+function ReviewsAdminPanel({
+  reviews,
+  filter,
+  onFilter,
+  onRefresh,
+}: {
+  reviews: AdminReviewRow[];
+  filter: "hidden" | "public" | "all";
+  onFilter: (f: "hidden" | "public" | "all") => void;
+  onRefresh: () => void;
+}) {
+  const [busy, setBusy] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const filtered = filter === "all" ? reviews : reviews.filter((r) => r.status === filter);
+
+  const handle = async (id: string, fn: () => Promise<{ ok: boolean; message: string }>) => {
+    setBusy(id);
+    const res = await fn();
+    setToast(res.message);
+    setBusy(null);
+    if (res.ok) onRefresh();
+  };
+
+  return (
+    <div>
+      {toast && (
+        <div
+          className="mb-4 px-4 py-3 text-xs"
+          style={{
+            fontFamily: "var(--font-noto-sans-kr)",
+            backgroundColor: "#F0EBE0",
+            color: "#202833",
+            border: "1px solid #D8D3C9",
+          }}
+        >
+          {toast}
+        </div>
+      )}
+
+      {/* 필터 */}
+      <div className="flex gap-2 mb-6">
+        {([
+          { key: "hidden", label: `검토 대기 (${reviews.filter((r) => r.status === "hidden").length})` },
+          { key: "public", label: `공개 중 (${reviews.filter((r) => r.status === "public").length})` },
+          { key: "all", label: `전체 (${reviews.length})` },
+        ] as const).map((f) => (
+          <button
+            key={f.key}
+            onClick={() => onFilter(f.key)}
+            className="text-xs px-3 py-1.5 transition-colors"
+            style={{
+              fontFamily: "var(--font-noto-sans-kr)",
+              backgroundColor: filter === f.key ? "#3B5A6B" : "transparent",
+              color: filter === f.key ? "#FBF8F1" : "#7A746C",
+              border: "1px solid #D8D3C9",
+            }}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      {filtered.length === 0 ? (
+        <p
+          className="text-center py-20 text-sm"
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+        >
+          {filter === "hidden" ? "검토 대기 중인 후기가 없습니다." : "표시할 후기가 없습니다."}
+        </p>
+      ) : (
+        <div className="space-y-4">
+          {filtered.map((r) => {
+            const statusLabel: Record<string, { bg: string; color: string; label: string }> = {
+              public: { bg: "#D4EDD4", color: "#3A5E42", label: "공개" },
+              hidden: { bg: "#EDD4D4", color: "#A63D2F", label: "검토 대기" },
+              blocked: { bg: "#1A1A1A", color: "#FBF8F1", label: "차단" },
+              pending: { bg: "#F0EBE0", color: "#7A746C", label: "대기" },
+            };
+            const s = statusLabel[r.status] ?? statusLabel.pending;
+            const mod = r.moderation as { score?: number; matched?: string[]; source?: string } | null;
+
+            return (
+              <div key={r.id} className="p-5" style={{ backgroundColor: "#F0EBE0", border: "1px solid #D8D3C9" }}>
+                <div className="flex items-start justify-between mb-3 gap-3 flex-wrap">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                      <span
+                        className="text-xs px-2 py-0.5"
+                        style={{ fontFamily: "var(--font-inter)", backgroundColor: s.bg, color: s.color }}
+                      >
+                        {s.label}
+                      </span>
+                      <p className="text-sm font-semibold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#202833" }}>
+                        {r.profiles?.name || "익명"}
+                      </p>
+                      <span className="text-xs" style={{ color: "#7A746C" }}>
+                        · {r.shows?.title ?? "(공연 정보 없음)"}
+                      </span>
+                    </div>
+                    <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                      작성: {r.created_at.slice(0, 16).replace("T", " ")} · 신고 {r.report_count}건
+                      {mod?.source && ` · 검열 ${mod.source}${mod.score !== undefined ? ` (${(mod.score * 100).toFixed(0)}%)` : ""}`}
+                      {mod?.matched && mod.matched.length > 0 && ` · 매칭: ${mod.matched.join(", ")}`}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                    {r.status === "hidden" && (
+                      <button
+                        onClick={() => handle(r.id, () => adminUpdateReviewStatus(r.id, "public"))}
+                        disabled={busy === r.id}
+                        className="text-xs px-3 py-1 transition-colors"
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3A5E42", border: "1px solid #3A5E42" }}
+                      >
+                        공개 복귀
+                      </button>
+                    )}
+                    {r.status === "public" && (
+                      <button
+                        onClick={() => handle(r.id, () => adminUpdateReviewStatus(r.id, "hidden"))}
+                        disabled={busy === r.id}
+                        className="text-xs px-3 py-1 transition-colors"
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B", border: "1px solid #3B5A6B" }}
+                      >
+                        가리기
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        if (!confirm("후기를 영구 삭제합니다. 진행하시겠습니까?")) return;
+                        handle(r.id, () => adminDeleteReview(r.id));
+                      }}
+                      disabled={busy === r.id}
+                      className="text-xs px-3 py-1 transition-colors"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", backgroundColor: "#A63D2F" }}
+                    >
+                      삭제
+                    </button>
+                    <button
+                      onClick={() => {
+                        const reason = prompt("계정 제재 사유 (선택)") ?? "";
+                        if (!confirm(`이 사용자(${r.user_id.slice(0, 8)}…)의 후기 작성을 차단합니다. 진행하시겠습니까?`)) return;
+                        handle(r.id, () => adminBanUser(r.user_id, reason));
+                      }}
+                      disabled={busy === r.id}
+                      className="text-xs px-3 py-1 transition-colors"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", backgroundColor: "#1A1A1A" }}
+                    >
+                      계정 제재
+                    </button>
+                  </div>
+                </div>
+                <p
+                  className="text-sm leading-relaxed whitespace-pre-wrap"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#202833", wordBreak: "keep-all" }}
+                >
+                  {r.body}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

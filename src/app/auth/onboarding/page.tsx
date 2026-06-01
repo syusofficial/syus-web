@@ -94,7 +94,7 @@ export default function OnboardingPage() {
 
   if (loading) {
     return (
-      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F8F9FC" }}>
+      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
         <PageLoader />
       </div>
     );
@@ -102,22 +102,22 @@ export default function OnboardingPage() {
 
   const inputStyle: React.CSSProperties = {
     fontFamily: "var(--font-noto-sans-kr)",
-    backgroundColor: "#E7ECF5",
+    backgroundColor: "#F0EBE0",
     color: "#1A1A1A",
     border: "1px solid transparent",
   };
 
   return (
-    <div className="pt-24 min-h-screen flex items-center justify-center px-6 py-12" style={{ backgroundColor: "#F8F9FC" }}>
+    <div className="pt-24 min-h-screen flex items-center justify-center px-6 py-12" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             Welcome
           </p>
-          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             가입을 마무리합니다
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
             서비스 이용을 위해 약관 동의와
             <br />
             기본 정보를 확인해주세요.
@@ -126,7 +126,7 @@ export default function OnboardingPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
               이름 (닉네임) <span style={{ color: "#A63D2F" }}>*</span>
             </label>
             <input
@@ -136,25 +136,25 @@ export default function OnboardingPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
 
-          <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #C5CCD9" }}>
+          <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #D8D3C9" }}>
             <ConsentRow checked={allChecked} onChange={toggleAll} label="전체 동의" bold />
-            <div className="pl-3 space-y-2" style={{ borderLeft: "2px solid #E7ECF5", paddingLeft: "12px" }}>
+            <div className="pl-3 space-y-2" style={{ borderLeft: "2px solid #F0EBE0", paddingLeft: "12px" }}>
               <ConsentRow
                 checked={terms}
                 onChange={() => setTerms(!terms)}
                 required
-                label={<>이용약관 동의 <Link href="/terms" target="_blank" className="underline" style={{ color: "#274E9B" }}>보기</Link></>}
+                label={<>이용약관 동의 <Link href="/terms" target="_blank" className="underline" style={{ color: "#3B5A6B" }}>보기</Link></>}
               />
               <ConsentRow
                 checked={privacy}
                 onChange={() => setPrivacy(!privacy)}
                 required
-                label={<>개인정보 수집 및 이용 동의 <Link href="/privacy" target="_blank" className="underline" style={{ color: "#274E9B" }}>보기</Link></>}
+                label={<>개인정보 수집 및 이용 동의 <Link href="/privacy" target="_blank" className="underline" style={{ color: "#3B5A6B" }}>보기</Link></>}
               />
               <ConsentRow
                 checked={marketing}
@@ -176,8 +176,8 @@ export default function OnboardingPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: submitting || !requiredChecked ? "#6B7385" : "#274E9B",
-              color: "#F8F9FC",
+              backgroundColor: submitting || !requiredChecked ? "#7A746C" : "#3B5A6B",
+              color: "#FBF8F1",
               cursor: submitting || !requiredChecked ? "not-allowed" : "pointer",
             }}
           >
@@ -203,12 +203,12 @@ function ConsentRow({
       <span
         className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors"
         style={{
-          backgroundColor: checked ? "#274E9B" : "transparent",
-          border: `1.5px solid ${checked ? "#274E9B" : "#6B7385"}`,
+          backgroundColor: checked ? "#3B5A6B" : "transparent",
+          border: `1.5px solid ${checked ? "#3B5A6B" : "#7A746C"}`,
         }}
       >
         {checked && (
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F8F9FC" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FBF8F1" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         )}

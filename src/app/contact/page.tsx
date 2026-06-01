@@ -77,15 +77,15 @@ export default function ContactPage() {
 
   if (submitted) {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F8F9FC" }}>
+      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
         <div className="text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-6" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-6" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             접수 완료
           </p>
-          <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+          <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             감사합니다.
           </h2>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
             문의가 접수되었습니다.
             <br />
             빠른 시일 내에 답변 드리겠습니다.
@@ -96,17 +96,17 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F8F9FC" }}>
+    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             1:1 Contact
           </p>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             1:1 문의
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
             아래에서 문의 유형을 선택하시고 내용을 남겨주세요.
             <br />
             1~2일 이내에 답변드리겠습니다.
@@ -116,12 +116,12 @@ export default function ContactPage() {
         {/* FAQ 안내 배너 */}
         <div
           className="mb-10 p-5 flex items-center justify-between gap-4 flex-wrap"
-          style={{ backgroundColor: "#E7ECF5" }}
+          style={{ backgroundColor: "#F0EBE0" }}
         >
           <div className="flex-1 min-w-0">
             <p
               className="text-xs tracking-wider uppercase mb-1"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
             >
               먼저 확인해보세요
             </p>
@@ -137,11 +137,11 @@ export default function ContactPage() {
             className="px-4 py-2 text-xs tracking-wider transition-colors shrink-0"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: "#274E9B",
-              color: "#F8F9FC",
+              backgroundColor: "#3B5A6B",
+              color: "#FBF8F1",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#2B60CA")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#274E9B")}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#5C7C8E")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#3B5A6B")}
           >
             FAQ 보기 →
           </Link>
@@ -150,7 +150,7 @@ export default function ContactPage() {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* 카테고리 선택 */}
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+            <label className="block text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
               문의 유형 *
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -164,9 +164,9 @@ export default function ContactPage() {
                     className="px-3 py-3 text-xs tracking-wide transition-colors"
                     style={{
                       fontFamily: "var(--font-noto-sans-kr)",
-                      backgroundColor: isActive ? "#274E9B" : "transparent",
-                      color: isActive ? "#F8F9FC" : "#274E9B",
-                      border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
+                      backgroundColor: isActive ? "#3B5A6B" : "transparent",
+                      color: isActive ? "#FBF8F1" : "#3B5A6B",
+                      border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
                     }}
                   >
                     {c}
@@ -178,7 +178,7 @@ export default function ContactPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                 이름 *
               </label>
               <input
@@ -187,13 +187,13 @@ export default function ContactPage() {
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
                 className="w-full px-4 py-3 text-sm outline-none"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#1A1A1A", border: "1px solid transparent" }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F0EBE0", color: "#1A1A1A", border: "1px solid transparent" }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
               />
             </div>
             <div>
-              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                 연락처
               </label>
               <input
@@ -201,15 +201,15 @@ export default function ContactPage() {
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 className="w-full px-4 py-3 text-sm outline-none"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#1A1A1A", border: "1px solid transparent" }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F0EBE0", color: "#1A1A1A", border: "1px solid transparent" }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
               이메일 *
             </label>
             <input
@@ -218,14 +218,14 @@ export default function ContactPage() {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
               className="w-full px-4 py-3 text-sm outline-none"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#1A1A1A", border: "1px solid transparent" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F0EBE0", color: "#1A1A1A", border: "1px solid transparent" }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
               문의 내용 *
             </label>
             <textarea
@@ -234,8 +234,8 @@ export default function ContactPage() {
               required
               rows={6}
               className="w-full px-4 py-3 text-sm outline-none resize-none"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#1A1A1A", border: "1px solid transparent" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F0EBE0", color: "#1A1A1A", border: "1px solid transparent" }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -252,33 +252,33 @@ export default function ContactPage() {
             className="px-10 py-3 text-sm tracking-wider transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#6B7385" : "#274E9B",
-              color: "#F8F9FC",
+              backgroundColor: loading ? "#7A746C" : "#3B5A6B",
+              color: "#FBF8F1",
               cursor: loading ? "not-allowed" : "pointer",
             }}
-            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#2B60CA"; }}
-            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#274E9B"; }}
+            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#5C7C8E"; }}
+            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#3B5A6B"; }}
           >
             {loading ? "전송 중..." : "문의 보내기"}
           </button>
         </form>
 
-        <div className="mt-16 pt-8 space-y-4" style={{ borderTop: "1px solid #C5CCD9" }}>
-          <p className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+        <div className="mt-16 pt-8 space-y-4" style={{ borderTop: "1px solid #D8D3C9" }}>
+          <p className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             Other Channels
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <a
               href="mailto:syusflux@gmail.com"
               className="block p-4 transition-colors"
-              style={{ backgroundColor: "#E7ECF5" }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C5CCD9")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E7ECF5")}
+              style={{ backgroundColor: "#F0EBE0" }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D8D3C9")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F0EBE0")}
             >
-              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                 Email
               </p>
-              <p className="text-sm break-all" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
+              <p className="text-sm break-all" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
                 syusflux@gmail.com
               </p>
             </a>
@@ -287,14 +287,14 @@ export default function ContactPage() {
               target="_blank"
               rel="noopener noreferrer"
               className="block p-4 transition-colors"
-              style={{ backgroundColor: "#E7ECF5" }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C5CCD9")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E7ECF5")}
+              style={{ backgroundColor: "#F0EBE0" }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D8D3C9")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F0EBE0")}
             >
-              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                 KakaoTalk
               </p>
-              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
+              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
                 사유유사 SYUS 채널 →
               </p>
             </a>
@@ -303,19 +303,19 @@ export default function ContactPage() {
               target="_blank"
               rel="noopener noreferrer"
               className="block p-4 transition-colors"
-              style={{ backgroundColor: "#E7ECF5" }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C5CCD9")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E7ECF5")}
+              style={{ backgroundColor: "#F0EBE0" }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D8D3C9")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F0EBE0")}
             >
-              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
                 Instagram
               </p>
-              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
+              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
                 @syus_official →
               </p>
             </a>
           </div>
-          <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+          <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
             카카오톡 채널과 인스타그램 DM도 1~2일 이내에 답변드리겠습니다.
           </p>
         </div>

@@ -43,6 +43,35 @@ export type Profile = {
   created_at: string;
 };
 
+export type ReviewStatus = "pending" | "public" | "hidden" | "blocked";
+
+export type Review = {
+  id: string;
+  show_id: string;
+  user_id: string;
+  body: string;
+  status: ReviewStatus;
+  moderation?: {
+    score?: number;
+    matched?: string[];
+    source?: "dict" | "openai" | "both";
+    api_categories?: Record<string, boolean>;
+  } | null;
+  report_count: number;
+  created_at: string;
+  updated_at?: string | null;
+  /** 조인 시 */
+  author_nickname?: string | null;
+};
+
+export type ReviewReport = {
+  id: string;
+  review_id: string;
+  reporter_id: string;
+  reason: string | null;
+  created_at: string;
+};
+
 export type Contact = {
   id: string;
   name: string;

@@ -131,7 +131,56 @@ export default function TermsPage() {
       ),
     },
     {
-      h: "제11조 (분쟁 해결)",
+      h: "제11조 (후기 작성 정책)",
+      body: (
+        <ol className="list-decimal pl-5 space-y-1">
+          <li>회원은 직접 관람한 공연에 한해 후기를 작성할 수 있으며, 한 공연당 하나의 후기를 작성할 수 있습니다(재제출 시 갱신됩니다).</li>
+          <li>허위 사실 적시, 광고·홍보 목적의 게시물, 동일 내용의 중복 게시는 금지됩니다.</li>
+          <li>후기 본문의 법적 책임은 작성자 본인에게 있으며, 회사는 정보통신망법 제44조의3에 따라 단순 매개자의 지위에 있습니다.</li>
+        </ol>
+      ),
+    },
+    {
+      h: "제12조 (자동 필터링 및 게시물 관리)",
+      body: (
+        <ol className="list-decimal pl-5 space-y-1">
+          <li>회사는 욕설·비방·차별 표현·성적 표현·개인정보 노출 등을 자동 필터링 시스템(한국어 사전 매칭 및 OpenAI Moderation API)으로 검출하여 사전 통지 없이 게시 차단·블라인드·삭제할 수 있습니다.</li>
+          <li>자동 필터링을 통과한 게시물에 대해서도 부적절한 내용이 확인되면 회사는 사전 통지 없이 즉시 삭제할 수 있습니다.</li>
+          <li>회원은 부적절한 게시물을 신고할 수 있으며, 회사는 신고 접수 후 24시간 내 검토합니다. 신고 3건 누적 시 게시물은 자동으로 블라인드 처리됩니다.</li>
+        </ol>
+      ),
+    },
+    {
+      h: "제13조 (권리침해 신고 및 임시조치)",
+      body: (
+        <ol className="list-decimal pl-5 space-y-1">
+          <li>본인의 권리(명예, 초상, 저작권 등)가 침해된 회원은 syusflux@gmail.com으로 신고할 수 있습니다.</li>
+          <li>회사는 정보통신망법 제44조의2에 따라 권리침해 주장 게시물에 대해 30일간 임시조치(블라인드)할 수 있으며, 그 기간 동안 작성자의 이의제기를 받습니다.</li>
+          <li>임시조치 결과는 신고인과 작성자에게 통지되며, 회사는 그 처리 과정을 기록·보존합니다.</li>
+        </ol>
+      ),
+    },
+    {
+      h: "제14조 (계정 제재)",
+      body: (
+        <ol className="list-decimal pl-5 space-y-1">
+          <li>본 약관을 반복·중대 위반한 회원의 후기 작성 권한은 사전 통지 없이 제한될 수 있습니다.</li>
+          <li>제재 사유는 회원이 1:1 문의로 확인을 요청할 수 있으며, 회사는 합리적 범위 내에서 응답합니다.</li>
+          <li>중대한 위법 행위(명예훼손·모욕·개인정보 노출 등)는 관련 법령에 따라 별도의 법적 조치 대상이 될 수 있습니다.</li>
+        </ol>
+      ),
+    },
+    {
+      h: "제15조 (운영자 면책)",
+      body: (
+        <ol className="list-decimal pl-5 space-y-1">
+          <li>회사는 회원이 작성한 게시물의 정확성·합법성·완전성에 대해 보증하지 않으며, 그로 인한 손해에 대해 책임지지 않습니다.</li>
+          <li>회사는 정보통신망법 제44조의3에 따라 회원의 게시물에 대한 책임이 면제될 수 있으며, 권리침해 신고에 대한 임시조치·삭제 의무를 이행한 경우 책임 범위가 제한됩니다.</li>
+        </ol>
+      ),
+    },
+    {
+      h: "제16조 (분쟁 해결)",
       body: (
         <ol className="list-decimal pl-5 space-y-1">
           <li>본 약관의 해석 및 이용자와 회사 간의 분쟁에 대해서는 대한민국의 법률을 적용합니다.</li>
@@ -141,27 +190,32 @@ export default function TermsPage() {
     },
     {
       h: "부칙",
-      body: <p>본 약관은 2026년 4월 25일부터 시행됩니다.</p>,
+      body: (
+        <ol className="list-decimal pl-5 space-y-1">
+          <li>본 약관은 2026년 4월 25일부터 시행됩니다.</li>
+          <li>2026년 6월 2일자 개정 — 공연 후기 기능 신설에 따라 제11조~제15조 추가 (변호사 검수 권고 — 시행 전 검토 필요).</li>
+        </ol>
+      ),
     },
   ];
 
   return (
-    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16" style={{ backgroundColor: "#F8F9FC" }}>
+    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="max-w-3xl mx-auto">
         <div className="mb-12">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
           >
             Terms of Service
           </p>
           <h1
             className="text-3xl md:text-4xl font-bold mb-3"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
           >
             이용약관
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
             시행일: 2026년 4월 25일
           </p>
         </div>
@@ -169,15 +223,15 @@ export default function TermsPage() {
         <div className="space-y-10 text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
           {sections.map((s) => (
             <section key={s.h}>
-              <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+              <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
                 {s.h}
               </h2>
               {s.body}
             </section>
           ))}
 
-          <div className="pt-8 text-center" style={{ borderTop: "1px solid #C5CCD9" }}>
-            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#274E9B" }}>
+          <div className="pt-8 text-center" style={{ borderTop: "1px solid #D8D3C9" }}>
+            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}>
               ← 홈으로
             </Link>
           </div>

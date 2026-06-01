@@ -83,19 +83,19 @@ export default function SignupPage() {
 
   const inputStyle: React.CSSProperties = {
     fontFamily: "var(--font-noto-sans-kr)",
-    backgroundColor: "#E7ECF5",
+    backgroundColor: "#F0EBE0",
     color: "#1A1A1A",
     border: "1px solid transparent",
   };
 
   return (
-    <div className="pt-24 min-h-screen flex items-center justify-center px-6 py-12" style={{ backgroundColor: "#F8F9FC" }}>
+    <div className="pt-24 min-h-screen flex items-center justify-center px-6 py-12" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             Account
           </p>
-          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             회원가입
           </h1>
         </div>
@@ -106,9 +106,9 @@ export default function SignupPage() {
           <SocialDivider label="또는 이메일로 가입" />
         </div>
 
-        <div className="mb-8 p-4 space-y-2" style={{ backgroundColor: "#E7ECF5" }}>
+        <div className="mb-8 p-4 space-y-2" style={{ backgroundColor: "#F0EBE0" }}>
           {["공연 찜하기 · 관심 공연 저장", "공연자 신청 · 내 공연 등록 자격", "새 공연 알림 · 업데이트 수신"].map((text) => (
-            <p key={text} className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
+            <p key={text} className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
               ✓ {text}
             </p>
           ))}
@@ -116,7 +116,7 @@ export default function SignupPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
               이름
             </label>
             <input
@@ -126,13 +126,13 @@ export default function SignupPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
               이메일
             </label>
             <input
@@ -142,28 +142,28 @@ export default function SignupPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
               비밀번호
             </label>
             <PasswordInput value={password} onChange={setPassword} required minLength={8} />
-            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>8자 이상</p>
+            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>8자 이상</p>
           </div>
 
           {/* ─── 약관 동의 섹션 ─── */}
-          <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #C5CCD9" }}>
+          <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #D8D3C9" }}>
             <ConsentRow
               checked={allChecked}
               onChange={toggleAll}
               label="전체 동의"
               bold
             />
-            <div className="pl-1 space-y-2" style={{ borderLeft: "2px solid #E7ECF5", paddingLeft: "12px" }}>
+            <div className="pl-1 space-y-2" style={{ borderLeft: "2px solid #F0EBE0", paddingLeft: "12px" }}>
               <ConsentRow
                 checked={consents.terms}
                 onChange={() => toggleOne("terms")}
@@ -171,7 +171,7 @@ export default function SignupPage() {
                 label={
                   <>
                     이용약관 동의{" "}
-                    <Link href="/terms" target="_blank" className="underline" style={{ color: "#274E9B" }}>
+                    <Link href="/terms" target="_blank" className="underline" style={{ color: "#3B5A6B" }}>
                       보기
                     </Link>
                   </>
@@ -184,7 +184,7 @@ export default function SignupPage() {
                 label={
                   <>
                     개인정보 수집 및 이용 동의{" "}
-                    <Link href="/privacy" target="_blank" className="underline" style={{ color: "#274E9B" }}>
+                    <Link href="/privacy" target="_blank" className="underline" style={{ color: "#3B5A6B" }}>
                       보기
                     </Link>
                   </>
@@ -210,20 +210,20 @@ export default function SignupPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading || !requiredChecked ? "#6B7385" : "#274E9B",
-              color: "#F8F9FC",
+              backgroundColor: loading || !requiredChecked ? "#7A746C" : "#3B5A6B",
+              color: "#FBF8F1",
               cursor: loading || !requiredChecked ? "not-allowed" : "pointer",
             }}
-            onMouseEnter={(e) => { if (!loading && requiredChecked) e.currentTarget.style.backgroundColor = "#2B60CA"; }}
-            onMouseLeave={(e) => { if (!loading && requiredChecked) e.currentTarget.style.backgroundColor = "#274E9B"; }}
+            onMouseEnter={(e) => { if (!loading && requiredChecked) e.currentTarget.style.backgroundColor = "#5C7C8E"; }}
+            onMouseLeave={(e) => { if (!loading && requiredChecked) e.currentTarget.style.backgroundColor = "#3B5A6B"; }}
           >
             {loading ? "처리 중..." : "가입하기"}
           </button>
         </form>
 
-        <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
+        <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
           이미 계정이 있으신가요?{" "}
-          <Link href="/auth/login" style={{ color: "#274E9B" }}>
+          <Link href="/auth/login" style={{ color: "#3B5A6B" }}>
             로그인
           </Link>
         </p>
@@ -251,12 +251,12 @@ function ConsentRow({
       <span
         className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors"
         style={{
-          backgroundColor: checked ? "#274E9B" : "transparent",
-          border: `1.5px solid ${checked ? "#274E9B" : "#6B7385"}`,
+          backgroundColor: checked ? "#3B5A6B" : "transparent",
+          border: `1.5px solid ${checked ? "#3B5A6B" : "#7A746C"}`,
         }}
       >
         {checked && (
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F8F9FC" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FBF8F1" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         )}
