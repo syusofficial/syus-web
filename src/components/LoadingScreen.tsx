@@ -50,7 +50,7 @@ export default function LoadingScreen() {
 
   if (done) return null;
 
-  const C = "#274E9B"; // 브랜드 브라운
+  const C = "#6D3115"; // 사유유사 원 정체성 브라운 (사장님 결정: 로고만 갈색 유지)
 
   return (
     <div

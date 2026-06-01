@@ -18,7 +18,7 @@ import type { User } from "@supabase/supabase-js";
 export function SyusLogoSvg({
   width = 200,
   height = 80,
-  color = "#274E9B",
+  color = "#6D3115",
 }: {
   width?: number;
   height?: number;
