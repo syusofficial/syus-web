@@ -10,7 +10,7 @@ export default function ShowCard({ show }: { show: Show }) {
         <Link href={`/shows/${show.id}`}>
           <div
             className="aspect-[3/4] overflow-hidden mb-4 relative"
-            style={{ backgroundColor: "#E8DDD0" }}
+            style={{ backgroundColor: "#E7ECF5" }}
           >
             {show.poster_url ? (
               <Image
@@ -21,7 +21,7 @@ export default function ShowCard({ show }: { show: Show }) {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#9B9693" }}>
+                <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6B7385" }}>
                   포스터 없음
                 </span>
               </div>
@@ -38,23 +38,23 @@ export default function ShowCard({ show }: { show: Show }) {
           <div className="flex items-start justify-between gap-2">
             <h3
               className="text-base font-semibold leading-snug transition-colors group-hover:opacity-70"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
             >
               {show.title}
             </h3>
             {show.subtitle && (
               <span
                 className="text-xs italic shrink-0 pt-0.5"
-                style={{ fontFamily: "var(--font-cormorant)", color: "#9B9693" }}
+                style={{ fontFamily: "var(--font-cormorant)", color: "#6B7385" }}
               >
                 {show.subtitle}
               </span>
             )}
           </div>
-          <p className="text-xs tracking-wide" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+          <p className="text-xs tracking-wide" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
             {show.venue}
           </p>
-          <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+          <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             {show.schedule_start} — {show.schedule_end}
           </p>
         </div>

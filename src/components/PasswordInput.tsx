@@ -14,7 +14,7 @@ export default function PasswordInput({ value, onChange, required, minLength }: 
 
   const inputStyle: React.CSSProperties = {
     fontFamily: "var(--font-noto-sans-kr)",
-    backgroundColor: "#E8DDD0",
+    backgroundColor: "#E7ECF5",
     color: "#1A1A1A",
     border: "1px solid transparent",
     paddingRight: "42px",
@@ -30,14 +30,14 @@ export default function PasswordInput({ value, onChange, required, minLength }: 
         minLength={minLength}
         className="w-full px-4 py-3 text-sm outline-none transition-colors"
         style={inputStyle}
-        onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+        onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
       />
       <button
         type="button"
         onClick={() => setVisible((v) => !v)}
         className="absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity"
-        style={{ color: "#6D3115", opacity: 0.7 }}
+        style={{ color: "#2E5BB8", opacity: 0.7 }}
         onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
         onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}
         aria-label={visible ? "비밀번호 숨기기" : "비밀번호 보기"}

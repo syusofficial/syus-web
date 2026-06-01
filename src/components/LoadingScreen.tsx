@@ -50,7 +50,7 @@ export default function LoadingScreen() {
 
   if (done) return null;
 
-  const C = "#6D3115"; // 브랜드 브라운
+  const C = "#2E5BB8"; // 브랜드 브라운
 
   return (
     <div
@@ -58,7 +58,7 @@ export default function LoadingScreen() {
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        backgroundColor: "#F4EDE3",
+        backgroundColor: "#F8F9FC",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

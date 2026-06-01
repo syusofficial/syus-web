@@ -115,7 +115,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     : null;
 
   return (
-    <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F4EDE3" }}>
+    <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F8F9FC" }}>
       {eventStructuredData && (
         <script
           type="application/ld+json"
@@ -135,8 +135,8 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
         <div
           className="px-6 md:px-12 lg:px-20 py-3"
           style={{
-            backgroundColor: show.status === "pending" ? "#E8DDD0" : "#EDD4D4",
-            color: show.status === "pending" ? "#6D3115" : "#A63D2F",
+            backgroundColor: show.status === "pending" ? "#E7ECF5" : "#EDD4D4",
+            color: show.status === "pending" ? "#2E5BB8" : "#A63D2F",
           }}
         >
           <div className="max-w-7xl mx-auto text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
@@ -155,7 +155,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
         <Link
           href={show.status === "approved" ? "/shows" : "/performer"}
           className="text-xs tracking-[0.2em] uppercase transition-colors"
-          style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
         >
           ← {show.status === "approved" ? "공연 목록으로" : "공연 관리로"}
         </Link>
@@ -165,12 +165,12 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Poster */}
           <div className="relative w-full max-w-sm mx-auto md:max-w-none">
-            <div className="aspect-[3/4] relative" style={{ backgroundColor: "#E8DDD0" }}>
+            <div className="aspect-[3/4] relative" style={{ backgroundColor: "#E7ECF5" }}>
               {show.poster_url ? (
                 <Image src={show.poster_url} alt={show.title} fill className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#9B9693" }}>
+                  <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6B7385" }}>
                     포스터 없음
                   </span>
                 </div>
@@ -187,24 +187,24 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
           <div className="space-y-8">
             <div>
               {show.subtitle && (
-                <p className="text-sm italic mb-2" style={{ fontFamily: "var(--font-cormorant)", color: "#9B9693" }}>
+                <p className="text-sm italic mb-2" style={{ fontFamily: "var(--font-cormorant)", color: "#6B7385" }}>
                   {show.subtitle}
                 </p>
               )}
               <h1
                 className="text-4xl md:text-5xl font-bold leading-tight mb-2"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
               >
                 {show.title}
               </h1>
               {show.performer_name && (
-                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
                   by{" "}
                   {show.organizer_id ? (
                     <Link
                       href={`/performer/${show.organizer_id}`}
                       className="hover:underline transition-colors"
-                      style={{ color: "#6D3115" }}
+                      style={{ color: "#2E5BB8" }}
                     >
                       {show.performer_name}
                     </Link>
@@ -219,17 +219,17 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {(show.genre || show.region || show.show_category) && (
               <div className="flex flex-wrap gap-2">
                 {show.genre && (
-                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}>
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}>
                     {show.genre === "기타" && show.genre_custom ? show.genre_custom : show.genre}
                   </span>
                 )}
                 {show.show_category && (
-                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E8DDD0", color: "#6D3115" }}>
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#2E5BB8" }}>
                     {show.show_category}
                   </span>
                 )}
                 {show.region && (
-                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115", border: "1px solid #6D3115" }}>
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8", border: "1px solid #2E5BB8" }}>
                     {show.region}
                   </span>
                 )}
@@ -237,13 +237,13 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* Meta box */}
-            <div className="p-6 space-y-4" style={{ backgroundColor: "#E8DDD0" }}>
+            <div className="p-6 space-y-4" style={{ backgroundColor: "#E7ECF5" }}>
               {/* 소속 — 학교명만 추출하여 필터 링크로 (학과명은 함께 표기) */}
               {show.school_department && (
                 <div className="grid grid-cols-[88px_1fr] gap-2">
                   <span
                     className="text-xs tracking-wider uppercase pt-0.5"
-                    style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+                    style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
                   >
                     소속
                   </span>
@@ -260,11 +260,11 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                           <Link
                             href={`/shows?school=${encodeURIComponent(schoolName)}`}
                             className="hover:underline"
-                            style={{ color: "#6D3115" }}
+                            style={{ color: "#2E5BB8" }}
                           >
                             {schoolName}
                           </Link>
-                          {rest && <span style={{ color: "#9B9693", marginLeft: 4 }}>{rest}</span>}
+                          {rest && <span style={{ color: "#6B7385", marginLeft: 4 }}>{rest}</span>}
                         </>
                       );
                     })()}
@@ -290,7 +290,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   <div key={item!.label} className="grid grid-cols-[88px_1fr] gap-2">
                     <span
                       className="text-xs tracking-wider uppercase pt-0.5"
-                      style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
                     >
                       {item!.label}
                     </span>
@@ -306,7 +306,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
 
             {/* Description */}
             <div>
-              <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+              <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
                 작품 소개
               </p>
               <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
@@ -317,7 +317,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {/* Directions */}
             {(show.directions || show.map_kakao_url || show.map_naver_url) && (
               <div>
-                <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
                   오시는 길
                 </p>
                 {show.directions && (
@@ -343,7 +343,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-4 py-2 text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#03C75A", color: "#F4EDE3" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#03C75A", color: "#F8F9FC" }}
                     >
                       네이버지도에서 보기 →
                     </a>
@@ -366,14 +366,14 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
                   >
                     티켓 예매하기
                   </a>
                 ) : (
                   <span
                     className="px-8 py-4 text-sm tracking-wider text-center"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#D4CFC9", color: "#9B9693" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#C5CCD9", color: "#6B7385" }}
                   >
                     예매 링크 없음
                   </span>
@@ -381,7 +381,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 <Link
                   href="/contact"
                   className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #D4CFC9", color: "#1A1A1A" }}
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #C5CCD9", color: "#1A1A1A" }}
                 >
                   문의하기
                 </Link>
@@ -394,18 +394,18 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
         {recommendations.length > 0 && (
           <section
             className="mt-24 pt-12"
-            style={{ borderTop: "1px solid #D4CFC9" }}
+            style={{ borderTop: "1px solid #C5CCD9" }}
           >
             <div className="mb-10">
               <p
                 className="text-xs tracking-[0.3em] uppercase mb-3"
-                style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
               >
                 Related
               </p>
               <h2
                 className="text-2xl md:text-3xl font-bold"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
               >
                 이런 공연도 어떠세요
               </h2>

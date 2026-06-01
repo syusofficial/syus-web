@@ -50,11 +50,11 @@ export default function ShowsSearchBar({ basePath }: { basePath?: string } = {})
           className="w-full px-4 py-3 pr-10 text-sm outline-none transition-colors"
           style={{
             fontFamily: "var(--font-noto-sans-kr)",
-            backgroundColor: "#E8DDD0",
+            backgroundColor: "#E7ECF5",
             color: "#1A1A1A",
             border: "1px solid transparent",
           }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+          onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
           onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
         />
         {query && (
@@ -62,7 +62,7 @@ export default function ShowsSearchBar({ basePath }: { basePath?: string } = {})
             type="button"
             onClick={handleClear}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
-            style={{ color: "#9B9693" }}
+            style={{ color: "#6B7385" }}
             aria-label="검색어 지우기"
           >
             ✕
@@ -72,7 +72,7 @@ export default function ShowsSearchBar({ basePath }: { basePath?: string } = {})
       <button
         type="submit"
         className="px-5 py-3 text-sm tracking-wider transition-colors"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
       >
         검색
       </button>

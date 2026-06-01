@@ -15,14 +15,14 @@ export default async function OGImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#F4EDE3",
+          backgroundColor: "#F8F9FC",
         }}
       >
         <div
           style={{
             fontSize: 200,
             fontWeight: 900,
-            color: "#6D3115",
+            color: "#2E5BB8",
             letterSpacing: "0.08em",
             lineHeight: 1,
           }}
@@ -32,7 +32,7 @@ export default async function OGImage() {
         <div
           style={{
             fontSize: 26,
-            color: "#6D3115",
+            color: "#2E5BB8",
             marginTop: 48,
             letterSpacing: "0.4em",
             opacity: 0.7,
@@ -43,7 +43,7 @@ export default async function OGImage() {
         <div
           style={{
             fontSize: 22,
-            color: "#9B9693",
+            color: "#6B7385",
             marginTop: 22,
             letterSpacing: "0.15em",
             fontStyle: "italic",

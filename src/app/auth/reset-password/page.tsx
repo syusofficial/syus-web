@@ -63,15 +63,15 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F4EDE3" }}>
+      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F8F9FC" }}>
         <div className="text-center space-y-5">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             Done
           </p>
-          <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+          <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
             비밀번호가 변경되었습니다
           </h2>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
             잠시 후 로그인 페이지로 이동합니다...
           </p>
         </div>
@@ -80,33 +80,33 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F4EDE3" }}>
+    <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F8F9FC" }}>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             New Password
           </p>
-          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
             새 비밀번호 설정
           </h1>
         </div>
 
         {!ready ? (
-          <p className="text-center text-sm py-8" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+          <p className="text-center text-sm py-8" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
             링크를 확인하는 중...
           </p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
                 새 비밀번호
               </label>
               <PasswordInput value={password} onChange={setPassword} required minLength={8} />
-              <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>8자 이상</p>
+              <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>8자 이상</p>
             </div>
 
             <div>
-              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
                 비밀번호 확인
               </label>
               <PasswordInput value={confirm} onChange={setConfirm} required minLength={8} />
@@ -124,8 +124,8 @@ export default function ResetPasswordPage() {
               className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                backgroundColor: loading ? "#9B9693" : "#6D3115",
-                color: "#F4EDE3",
+                backgroundColor: loading ? "#6B7385" : "#2E5BB8",
+                color: "#F8F9FC",
                 cursor: loading ? "not-allowed" : "pointer",
               }}
             >
@@ -135,7 +135,7 @@ export default function ResetPasswordPage() {
         )}
 
         <div className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
-          <Link href="/auth/login" style={{ color: "#6D3115" }}>로그인 페이지로</Link>
+          <Link href="/auth/login" style={{ color: "#2E5BB8" }}>로그인 페이지로</Link>
         </div>
       </div>
     </div>

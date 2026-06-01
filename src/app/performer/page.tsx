@@ -11,11 +11,11 @@ import type { Show } from "@/types";
 
 const StatusBadge = ({ status }: { status: string }) => {
   const map: Record<string, { label: string; bg: string; color: string }> = {
-    pending:  { label: "승인 대기", bg: "#E8DDD0", color: "#6D3115" },
+    pending:  { label: "승인 대기", bg: "#E7ECF5", color: "#2E5BB8" },
     approved: { label: "게시 중",   bg: "#D4EDD4", color: "#3A5E42" },
     rejected: { label: "반려됨",    bg: "#EDD4D4", color: "#A63D2F" },
   };
-  const s = map[status] ?? { label: status, bg: "#E8DDD0", color: "#9B9693" };
+  const s = map[status] ?? { label: status, bg: "#E7ECF5", color: "#6B7385" };
   return (
     <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color, fontFamily: "var(--font-inter)" }}>
       {s.label}
@@ -352,19 +352,19 @@ export default function PerformerPage() {
 
   const inputStyle: React.CSSProperties = {
     fontFamily: "var(--font-noto-sans-kr)",
-    backgroundColor: "#F4EDE3",
+    backgroundColor: "#F8F9FC",
     color: "#1A1A1A",
     border: "1px solid transparent",
   };
   const labelStyle: React.CSSProperties = {
     fontFamily: "var(--font-inter)",
-    color: "#9B9693",
+    color: "#6B7385",
   };
 
   // 권한 없음 화면
   if (authState === "loading") {
     return (
-      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F4EDE3" }}>
+      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#F8F9FC" }}>
         <PageLoader />
       </div>
     );
@@ -372,22 +372,22 @@ export default function PerformerPage() {
 
   if (authState === "denied") {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F4EDE3" }}>
+      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F8F9FC" }}>
         <div className="text-center max-w-sm space-y-5">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             403
           </p>
-          <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+          <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
             공연자 권한이 필요합니다
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
             공연을 등록하려면 마이페이지에서 공연자 신청을 먼저 진행해주세요.
             관리자 검토 후 권한이 부여됩니다.
           </p>
           <Link
             href="/mypage"
             className="inline-block px-8 py-3 text-sm tracking-wider"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
           >
             마이페이지로
           </Link>
@@ -397,7 +397,7 @@ export default function PerformerPage() {
   }
 
   return (
-    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F4EDE3" }}>
+    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F8F9FC" }}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-12">
@@ -405,7 +405,7 @@ export default function PerformerPage() {
             Performer
           </p>
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <h1 className="text-4xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+            <h1 className="text-4xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
               내 공연 관리
             </h1>
             <button
@@ -421,9 +421,9 @@ export default function PerformerPage() {
                 }
               }}
               className="px-6 py-3 text-sm tracking-wider transition-colors"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#8B4A2A")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#6D3115")}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#4A7AD8")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2E5BB8")}
             >
               {showForm ? "취소" : "+ 공연 등록"}
             </button>
@@ -432,9 +432,9 @@ export default function PerformerPage() {
 
         {/* 등록 / 수정 폼 */}
         {showForm && (
-          <div className="mb-12 p-8 space-y-8" style={{ backgroundColor: "#E8DDD0" }}>
+          <div className="mb-12 p-8 space-y-8" style={{ backgroundColor: "#E7ECF5" }}>
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+              <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
                 {editingId ? "공연 수정" : "새 공연 등록"}
               </h2>
               {editingId && (
@@ -448,9 +448,9 @@ export default function PerformerPage() {
             {hasDraft && !editingId && (
               <div
                 className="p-4 flex items-center justify-between gap-4 flex-wrap"
-                style={{ backgroundColor: "#F4EDE3", border: "1px solid #6D3115" }}
+                style={{ backgroundColor: "#F8F9FC", border: "1px solid #2E5BB8" }}
               >
-                <p className="text-xs leading-relaxed flex-1 min-w-0" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+                <p className="text-xs leading-relaxed flex-1 min-w-0" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
                   이전에 작성하던 내용이 있습니다. 이어서 작성하시겠어요?
                 </p>
                 <div className="flex gap-2 shrink-0">
@@ -458,7 +458,7 @@ export default function PerformerPage() {
                     type="button"
                     onClick={restoreDraft}
                     className="px-3 py-1.5 text-xs"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
                   >
                     이어서 작성
                   </button>
@@ -466,7 +466,7 @@ export default function PerformerPage() {
                     type="button"
                     onClick={discardDraft}
                     className="px-3 py-1.5 text-xs"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "transparent", color: "#9B9693", border: "1px solid #D4CFC9" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "transparent", color: "#6B7385", border: "1px solid #C5CCD9" }}
                   >
                     버리고 새로 시작
                   </button>
@@ -482,7 +482,7 @@ export default function PerformerPage() {
                 </label>
                 <div className="flex items-start gap-4">
                   {(posterPreview || existingPosterUrl) && (
-                    <div className="w-24 aspect-[3/4] relative overflow-hidden shrink-0" style={{ backgroundColor: "#D4CFC9" }}>
+                    <div className="w-24 aspect-[3/4] relative overflow-hidden shrink-0" style={{ backgroundColor: "#C5CCD9" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={posterPreview ?? existingPosterUrl ?? ""} alt="미리보기" className="w-full h-full object-cover" />
                     </div>
@@ -491,12 +491,12 @@ export default function PerformerPage() {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     className="px-4 py-3 text-sm"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F4EDE3", color: "#6D3115", border: "1px solid #D4CFC9" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F8F9FC", color: "#2E5BB8", border: "1px solid #C5CCD9" }}
                   >
                     {posterFile ? "파일 변경" : (existingPosterUrl ? "포스터 교체" : "파일 선택")}
                   </button>
                   {posterFile && (
-                    <span className="text-xs pt-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                    <span className="text-xs pt-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
                       {posterFile.name}
                     </span>
                   )}
@@ -517,10 +517,10 @@ export default function PerformerPage() {
                   placeholder="이 공연을 올리는 명의 (예: 한양대 연극영화학과, 극단 노을, 본인 이름)"
                   className="w-full px-4 py-3 text-sm outline-none"
                   style={inputStyle}
-                  onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
                   onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                 />
-                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
                   공연마다 다른 명의로 등록할 수 있습니다. 회원가입 시 입력한 본인 이름이 기본값이며, 단체·극단·학과명 등으로 자유롭게 변경 가능합니다.
                 </p>
               </div>
@@ -541,9 +541,9 @@ export default function PerformerPage() {
                         className="px-5 py-2.5 text-sm transition-colors"
                         style={{
                           fontFamily: "var(--font-noto-sans-kr)",
-                          backgroundColor: active ? "#6D3115" : "#F4EDE3",
-                          color: active ? "#F4EDE3" : "#1A1A1A",
-                          border: `1px solid ${active ? "#6D3115" : "#D4CFC9"}`,
+                          backgroundColor: active ? "#2E5BB8" : "#F8F9FC",
+                          color: active ? "#F8F9FC" : "#1A1A1A",
+                          border: `1px solid ${active ? "#2E5BB8" : "#C5CCD9"}`,
                         }}
                       >
                         {g}
@@ -559,7 +559,7 @@ export default function PerformerPage() {
                     placeholder="장르를 직접 입력해주세요 (예: 인형극, 마술쇼, 넌버벌)"
                     className="w-full mt-3 px-4 py-3 text-sm outline-none"
                     style={inputStyle}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
                     onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                   />
                 )}
@@ -581,9 +581,9 @@ export default function PerformerPage() {
                         className="px-5 py-2.5 text-sm transition-colors"
                         style={{
                           fontFamily: "var(--font-noto-sans-kr)",
-                          backgroundColor: active ? "#6D3115" : "#F4EDE3",
-                          color: active ? "#F4EDE3" : "#1A1A1A",
-                          border: `1px solid ${active ? "#6D3115" : "#D4CFC9"}`,
+                          backgroundColor: active ? "#2E5BB8" : "#F8F9FC",
+                          color: active ? "#F8F9FC" : "#1A1A1A",
+                          border: `1px solid ${active ? "#2E5BB8" : "#C5CCD9"}`,
                         }}
                       >
                         {c}
@@ -591,7 +591,7 @@ export default function PerformerPage() {
                     );
                   })}
                 </div>
-                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
                   교내 공연 (학교 정기·졸업 공연), 외부 공연 (학교 외부 무대), 워크샵 (수업·연습 단계 공연) 중 선택해주세요.
                 </p>
               </div>
@@ -612,9 +612,9 @@ export default function PerformerPage() {
                         className="px-4 py-2 text-sm transition-colors"
                         style={{
                           fontFamily: "var(--font-noto-sans-kr)",
-                          backgroundColor: active ? "#6D3115" : "#F4EDE3",
-                          color: active ? "#F4EDE3" : "#1A1A1A",
-                          border: `1px solid ${active ? "#6D3115" : "#D4CFC9"}`,
+                          backgroundColor: active ? "#2E5BB8" : "#F8F9FC",
+                          color: active ? "#F8F9FC" : "#1A1A1A",
+                          border: `1px solid ${active ? "#2E5BB8" : "#C5CCD9"}`,
                         }}
                       >
                         {r}
@@ -625,8 +625,8 @@ export default function PerformerPage() {
               </div>
 
               {/* 기본 정보 */}
-              <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
-                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+              <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
+                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
                   기본 정보
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -653,7 +653,7 @@ export default function PerformerPage() {
                         placeholder={field.placeholder}
                         className="w-full px-4 py-3 text-sm outline-none"
                         style={inputStyle}
-                        onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                        onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
                         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                       />
                     </div>
@@ -662,8 +662,8 @@ export default function PerformerPage() {
               </div>
 
               {/* 장소 */}
-              <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
-                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+              <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
+                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
                   장소 · 오시는 길
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -684,7 +684,7 @@ export default function PerformerPage() {
                         placeholder={field.placeholder}
                         className="w-full px-4 py-3 text-sm outline-none"
                         style={inputStyle}
-                        onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                        onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
                         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                       />
                     </div>
@@ -692,14 +692,14 @@ export default function PerformerPage() {
                 </div>
 
                 {/* 지도 링크 (선택) — 권장 안내 */}
-                <div className="mt-6 pt-5" style={{ borderTop: "1px dashed #D4CFC9" }}>
+                <div className="mt-6 pt-5" style={{ borderTop: "1px dashed #C5CCD9" }}>
                   <div className="mb-3">
                     <p className="text-xs tracking-wider uppercase mb-1" style={labelStyle}>
-                      지도 링크 <span style={{ textTransform: "none", color: "#9B9693" }}>(선택)</span>
+                      지도 링크 <span style={{ textTransform: "none", color: "#6B7385" }}>(선택)</span>
                     </p>
-                    <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                    <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
                       관객이 공연장을 쉽게 찾을 수 있도록 지도 링크 첨부를 권장드립니다.
-                      카카오맵 또는 네이버지도 중 <strong style={{ color: "#6D3115" }}>하나만 입력하셔도 됩니다.</strong>
+                      카카오맵 또는 네이버지도 중 <strong style={{ color: "#2E5BB8" }}>하나만 입력하셔도 됩니다.</strong>
                     </p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -714,7 +714,7 @@ export default function PerformerPage() {
                         placeholder="https://place.map.kakao.com/..."
                         className="w-full px-4 py-3 text-sm outline-none"
                         style={inputStyle}
-                        onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                        onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
                         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                       />
                     </div>
@@ -729,7 +729,7 @@ export default function PerformerPage() {
                         placeholder="https://map.naver.com/..."
                         className="w-full px-4 py-3 text-sm outline-none"
                         style={inputStyle}
-                        onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                        onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
                         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                       />
                     </div>
@@ -738,8 +738,8 @@ export default function PerformerPage() {
               </div>
 
               {/* 작품 */}
-              <div className="pt-6" style={{ borderTop: "1px solid #D4CFC9" }}>
-                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+              <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
+                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
                   작품 정보
                 </h3>
                 <div className="space-y-5">
@@ -755,7 +755,7 @@ export default function PerformerPage() {
                       placeholder="예: 홍길동(배역명), 김철수(배역명), 박영희(배역명)"
                       className="w-full px-4 py-3 text-sm outline-none"
                       style={inputStyle}
-                      onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                      onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                     />
                   </div>
@@ -770,7 +770,7 @@ export default function PerformerPage() {
                       rows={5}
                       className="w-full px-4 py-3 text-sm outline-none resize-none"
                       style={inputStyle}
-                      onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+                      onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                     />
                   </div>
@@ -783,7 +783,7 @@ export default function PerformerPage() {
                 </p>
               )}
 
-              <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+              <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
                 ※ {editingId ? "수정한 공연은 다시 관리자 검토 후 게시됩니다." : "등록 후 관리자 검토를 거쳐 게시됩니다."} (1~3일 소요)
               </p>
 
@@ -794,12 +794,12 @@ export default function PerformerPage() {
                   className="flex-1 py-4 text-base tracking-wider transition-colors"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: loading ? "#9B9693" : "#6D3115",
-                    color: "#F4EDE3",
+                    backgroundColor: loading ? "#6B7385" : "#2E5BB8",
+                    color: "#F8F9FC",
                     cursor: loading ? "not-allowed" : "pointer",
                   }}
-                  onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#8B4A2A"; }}
-                  onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#6D3115"; }}
+                  onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#4A7AD8"; }}
+                  onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#2E5BB8"; }}
                 >
                   {loading ? "처리 중..." : (editingId ? "수정 완료" : "공연 업로드")}
                 </button>
@@ -811,8 +811,8 @@ export default function PerformerPage() {
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
                     backgroundColor: "transparent",
-                    color: "#6D3115",
-                    border: "1px solid #D4CFC9",
+                    color: "#2E5BB8",
+                    border: "1px solid #C5CCD9",
                   }}
                 >
                   취소
@@ -824,24 +824,24 @@ export default function PerformerPage() {
 
         {/* 내 공연 목록 */}
         <div>
-          <h2 className="text-lg font-semibold mb-6" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+          <h2 className="text-lg font-semibold mb-6" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
             등록한 공연
           </h2>
           {myShows.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
                 등록한 공연이 없습니다.
               </p>
             </div>
           ) : (
             <div className="space-y-3">
               {myShows.map((show) => (
-                <div key={show.id} className="p-5 flex items-center justify-between gap-3 flex-wrap" style={{ backgroundColor: "#E8DDD0" }}>
+                <div key={show.id} className="p-5 flex items-center justify-between gap-3 flex-wrap" style={{ backgroundColor: "#E7ECF5" }}>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold mb-1 truncate" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
                       {show.title}
                     </p>
-                    <p className="text-xs truncate mb-1" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+                    <p className="text-xs truncate mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
                       {[
                         show.genre === "기타" ? show.genre_custom : show.genre,
                         show.region,
@@ -851,15 +851,15 @@ export default function PerformerPage() {
                     </p>
                     {/* 통계: 조회수 (approved 공연만 표시) */}
                     {show.status === "approved" && (
-                      <p className="text-xs flex items-center gap-3" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115" }}>
+                      <p className="text-xs flex items-center gap-3" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
                         <span>
-                          <span style={{ color: "#9B9693" }}>조회수</span>{" "}
+                          <span style={{ color: "#6B7385" }}>조회수</span>{" "}
                           <strong style={{ fontFamily: "var(--font-inter)" }}>{show.view_count ?? 0}</strong>
                         </span>
                         {show.featured && (
                           <span
                             className="px-2 py-0.5 text-[10px]"
-                            style={{ backgroundColor: "#6D3115", color: "#F4EDE3", letterSpacing: "0.1em" }}
+                            style={{ backgroundColor: "#2E5BB8", color: "#F8F9FC", letterSpacing: "0.1em" }}
                           >
                             ★ EDITOR&apos;S PICK
                           </span>
@@ -872,16 +872,16 @@ export default function PerformerPage() {
                     <Link
                       href={`/shows/${show.id}`}
                       className="text-xs px-2 py-1"
-                      style={{ fontFamily: "var(--font-inter)", color: "#6D3115" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#2E5BB8" }}
                     >
                       미리보기
                     </Link>
                     <button
                       onClick={() => startEditing(show)}
                       className="text-xs px-3 py-1 transition-colors"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6D3115", border: "1px solid #6D3115" }}
-                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#6D3115"; e.currentTarget.style.color = "#F4EDE3"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#6D3115"; }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8", border: "1px solid #2E5BB8" }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#2E5BB8"; e.currentTarget.style.color = "#F8F9FC"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#2E5BB8"; }}
                     >
                       수정
                     </button>

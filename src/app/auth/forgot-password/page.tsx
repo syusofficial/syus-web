@@ -32,12 +32,12 @@ export default function ForgotPasswordPage() {
 
   if (done) {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F4EDE3" }}>
+      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F8F9FC" }}>
         <div className="w-full max-w-sm text-center space-y-6">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             Email Sent
           </p>
-          <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+          <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
             이메일을 확인해주세요
           </h2>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
           <Link
             href="/auth/login"
             className="inline-block px-8 py-3 text-sm tracking-wider"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6D3115", color: "#F4EDE3" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
           >
             로그인 페이지로
           </Link>
@@ -61,22 +61,22 @@ export default function ForgotPasswordPage() {
 
   const inputStyle: React.CSSProperties = {
     fontFamily: "var(--font-noto-sans-kr)",
-    backgroundColor: "#E8DDD0",
+    backgroundColor: "#E7ECF5",
     color: "#1A1A1A",
     border: "1px solid transparent",
   };
 
   return (
-    <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F4EDE3" }}>
+    <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F8F9FC" }}>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             Password Reset
           </p>
-          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}>
+          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
             비밀번호 찾기
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
             가입 시 사용한 이메일을 입력하시면
             <br />
             재설정 링크를 보내드립니다.
@@ -84,19 +84,19 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* 소셜 로그인 가입자 안내 */}
-        <div className="mb-6 p-4 text-xs leading-relaxed" style={{ backgroundColor: "#E8DDD0", color: "#6D3115", fontFamily: "var(--font-noto-sans-kr)" }}>
+        <div className="mb-6 p-4 text-xs leading-relaxed" style={{ backgroundColor: "#E7ECF5", color: "#2E5BB8", fontFamily: "var(--font-noto-sans-kr)" }}>
           <strong>Google · 카카오로 가입하셨다면?</strong>
           <br />
           비밀번호 재설정이 아닌 해당 서비스에서 직접 로그인해주세요.
           <br />
-          <Link href="/auth/login" className="underline" style={{ color: "#6D3115" }}>
+          <Link href="/auth/login" className="underline" style={{ color: "#2E5BB8" }}>
             로그인 페이지로 돌아가기 →
           </Link>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
               이메일
             </label>
             <input
@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none transition-colors"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#6D3115")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -123,8 +123,8 @@ export default function ForgotPasswordPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#9B9693" : "#6D3115",
-              color: "#F4EDE3",
+              backgroundColor: loading ? "#6B7385" : "#2E5BB8",
+              color: "#F8F9FC",
               cursor: loading ? "not-allowed" : "pointer",
             }}
           >
@@ -133,9 +133,9 @@ export default function ForgotPasswordPage() {
         </form>
 
         <div className="mt-8 flex items-center justify-center gap-4 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
-          <Link href="/auth/login" style={{ color: "#6D3115" }}>로그인</Link>
-          <span style={{ color: "#D4CFC9" }}>|</span>
-          <Link href="/auth/find-id" style={{ color: "#6D3115" }}>아이디 찾기</Link>
+          <Link href="/auth/login" style={{ color: "#2E5BB8" }}>로그인</Link>
+          <span style={{ color: "#C5CCD9" }}>|</span>
+          <Link href="/auth/find-id" style={{ color: "#2E5BB8" }}>아이디 찾기</Link>
         </div>
       </div>
     </div>

@@ -1,20 +1,41 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* SYUS Brand Colors */
-  --color-cream: #F4EDE3;
-  --color-cream-dark: #E8DDD0;
-  --color-syus-brown: #6D3115;
-  --color-syus-brown-light: #8B4A2A;
-  --color-syus-blue: #3D6FC8;
-  --color-syus-navy: #1B2842;
-  --color-syus-red: #A63D2F;
-  --color-syus-green: #3A5E42;
-  --color-syus-charcoal: #1A1A1A;
-  --color-syus-grey: #9B9693;
-  --color-syus-light-grey: #D4CFC9;
+  /* 무대올림 / 사유유사 SYUS — 컬러 팔레트 (2026-06-01 전환)
+   * 메인: 파랑 (SYUS 로고 코발트 추출)
+   * 포인트: 초록·빨강·노랑 (CTA·태그·강조에만 절제)
+   * 중립: 페이퍼·미스트·스톤·차콜
+   * legacy alias 유지: --color-cream 등은 기존 컴포넌트 호환용
+   */
+  --color-paper: #F8F9FC;          /* 메인 배경 */
+  --color-paper-dark: #E7ECF5;     /* 카드·서브 배경 */
+  --color-mist: #C5CCD9;           /* 라인·구분 */
+  --color-stone: #6B7385;          /* 서브 텍스트 */
+  --color-charcoal: #1A1A1A;       /* 본문 텍스트·강조 */
 
-  /* SYUS Brand Fonts */
+  --color-blue: #2E5BB8;           /* 메인 파랑 (코발트) */
+  --color-blue-light: #4A7AD8;     /* 호버·서브 강조 */
+  --color-navy: #1B2842;           /* 딥 네이비 (헤딩·풋터) */
+
+  --color-accent-green: #3A9C5C;   /* 포인트 초록 (성공·확인) */
+  --color-accent-red: #D54545;     /* 포인트 빨강 (CTA·강조) */
+  --color-accent-yellow: #F5C84F;  /* 포인트 노랑 (하이라이트·태그) */
+
+  /* legacy alias — 기존 컴포넌트가 --color-cream 등을 참조하므로 유지 */
+  --color-cream: #F8F9FC;
+  --color-cream-dark: #E7ECF5;
+  --color-syus-brown: #2E5BB8;
+  --color-syus-brown-light: #4A7AD8;
+  --color-syus-blue: #2E5BB8;
+  --color-syus-navy: #1B2842;
+  --color-syus-red: #D54545;
+  --color-syus-green: #3A9C5C;
+  --color-syus-yellow: #F5C84F;
+  --color-syus-charcoal: #1A1A1A;
+  --color-syus-grey: #6B7385;
+  --color-syus-light-grey: #C5CCD9;
+
+  /* Fonts */
   --font-kr-serif: var(--font-noto-serif-kr);
   --font-kr-sans: var(--font-noto-sans-kr);
   --font-display: var(--font-cormorant);
@@ -26,15 +47,15 @@ html {
 }
 
 body {
-  background-color: #F4EDE3;
+  background-color: #F8F9FC;
   color: #1A1A1A;
 }
 
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #F4EDE3; }
-::-webkit-scrollbar-thumb { background: #6D3115; border-radius: 2px; }
+::-webkit-scrollbar-track { background: #F8F9FC; }
+::-webkit-scrollbar-thumb { background: #2E5BB8; border-radius: 2px; }
 
 ::selection {
-  background: #6D3115;
-  color: #F4EDE3;
+  background: #2E5BB8;
+  color: #F8F9FC;
 }

@@ -30,29 +30,29 @@ export default function Footer() {
   };
 
   const linkCls = "text-sm transition-colors";
-  const linkStyle: React.CSSProperties = { fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" };
+  const linkStyle: React.CSSProperties = { fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" };
 
   return (
-    <footer style={{ backgroundColor: "#1A1A1A", color: "#F4EDE3" }}>
+    <footer style={{ backgroundColor: "#1A1A1A", color: "#F8F9FC" }}>
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand */}
           <div>
             <p
               className="text-2xl font-light tracking-[0.2em] mb-2"
-              style={{ fontFamily: "var(--font-cormorant)", color: "#F4EDE3" }}
+              style={{ fontFamily: "var(--font-cormorant)", color: "#F8F9FC" }}
             >
               SYUS
             </p>
             <p
               className="text-xs tracking-[0.3em] mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
             >
               思惟流沙
             </p>
             <p
               className="text-sm leading-relaxed"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
             >
               깊이 머물고, 가볍게 흘려보냅니다.
             </p>
@@ -62,7 +62,7 @@ export default function Footer() {
           <div>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
             >
               Site
             </p>
@@ -80,8 +80,8 @@ export default function Footer() {
                   href={item.href}
                   className={linkCls}
                   style={linkStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
                 >
                   {item.label}
                 </Link>
@@ -93,7 +93,7 @@ export default function Footer() {
           <div>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
             >
               Account
             </p>
@@ -104,8 +104,8 @@ export default function Footer() {
                     href="/mypage"
                     className={linkCls}
                     style={linkStyle}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
                   >
                     마이페이지
                   </Link>
@@ -113,8 +113,8 @@ export default function Footer() {
                     onClick={handleLogout}
                     className={linkCls + " text-left"}
                     style={{ ...linkStyle, background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
                   >
                     로그아웃
                   </button>
@@ -125,8 +125,8 @@ export default function Footer() {
                     href="/auth/login"
                     className={linkCls}
                     style={linkStyle}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
                   >
                     로그인
                   </Link>
@@ -134,8 +134,8 @@ export default function Footer() {
                     href="/auth/signup"
                     className={linkCls}
                     style={linkStyle}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
                   >
                     회원가입
                   </Link>
@@ -150,7 +150,7 @@ export default function Footer() {
           <div className="pt-8 pb-2" style={{ borderTop: "1px solid #2C2C2C" }}>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
             >
               Launch Partners
             </p>
@@ -160,7 +160,7 @@ export default function Footer() {
                   <span className="inline-flex items-baseline gap-2">
                     <span
                       className="text-sm"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC" }}
                     >
                       {p.name}
                     </span>
@@ -201,7 +201,7 @@ export default function Footer() {
         {/* 사업자 정보 */}
         <div
           className="pt-8 pb-8 mb-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-xs"
-          style={{ borderTop: "1px solid #2C2C2C", fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+          style={{ borderTop: "1px solid #2C2C2C", fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
         >
           {[
             { label: "상호", value: "(주)사유유사" },
@@ -221,9 +221,9 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors"
-              style={{ color: "#9B9693" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+              style={{ color: "#6B7385" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
             >
               사유유사 SYUS 채널 →
             </a>
@@ -235,9 +235,9 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors"
-              style={{ color: "#9B9693" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+              style={{ color: "#6B7385" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
             >
               @syus_official →
             </a>
@@ -249,16 +249,16 @@ export default function Footer() {
           <Link
             href="/terms"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
           >
             이용약관
           </Link>
           <Link
             href="/privacy"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", fontWeight: 600 }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
@@ -267,18 +267,18 @@ export default function Footer() {
           <Link
             href="/faq"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
           >
             자주 묻는 질문
           </Link>
           <Link
             href="/contact"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#F4EDE3")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#9B9693")}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F8F9FC")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
           >
             1:1 문의
           </Link>
@@ -288,13 +288,13 @@ export default function Footer() {
         <div className="pt-6 mt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <p
             className="text-xs tracking-wider"
-            style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
           >
             © 2026 SYUS · 사유유사. All rights reserved.
           </p>
           <p
             className="text-xs"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
           >
             깊이 머물고, 가볍게 흘려보냅니다.
           </p>

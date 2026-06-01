@@ -11,7 +11,7 @@ export default function Icon() {
         style={{
           width: 64,
           height: 64,
-          background: "#F4EDE3",
+          background: "#F8F9FC",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -26,13 +26,13 @@ export default function Icon() {
           xmlns="http://www.w3.org/2000/svg"
         >
           {/* 가로 기준선 (구 하단에 접함) */}
-          <line x1="6" y1="55" x2="94" y2="55" stroke="#6D3115" strokeWidth="5" />
+          <line x1="6" y1="55" x2="94" y2="55" stroke="#2E5BB8" strokeWidth="5" />
           {/* 좌측 구체 */}
           <circle
             cx="35"
             cy="32"
             r="14"
-            stroke="#6D3115"
+            stroke="#2E5BB8"
             strokeWidth="4.5"
             fill="none"
           />
@@ -41,7 +41,7 @@ export default function Icon() {
             cx="65"
             cy="32"
             r="14"
-            stroke="#6D3115"
+            stroke="#2E5BB8"
             strokeWidth="4.5"
             fill="none"
           />

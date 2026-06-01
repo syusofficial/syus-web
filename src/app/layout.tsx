@@ -85,7 +85,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F4EDE3",
+  themeColor: "#F8F9FC",
   width: "device-width",
   initialScale: 1,
 };
@@ -98,7 +98,7 @@ export default function RootLayout({
       lang="ko"
       className={`${notoSerifKR.variable} ${notoSansKR.variable} ${cormorant.variable} ${inter.variable}`}
     >
-      <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: "#F4EDE3", color: "#1A1A1A" }}>
+      <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: "#F8F9FC", color: "#1A1A1A" }}>
         <LoadingScreen />
         <Nav />
         <main className="flex-1">{children}</main>

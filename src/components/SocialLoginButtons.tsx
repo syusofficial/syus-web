@@ -77,14 +77,14 @@ export default function SocialLoginButtons({ mode = "login" }: { mode?: "login" 
 export function SocialDivider({ label = "또는" }: { label?: string }) {
   return (
     <div className="flex items-center gap-3 my-1">
-      <div className="flex-1 h-px" style={{ backgroundColor: "#D4CFC9" }} />
+      <div className="flex-1 h-px" style={{ backgroundColor: "#C5CCD9" }} />
       <span
         className="text-xs tracking-wider"
-        style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
       >
         {label}
       </span>
-      <div className="flex-1 h-px" style={{ backgroundColor: "#D4CFC9" }} />
+      <div className="flex-1 h-px" style={{ backgroundColor: "#C5CCD9" }} />
     </div>
   );
 }

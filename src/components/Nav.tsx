@@ -18,7 +18,7 @@ import type { User } from "@supabase/supabase-js";
 export function SyusLogoSvg({
   width = 200,
   height = 80,
-  color = "#6D3115",
+  color = "#2E5BB8",
 }: {
   width?: number;
   height?: number;
@@ -79,7 +79,7 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
       <Link
         href="/faq"
         style={linkStyle}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
       >
         도움말
@@ -89,8 +89,8 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
           <div
             className="flex flex-col p-2"
             style={{
-              backgroundColor: "#F4EDE3",
-              border: "1px solid #D4CFC9",
+              backgroundColor: "#F8F9FC",
+              border: "1px solid #C5CCD9",
               boxShadow: "0 8px 24px rgba(109, 49, 21, 0.08)",
             }}
           >
@@ -98,7 +98,7 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
               href="/faq"
               className="px-3 py-2 text-xs transition-colors"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
             >
               자주 묻는 질문 (FAQ)
@@ -107,7 +107,7 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
               href="/contact"
               className="px-3 py-2 text-xs transition-colors"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
             >
               1:1 문의
@@ -132,7 +132,7 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
       <Link
         href="/shows"
         style={linkStyle}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
       >
         공연
@@ -145,8 +145,8 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
           <div
             className="grid grid-cols-3 gap-x-2 gap-y-1 p-4"
             style={{
-              backgroundColor: "#F4EDE3",
-              border: "1px solid #D4CFC9",
+              backgroundColor: "#F8F9FC",
+              border: "1px solid #C5CCD9",
               boxShadow: "0 8px 24px rgba(109, 49, 21, 0.08)",
             }}
           >
@@ -160,7 +160,7 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
                   color: "#1A1A1A",
                   fontWeight: region === "전체" ? 600 : 400,
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
               >
                 {region}
@@ -251,7 +251,7 @@ export default function Nav() {
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50"
-      style={{ backgroundColor: "#F4EDE3", borderBottom: "1px solid #D4CFC9" }}
+      style={{ backgroundColor: "#F8F9FC", borderBottom: "1px solid #C5CCD9" }}
     >
       {/* Desktop — 3열 그리드 */}
       <div className="hidden md:grid grid-cols-3 items-center max-w-7xl mx-auto px-8 py-3">
@@ -261,7 +261,7 @@ export default function Nav() {
           <Link
             href="/archive"
             style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
           >
             기록
@@ -269,7 +269,7 @@ export default function Nav() {
           <Link
             href="/about"
             style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
           >
             소개
@@ -283,7 +283,7 @@ export default function Nav() {
           <span
             style={{
               fontFamily: "var(--font-cormorant)",
-              color: "#6D3115",
+              color: "#2E5BB8",
               fontSize: "0.65rem",
               letterSpacing: "0.4em",
             }}
@@ -299,7 +299,7 @@ export default function Nav() {
               {role === "admin" && (
                 <Link
                   href="/admin"
-                  style={{ ...linkStyle, color: "#6D3115", fontWeight: 600 }}
+                  style={{ ...linkStyle, color: "#2E5BB8", fontWeight: 600 }}
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
                   onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
                 >
@@ -309,7 +309,7 @@ export default function Nav() {
               <Link
                 href="/mypage"
                 style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
               >
                 마이페이지
@@ -319,11 +319,11 @@ export default function Nav() {
                 className="px-4 py-2 text-xs tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: "#6D3115",
-                  color: "#F4EDE3",
+                  backgroundColor: "#2E5BB8",
+                  color: "#F8F9FC",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#8B4A2A")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#6D3115")}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#4A7AD8")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2E5BB8")}
               >
                 로그아웃
               </button>
@@ -333,7 +333,7 @@ export default function Nav() {
               <Link
                 href="/auth/login"
                 style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#6D3115")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
               >
                 로그인
@@ -343,11 +343,11 @@ export default function Nav() {
                 className="px-4 py-2 text-xs tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: "#6D3115",
-                  color: "#F4EDE3",
+                  backgroundColor: "#2E5BB8",
+                  color: "#F8F9FC",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#8B4A2A")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#6D3115")}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#4A7AD8")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2E5BB8")}
               >
                 회원가입
               </Link>
@@ -364,7 +364,7 @@ export default function Nav() {
           <span
             style={{
               fontFamily: "var(--font-cormorant)",
-              color: "#6D3115",
+              color: "#2E5BB8",
               fontSize: "0.55rem",
               letterSpacing: "0.3em",
             }}
@@ -402,7 +402,7 @@ export default function Nav() {
       {menuOpen && (
         <div
           className="md:hidden"
-          style={{ borderTop: "1px solid #D4CFC9", backgroundColor: "#F4EDE3" }}
+          style={{ borderTop: "1px solid #C5CCD9", backgroundColor: "#F8F9FC" }}
         >
           <div className="flex flex-col px-6 py-4 gap-4">
             {/* 공연 (지역 펼치기) */}
@@ -413,7 +413,7 @@ export default function Nav() {
                 onClick={() => setMobileShowsOpen(!mobileShowsOpen)}
               >
                 공연
-                <span style={{ color: "#9B9693", fontSize: "0.75rem" }}>
+                <span style={{ color: "#6B7385", fontSize: "0.75rem" }}>
                   {mobileShowsOpen ? "▲" : "▼"}
                 </span>
               </button>
@@ -427,7 +427,7 @@ export default function Nav() {
                       style={{
                         fontFamily: "var(--font-noto-sans-kr)",
                         color: "#1A1A1A",
-                        backgroundColor: "#E8DDD0",
+                        backgroundColor: "#E7ECF5",
                         textAlign: "center",
                         fontWeight: region === "전체" ? 600 : 400,
                       }}
@@ -473,7 +473,7 @@ export default function Nav() {
                 {role === "admin" && (
                   <Link
                     href="/admin"
-                    style={{ ...linkStyle, padding: "8px 0", color: "#6D3115", fontWeight: 600 }}
+                    style={{ ...linkStyle, padding: "8px 0", color: "#2E5BB8", fontWeight: 600 }}
                     onClick={() => setMenuOpen(false)}
                   >
                     관리자
@@ -491,8 +491,8 @@ export default function Nav() {
                   className="py-3 text-sm tracking-wider text-center"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: "#6D3115",
-                    color: "#F4EDE3",
+                    backgroundColor: "#2E5BB8",
+                    color: "#F8F9FC",
                   }}
                 >
                   로그아웃
@@ -512,8 +512,8 @@ export default function Nav() {
                   className="py-3 text-sm tracking-wider text-center"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: "#6D3115",
-                    color: "#F4EDE3",
+                    backgroundColor: "#2E5BB8",
+                    color: "#F8F9FC",
                   }}
                   onClick={() => setMenuOpen(false)}
                 >

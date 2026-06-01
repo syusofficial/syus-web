@@ -28,7 +28,7 @@ export default async function Image({ params }: { params: { id: string } }) {
           style={{
             width: 1200,
             height: 630,
-            background: "#F4EDE3",
+            background: "#F8F9FC",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -36,10 +36,10 @@ export default async function Image({ params }: { params: { id: string } }) {
             fontFamily: "serif",
           }}
         >
-          <div style={{ fontSize: 96, fontWeight: 700, color: "#6D3115", letterSpacing: -2 }}>
+          <div style={{ fontSize: 96, fontWeight: 700, color: "#2E5BB8", letterSpacing: -2 }}>
             사유유사
           </div>
-          <div style={{ fontSize: 28, color: "#9B9693", marginTop: 20, letterSpacing: 6 }}>
+          <div style={{ fontSize: 28, color: "#6B7385", marginTop: 20, letterSpacing: 6 }}>
             SYUS · 思惟流沙
           </div>
         </div>
@@ -59,7 +59,7 @@ export default async function Image({ params }: { params: { id: string } }) {
         style={{
           width: 1200,
           height: 630,
-          background: "#F4EDE3",
+          background: "#F8F9FC",
           display: "flex",
           flexDirection: "column",
           padding: "70px 80px",
@@ -71,15 +71,15 @@ export default async function Image({ params }: { params: { id: string } }) {
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             {/* 미니 SYUS 마크: 두 구체 + 가로선 */}
             <svg width="60" height="42" viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <line x1="6" y1="55" x2="94" y2="55" stroke="#6D3115" strokeWidth="5" />
-              <circle cx="35" cy="32" r="14" stroke="#6D3115" strokeWidth="4.5" fill="none" />
-              <circle cx="65" cy="32" r="14" stroke="#6D3115" strokeWidth="4.5" fill="none" />
+              <line x1="6" y1="55" x2="94" y2="55" stroke="#2E5BB8" strokeWidth="5" />
+              <circle cx="35" cy="32" r="14" stroke="#2E5BB8" strokeWidth="4.5" fill="none" />
+              <circle cx="65" cy="32" r="14" stroke="#2E5BB8" strokeWidth="4.5" fill="none" />
             </svg>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 22, color: "#6D3115", letterSpacing: 4, fontWeight: 700 }}>
+              <span style={{ fontSize: 22, color: "#2E5BB8", letterSpacing: 4, fontWeight: 700 }}>
                 SYUS
               </span>
-              <span style={{ fontSize: 14, color: "#9B9693", letterSpacing: 3, marginTop: 2 }}>
+              <span style={{ fontSize: 14, color: "#6B7385", letterSpacing: 3, marginTop: 2 }}>
                 사유유사 · 思惟流沙
               </span>
             </div>
@@ -90,8 +90,8 @@ export default async function Image({ params }: { params: { id: string } }) {
                 style={{
                   fontSize: 18,
                   padding: "8px 18px",
-                  background: "#6D3115",
-                  color: "#F4EDE3",
+                  background: "#2E5BB8",
+                  color: "#F8F9FC",
                   letterSpacing: 1,
                 }}
               >
@@ -104,8 +104,8 @@ export default async function Image({ params }: { params: { id: string } }) {
                   fontSize: 18,
                   padding: "8px 18px",
                   background: "transparent",
-                  color: "#6D3115",
-                  border: "1px solid #6D3115",
+                  color: "#2E5BB8",
+                  border: "1px solid #2E5BB8",
                   letterSpacing: 1,
                 }}
               >
@@ -118,7 +118,7 @@ export default async function Image({ params }: { params: { id: string } }) {
         {/* 중앙: 공연명 */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", marginTop: 30 }}>
           {show.subtitle && (
-            <div style={{ fontSize: 22, color: "#9B9693", marginBottom: 18, fontStyle: "italic" }}>
+            <div style={{ fontSize: 22, color: "#6B7385", marginBottom: 18, fontStyle: "italic" }}>
               {show.subtitle}
             </div>
           )}
@@ -126,7 +126,7 @@ export default async function Image({ params }: { params: { id: string } }) {
             style={{
               fontSize: show.title.length > 18 ? 64 : show.title.length > 12 ? 78 : 96,
               fontWeight: 700,
-              color: "#6D3115",
+              color: "#2E5BB8",
               lineHeight: 1.1,
               letterSpacing: -2,
               display: "flex",
@@ -135,7 +135,7 @@ export default async function Image({ params }: { params: { id: string } }) {
             {show.title}
           </div>
           {show.performer_name && (
-            <div style={{ fontSize: 26, color: "#9B9693", marginTop: 20, letterSpacing: 1 }}>
+            <div style={{ fontSize: 26, color: "#6B7385", marginTop: 20, letterSpacing: 1 }}>
               by {show.performer_name}
             </div>
           )}
@@ -147,13 +147,13 @@ export default async function Image({ params }: { params: { id: string } }) {
             display: "flex",
             justifyContent: "space-between",
             paddingTop: 24,
-            borderTop: "1px solid #D4CFC9",
+            borderTop: "1px solid #C5CCD9",
             color: "#1A1A1A",
             fontSize: 22,
           }}
         >
           <span>{dateRange}</span>
-          <span style={{ color: "#6D3115" }}>{show.venue}</span>
+          <span style={{ color: "#2E5BB8" }}>{show.venue}</span>
         </div>
       </div>
     ),

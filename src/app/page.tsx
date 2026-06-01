@@ -55,7 +55,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center py-20 relative z-10">
           <p
             className="text-xs tracking-[0.35em] uppercase mb-8"
-            style={{ fontFamily: "var(--font-inter)", color: "#F4EDE3", opacity: 0.75 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.75 }}
           >
             思惟流沙 · System of Young Unbound Society
           </p>
@@ -63,7 +63,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-end">
             <h1
               className="text-[5rem] md:text-[7rem] lg:text-[9rem] font-black leading-none tracking-tighter"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F4EDE3" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC" }}
             >
               사유
               <br />
@@ -73,7 +73,7 @@ export default async function HomePage() {
             <div className="pb-2 space-y-6">
               <p
                 className="text-lg md:text-xl leading-relaxed"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC" }}
               >
                 젊은 예술가들의 무대를
                 <br />
@@ -83,7 +83,7 @@ export default async function HomePage() {
               </p>
               <p
                 className="text-sm tracking-wider"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", opacity: 0.55 }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", opacity: 0.55 }}
               >
                 젊은 예술가들의 큐레이션 플랫폼
               </p>
@@ -92,7 +92,7 @@ export default async function HomePage() {
                 className="inline-block px-7 py-3 text-sm tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: "#F4EDE3",
+                  backgroundColor: "#F8F9FC",
                   color: "#1A1A1A",
                 }}
               >
@@ -108,13 +108,13 @@ export default async function HomePage() {
         >
           <span
             className="text-xs tracking-[0.2em] uppercase"
-            style={{ fontFamily: "var(--font-inter)", color: "#F4EDE3", opacity: 0.6 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.6 }}
           >
             연극 · 뮤지컬 · 연기예술
           </span>
           <span
             className="text-xs tracking-[0.2em] uppercase"
-            style={{ fontFamily: "var(--font-inter)", color: "#F4EDE3", opacity: 0.6 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.6 }}
           >
             ↓ 공연 보기
           </span>
@@ -124,7 +124,7 @@ export default async function HomePage() {
       {/* ── Brand Section ── */}
       <section
         className="px-6 md:px-12 lg:px-20 py-24 md:py-32"
-        style={{ backgroundColor: "#6D3115", color: "#F4EDE3" }}
+        style={{ backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
       >
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
@@ -133,20 +133,20 @@ export default async function HomePage() {
                 className="text-[1.5rem] sm:text-[1.75rem] md:text-[2.25rem] leading-snug font-light mb-10 max-w-[28ch]"
                 style={{
                   fontFamily: "var(--font-cormorant)",
-                  color: "#F4EDE3",
+                  color: "#F8F9FC",
                   textWrap: "balance",
                   wordBreak: "keep-all",
                 }}
               >
                 &ldquo;깊게 생각하고 오래 머물러, 자연스럽게 흘러 젊은 무대 위에 쌓이는 공간.&rdquo;
               </p>
-              <div style={{ width: 48, height: 1, backgroundColor: "#F4EDE3", opacity: 0.3 }} />
+              <div style={{ width: 48, height: 1, backgroundColor: "#F8F9FC", opacity: 0.3 }} />
             </div>
 
             <div className="space-y-10">
               <p
                 className="text-sm tracking-[0.3em] uppercase pb-2"
-                style={{ fontFamily: "var(--font-inter)", color: "#F4EDE3", opacity: 0.55, borderBottom: "1px solid rgba(244, 237, 227, 0.18)" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.55, borderBottom: "1px solid rgba(244, 237, 227, 0.18)" }}
               >
                 사유유사는
               </p>
@@ -158,20 +158,20 @@ export default async function HomePage() {
                 <div key={item.num} className="flex gap-6 items-start">
                   <span
                     className="text-xs tracking-widest pt-1 shrink-0"
-                    style={{ fontFamily: "var(--font-inter)", color: "#F4EDE3", opacity: 0.35 }}
+                    style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.35 }}
                   >
                     {item.num}
                   </span>
                   <div>
                     <h3
                       className="text-lg font-semibold mb-1.5"
-                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F4EDE3" }}
+                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC" }}
                     >
                       {item.title}
                     </h3>
                     <p
                       className="text-sm leading-relaxed"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F4EDE3", opacity: 0.65 }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", opacity: 0.65 }}
                     >
                       {item.desc}
                     </p>
@@ -186,7 +186,7 @@ export default async function HomePage() {
       {/* ── Shows Section ── */}
       <section
         className="px-6 md:px-12 lg:px-16 xl:px-8 py-24 md:py-32"
-        style={{ backgroundColor: "#F4EDE3" }}
+        style={{ backgroundColor: "#F8F9FC" }}
       >
         <div className="max-w-[1600px] mx-auto">
           {/* 3열 레이아웃: 좌 기관 · 중앙 공연 · 우 광고 */}
@@ -226,21 +226,21 @@ export default async function HomePage() {
               {/* 모든 섹션이 비었을 때 */}
               {featured.length === 0 && upcoming.length === 0 && recent.length === 0 && (
                 <div className="text-center py-24">
-                  <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}>
+                  <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
                     등록된 공연이 없습니다.
                   </p>
                 </div>
               )}
 
               {/* 전체 보기 링크 */}
-              <div className="pt-8 text-center" style={{ borderTop: "1px solid #D4CFC9" }}>
+              <div className="pt-8 text-center" style={{ borderTop: "1px solid #C5CCD9" }}>
                 <Link
                   href="/shows"
                   className="inline-block px-8 py-3 text-xs tracking-widest uppercase transition-colors"
                   style={{
                     fontFamily: "var(--font-inter)",
-                    color: "#6D3115",
-                    border: "1px solid #6D3115",
+                    color: "#2E5BB8",
+                    border: "1px solid #2E5BB8",
                   }}
                 >
                   전체 공연 보기 →
@@ -258,19 +258,19 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto text-center">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"
-            style={{ fontFamily: "var(--font-inter)", color: "#9B9693" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
           >
             Join SYUS
           </p>
           <h2
             className="text-[2rem] md:text-[3rem] font-light mb-4"
-            style={{ fontFamily: "var(--font-cormorant)", color: "#F4EDE3" }}
+            style={{ fontFamily: "var(--font-cormorant)", color: "#F8F9FC" }}
           >
             함께 무대를 만들어가실 분을 찾습니다.
           </h2>
           <p
             className="text-sm mb-10 max-w-md mx-auto leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#9B9693" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
           >
             회원가입 후 공연자 신청을 통해 공연을 등록할 수 있습니다.
             <br />
@@ -280,14 +280,14 @@ export default async function HomePage() {
             <Link
               href="/auth/signup"
               className="px-8 py-3 text-sm tracking-wider transition-colors"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F4EDE3", color: "#1A1A1A" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F8F9FC", color: "#1A1A1A" }}
             >
               회원가입
             </Link>
             <Link
               href="/contact"
               className="px-8 py-3 text-sm tracking-wider"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #9B9693", color: "#F4EDE3" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #6B7385", color: "#F8F9FC" }}
             >
               문의하기
             </Link>
@@ -314,13 +314,13 @@ function SectionGroup({
 }) {
   return (
     <div>
-      <div className="flex items-end justify-between mb-8 pb-4" style={{ borderBottom: "1px solid #D4CFC9" }}>
+      <div className="flex items-end justify-between mb-8 pb-4" style={{ borderBottom: "1px solid #C5CCD9" }}>
         <div>
           <p
             className="text-xs tracking-[0.3em] uppercase mb-2"
             style={{
               fontFamily: "var(--font-inter)",
-              color: accent ? "#6D3115" : "#9B9693",
+              color: accent ? "#2E5BB8" : "#6B7385",
               fontWeight: accent ? 600 : 400,
             }}
           >
@@ -328,7 +328,7 @@ function SectionGroup({
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6D3115" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
           >
             {title}
           </h2>
