@@ -127,10 +127,12 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
       name: "사유유사 SYUS",
       url: "https://syus.co.kr",
     },
-    offers: show.ticket_url ? {
+    offers: (show.reservation_url || show.ticket_url) ? {
       "@type": "Offer",
-      url: show.ticket_url,
+      url: show.reservation_url ?? show.ticket_url,
       availability: "https://schema.org/InStock",
+      // 무료 좌석 예약(reservation_url) 우선 시 가격 0 명시 — Google Rich Result에 'Free' 표시
+      ...(show.reservation_url ? { price: 0, priceCurrency: "KRW" } : {}),
     } : undefined,
     inLanguage: "ko",
   } : null;
@@ -418,7 +420,22 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {/* CTA */}
             {show.status === "approved" && (
               <div className="pt-2 flex flex-col sm:flex-row gap-3">
-                {show.ticket_url ? (
+                {show.reservation_url ? (
+                  <a
+                    href={show.reservation_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      backgroundColor: "#F5C84F",
+                      color: "#1B2842",
+                      fontWeight: 600,
+                    }}
+                  >
+                    무료 좌석 예약하기 →
+                  </a>
+                ) : show.ticket_url ? (
                   <a
                     href={show.ticket_url}
                     target="_blank"
@@ -426,14 +443,14 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}
                   >
-                    티켓 예매하기
+                    티켓 예매하기 →
                   </a>
                 ) : (
                   <span
                     className="px-8 py-4 text-sm tracking-wider text-center"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#C5CCD9", color: "#6B7385" }}
                   >
-                    예매 링크 없음
+                    예약 링크 없음
                   </span>
                 )}
                 <Link

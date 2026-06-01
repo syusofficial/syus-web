@@ -26,7 +26,7 @@ const StatusBadge = ({ status }: { status: string }) => {
 const emptyForm = {
   title: "", subtitle: "", description: "",
   venue: "", venue_address: "", schedule_start: "", schedule_end: "",
-  cast_members: "", directions: "", ticket_url: "",
+  cast_members: "", directions: "", ticket_url: "", reservation_url: "",
   genre_custom: "", school_department: "", show_time: "", running_time: "",
   age_rating: "", map_kakao_url: "", map_naver_url: "",
   performer_name: "",
@@ -159,6 +159,7 @@ export default function PerformerPage() {
       cast_members: show.cast_members?.join(", ") ?? "",
       directions: show.directions ?? "",
       ticket_url: show.ticket_url ?? "",
+      reservation_url: show.reservation_url ?? "",
       genre_custom: show.genre_custom ?? "",
       school_department: show.school_department ?? "",
       show_time: show.show_time ?? "",
@@ -222,12 +223,17 @@ export default function PerformerPage() {
 
     // URL 정규화 — 프로토콜 없이 입력해도 자동 https:// 보완
     const ticketUrl = normalizeUrl(form.ticket_url);
+    const reservationUrl = normalizeUrl(form.reservation_url);
     const mapKakaoUrl = normalizeUrl(form.map_kakao_url);
     const mapNaverUrl = normalizeUrl(form.map_naver_url);
 
     // URL 검증
     if (!isValidUrl(ticketUrl)) {
       setError("티켓 예매 링크가 올바른 주소 형식이 아닙니다. 정확한 링크(예: ticket.interpark.com/...)를 입력하시거나, 사용하지 않으신다면 입력란을 비워주세요.");
+      return;
+    }
+    if (!isValidUrl(reservationUrl)) {
+      setError("무료 좌석 예약 링크가 올바른 주소 형식이 아닙니다. 정확한 링크(예: forms.gle/... 또는 naver.me/...)를 입력하시거나, 사용하지 않으신다면 입력란을 비워주세요.");
       return;
     }
     if (!isValidUrl(mapKakaoUrl, { allowedHosts: KAKAO_MAP_HOSTS })) {
@@ -297,6 +303,7 @@ export default function PerformerPage() {
       cast_members: castArray,
       directions: form.directions || null,
       ticket_url: ticketUrl || null,
+      reservation_url: reservationUrl || null,
       poster_url,
       organizer_id: user.id,
       performer_name: performerNameForShow,
@@ -639,7 +646,8 @@ export default function PerformerPage() {
                     { label: "공연 시간 (선택)", key: "show_time", required: false, placeholder: "평일 19:30 / 주말 15:00" },
                     { label: "러닝 타임 (선택)", key: "running_time", required: false, placeholder: "100분" },
                     { label: "관람 연령 (선택)", key: "age_rating", required: false, placeholder: "7세 이상" },
-                    { label: "티켓 예매 링크 (선택)", key: "ticket_url", required: false, placeholder: "예매처가 없다면 비워두세요" },
+                    { label: "무료 좌석 예약 링크 (선택)", key: "reservation_url", required: false, placeholder: "구글폼·네이버폼 등 (예: forms.gle/...)" },
+                    { label: "티켓 예매 링크 (선택)", key: "ticket_url", required: false, placeholder: "상업 예매처용. 없으면 비워두세요" },
                   ].map((field) => (
                     <div key={field.key} className={field.span ?? ""}>
                       <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
