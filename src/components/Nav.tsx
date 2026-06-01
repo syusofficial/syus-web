@@ -404,7 +404,7 @@ export default function Nav() {
             style={{
               fontFamily: "var(--font-inter)",
               color: "#3B5A6B",
-              fontWeight: 700,
+              fontWeight: 600,
             }}
           >
             Genres

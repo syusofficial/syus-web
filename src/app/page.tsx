@@ -130,7 +130,7 @@ export default async function HomePage() {
                     fontFamily: "var(--font-pretendard)",
                     fontWeight: 400,
                     color: "#FBF8F1",
-                    opacity: 0.55,
+                    opacity: 0.72,
                   }}
                 >
                   연극 · 뮤지컬 · 무용 · 발레 · 국악 · 음악 · 전통연희
@@ -180,7 +180,7 @@ export default async function HomePage() {
                 </p>
                 <p
                   className="text-[0.68rem] tracking-wider"
-                  style={{ fontFamily: "var(--font-pretendard)", fontWeight: 400, color: "rgba(248,249,252,0.45)" }}
+                  style={{ fontFamily: "var(--font-pretendard)", fontWeight: 400, color: "rgba(248,249,252,0.65)" }}
                 >
                   조회 · 좋아요 · 별점 종합
                 </p>
@@ -198,13 +198,13 @@ export default async function HomePage() {
           >
             <span
               className="text-[0.7rem] tracking-[0.25em] uppercase"
-              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.55 }}
+              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.72 }}
             >
               지역 × 시기 × 장르
             </span>
             <span
               className="text-[0.7rem] tracking-[0.25em] uppercase"
-              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.55 }}
+              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.72 }}
             >
               ↓ 공연 발견
             </span>

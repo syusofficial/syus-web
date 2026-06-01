@@ -29,8 +29,13 @@ export default function Footer() {
     router.refresh();
   };
 
+  // 다크 배경(#1A1A1A) 위에서는 #5F584F가 약 3.0:1 (AA 미달)
+  // 크림 계열 흰색을 opacity 72%로 사용하면 약 9:1 — 위계는 살리고 가독성 확보
   const linkCls = "text-sm transition-colors";
-  const linkStyle: React.CSSProperties = { fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" };
+  const FOOTER_LINK_BASE = "rgba(248, 249, 252, 0.72)";
+  const FOOTER_LINK_HOVER = "#FBF8F1";
+  const FOOTER_META = "rgba(248, 249, 252, 0.55)"; // 약 6:1 — 라벨용 보조 정보
+  const linkStyle: React.CSSProperties = { fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE };
 
   return (
     <footer style={{ backgroundColor: "#1A1A1A", color: "#FBF8F1" }}>
@@ -52,7 +57,7 @@ export default function Footer() {
             </p>
             <p
               className="text-sm leading-relaxed"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", wordBreak: "keep-all" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE, wordBreak: "keep-all" }}
             >
               대학 무대예술 공연을 올리고,
               <br />
@@ -64,7 +69,7 @@ export default function Footer() {
           <div>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-inter)", color: FOOTER_META }}
             >
               Site
             </p>
@@ -83,8 +88,8 @@ export default function Footer() {
                   href={item.href}
                   className={linkCls}
                   style={linkStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
                 >
                   {item.label}
                 </Link>
@@ -96,7 +101,7 @@ export default function Footer() {
           <div>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-inter)", color: FOOTER_META }}
             >
               Account
             </p>
@@ -107,8 +112,8 @@ export default function Footer() {
                     href="/mypage"
                     className={linkCls}
                     style={linkStyle}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
                   >
                     마이페이지
                   </Link>
@@ -116,8 +121,8 @@ export default function Footer() {
                     onClick={handleLogout}
                     className={linkCls + " text-left"}
                     style={{ ...linkStyle, background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
                   >
                     로그아웃
                   </button>
@@ -128,8 +133,8 @@ export default function Footer() {
                     href="/auth/login"
                     className={linkCls}
                     style={linkStyle}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
                   >
                     로그인
                   </Link>
@@ -137,8 +142,8 @@ export default function Footer() {
                     href="/auth/signup"
                     className={linkCls}
                     style={linkStyle}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
                   >
                     회원가입
                   </Link>
@@ -153,7 +158,7 @@ export default function Footer() {
           <div className="pt-8 pb-2" style={{ borderTop: "1px solid #3A3631" }}>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-inter)", color: FOOTER_META }}
             >
               Launch Partners
             </p>
@@ -170,7 +175,7 @@ export default function Footer() {
                     {p.category && (
                       <span
                         className="text-xs"
-                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#8E8579" }}
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_META }}
                       >
                         {p.category}
                       </span>
@@ -194,7 +199,7 @@ export default function Footer() {
             </div>
             <p
               className="text-xs mt-4"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#8E8579" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_META }}
             >
               SYUS 런칭과 함께해주신 협력사입니다.
             </p>
@@ -204,7 +209,7 @@ export default function Footer() {
         {/* 사업자 정보 */}
         <div
           className="pt-8 pb-8 mb-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-xs"
-          style={{ borderTop: "1px solid #3A3631", fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+          style={{ borderTop: "1px solid #3A3631", fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE }}
         >
           {[
             { label: "상호", value: "사유유사" },
@@ -213,34 +218,34 @@ export default function Footer() {
             { label: "이메일", value: "syusflux@gmail.com" },
           ].map((item) => (
             <div key={item.label} className="flex gap-3">
-              <span style={{ minWidth: "100px", color: "#8E8579" }}>{item.label}</span>
+              <span style={{ minWidth: "100px", color: FOOTER_META }}>{item.label}</span>
               <span>{item.value}</span>
             </div>
           ))}
           <div className="flex gap-3">
-            <span style={{ minWidth: "100px", color: "#8E8579" }}>카카오톡</span>
+            <span style={{ minWidth: "100px", color: FOOTER_META }}>카카오톡</span>
             <a
               href="http://pf.kakao.com/_xkPVTX"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors"
-              style={{ color: "#5F584F" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+              style={{ color: FOOTER_LINK_BASE }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
             >
               사유유사 SYUS 채널 →
             </a>
           </div>
           <div className="flex gap-3">
-            <span style={{ minWidth: "100px", color: "#8E8579" }}>인스타그램</span>
+            <span style={{ minWidth: "100px", color: FOOTER_META }}>인스타그램</span>
             <a
               href="https://www.instagram.com/syus_official"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors"
-              style={{ color: "#5F584F" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+              style={{ color: FOOTER_LINK_BASE }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
             >
               @syus_official →
             </a>

@@ -274,7 +274,7 @@ export default function ForBusinessPage() {
           </div>
           <p
             className="text-xs mt-10 leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", opacity: 0.55 }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", opacity: 0.78 }}
           >
             운영: 사유유사 · 대표 이혁호 · 사업자등록번호 168-05-03666
             <br />
@@ -404,7 +404,7 @@ function Step({ n, t, d }: { n: string; t: string; d: string }) {
       </p>
       <p
         className="text-xs leading-relaxed"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", opacity: 0.7, wordBreak: "keep-all" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", opacity: 0.82, wordBreak: "keep-all" }}
       >
         {d}
       </p>
