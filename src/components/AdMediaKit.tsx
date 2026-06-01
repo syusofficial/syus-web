@@ -236,6 +236,42 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
           <br />
           ※ SYUS의 비상업적 톤을 해치는 광고(과도한 자극·허위 광고 등)는 정중히 사양됩니다.
         </p>
+
+        {/* 1:1 견적 CTA — 표 안 단가는 가이드, 실제는 협의 */}
+        <div
+          className="mt-6 p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+          style={{ border: "1px solid #274E9B", backgroundColor: "#F8F9FC" }}
+        >
+          <div>
+            <p
+              className="text-sm font-semibold mb-1"
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
+            >
+              표 안 단가는 가이드 라인입니다. 실제 단가는 협의 후 확정합니다.
+            </p>
+            <p
+              className="text-xs leading-relaxed"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+            >
+              광고 목적·게재 기간·콘텐츠 제작 범위에 따라 별도 견적을 드립니다.
+              상품·기간 묶음, 비영리·문화 기관 할인 등 협의 가능합니다.
+            </p>
+          </div>
+          <a
+            href="mailto:syusflux@gmail.com?subject=%5BSYUS%20%EA%B4%91%EA%B3%A0%20%EB%AC%B8%EC%9D%98%5D%201%3A1%20%EA%B2%AC%EC%A0%81%20%EC%9A%94%EC%B2%AD&body=%EC%95%88%EB%85%95%ED%95%98%EC%84%B8%EC%9A%94.%20SYUS%20%EA%B4%91%EA%B3%A0%20%EA%B2%AC%EC%A0%81%EC%9D%84%20%EB%AC%B8%EC%9D%98%EB%93%9C%EB%A6%BD%EB%8B%88%EB%8B%A4.%0A%0A%E2%96%A0%20%ED%9A%8C%EC%82%AC%2F%EB%B8%8C%EB%9E%9C%EB%93%9C%3A%20%0A%E2%96%A0%20%EA%B4%91%EA%B3%A0%20%EB%AA%A9%EC%A0%81%3A%20%0A%E2%96%A0%20%ED%9D%AC%EB%A7%9D%20%EC%83%81%ED%92%88%2F%EC%9C%84%EC%B9%98%3A%20%0A%E2%96%A0%20%ED%9D%AC%EB%A7%9D%20%EA%B2%8C%EC%9E%AC%20%EA%B8%B0%EA%B0%84%3A%20%0A%E2%96%A0%20%EC%98%88%EC%82%B0%20%EB%B2%94%EC%9C%84(%EC%84%A0%ED%83%9D)%3A%20%0A%E2%96%A0%20%EB%8B%B4%EB%8B%B9%EC%9E%90%2F%EC%97%B0%EB%9D%BD%EC%B2%98%3A%20"
+            className="px-6 py-3 text-sm tracking-wider transition-colors shrink-0"
+            style={{
+              fontFamily: "var(--font-noto-sans-kr)",
+              backgroundColor: "#F5C84F",
+              color: "#1B2842",
+              fontWeight: 600,
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#FFD66B")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F5C84F")}
+          >
+            1:1 견적 문의 →
+          </a>
+        </div>
       </section>
 
       {/* ── 3+. 런칭 협력사 모집 ────────────────── */}

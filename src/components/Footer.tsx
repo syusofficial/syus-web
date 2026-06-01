@@ -76,6 +76,7 @@ export default function Footer() {
                 { href: "/faq", label: "자주 묻는 질문" },
                 { href: "/contact", label: "1:1 문의" },
                 { href: "/performer", label: "공연자 등록" },
+                { href: "/for-business", label: "광고주 안내" },
               ].map((item) => (
                 <Link
                   key={item.href}

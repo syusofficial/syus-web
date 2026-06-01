@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export type StreamItem = {
   id: string;
@@ -19,13 +20,17 @@ export type StreamItem = {
  * 접근성: prefers-reduced-motion 시 두 애니메이션 모두 정지.
  */
 export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
+  // 마운트 후에만 애니메이션 활성화 — SSR/CSR 시점차로 인한 시각 점프 방지
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   if (items.length === 0) return null;
 
   // 무한 루프를 위해 두 세트 복제
   const duplicated = [...items, ...items];
 
   return (
-    <div className="hero-stream-wrapper">
+    <div className={`hero-stream-wrapper${mounted ? " is-animated" : ""}`}>
       <div className="hero-stream-track">
         {duplicated.map((item, idx) => {
           // 카드별 둥둥 위상 분산 — 진폭·지연·주기 무작위 느낌
@@ -105,6 +110,8 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           display: flex;
           gap: 36px;
           width: max-content;
+        }
+        .hero-stream-wrapper.is-animated .hero-stream-track {
           animation: hero-stream-flow 64s linear infinite;
         }
         .hero-stream-wrapper:hover .hero-stream-track {
@@ -120,9 +127,12 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           .hero-stream-card { width: 320px; }
         }
         .hero-card-bob {
-          animation: hero-card-bob 7s ease-in-out infinite alternate;
+          transform: rotate(var(--base-tilt, 0deg));
           will-change: transform;
           transform-origin: center 60%;
+        }
+        .hero-stream-wrapper.is-animated .hero-card-bob {
+          animation: hero-card-bob 7s ease-in-out infinite alternate;
         }
         .hero-stream-wrapper:hover .hero-card-bob {
           animation-play-state: paused;

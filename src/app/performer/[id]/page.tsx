@@ -250,16 +250,16 @@ export default async function PerformerProfilePage({
         {approved.length === 0 && (!canSeePrivate || privateShows.length === 0) && (
           <div className="text-center py-24">
             <p
-              className="text-sm mb-2"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+              className="text-base mb-2"
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
             >
-              아직 등록된 공연이 없습니다.
+              곧 첫 무대가 오릅니다.
             </p>
             <p
               className="text-xs"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
             >
-              곧 새로운 무대를 만나보실 수 있어요.
+              이 공연자분의 새 무대를 가장 먼저 알려드리겠습니다.
             </p>
           </div>
         )}

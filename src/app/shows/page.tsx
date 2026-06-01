@@ -326,8 +326,8 @@ export default async function ShowsPage({
         {/* 공연 그리드 */}
         {list.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-sm mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
-              조건에 맞는 진행 중·예정 공연이 없습니다.
+            <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
+              {q ? "조건에 맞는 무대를 아직 찾지 못했습니다." : "곧 첫 무대가 오릅니다."}
             </p>
             <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
               {q ? "다른 검색어로 다시 시도해보세요." : "지나간 공연은 ‘지난 공연’에서 만나보실 수 있습니다."}
