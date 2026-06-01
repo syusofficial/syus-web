@@ -366,15 +366,21 @@ export default function Nav() {
         </div>
       </div>
 
-      {/* Desktop — 보조행: 장르 8개 직접 노출 (사장님 요청 — 1클릭 접근) */}
+      {/* Desktop — 보조행: 장르 8개 직접 노출 (사장님 요청 — 1클릭 접근)
+       * 2026-06-02 가독성 개선: 진한 글씨(weight 600·딥 인디고) + 간격 확장(gap-x-10) + 자간 0.1em
+       */}
       <div
         className="hidden md:block"
-        style={{ borderTop: "1px solid rgba(216, 211, 201, 0.5)" }}
+        style={{ borderTop: "1px solid rgba(216, 211, 201, 0.6)" }}
       >
-        <div className="max-w-7xl mx-auto px-8 py-2 flex items-center justify-center gap-x-6 gap-y-1 flex-wrap">
+        <div className="max-w-7xl mx-auto px-8 py-2.5 flex items-center justify-center gap-x-10 gap-y-1 flex-wrap">
           <span
-            className="text-[0.65rem] tracking-[0.3em] uppercase"
-            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+            className="text-[0.7rem] tracking-[0.32em] uppercase"
+            style={{
+              fontFamily: "var(--font-inter)",
+              color: "#3B5A6B",
+              fontWeight: 700,
+            }}
           >
             Genres
           </span>
@@ -382,17 +388,21 @@ export default function Nav() {
             <Link
               key={g}
               href={`/shows?genre=${encodeURIComponent(g)}`}
-              className="text-xs transition-colors"
+              className="text-sm transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#7A746C",
-                letterSpacing: "0.05em",
+                color: "#202833",
+                fontWeight: 600,
+                letterSpacing: "0.1em",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.color = MENU_HOVER.shows;
+                e.currentTarget.style.textDecoration = "underline";
+                e.currentTarget.style.textUnderlineOffset = "4px";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = "#7A746C";
+                e.currentTarget.style.color = "#202833";
+                e.currentTarget.style.textDecoration = "none";
               }}
             >
               {g}
