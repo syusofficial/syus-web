@@ -134,7 +134,7 @@ export default function MyPage() {
 
   if (loading) {
     return (
-      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
+      <div className="pt-24 md:pt-32 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
         <PageLoader />
       </div>
     );
@@ -145,7 +145,7 @@ export default function MyPage() {
   const roleLabel = { member: "일반 회원", performer: "공연자", admin: "관리자" }[profile.role];
 
   return (
-    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-32 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-12">

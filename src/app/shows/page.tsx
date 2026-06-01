@@ -121,7 +121,7 @@ export default async function ShowsPage({
 
   return (
     <div
-      className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16"
+      className="pt-24 md:pt-32 min-h-screen px-6 md:px-12 lg:px-20 py-16"
       style={{ backgroundColor: "#FBF8F1" }}
     >
       <script

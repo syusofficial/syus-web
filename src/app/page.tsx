@@ -80,7 +80,7 @@ export default async function HomePage() {
     <div>
       {/* ── Hero ── 무대올림 정체성 + 포스터 둥둥 격상 + Pretendard */}
       <section
-        className="pt-24 relative overflow-hidden"
+        className="pt-24 md:pt-32 relative overflow-hidden"
         style={{
           background:
             "radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%)",

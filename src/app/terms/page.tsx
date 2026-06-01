@@ -200,7 +200,7 @@ export default function TermsPage() {
   ];
 
   return (
-    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-16" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-32 min-h-screen px-6 md:px-12 lg:px-20 py-16" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="max-w-3xl mx-auto">
         <div className="mb-12">
           <p

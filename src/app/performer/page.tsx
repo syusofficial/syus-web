@@ -371,7 +371,7 @@ export default function PerformerPage() {
   // 권한 없음 화면
   if (authState === "loading") {
     return (
-      <div className="pt-24 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
+      <div className="pt-24 md:pt-32 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
         <PageLoader />
       </div>
     );
@@ -379,7 +379,7 @@ export default function PerformerPage() {
 
   if (authState === "denied") {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
+      <div className="pt-24 md:pt-32 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
         <div className="text-center max-w-sm space-y-5">
           <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             403
@@ -404,7 +404,7 @@ export default function PerformerPage() {
   }
 
   return (
-    <div className="pt-24 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-32 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-12">

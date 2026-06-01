@@ -20,7 +20,7 @@ export default function AboutPage() {
   ]);
 
   return (
-    <div className="pt-24 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-32 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}

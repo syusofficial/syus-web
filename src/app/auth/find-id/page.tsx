@@ -40,7 +40,7 @@ export default function FindIdPage() {
   };
 
   return (
-    <div className="pt-24 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-32 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
