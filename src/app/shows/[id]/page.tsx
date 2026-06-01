@@ -200,7 +200,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     : null;
 
   return (
-    <div className="pt-24 md:pt-32 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-36 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
       {eventStructuredData && (
         <script
           type="application/ld+json"

@@ -77,7 +77,7 @@ export default function ContactPage() {
 
   if (submitted) {
     return (
-      <div className="pt-24 md:pt-32 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
+      <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
         <div className="text-center">
           <p className="text-xs tracking-[0.3em] uppercase mb-6" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
             접수 완료
@@ -96,7 +96,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="pt-24 md:pt-32 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-10">
