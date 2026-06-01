@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "이용약관",
-  description: "(주)사유유사 SYUS 서비스 이용약관",
+  description: "사유유사 SYUS 서비스 이용약관",
 };
 
 export default function TermsPage() {
@@ -12,7 +12,7 @@ export default function TermsPage() {
       h: "제1조 (목적)",
       body: (
         <p>
-          본 약관은 (주)사유유사(이하 &ldquo;회사&rdquo;)가 운영하는 사이트 SYUS(syus.co.kr, 이하 &ldquo;서비스&rdquo;)에서
+          본 약관은 사유유사(이하 &ldquo;회사&rdquo;)가 운영하는 사이트 SYUS(syus.co.kr, 이하 &ldquo;서비스&rdquo;)에서
           제공하는 공연 정보 서비스의 이용조건 및 절차, 회원과 회사의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.
         </p>
       ),

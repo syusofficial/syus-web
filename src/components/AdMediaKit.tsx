@@ -339,7 +339,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
           </p>
           <p>
             <span style={{ opacity: 0.7, marginRight: 8 }}>운영사</span>
-            (주)사유유사 · 대표 이혁호 · 사업자등록번호 168-05-03666
+            사유유사 · 대표 이혁호 · 사업자등록번호 168-05-03666
           </p>
           <p>
             <span style={{ opacity: 0.7, marginRight: 8 }}>문서 발행일</span>

@@ -206,7 +206,7 @@ export default function Footer() {
           style={{ borderTop: "1px solid #2C2C2C", fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
         >
           {[
-            { label: "상호", value: "(주)사유유사" },
+            { label: "상호", value: "사유유사" },
             { label: "대표", value: "이혁호" },
             { label: "사업자등록번호", value: "168-05-03666" },
             { label: "이메일", value: "syusflux@gmail.com" },

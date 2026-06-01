@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침",
-  description: "(주)사유유사의 개인정보처리방침",
+  description: "사유유사의 개인정보처리방침",
 };
 
 export default function PrivacyPage() {
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
         {/* Content */}
         <div className="space-y-10 text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
           <p>
-            (주)사유유사(이하 &ldquo;회사&rdquo;)는 이용자의 개인정보를 소중하게 생각하며,
+            사유유사(이하 &ldquo;회사&rdquo;)는 이용자의 개인정보를 소중하게 생각하며,
             「개인정보 보호법」 및 관계 법령이 정한 바를 준수하고 있습니다.
           </p>
 
@@ -178,7 +178,7 @@ export default function PrivacyPage() {
             <div className="p-5" style={{ backgroundColor: "#E7ECF5" }}>
               <div className="grid grid-cols-[80px_1fr] gap-2 text-xs">
                 <span style={{ color: "#6B7385" }}>성명</span><span>이혁호 (대표)</span>
-                <span style={{ color: "#6B7385" }}>직책</span><span>(주)사유유사 대표이사</span>
+                <span style={{ color: "#6B7385" }}>직책</span><span>사유유사 대표</span>
                 <span style={{ color: "#6B7385" }}>연락처</span><span>syusflux@gmail.com</span>
               </div>
             </div>
