@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     template: "%s · SYUS",
   },
   description: SITE_DESCRIPTION,
-  keywords: ["사유유사", "SYUS", "思惟流沙", "연극", "뮤지컬", "공연", "젊은 예술가", "연기예술", "대학로"],
+  keywords: ["무대올림", "사유유사", "SYUS", "대학 공연", "무대예술", "연극", "뮤지컬", "무용", "발레", "국악", "음악", "전통연희", "무료 공연", "대학로", "지역 공연"],
   authors: [{ name: "SYUS" }],
   creator: "SYUS",
   publisher: "SYUS",

@@ -100,8 +100,8 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
           className="text-base leading-relaxed max-w-2xl"
           style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
         >
-          대학·신진 공연자들의 무대를 기록·연결·홍보하는 큐레이션 플랫폼.
-          연극, 뮤지컬, 넌버벌 등 한국의 젊은 공연 예술을 사랑하는 관객들과
+          대학 무대예술 공연자들의 무대를 올리고, 지역 관객이 무료 좌석을 예약하는 플랫폼.
+          연극·뮤지컬·무용·발레·국악·음악·전통연희 등 한국 대학 무대를 사랑하는 관객들과
           공연 인접 업계 광고주를 자연스럽게 연결합니다.
         </p>
       </section>

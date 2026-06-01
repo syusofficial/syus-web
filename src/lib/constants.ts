@@ -9,7 +9,21 @@ export const REGIONS = [
 
 export const REGIONS_EXCLUDE_ALL = REGIONS.slice(1);
 
-export const GENRES = ["연극", "뮤지컬", "기타"] as const;
+/**
+ * 무대예술 장르 — 무대올림 정체성 "장르는 넓게, 대상은 좁게"에 따라 확장.
+ * 2026-06-01 사장님 결정: 연기·뮤지컬 한정 → 무대예술 전체로 확장.
+ * 추가된 장르(무용·발레·국악·음악·전통연희)는 기존 DB의 '기타'로 분류된 공연을 사장님이 직접 재분류할 수 있음.
+ */
+export const GENRES = [
+  "연극",
+  "뮤지컬",
+  "무용",
+  "발레",
+  "국악",
+  "음악",
+  "전통연희",
+  "기타",
+] as const;
 
 /** 공연 구분 — 등록 시 필수 선택. 장르(작품 형식)와 별개로 공연의 성격을 분류. */
 export const SHOW_CATEGORIES = ["교내 공연", "외부 공연", "워크샵"] as const;

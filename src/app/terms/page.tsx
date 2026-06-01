@@ -23,7 +23,7 @@ export default function TermsPage() {
         <ol className="list-decimal pl-5 space-y-1">
           <li>&ldquo;회원&rdquo;이란 서비스에 가입하여 서비스를 이용하는 자를 말합니다.</li>
           <li>&ldquo;공연자&rdquo;란 회원 중 공연자 신청을 통해 공연을 등록할 수 있는 권한을 부여받은 자를 말합니다.</li>
-          <li>&ldquo;공연&rdquo;이란 공연자가 서비스에 등록한 연극, 뮤지컬, 넌버벌 등의 공연예술 콘텐츠를 말합니다.</li>
+          <li>&ldquo;공연&rdquo;이란 공연자가 서비스에 등록한 연극, 뮤지컬, 무용, 발레, 국악, 음악, 전통연희 등의 무대예술 콘텐츠를 말합니다.</li>
           <li>&ldquo;관리자&rdquo;란 회사로부터 서비스 운영 권한을 부여받은 자를 말합니다.</li>
         </ol>
       ),
