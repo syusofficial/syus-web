@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 
 @theme inline {
   /* 무대올림 / 사유유사 SYUS — 컬러 팔레트 (2026-06-01 전환)
@@ -40,6 +41,8 @@
   --font-kr-sans: var(--font-noto-sans-kr);
   --font-display: var(--font-cormorant);
   --font-body: var(--font-inter);
+  /* 2026-06-01 마케팅·제작팀 합의: 미니멀·트렌드 한글 디스플레이 — Pretendard Variable (SIL OFL 1.1) */
+  --font-pretendard: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
 }
 
 html {

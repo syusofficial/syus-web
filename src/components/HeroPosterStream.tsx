@@ -13,81 +13,99 @@ export type StreamItem = {
 };
 
 /**
- * 무대올림 — 히어로 포스터 가로 무한 흐름.
- * TOP 5 인기 공연을 좌→우 흐름으로 노출 (사장님 표현: "유사하듯이 흘러가는 효과").
- * 호버 시 정지, 클릭 시 공연 상세로 이동.
+ * 무대올림 — 히어로 포스터 가로 흐름 + 카드별 둥둥 떠다니는 효과.
+ * 사장님 요청: 포스터들이 물 위에 둥둥 떠다니듯이 유영하는 시각효과.
+ * 가로 무한 흐름(track) + 각 카드별 floating(translateY + rotate 미세 회전, phase·duration 무작위).
+ * 접근성: prefers-reduced-motion 시 두 애니메이션 모두 정지.
  */
 export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
   if (items.length === 0) return null;
 
-  // 무한 루프를 위해 두 세트 복제 — animation translateX -50% 시 처음 위치로 복귀
+  // 무한 루프를 위해 두 세트 복제
   const duplicated = [...items, ...items];
 
   return (
     <div className="hero-stream-wrapper">
       <div className="hero-stream-track">
-        {duplicated.map((item, idx) => (
-          <Link
-            key={`${item.id}-${idx}`}
-            href={`/shows/${item.id}`}
-            className="hero-stream-card group"
-          >
-            <div className="hero-stream-poster">
-              {item.poster_url ? (
-                <Image
-                  src={item.poster_url}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 768px) 220px, 280px"
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                  unoptimized
-                />
-              ) : (
-                <div className="hero-stream-placeholder">
-                  <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "2rem" }}>
-                    無
-                  </span>
+        {duplicated.map((item, idx) => {
+          // 카드별 둥둥 위상 분산 — 진폭·지연·주기 무작위 느낌
+          const phase = idx % 5;
+          const bobDelay = `${-phase * 1.7}s`;
+          const bobDuration = `${6.4 + (phase % 3) * 0.9}s`;
+          // 카드별 미세한 초기 회전 — 정렬되지 않은 느낌
+          const baseTilt = ((idx % 7) - 3) * 0.6;
+          return (
+            <Link
+              key={`${item.id}-${idx}`}
+              href={`/shows/${item.id}`}
+              className="hero-stream-card group"
+            >
+              <div
+                className="hero-card-bob"
+                style={{
+                  animationDelay: bobDelay,
+                  animationDuration: bobDuration,
+                  ["--base-tilt" as string]: `${baseTilt}deg`,
+                }}
+              >
+                <div className="hero-stream-poster">
+                  {item.poster_url ? (
+                    <Image
+                      src={item.poster_url}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 260px, 320px"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="hero-stream-placeholder">
+                      <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "2.4rem" }}>
+                        無
+                      </span>
+                    </div>
+                  )}
+                  {/* 랭크 배지 (1~5, 복제분은 무시) */}
+                  {idx < items.length && (
+                    <div className="hero-stream-rank">
+                      <span style={{ fontFamily: "var(--font-cormorant)" }}>
+                        {idx + 1}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
-              {/* 랭크 배지 (1~5, 복제분은 무시) */}
-              {idx < items.length && (
-                <div className="hero-stream-rank">
-                  <span style={{ fontFamily: "var(--font-cormorant)" }}>
-                    {idx + 1}
-                  </span>
+                <div className="hero-stream-caption">
+                  <p className="hero-stream-title" title={item.title}>
+                    {item.title}
+                  </p>
+                  <p className="hero-stream-meta">
+                    {[
+                      item.performer_name,
+                      item.schedule_start?.replace(/-/g, ".").slice(2, 10),
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
                 </div>
-              )}
-            </div>
-            <div className="hero-stream-caption">
-              <p className="hero-stream-title" title={item.title}>
-                {item.title}
-              </p>
-              <p className="hero-stream-meta">
-                {[
-                  item.performer_name,
-                  item.schedule_start?.replace(/-/g, ".").slice(2, 10),
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
-            </div>
-          </Link>
-        ))}
+              </div>
+            </Link>
+          );
+        })}
       </div>
 
       <style>{`
         .hero-stream-wrapper {
           overflow: hidden;
           width: 100%;
-          mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
-          -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
-          padding: 12px 0;
+          mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+          -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+          padding: 28px 0 36px;
         }
         .hero-stream-track {
           display: flex;
-          gap: 28px;
+          gap: 36px;
           width: max-content;
-          animation: hero-stream-flow 48s linear infinite;
+          animation: hero-stream-flow 64s linear infinite;
         }
         .hero-stream-wrapper:hover .hero-stream-track {
           animation-play-state: paused;
@@ -95,11 +113,19 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
         .hero-stream-card {
           display: block;
           flex-shrink: 0;
-          width: 220px;
+          width: 260px;
           color: #F8F9FC;
         }
         @media (min-width: 768px) {
-          .hero-stream-card { width: 260px; }
+          .hero-stream-card { width: 320px; }
+        }
+        .hero-card-bob {
+          animation: hero-card-bob 7s ease-in-out infinite alternate;
+          will-change: transform;
+          transform-origin: center 60%;
+        }
+        .hero-stream-wrapper:hover .hero-card-bob {
+          animation-play-state: paused;
         }
         .hero-stream-poster {
           position: relative;
@@ -107,7 +133,10 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           aspect-ratio: 4 / 5;
           overflow: hidden;
           background: #1B2842;
-          box-shadow: 0 18px 36px rgba(0, 0, 0, 0.35);
+          box-shadow:
+            0 22px 40px rgba(0, 0, 0, 0.42),
+            0 6px 14px rgba(27, 40, 66, 0.5);
+          filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.28));
         }
         .hero-stream-placeholder {
           width: 100%;
@@ -120,38 +149,38 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
         }
         .hero-stream-rank {
           position: absolute;
-          top: 10px;
-          left: 10px;
-          width: 36px;
-          height: 36px;
+          top: 12px;
+          left: 12px;
+          width: 40px;
+          height: 40px;
           display: flex;
           align-items: center;
           justify-content: center;
           background: #F5C84F;
           color: #1B2842;
-          font-size: 1.25rem;
+          font-size: 1.4rem;
           font-weight: 700;
           line-height: 1;
         }
         .hero-stream-caption {
-          padding-top: 14px;
+          padding-top: 18px;
         }
         .hero-stream-title {
-          font-family: var(--font-noto-serif-kr);
-          font-size: 0.95rem;
+          font-family: var(--font-pretendard);
+          font-size: 1rem;
           font-weight: 600;
           color: #F8F9FC;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          letter-spacing: -0.01em;
+          letter-spacing: -0.015em;
         }
         .hero-stream-meta {
-          font-family: var(--font-noto-sans-kr);
-          font-size: 0.72rem;
-          color: rgba(248, 249, 252, 0.55);
-          margin-top: 6px;
-          letter-spacing: 0.03em;
+          font-family: var(--font-pretendard);
+          font-size: 0.75rem;
+          color: rgba(248, 249, 252, 0.6);
+          margin-top: 8px;
+          letter-spacing: 0.02em;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -160,8 +189,14 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           0%   { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
+        @keyframes hero-card-bob {
+          0%   { transform: translateY(-7px) rotate(calc(var(--base-tilt, 0deg) - 1.1deg)); }
+          50%  { transform: translateY(0)    rotate(var(--base-tilt, 0deg)); }
+          100% { transform: translateY(7px)  rotate(calc(var(--base-tilt, 0deg) + 1.1deg)); }
+        }
         @media (prefers-reduced-motion: reduce) {
-          .hero-stream-track { animation: none; }
+          .hero-stream-track,
+          .hero-card-bob { animation: none; }
         }
       `}</style>
     </div>

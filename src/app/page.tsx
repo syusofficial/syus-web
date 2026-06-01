@@ -78,7 +78,7 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* ── Hero ── */}
+      {/* ── Hero ── 무대올림 정체성 + 포스터 둥둥 격상 + Pretendard */}
       <section
         className="pt-24 relative overflow-hidden"
         style={{
@@ -87,101 +87,102 @@ export default async function HomePage() {
           color: "#F8F9FC",
         }}
       >
-        <div className="px-6 md:px-12 lg:px-20 pt-16 md:pt-20 pb-10">
+        {/* 상단: 라벨 + 슬로건 (한 줄, 미니멀 Pretendard) */}
+        <div className="px-6 md:px-12 lg:px-20 pt-10 md:pt-14 pb-6">
           <div className="max-w-[1600px] mx-auto">
             <p
-              className="text-xs tracking-[0.4em] uppercase mb-8"
-              style={{ fontFamily: "var(--font-inter)", opacity: 0.7 }}
+              className="text-[0.7rem] tracking-[0.4em] uppercase mb-5"
+              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.65 }}
             >
-              무대올림 · 운영: 사유유사 SYUS
+              무대올림 · 운영 사유유사 SYUS
             </p>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-end mb-12">
-              <h1
-                className="text-[3rem] sm:text-[4.25rem] md:text-[5.5rem] lg:text-[6.5rem] font-black leading-[0.95] tracking-tighter"
-                style={{
-                  fontFamily: "var(--font-noto-serif-kr)",
-                  color: "#F8F9FC",
-                  wordBreak: "keep-all",
-                  textWrap: "balance",
-                }}
-              >
-                오늘,
-                <br />
-                어느 대학의
-                <br />
-                <span style={{ color: "#F5C84F" }}>막</span>이 오른다.
-              </h1>
+            <h1
+              className="text-[2.25rem] sm:text-[3rem] md:text-[3.75rem] lg:text-[4.5rem] leading-[1.12] mb-7"
+              style={{
+                fontFamily: "var(--font-pretendard)",
+                fontWeight: 700,
+                color: "#F8F9FC",
+                letterSpacing: "-0.035em",
+                wordBreak: "keep-all",
+                textWrap: "balance",
+              }}
+            >
+              오늘, 어느 대학의 <span style={{ color: "#F5C84F", fontWeight: 800 }}>막</span>이 오른다.
+            </h1>
 
-              <div className="space-y-6 pb-4">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+              <div>
                 <p
-                  className="text-lg md:text-xl leading-relaxed"
+                  className="text-base md:text-lg leading-relaxed mb-2"
                   style={{
-                    fontFamily: "var(--font-noto-sans-kr)",
+                    fontFamily: "var(--font-pretendard)",
+                    fontWeight: 400,
                     color: "#F8F9FC",
                     wordBreak: "keep-all",
                   }}
                 >
-                  대학 무대예술 공연을 올리고,
-                  <br />
-                  지역 관객이 무료 좌석을 예약하는 곳.
+                  대학 무대예술 공연을 올리고, 지역 관객이 무료 좌석을 예약하는 곳.
                 </p>
                 <p
-                  className="text-sm tracking-wider"
+                  className="text-xs tracking-wider"
                   style={{
-                    fontFamily: "var(--font-noto-sans-kr)",
+                    fontFamily: "var(--font-pretendard)",
+                    fontWeight: 400,
                     color: "#F8F9FC",
-                    opacity: 0.65,
+                    opacity: 0.55,
                   }}
                 >
                   연극 · 뮤지컬 · 무용 · 발레 · 국악 · 음악 · 전통연희
                 </p>
-                <div className="flex flex-wrap gap-3 pt-2">
-                  <Link
-                    href="/shows"
-                    className="inline-block px-7 py-3 text-sm tracking-wider transition-colors"
-                    style={{
-                      fontFamily: "var(--font-noto-sans-kr)",
-                      backgroundColor: "#F5C84F",
-                      color: "#1B2842",
-                      fontWeight: 600,
-                    }}
-                  >
-                    공연 둘러보기 →
-                  </Link>
-                  <Link
-                    href="/auth/signup"
-                    className="inline-block px-7 py-3 text-sm tracking-wider transition-colors"
-                    style={{
-                      fontFamily: "var(--font-noto-sans-kr)",
-                      border: "1px solid rgba(248, 249, 252, 0.4)",
-                      color: "#F8F9FC",
-                    }}
-                  >
-                    무대 올리기
-                  </Link>
-                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2.5">
+                <Link
+                  href="/shows"
+                  className="inline-block px-6 py-3 text-sm tracking-wider transition-colors"
+                  style={{
+                    fontFamily: "var(--font-pretendard)",
+                    fontWeight: 600,
+                    backgroundColor: "#F5C84F",
+                    color: "#1B2842",
+                  }}
+                >
+                  공연 둘러보기 →
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="inline-block px-6 py-3 text-sm tracking-wider transition-colors"
+                  style={{
+                    fontFamily: "var(--font-pretendard)",
+                    fontWeight: 500,
+                    border: "1px solid rgba(248, 249, 252, 0.4)",
+                    color: "#F8F9FC",
+                  }}
+                >
+                  무대 올리기
+                </Link>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 히어로 포스터 흐름 — TOP 5 */}
+        {/* 메인 시각 자산: 포스터 둥둥 격상 영역 (히어로 중앙·하단의 큰 영역) */}
         {streamItems.length > 0 && (
-          <div className="pb-12">
-            <div className="px-6 md:px-12 lg:px-20 mb-5">
+          <div className="pt-4 pb-10">
+            <div className="px-6 md:px-12 lg:px-20 mb-3">
               <div className="max-w-[1600px] mx-auto flex items-baseline justify-between gap-4 flex-wrap">
                 <p
-                  className="text-xs tracking-[0.35em] uppercase"
-                  style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
+                  className="text-[0.7rem] tracking-[0.35em] uppercase"
+                  style={{ fontFamily: "var(--font-pretendard)", color: "#F5C84F", fontWeight: 600 }}
                 >
                   Top 5 · 지금 가장 주목받는 무대
                 </p>
                 <p
-                  className="text-[0.7rem] tracking-wider"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "rgba(248,249,252,0.5)" }}
+                  className="text-[0.68rem] tracking-wider"
+                  style={{ fontFamily: "var(--font-pretendard)", fontWeight: 400, color: "rgba(248,249,252,0.45)" }}
                 >
-                  조회 · 좋아요 종합
+                  조회 · 좋아요 · 별점 종합
                 </p>
               </div>
             </div>
@@ -197,13 +198,13 @@ export default async function HomePage() {
           >
             <span
               className="text-[0.7rem] tracking-[0.25em] uppercase"
-              style={{ fontFamily: "var(--font-inter)", opacity: 0.55 }}
+              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.55 }}
             >
               지역 × 시기 × 장르
             </span>
             <span
               className="text-[0.7rem] tracking-[0.25em] uppercase"
-              style={{ fontFamily: "var(--font-inter)", opacity: 0.55 }}
+              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.55 }}
             >
               ↓ 공연 발견
             </span>
