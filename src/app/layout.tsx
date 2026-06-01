@@ -36,24 +36,25 @@ const inter = Inter({
 });
 
 const SITE_URL = "https://syus.co.kr";
-const SITE_NAME = "사유유사 · SYUS";
+const SITE_NAME = "무대올림";
+const SITE_TAGLINE = "운영: 사유유사 SYUS";
 const SITE_DESCRIPTION =
-  "思惟流沙 — System of Young Unbound Society. 젊은 예술가들의 무대를 기록하고, 연결하고, 알리는 공간.";
+  "오늘, 어느 대학의 막이 오른다. 무대올림은 대학 무대예술 공연을 올리고 지역 관객이 무료 좌석을 예약하는 플랫폼입니다. 연극·뮤지컬·무용·발레·국악·음악·전통연희.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: SITE_NAME,
-    template: "%s · SYUS",
+    default: `${SITE_NAME} · ${SITE_TAGLINE}`,
+    template: "%s · 무대올림",
   },
   description: SITE_DESCRIPTION,
-  keywords: ["무대올림", "사유유사", "SYUS", "대학 공연", "무대예술", "연극", "뮤지컬", "무용", "발레", "국악", "음악", "전통연희", "무료 공연", "대학로", "지역 공연"],
-  authors: [{ name: "SYUS" }],
-  creator: "SYUS",
-  publisher: "SYUS",
+  keywords: ["무대올림", "대학 공연", "무대예술", "무료 공연", "대학 연극", "대학 뮤지컬", "대학 무용", "대학 발레", "대학 국악", "대학 음악", "전통연희", "대학로", "지역 공연", "구글폼 예약", "학교 공연", "사유유사", "SYUS"],
+  authors: [{ name: "무대올림 (운영: 사유유사 SYUS)" }],
+  creator: "사유유사 SYUS",
+  publisher: "사유유사 SYUS",
   formatDetection: { email: false, address: false, telephone: false },
   openGraph: {
-    title: SITE_NAME,
+    title: `${SITE_NAME} · ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     siteName: SITE_NAME,
@@ -62,7 +63,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: SITE_NAME,
+    title: `${SITE_NAME} · ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
   },
   robots: {

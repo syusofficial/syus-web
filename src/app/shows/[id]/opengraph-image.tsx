@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
-export const alt = "사유유사 SYUS 공연";
+export const alt = "무대올림 공연 (운영: 사유유사 SYUS)";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -20,7 +20,7 @@ export default async function Image({ params }: { params: { id: string } }) {
     .eq("id", params.id)
     .single();
 
-  // 공연 데이터 없거나 미승인 — 기본 SYUS 카드
+  // 공연 데이터 없거나 미승인 — 기본 무대올림 카드
   if (!show || show.status !== "approved") {
     return new ImageResponse(
       (
@@ -28,7 +28,8 @@ export default async function Image({ params }: { params: { id: string } }) {
           style={{
             width: 1200,
             height: 630,
-            background: "#F8F9FC",
+            background:
+              "radial-gradient(ellipse at top left, #2B60CA 0%, #274E9B 35%, #1B2842 100%)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -36,11 +37,11 @@ export default async function Image({ params }: { params: { id: string } }) {
             fontFamily: "serif",
           }}
         >
-          <div style={{ fontSize: 96, fontWeight: 700, color: "#274E9B", letterSpacing: -2 }}>
-            사유유사
+          <div style={{ fontSize: 96, fontWeight: 700, color: "#F8F9FC", letterSpacing: -2 }}>
+            무대올림
           </div>
-          <div style={{ fontSize: 28, color: "#6B7385", marginTop: 20, letterSpacing: 6 }}>
-            SYUS · 思惟流沙
+          <div style={{ fontSize: 24, color: "#F5C84F", marginTop: 24, letterSpacing: 6 }}>
+            운영 · 사유유사 SYUS
           </div>
         </div>
       ),
@@ -66,21 +67,21 @@ export default async function Image({ params }: { params: { id: string } }) {
           fontFamily: "serif",
         }}
       >
-        {/* 상단: SYUS 워드마크 + 장르·지역 */}
+        {/* 상단: 무대올림 워드마크 + 장르·지역 */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            {/* 미니 SYUS 마크: 두 구체 + 가로선 */}
+            {/* 미니 무대올림 마크: 두 구체 + 가로선 */}
             <svg width="60" height="42" viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
               <line x1="6" y1="55" x2="94" y2="55" stroke="#274E9B" strokeWidth="5" />
               <circle cx="35" cy="32" r="14" stroke="#274E9B" strokeWidth="4.5" fill="none" />
               <circle cx="65" cy="32" r="14" stroke="#274E9B" strokeWidth="4.5" fill="none" />
             </svg>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 22, color: "#274E9B", letterSpacing: 4, fontWeight: 700 }}>
-                SYUS
+              <span style={{ fontSize: 24, color: "#274E9B", letterSpacing: 1, fontWeight: 700 }}>
+                무대올림
               </span>
-              <span style={{ fontSize: 14, color: "#6B7385", letterSpacing: 3, marginTop: 2 }}>
-                사유유사 · 思惟流沙
+              <span style={{ fontSize: 13, color: "#6B7385", letterSpacing: 2, marginTop: 2 }}>
+                운영 · 사유유사 SYUS
               </span>
             </div>
           </div>

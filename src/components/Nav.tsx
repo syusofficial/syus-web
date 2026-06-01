@@ -278,17 +278,19 @@ export default function Nav() {
         </div>
 
         {/* Center — Logo */}
-        <Link href="/" className="flex flex-col items-center gap-1">
-          <SyusLogoSvg width={160} height={64} />
+        <Link href="/" className="flex flex-col items-center gap-0.5">
+          <SyusLogoSvg width={140} height={56} />
           <span
             style={{
-              fontFamily: "var(--font-cormorant)",
+              fontFamily: "var(--font-noto-serif-kr)",
               color: "#274E9B",
-              fontSize: "0.65rem",
-              letterSpacing: "0.4em",
+              fontSize: "0.95rem",
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              lineHeight: 1,
             }}
           >
-            SYUS
+            무대올림
           </span>
         </Link>
 
@@ -360,16 +362,18 @@ export default function Nav() {
       <div className="md:hidden flex items-center justify-between px-5 py-3">
         <div className="w-8" />
         <Link href="/" className="flex flex-col items-center gap-0.5">
-          <SyusLogoSvg width={110} height={44} />
+          <SyusLogoSvg width={96} height={38} />
           <span
             style={{
-              fontFamily: "var(--font-cormorant)",
+              fontFamily: "var(--font-noto-serif-kr)",
               color: "#274E9B",
-              fontSize: "0.55rem",
-              letterSpacing: "0.3em",
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              lineHeight: 1,
             }}
           >
-            SYUS
+            무대올림
           </span>
         </Link>
         <button

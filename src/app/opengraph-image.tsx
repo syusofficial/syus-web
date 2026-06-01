@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "사유유사 · SYUS";
+export const alt = "무대올림 · 운영: 사유유사 SYUS";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -15,41 +15,63 @@ export default async function OGImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#F8F9FC",
+          background:
+            "radial-gradient(ellipse at top left, #2B60CA 0%, #274E9B 35%, #1B2842 100%)",
+          padding: "80px",
         }}
       >
         <div
           style={{
-            fontSize: 200,
-            fontWeight: 900,
-            color: "#274E9B",
-            letterSpacing: "0.08em",
-            lineHeight: 1,
+            fontSize: 22,
+            color: "#F5C84F",
+            letterSpacing: "0.35em",
+            textTransform: "uppercase",
+            fontWeight: 600,
+            marginBottom: 36,
           }}
         >
-          SYUS
+          무대올림
+        </div>
+        <div
+          style={{
+            fontSize: 110,
+            fontWeight: 900,
+            color: "#F8F9FC",
+            letterSpacing: "-0.02em",
+            lineHeight: 1.05,
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <span>오늘, 어느 대학의</span>
+          <span>
+            <span style={{ color: "#F5C84F" }}>막</span>이 오른다.
+          </span>
         </div>
         <div
           style={{
             fontSize: 26,
-            color: "#274E9B",
-            marginTop: 48,
-            letterSpacing: "0.4em",
-            opacity: 0.7,
+            color: "#F8F9FC",
+            opacity: 0.75,
+            marginTop: 56,
+            letterSpacing: "0.05em",
+            display: "flex",
           }}
         >
-          SYSTEM OF YOUNG UNBOUND SOCIETY
+          대학 무대예술 공연 · 무료 좌석 예약
         </div>
         <div
           style={{
-            fontSize: 22,
-            color: "#6B7385",
-            marginTop: 22,
-            letterSpacing: "0.15em",
-            fontStyle: "italic",
+            fontSize: 18,
+            color: "#F8F9FC",
+            opacity: 0.5,
+            marginTop: 18,
+            letterSpacing: "0.25em",
+            display: "flex",
           }}
         >
-          Think deeply. Speak lightly.
+          운영 · 사유유사 SYUS
         </div>
       </div>
     ),

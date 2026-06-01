@@ -39,22 +39,24 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <p
-              className="text-2xl font-light tracking-[0.2em] mb-2"
-              style={{ fontFamily: "var(--font-cormorant)", color: "#F8F9FC" }}
+              className="text-2xl font-bold mb-2"
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC" }}
             >
-              SYUS
+              무대올림
             </p>
             <p
-              className="text-xs tracking-[0.3em] mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+              className="text-xs tracking-[0.25em] uppercase mb-4"
+              style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
             >
-              思惟流沙
+              운영: 사유유사 SYUS
             </p>
             <p
               className="text-sm leading-relaxed"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385", wordBreak: "keep-all" }}
             >
-              깊이 머물고, 가볍게 흘려보냅니다.
+              대학 무대예술 공연을 올리고,
+              <br />
+              지역 관객이 무료 좌석을 예약하는 곳.
             </p>
           </div>
 
@@ -290,13 +292,13 @@ export default function Footer() {
             className="text-xs tracking-wider"
             style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
           >
-            © 2026 SYUS · 사유유사. All rights reserved.
+            © 2026 무대올림 · 운영: 사유유사 SYUS. All rights reserved.
           </p>
           <p
             className="text-xs"
             style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
           >
-            깊이 머물고, 가볍게 흘려보냅니다.
+            오늘, 어느 대학의 막이 오른다.
           </p>
         </div>
       </div>
