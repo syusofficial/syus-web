@@ -157,7 +157,7 @@ export default function TermsPage() {
           </p>
           <h1
             className="text-3xl md:text-4xl font-bold mb-3"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
           >
             이용약관
           </h1>
@@ -169,7 +169,7 @@ export default function TermsPage() {
         <div className="space-y-10 text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
           {sections.map((s) => (
             <section key={s.h}>
-              <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+              <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
                 {s.h}
               </h2>
               {s.body}
@@ -177,7 +177,7 @@ export default function TermsPage() {
           ))}
 
           <div className="pt-8 text-center" style={{ borderTop: "1px solid #C5CCD9" }}>
-            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#2E5BB8" }}>
+            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#274E9B" }}>
               ← 홈으로
             </Link>
           </div>

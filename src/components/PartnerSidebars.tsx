@@ -17,7 +17,7 @@ export function InstitutionSidebar() {
           </p>
           <h3
             className="text-sm font-bold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
           >
             연관 기관
           </h3>
@@ -36,7 +36,7 @@ export function InstitutionSidebar() {
                   fontFamily: "var(--font-noto-sans-kr)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderLeftColor = "#2E5BB8";
+                  e.currentTarget.style.borderLeftColor = "#274E9B";
                   e.currentTarget.style.backgroundColor = "#E7ECF5";
                 }}
                 onMouseLeave={(e) => {
@@ -81,7 +81,7 @@ export function PartnerAdSidebar() {
             </p>
             <h3
               className="text-sm font-bold"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
             >
               제휴 · 추천
             </h3>
@@ -108,7 +108,7 @@ export function PartnerAdSidebar() {
               </p>
               <p
                 className="text-[10px] leading-relaxed"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}
               >
                 팸플릿 제작 · 연기 아카데미
                 <br />
@@ -154,16 +154,16 @@ export function PartnerAdSidebar() {
             className="block text-center py-2.5 text-xs transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              color: "#2E5BB8",
+              color: "#274E9B",
               border: "1px solid #C5CCD9",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#2E5BB8";
+              e.currentTarget.style.backgroundColor = "#274E9B";
               e.currentTarget.style.color = "#F8F9FC";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "#2E5BB8";
+              e.currentTarget.style.color = "#274E9B";
             }}
           >
             제휴 · 광고 문의
@@ -187,7 +187,7 @@ function PartnerCardBody({ ad }: { ad: { name: string; category: string; desc: s
         {ad.tag && (
           <span
             className="text-[9px] px-1.5 py-0.5"
-            style={{ backgroundColor: "#2E5BB8", color: "#F8F9FC", fontFamily: "var(--font-inter)" }}
+            style={{ backgroundColor: "#274E9B", color: "#F8F9FC", fontFamily: "var(--font-inter)" }}
           >
             {ad.tag}
           </span>

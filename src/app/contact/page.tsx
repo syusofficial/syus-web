@@ -82,7 +82,7 @@ export default function ContactPage() {
           <p className="text-xs tracking-[0.3em] uppercase mb-6" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             접수 완료
           </p>
-          <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             감사합니다.
           </h2>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
@@ -103,7 +103,7 @@ export default function ContactPage() {
           <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             1:1 Contact
           </p>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             1:1 문의
           </h1>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
@@ -137,11 +137,11 @@ export default function ContactPage() {
             className="px-4 py-2 text-xs tracking-wider transition-colors shrink-0"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: "#2E5BB8",
+              backgroundColor: "#274E9B",
               color: "#F8F9FC",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#4A7AD8")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2E5BB8")}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#2B60CA")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#274E9B")}
           >
             FAQ 보기 →
           </Link>
@@ -164,9 +164,9 @@ export default function ContactPage() {
                     className="px-3 py-3 text-xs tracking-wide transition-colors"
                     style={{
                       fontFamily: "var(--font-noto-sans-kr)",
-                      backgroundColor: isActive ? "#2E5BB8" : "transparent",
-                      color: isActive ? "#F8F9FC" : "#2E5BB8",
-                      border: `1px solid ${isActive ? "#2E5BB8" : "#C5CCD9"}`,
+                      backgroundColor: isActive ? "#274E9B" : "transparent",
+                      color: isActive ? "#F8F9FC" : "#274E9B",
+                      border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
                     }}
                   >
                     {c}
@@ -188,7 +188,7 @@ export default function ContactPage() {
                 required
                 className="w-full px-4 py-3 text-sm outline-none"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#1A1A1A", border: "1px solid transparent" }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+                onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
               />
             </div>
@@ -202,7 +202,7 @@ export default function ContactPage() {
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 className="w-full px-4 py-3 text-sm outline-none"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#1A1A1A", border: "1px solid transparent" }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+                onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
               />
             </div>
@@ -219,7 +219,7 @@ export default function ContactPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none"
               style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#1A1A1A", border: "1px solid transparent" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -235,7 +235,7 @@ export default function ContactPage() {
               rows={6}
               className="w-full px-4 py-3 text-sm outline-none resize-none"
               style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#1A1A1A", border: "1px solid transparent" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -252,12 +252,12 @@ export default function ContactPage() {
             className="px-10 py-3 text-sm tracking-wider transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#6B7385" : "#2E5BB8",
+              backgroundColor: loading ? "#6B7385" : "#274E9B",
               color: "#F8F9FC",
               cursor: loading ? "not-allowed" : "pointer",
             }}
-            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#4A7AD8"; }}
-            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#2E5BB8"; }}
+            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#2B60CA"; }}
+            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#274E9B"; }}
           >
             {loading ? "전송 중..." : "문의 보내기"}
           </button>
@@ -278,7 +278,7 @@ export default function ContactPage() {
               <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
                 Email
               </p>
-              <p className="text-sm break-all" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
+              <p className="text-sm break-all" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
                 syusflux@gmail.com
               </p>
             </a>
@@ -294,7 +294,7 @@ export default function ContactPage() {
               <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
                 KakaoTalk
               </p>
-              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
+              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
                 사유유사 SYUS 채널 →
               </p>
             </a>
@@ -310,7 +310,7 @@ export default function ContactPage() {
               <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
                 Instagram
               </p>
-              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
+              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
                 @syus_official →
               </p>
             </a>

@@ -114,7 +114,7 @@ export default function OnboardingPage() {
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             Welcome
           </p>
-          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             가입을 마무리합니다
           </h1>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
@@ -136,7 +136,7 @@ export default function OnboardingPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -148,13 +148,13 @@ export default function OnboardingPage() {
                 checked={terms}
                 onChange={() => setTerms(!terms)}
                 required
-                label={<>이용약관 동의 <Link href="/terms" target="_blank" className="underline" style={{ color: "#2E5BB8" }}>보기</Link></>}
+                label={<>이용약관 동의 <Link href="/terms" target="_blank" className="underline" style={{ color: "#274E9B" }}>보기</Link></>}
               />
               <ConsentRow
                 checked={privacy}
                 onChange={() => setPrivacy(!privacy)}
                 required
-                label={<>개인정보 수집 및 이용 동의 <Link href="/privacy" target="_blank" className="underline" style={{ color: "#2E5BB8" }}>보기</Link></>}
+                label={<>개인정보 수집 및 이용 동의 <Link href="/privacy" target="_blank" className="underline" style={{ color: "#274E9B" }}>보기</Link></>}
               />
               <ConsentRow
                 checked={marketing}
@@ -176,7 +176,7 @@ export default function OnboardingPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: submitting || !requiredChecked ? "#6B7385" : "#2E5BB8",
+              backgroundColor: submitting || !requiredChecked ? "#6B7385" : "#274E9B",
               color: "#F8F9FC",
               cursor: submitting || !requiredChecked ? "not-allowed" : "pointer",
             }}
@@ -203,8 +203,8 @@ function ConsentRow({
       <span
         className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors"
         style={{
-          backgroundColor: checked ? "#2E5BB8" : "transparent",
-          border: `1.5px solid ${checked ? "#2E5BB8" : "#6B7385"}`,
+          backgroundColor: checked ? "#274E9B" : "transparent",
+          border: `1.5px solid ${checked ? "#274E9B" : "#6B7385"}`,
         }}
       >
         {checked && (

@@ -136,7 +136,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
           className="px-6 md:px-12 lg:px-20 py-3"
           style={{
             backgroundColor: show.status === "pending" ? "#E7ECF5" : "#EDD4D4",
-            color: show.status === "pending" ? "#2E5BB8" : "#A63D2F",
+            color: show.status === "pending" ? "#274E9B" : "#A63D2F",
           }}
         >
           <div className="max-w-7xl mx-auto text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
@@ -193,7 +193,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               )}
               <h1
                 className="text-4xl md:text-5xl font-bold leading-tight mb-2"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
               >
                 {show.title}
               </h1>
@@ -204,7 +204,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     <Link
                       href={`/performer/${show.organizer_id}`}
                       className="hover:underline transition-colors"
-                      style={{ color: "#2E5BB8" }}
+                      style={{ color: "#274E9B" }}
                     >
                       {show.performer_name}
                     </Link>
@@ -219,17 +219,17 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {(show.genre || show.region || show.show_category) && (
               <div className="flex flex-wrap gap-2">
                 {show.genre && (
-                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}>
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}>
                     {show.genre === "기타" && show.genre_custom ? show.genre_custom : show.genre}
                   </span>
                 )}
                 {show.show_category && (
-                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#2E5BB8" }}>
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E7ECF5", color: "#274E9B" }}>
                     {show.show_category}
                   </span>
                 )}
                 {show.region && (
-                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8", border: "1px solid #2E5BB8" }}>
+                  <span className="px-3 py-1 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B", border: "1px solid #274E9B" }}>
                     {show.region}
                   </span>
                 )}
@@ -260,7 +260,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                           <Link
                             href={`/shows?school=${encodeURIComponent(schoolName)}`}
                             className="hover:underline"
-                            style={{ color: "#2E5BB8" }}
+                            style={{ color: "#274E9B" }}
                           >
                             {schoolName}
                           </Link>
@@ -366,7 +366,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}
                   >
                     티켓 예매하기
                   </a>
@@ -405,7 +405,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               </p>
               <h2
                 className="text-2xl md:text-3xl font-bold"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
               >
                 이런 공연도 어떠세요
               </h2>

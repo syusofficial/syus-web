@@ -38,7 +38,7 @@ export default function ShowCard({ show }: { show: Show }) {
           <div className="flex items-start justify-between gap-2">
             <h3
               className="text-base font-semibold leading-snug transition-colors group-hover:opacity-70"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
             >
               {show.title}
             </h3>

@@ -139,7 +139,7 @@ function LoginPageInner() {
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             Account
           </p>
-          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             로그인
           </h1>
         </div>
@@ -162,7 +162,7 @@ function LoginPageInner() {
               required
               className="w-full px-4 py-3 text-sm outline-none transition-colors"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -179,8 +179,8 @@ function LoginPageInner() {
             <span
               className="w-4 h-4 shrink-0 flex items-center justify-center transition-colors"
               style={{
-                backgroundColor: rememberId ? "#2E5BB8" : "transparent",
-                border: `1.5px solid ${rememberId ? "#2E5BB8" : "#6B7385"}`,
+                backgroundColor: rememberId ? "#274E9B" : "transparent",
+                border: `1.5px solid ${rememberId ? "#274E9B" : "#6B7385"}`,
               }}
             >
               {rememberId && (
@@ -206,7 +206,7 @@ function LoginPageInner() {
           {info && (
             <p
               className="text-xs p-3"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8", backgroundColor: "#E7ECF5" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B", backgroundColor: "#E7ECF5" }}
             >
               {info}
             </p>
@@ -224,12 +224,12 @@ function LoginPageInner() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading || lockedUntil ? "#6B7385" : "#2E5BB8",
+              backgroundColor: loading || lockedUntil ? "#6B7385" : "#274E9B",
               color: "#F8F9FC",
               cursor: loading || lockedUntil ? "not-allowed" : "pointer",
             }}
-            onMouseEnter={(e) => { if (!loading && !lockedUntil) e.currentTarget.style.backgroundColor = "#4A7AD8"; }}
-            onMouseLeave={(e) => { if (!loading && !lockedUntil) e.currentTarget.style.backgroundColor = "#2E5BB8"; }}
+            onMouseEnter={(e) => { if (!loading && !lockedUntil) e.currentTarget.style.backgroundColor = "#2B60CA"; }}
+            onMouseLeave={(e) => { if (!loading && !lockedUntil) e.currentTarget.style.backgroundColor = "#274E9B"; }}
           >
             {lockedUntil ? `${countdown}초 후 재시도 가능` : (loading ? "로그인 중..." : "로그인")}
           </button>
@@ -239,7 +239,7 @@ function LoginPageInner() {
           <Link
             href="/auth/find-id"
             style={{ color: "#6B7385" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
           >
             아이디 찾기
@@ -248,7 +248,7 @@ function LoginPageInner() {
           <Link
             href="/auth/forgot-password"
             style={{ color: "#6B7385" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7385")}
           >
             비밀번호 찾기
@@ -257,7 +257,7 @@ function LoginPageInner() {
 
         <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
           아직 계정이 없으신가요?{" "}
-          <Link href="/auth/signup" style={{ color: "#2E5BB8" }}>
+          <Link href="/auth/signup" style={{ color: "#274E9B" }}>
             회원가입
           </Link>
         </p>

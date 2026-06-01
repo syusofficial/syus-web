@@ -46,7 +46,7 @@ export default function FindIdPage() {
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             Find ID
           </p>
-          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             아이디 찾기
           </h1>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
@@ -68,7 +68,7 @@ export default function FindIdPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none transition-colors"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -85,7 +85,7 @@ export default function FindIdPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#6B7385" : "#2E5BB8",
+              backgroundColor: loading ? "#6B7385" : "#274E9B",
               color: "#F8F9FC",
               cursor: loading ? "not-allowed" : "pointer",
             }}
@@ -99,7 +99,7 @@ export default function FindIdPage() {
           <div className="mt-8 p-5" style={{ backgroundColor: "#E7ECF5" }}>
             {results.length === 0 ? (
               <div className="text-center space-y-2">
-                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
+                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
                   일치하는 계정이 없습니다
                 </p>
                 <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
@@ -113,7 +113,7 @@ export default function FindIdPage() {
                 </p>
                 <div className="space-y-2">
                   {results.map((email, i) => (
-                    <p key={i} className="text-base font-semibold" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
+                    <p key={i} className="text-base font-semibold" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
                       {email}
                     </p>
                   ))}
@@ -129,9 +129,9 @@ export default function FindIdPage() {
         )}
 
         <div className="mt-8 flex items-center justify-center gap-4 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
-          <Link href="/auth/login" style={{ color: "#2E5BB8" }}>로그인</Link>
+          <Link href="/auth/login" style={{ color: "#274E9B" }}>로그인</Link>
           <span style={{ color: "#C5CCD9" }}>|</span>
-          <Link href="/auth/forgot-password" style={{ color: "#2E5BB8" }}>비밀번호 찾기</Link>
+          <Link href="/auth/forgot-password" style={{ color: "#274E9B" }}>비밀번호 찾기</Link>
         </div>
       </div>
     </div>

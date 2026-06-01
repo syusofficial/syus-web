@@ -22,7 +22,7 @@ export default async function OGImage() {
           style={{
             fontSize: 200,
             fontWeight: 900,
-            color: "#2E5BB8",
+            color: "#274E9B",
             letterSpacing: "0.08em",
             lineHeight: 1,
           }}
@@ -32,7 +32,7 @@ export default async function OGImage() {
         <div
           style={{
             fontSize: 26,
-            color: "#2E5BB8",
+            color: "#274E9B",
             marginTop: 48,
             letterSpacing: "0.4em",
             opacity: 0.7,

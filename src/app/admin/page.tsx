@@ -13,7 +13,7 @@ type Tab = "stats" | "media-kit" | "shows" | "applications" | "members" | "conta
 
 const CATEGORY_COLOR: Record<string, { bg: string; color: string }> = {
   "공연자 신청":     { bg: "#D4E4ED", color: "#2A5E7A" },
-  "공연 등록 문의":  { bg: "#E7ECF5", color: "#2E5BB8" },
+  "공연 등록 문의":  { bg: "#E7ECF5", color: "#274E9B" },
   "예매 / 환불":     { bg: "#EDE0D4", color: "#7A4A2A" },
   "협업 / 후원 제안": { bg: "#EDD4E4", color: "#7A2A5E" },
   "광고 / 제휴":     { bg: "#D4EDE8", color: "#2A7A6A" },
@@ -25,7 +25,7 @@ const CATEGORY_COLOR: Record<string, { bg: string; color: string }> = {
 
 const StatusBadge = ({ status }: { status: string }) => {
   const map: Record<string, { label: string; bg: string; color: string }> = {
-    pending:  { label: "대기중",  bg: "#E7ECF5", color: "#2E5BB8" },
+    pending:  { label: "대기중",  bg: "#E7ECF5", color: "#274E9B" },
     approved: { label: "승인됨",  bg: "#D4EDD4", color: "#3A5E42" },
     rejected: { label: "반려됨",  bg: "#EDD4D4", color: "#A63D2F" },
     resolved: { label: "처리완료", bg: "#D4EDD4", color: "#3A5E42" },
@@ -331,7 +331,7 @@ export default function AdminPage() {
           <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             403
           </p>
-          <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             접근 권한이 없습니다
           </h1>
           <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
@@ -355,7 +355,7 @@ export default function AdminPage() {
           <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             Admin
           </p>
-          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             관리자 페이지
           </h1>
         </div>
@@ -372,7 +372,7 @@ export default function AdminPage() {
               key={s.label}
               className="p-6 text-center"
               style={{
-                backgroundColor: s.highlight ? "#2E5BB8" : "#E7ECF5",
+                backgroundColor: s.highlight ? "#274E9B" : "#E7ECF5",
                 color: s.highlight ? "#F8F9FC" : "#1A1A1A",
               }}
             >
@@ -402,8 +402,8 @@ export default function AdminPage() {
               className="px-6 py-3 text-sm tracking-wide transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: tab === t.key ? "#2E5BB8" : "#6B7385",
-                borderBottom: tab === t.key ? "2px solid #2E5BB8" : "2px solid transparent",
+                color: tab === t.key ? "#274E9B" : "#6B7385",
+                borderBottom: tab === t.key ? "2px solid #274E9B" : "2px solid transparent",
                 marginBottom: -1,
               }}
             >
@@ -452,7 +452,7 @@ export default function AdminPage() {
                               type="button"
                               onClick={() => setReviewShow(show)}
                               className="text-left hover:underline transition-colors"
-                              style={{ color: "#2E5BB8", cursor: "pointer" }}
+                              style={{ color: "#274E9B", cursor: "pointer" }}
                               title="클릭하여 상세 검토"
                             >
                               {show.title}
@@ -692,9 +692,9 @@ export default function AdminPage() {
                           className="px-3 py-1.5 text-xs tracking-wide transition-colors"
                           style={{
                             fontFamily: "var(--font-noto-sans-kr)",
-                            backgroundColor: isActive ? "#2E5BB8" : "transparent",
-                            color: isActive ? "#F8F9FC" : "#2E5BB8",
-                            border: `1px solid ${isActive ? "#2E5BB8" : "#C5CCD9"}`,
+                            backgroundColor: isActive ? "#274E9B" : "transparent",
+                            color: isActive ? "#F8F9FC" : "#274E9B",
+                            border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
                           }}
                         >
                           {opt}{count > 0 && <span style={{ opacity: 0.7, marginLeft: 6 }}>({count})</span>}
@@ -931,7 +931,7 @@ function ShowReviewModal({
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm break-all hover:underline"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}
         >
           {url} ↗
         </a>
@@ -958,7 +958,7 @@ function ShowReviewModal({
           onClick={onClose}
           aria-label="닫기"
           className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center text-lg transition-colors z-10"
-          style={{ color: "#2E5BB8", backgroundColor: "#E7ECF5" }}
+          style={{ color: "#274E9B", backgroundColor: "#E7ECF5" }}
           onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#C5CCD9"; }}
           onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#E7ECF5"; }}
         >
@@ -974,7 +974,7 @@ function ShowReviewModal({
               </p>
               <StatusBadge status={show.status} />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               {show.title}
             </h2>
             {show.subtitle && (
@@ -1015,7 +1015,7 @@ function ShowReviewModal({
 
           {/* 장소 */}
           <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
-            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               장소 · 오시는 길
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -1031,7 +1031,7 @@ function ShowReviewModal({
 
           {/* 작품 */}
           <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
-            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               작품 정보
             </h3>
             <div className="space-y-5">
@@ -1074,9 +1074,9 @@ function ShowReviewModal({
                 className="px-5 py-2 text-xs tracking-wider transition-colors shrink-0"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: show.featured ? "#2E5BB8" : "transparent",
-                  color: show.featured ? "#F8F9FC" : "#2E5BB8",
-                  border: `1px solid #2E5BB8`,
+                  backgroundColor: show.featured ? "#274E9B" : "transparent",
+                  color: show.featured ? "#F8F9FC" : "#274E9B",
+                  border: `1px solid #274E9B`,
                 }}
               >
                 {show.featured ? "✓ 픽 등록됨 (해제)" : "픽 등록하기"}

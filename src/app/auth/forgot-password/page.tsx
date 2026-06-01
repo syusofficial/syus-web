@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
           <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             Email Sent
           </p>
-          <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             이메일을 확인해주세요
           </h2>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
           <Link
             href="/auth/login"
             className="inline-block px-8 py-3 text-sm tracking-wider"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}
           >
             로그인 페이지로
           </Link>
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             Password Reset
           </p>
-          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             비밀번호 찾기
           </h1>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
@@ -84,12 +84,12 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* 소셜 로그인 가입자 안내 */}
-        <div className="mb-6 p-4 text-xs leading-relaxed" style={{ backgroundColor: "#E7ECF5", color: "#2E5BB8", fontFamily: "var(--font-noto-sans-kr)" }}>
+        <div className="mb-6 p-4 text-xs leading-relaxed" style={{ backgroundColor: "#E7ECF5", color: "#274E9B", fontFamily: "var(--font-noto-sans-kr)" }}>
           <strong>Google · 카카오로 가입하셨다면?</strong>
           <br />
           비밀번호 재설정이 아닌 해당 서비스에서 직접 로그인해주세요.
           <br />
-          <Link href="/auth/login" className="underline" style={{ color: "#2E5BB8" }}>
+          <Link href="/auth/login" className="underline" style={{ color: "#274E9B" }}>
             로그인 페이지로 돌아가기 →
           </Link>
         </div>
@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none transition-colors"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -123,7 +123,7 @@ export default function ForgotPasswordPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#6B7385" : "#2E5BB8",
+              backgroundColor: loading ? "#6B7385" : "#274E9B",
               color: "#F8F9FC",
               cursor: loading ? "not-allowed" : "pointer",
             }}
@@ -133,9 +133,9 @@ export default function ForgotPasswordPage() {
         </form>
 
         <div className="mt-8 flex items-center justify-center gap-4 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
-          <Link href="/auth/login" style={{ color: "#2E5BB8" }}>로그인</Link>
+          <Link href="/auth/login" style={{ color: "#274E9B" }}>로그인</Link>
           <span style={{ color: "#C5CCD9" }}>|</span>
-          <Link href="/auth/find-id" style={{ color: "#2E5BB8" }}>아이디 찾기</Link>
+          <Link href="/auth/find-id" style={{ color: "#274E9B" }}>아이디 찾기</Link>
         </div>
       </div>
     </div>

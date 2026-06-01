@@ -151,7 +151,7 @@ export default function SessionManager() {
     <div
       className="fixed bottom-6 right-6 z-[60] max-w-sm p-5 shadow-lg"
       style={{
-        backgroundColor: "#2E5BB8",
+        backgroundColor: "#274E9B",
         color: "#F8F9FC",
         fontFamily: "var(--font-noto-sans-kr)",
       }}
@@ -166,7 +166,7 @@ export default function SessionManager() {
             className="px-3 py-1.5 text-xs tracking-wide transition-opacity"
             style={{
               backgroundColor: "#F8F9FC",
-              color: "#2E5BB8",
+              color: "#274E9B",
               fontFamily: "var(--font-noto-sans-kr)",
             }}
             onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}

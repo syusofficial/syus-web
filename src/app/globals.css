@@ -13,8 +13,8 @@
   --color-stone: #6B7385;          /* 서브 텍스트 */
   --color-charcoal: #1A1A1A;       /* 본문 텍스트·강조 */
 
-  --color-blue: #2E5BB8;           /* 메인 파랑 (코발트) */
-  --color-blue-light: #4A7AD8;     /* 호버·서브 강조 */
+  --color-blue: #274E9B;           /* 메인 파랑 (코발트) */
+  --color-blue-light: #2B60CA;     /* 호버·서브 강조 */
   --color-navy: #1B2842;           /* 딥 네이비 (헤딩·풋터) */
 
   --color-accent-green: #3A9C5C;   /* 포인트 초록 (성공·확인) */
@@ -24,9 +24,9 @@
   /* legacy alias — 기존 컴포넌트가 --color-cream 등을 참조하므로 유지 */
   --color-cream: #F8F9FC;
   --color-cream-dark: #E7ECF5;
-  --color-syus-brown: #2E5BB8;
-  --color-syus-brown-light: #4A7AD8;
-  --color-syus-blue: #2E5BB8;
+  --color-syus-brown: #274E9B;
+  --color-syus-brown-light: #2B60CA;
+  --color-syus-blue: #274E9B;
   --color-syus-navy: #1B2842;
   --color-syus-red: #D54545;
   --color-syus-green: #3A9C5C;
@@ -53,9 +53,9 @@ body {
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #F8F9FC; }
-::-webkit-scrollbar-thumb { background: #2E5BB8; border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: #274E9B; border-radius: 2px; }
 
 ::selection {
-  background: #2E5BB8;
+  background: #274E9B;
   color: #F8F9FC;
 }

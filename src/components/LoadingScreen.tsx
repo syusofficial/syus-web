@@ -50,7 +50,7 @@ export default function LoadingScreen() {
 
   if (done) return null;
 
-  const C = "#2E5BB8"; // 브랜드 브라운
+  const C = "#274E9B"; // 브랜드 브라운
 
   return (
     <div

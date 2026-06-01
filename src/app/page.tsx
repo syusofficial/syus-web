@@ -124,7 +124,7 @@ export default async function HomePage() {
       {/* ── Brand Section ── */}
       <section
         className="px-6 md:px-12 lg:px-20 py-24 md:py-32"
-        style={{ backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+        style={{ backgroundColor: "#274E9B", color: "#F8F9FC" }}
       >
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
@@ -239,8 +239,8 @@ export default async function HomePage() {
                   className="inline-block px-8 py-3 text-xs tracking-widest uppercase transition-colors"
                   style={{
                     fontFamily: "var(--font-inter)",
-                    color: "#2E5BB8",
-                    border: "1px solid #2E5BB8",
+                    color: "#274E9B",
+                    border: "1px solid #274E9B",
                   }}
                 >
                   전체 공연 보기 →
@@ -320,7 +320,7 @@ function SectionGroup({
             className="text-xs tracking-[0.3em] uppercase mb-2"
             style={{
               fontFamily: "var(--font-inter)",
-              color: accent ? "#2E5BB8" : "#6B7385",
+              color: accent ? "#274E9B" : "#6B7385",
               fontWeight: accent ? 600 : 400,
             }}
           >
@@ -328,7 +328,7 @@ function SectionGroup({
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
           >
             {title}
           </h2>

@@ -44,7 +44,7 @@ export default async function ShowsCalendarPage() {
             </p>
             <h1
               className="text-4xl md:text-5xl font-bold mb-3"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
             >
               공연 캘린더
             </h1>
@@ -60,7 +60,7 @@ export default async function ShowsCalendarPage() {
             className="px-4 py-2 text-xs tracking-wide transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              color: "#2E5BB8",
+              color: "#274E9B",
               border: "1px solid #C5CCD9",
             }}
           >

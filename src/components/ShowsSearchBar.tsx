@@ -54,7 +54,7 @@ export default function ShowsSearchBar({ basePath }: { basePath?: string } = {})
             color: "#1A1A1A",
             border: "1px solid transparent",
           }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+          onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
           onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
         />
         {query && (
@@ -72,7 +72,7 @@ export default function ShowsSearchBar({ basePath }: { basePath?: string } = {})
       <button
         type="submit"
         className="px-5 py-3 text-sm tracking-wider transition-colors"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}
       >
         검색
       </button>

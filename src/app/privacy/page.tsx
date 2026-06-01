@@ -23,7 +23,7 @@ export default function PrivacyPage() {
           </p>
           <h1
             className="text-3xl md:text-4xl font-bold mb-3"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
           >
             개인정보처리방침
           </h1>
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
           </p>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제1조 (개인정보의 처리 목적)
             </h2>
             <ol className="list-decimal pl-5 space-y-1">
@@ -52,7 +52,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제2조 (처리하는 개인정보 항목)
             </h2>
             <div className="space-y-3">
@@ -79,7 +79,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제3조 (개인정보의 처리 및 보유기간)
             </h2>
             <ol className="list-decimal pl-5 space-y-1">
@@ -91,7 +91,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제4조 (개인정보의 제3자 제공)
             </h2>
             <p>
@@ -104,7 +104,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제5조 (개인정보 처리의 위탁)
             </h2>
             <p>회사는 원활한 서비스 제공을 위해 다음과 같이 개인정보 처리 업무를 위탁하고 있습니다.</p>
@@ -133,7 +133,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제6조 (정보주체의 권리·의무)
             </h2>
             <p>이용자는 언제든지 다음의 권리를 행사할 수 있습니다.</p>
@@ -144,13 +144,13 @@ export default function PrivacyPage() {
               <li>처리정지 요구</li>
             </ol>
             <p className="mt-3">
-              권리 행사는 이메일(<a href="mailto:syusflux@gmail.com" style={{ color: "#2E5BB8" }}>syusflux@gmail.com</a>)을 통해 하실 수 있으며,
+              권리 행사는 이메일(<a href="mailto:syusflux@gmail.com" style={{ color: "#274E9B" }}>syusflux@gmail.com</a>)을 통해 하실 수 있으며,
               회사는 지체없이 조치하겠습니다.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제7조 (개인정보의 파기)
             </h2>
             <p>
@@ -160,7 +160,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제8조 (개인정보의 안전성 확보조치)
             </h2>
             <ol className="list-decimal pl-5 space-y-1">
@@ -172,7 +172,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제9조 (개인정보 보호책임자)
             </h2>
             <div className="p-5" style={{ backgroundColor: "#E7ECF5" }}>
@@ -185,7 +185,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제10조 (쿠키의 운용 및 거부)
             </h2>
             <p>
@@ -195,7 +195,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
               제11조 (변경 고지)
             </h2>
             <p>
@@ -204,7 +204,7 @@ export default function PrivacyPage() {
           </section>
 
           <div className="pt-8 text-center" style={{ borderTop: "1px solid #C5CCD9" }}>
-            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#2E5BB8" }}>
+            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#274E9B" }}>
               ← 홈으로
             </Link>
           </div>

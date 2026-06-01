@@ -9,14 +9,14 @@ export default function NotFound() {
       <div className="text-center max-w-md">
         <p
           className="tracking-[0.5em] mb-8"
-          style={{ fontFamily: "var(--font-cormorant)", color: "#2E5BB8", fontSize: "1rem" }}
+          style={{ fontFamily: "var(--font-cormorant)", color: "#274E9B", fontSize: "1rem" }}
         >
           4 0 4
         </p>
 
         <h1
           className="text-[4rem] md:text-[5rem] font-black leading-none tracking-tighter mb-6"
-          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
         >
           길을
           <br />
@@ -43,7 +43,7 @@ export default function NotFound() {
           <Link
             href="/"
             className="px-8 py-3 text-sm tracking-wider transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}
           >
             홈으로 돌아가기
           </Link>

@@ -123,7 +123,7 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
       <section>
         <SectionLabel>회원 분포</SectionLabel>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <RoleCard label="일반 회원" value={stats.roleCount.member} total={stats.totalMembers} bg="#E7ECF5" color="#2E5BB8" />
+          <RoleCard label="일반 회원" value={stats.roleCount.member} total={stats.totalMembers} bg="#E7ECF5" color="#274E9B" />
           <RoleCard label="공연자" value={stats.roleCount.performer} total={stats.totalMembers} bg="#D4E4ED" color="#2A5E7A" />
           <RoleCard label="관리자" value={stats.roleCount.admin} total={stats.totalMembers} bg="#EDD4E4" color="#7A2A5E" />
         </div>
@@ -204,7 +204,7 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
                   className="px-3 py-1 text-xs shrink-0 ml-3"
                   style={{
                     fontFamily: "var(--font-inter)",
-                    backgroundColor: "#2E5BB8",
+                    backgroundColor: "#274E9B",
                     color: "#F8F9FC",
                   }}
                 >
@@ -272,7 +272,7 @@ function SummaryCard({
     <div
       className="p-6 text-center"
       style={{
-        backgroundColor: accent ? "#2E5BB8" : "#E7ECF5",
+        backgroundColor: accent ? "#274E9B" : "#E7ECF5",
         color: accent ? "#F8F9FC" : "#1A1A1A",
       }}
     >
@@ -352,7 +352,7 @@ function BarList({ items }: { items: [string, number][] }) {
             <div className="flex-1 h-7 relative" style={{ backgroundColor: "#E7ECF5" }}>
               <div
                 className="h-full transition-all"
-                style={{ width: `${percent}%`, backgroundColor: "#2E5BB8" }}
+                style={{ width: `${percent}%`, backgroundColor: "#274E9B" }}
               />
               <span
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
@@ -391,7 +391,7 @@ function MonthlyChart({
                   className="flex-1 transition-all relative group"
                   style={{
                     height: `${signupHeight}%`,
-                    backgroundColor: "#2E5BB8",
+                    backgroundColor: "#274E9B",
                     minHeight: m.signups > 0 ? "4px" : "0",
                   }}
                   title={`신규 가입: ${m.signups}`}
@@ -399,7 +399,7 @@ function MonthlyChart({
                   {m.signups > 0 && (
                     <span
                       className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs"
-                      style={{ fontFamily: "var(--font-inter)", color: "#2E5BB8" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#274E9B" }}
                     >
                       {m.signups}
                     </span>
@@ -436,7 +436,7 @@ function MonthlyChart({
       </div>
       <div className="flex gap-4 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#2E5BB8" }} />
+          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#274E9B" }} />
           <span style={{ color: "#1A1A1A" }}>신규 가입</span>
         </span>
         <span className="flex items-center gap-1.5">

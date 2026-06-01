@@ -39,7 +39,7 @@ export default function AboutPage() {
             className="text-[2.5rem] md:text-[3.75rem] leading-[1.2] font-light mb-12"
             style={{
               fontFamily: "var(--font-noto-serif-kr)",
-              color: "#2E5BB8",
+              color: "#274E9B",
               textWrap: "balance",
               wordBreak: "keep-all",
             }}
@@ -56,13 +56,13 @@ export default function AboutPage() {
           >
             <span
               className="text-3xl md:text-4xl"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
             >
               사유유사
             </span>
             <span
               className="text-xl md:text-2xl tracking-[0.15em]"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8", opacity: 0.7 }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B", opacity: 0.7 }}
             >
               思惟流沙
             </span>
@@ -90,7 +90,7 @@ export default function AboutPage() {
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-12"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
           >
             이름의 의미
           </h2>
@@ -100,7 +100,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-4 md:gap-8 items-start">
               <p
                 className="text-sm tracking-[0.2em]"
-                style={{ fontFamily: "var(--font-inter)", color: "#2E5BB8", fontWeight: 600 }}
+                style={{ fontFamily: "var(--font-inter)", color: "#274E9B", fontWeight: 600 }}
               >
                 사유유사 · 思惟流沙
               </p>
@@ -109,11 +109,11 @@ export default function AboutPage() {
                 style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
               >
                 <p className="mb-3">
-                  <strong style={{ color: "#2E5BB8" }}>思惟</strong>(사유) — 개념·구성·판단·추리를
+                  <strong style={{ color: "#274E9B" }}>思惟</strong>(사유) — 개념·구성·판단·추리를
                   행하는 인간의 이성 작용.
                 </p>
                 <p className="mb-3">
-                  <strong style={{ color: "#2E5BB8" }}>流沙</strong>(유사) — 바람이나 흐르는 물에
+                  <strong style={{ color: "#274E9B" }}>流沙</strong>(유사) — 바람이나 흐르는 물에
                   의하여 흘러내리는 모래.
                 </p>
                 <p
@@ -134,7 +134,7 @@ export default function AboutPage() {
             >
               <p
                 className="text-sm tracking-[0.2em]"
-                style={{ fontFamily: "var(--font-inter)", color: "#2E5BB8", fontWeight: 600 }}
+                style={{ fontFamily: "var(--font-inter)", color: "#274E9B", fontWeight: 600 }}
               >
                 SYUS
               </p>
@@ -143,7 +143,7 @@ export default function AboutPage() {
                 style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
               >
                 <p className="mb-3">
-                  <strong style={{ color: "#2E5BB8" }}>System of Young Unbound Society</strong>
+                  <strong style={{ color: "#274E9B" }}>System of Young Unbound Society</strong>
                 </p>
                 <p>
                   한글 초성에서 따왔지만, 한문과는 별개의 독립된 의미를 가집니다.
@@ -168,7 +168,7 @@ export default function AboutPage() {
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-12"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
           >
             시작한 이유
           </h2>
@@ -204,14 +204,14 @@ export default function AboutPage() {
               <div key={item.num} className="flex gap-6 md:gap-10">
                 <span
                   className="text-3xl md:text-4xl shrink-0 leading-none"
-                  style={{ fontFamily: "var(--font-cormorant)", color: "#2E5BB8", opacity: 0.4 }}
+                  style={{ fontFamily: "var(--font-cormorant)", color: "#274E9B", opacity: 0.4 }}
                 >
                   {item.num}
                 </span>
                 <div>
                   <h3
                     className="text-lg md:text-xl font-semibold mb-3"
-                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
                   >
                     {item.title}
                   </h3>
@@ -241,7 +241,7 @@ export default function AboutPage() {
       {/* ── 누구와 함께 ── */}
       <section
         className="px-6 md:px-12 lg:px-20 py-24"
-        style={{ backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+        style={{ backgroundColor: "#274E9B", color: "#F8F9FC" }}
       >
         <div className="max-w-4xl mx-auto">
           <p
@@ -317,7 +317,7 @@ export default function AboutPage() {
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-4"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
           >
             우리가 만들지 않는 것
           </h2>
@@ -331,11 +331,11 @@ export default function AboutPage() {
           <div className="space-y-10">
             <div
               className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-4 md:gap-10 items-start pt-8"
-              style={{ borderTop: "2px solid #2E5BB8" }}
+              style={{ borderTop: "2px solid #274E9B" }}
             >
               <p
                 className="text-base md:text-lg font-semibold"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
               >
                 리뷰·한줄평 시스템
               </p>
@@ -359,7 +359,7 @@ export default function AboutPage() {
             >
               <p
                 className="text-base md:text-lg font-semibold"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
               >
                 랭킹·베스트·서열
               </p>
@@ -476,7 +476,7 @@ export default function AboutPage() {
             className="text-lg md:text-xl leading-relaxed mb-10"
             style={{
               fontFamily: "var(--font-noto-serif-kr)",
-              color: "#2E5BB8",
+              color: "#274E9B",
               wordBreak: "keep-all",
               textWrap: "balance",
             }}
@@ -491,7 +491,7 @@ export default function AboutPage() {
               className="px-8 py-3 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                backgroundColor: "#2E5BB8",
+                backgroundColor: "#274E9B",
                 color: "#F8F9FC",
               }}
             >
@@ -502,8 +502,8 @@ export default function AboutPage() {
               className="px-8 py-3 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                border: "1px solid #2E5BB8",
-                color: "#2E5BB8",
+                border: "1px solid #274E9B",
+                color: "#274E9B",
               }}
             >
               회원가입

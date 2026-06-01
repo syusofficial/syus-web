@@ -152,7 +152,7 @@ export default function MyPage() {
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}>
             My Page
           </p>
-          <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+          <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
             {profile.name ?? "회원"}님
           </h1>
           <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
@@ -174,8 +174,8 @@ export default function MyPage() {
               className="px-5 py-3 text-sm tracking-wide transition-colors whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: tab === t.key ? "#2E5BB8" : "#6B7385",
-                borderBottom: tab === t.key ? "2px solid #2E5BB8" : "2px solid transparent",
+                color: tab === t.key ? "#274E9B" : "#6B7385",
+                borderBottom: tab === t.key ? "2px solid #274E9B" : "2px solid transparent",
                 marginBottom: -1,
               }}
             >
@@ -200,13 +200,13 @@ export default function MyPage() {
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
                       className="flex-1 px-3 py-2 text-sm outline-none"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F8F9FC", color: "#1A1A1A", border: "1px solid #2E5BB8" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F8F9FC", color: "#1A1A1A", border: "1px solid #274E9B" }}
                     />
                     <button
                       onClick={handleNameSave}
                       disabled={nameSaving || !newName.trim()}
                       className="px-3 py-2 text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}
                     >
                       {nameSaving ? "저장 중..." : "저장"}
                     </button>
@@ -224,7 +224,7 @@ export default function MyPage() {
                     <button
                       onClick={() => setEditingName(true)}
                       className="text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}
                     >
                       수정
                     </button>
@@ -254,14 +254,14 @@ export default function MyPage() {
             {authProvider === "email" && (
               <div className="p-6" style={{ backgroundColor: "#E7ECF5" }}>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+                  <h3 className="text-sm font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
                     비밀번호 변경
                   </h3>
                   {!showPwForm && (
                     <button
                       onClick={() => { setShowPwForm(true); setPwMessage(""); }}
                       className="text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}
                     >
                       변경하기
                     </button>
@@ -281,7 +281,7 @@ export default function MyPage() {
                         type="submit"
                         disabled={pwSaving}
                         className="px-4 py-2 text-xs"
-                        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}
                       >
                         {pwSaving ? "변경 중..." : "비밀번호 저장"}
                       </button>
@@ -309,7 +309,7 @@ export default function MyPage() {
               <Link
                 href="/performer"
                 className="inline-block px-8 py-3 text-sm tracking-wider transition-colors"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#274E9B", color: "#F8F9FC" }}
               >
                 공연자 페이지로 →
               </Link>
@@ -356,7 +356,7 @@ export default function MyPage() {
                 <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
                   아직 찜한 공연이 없습니다.
                 </p>
-                <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
+                <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
                   공연 보러 가기 →
                 </Link>
               </div>
@@ -376,7 +376,7 @@ export default function MyPage() {
                 <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
                   최근 본 공연이 없습니다.
                 </p>
-                <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
+                <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
                   공연 둘러보기 →
                 </Link>
               </div>
@@ -397,7 +397,7 @@ export default function MyPage() {
         {tab === "performer" && (
           <div>
             <div className="p-8 mb-6" style={{ backgroundColor: "#E7ECF5" }}>
-              <h2 className="text-lg font-semibold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+              <h2 className="text-lg font-semibold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
                 공연자 신청이란?
               </h2>
               <p className="text-sm leading-relaxed mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
@@ -411,7 +411,7 @@ export default function MyPage() {
                   "공연자 페이지에서 공연 등록 (제목, 포스터, 일정 등)",
                   "등록된 공연은 관리자 검토 후 메인 페이지에 게시",
                 ].map((text, i) => (
-                  <p key={i} className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
+                  <p key={i} className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
                     {i + 1}. {text}
                   </p>
                 ))}
@@ -426,12 +426,12 @@ export default function MyPage() {
                 className="px-8 py-3 text-sm tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: applying ? "#6B7385" : "#2E5BB8",
+                  backgroundColor: applying ? "#6B7385" : "#274E9B",
                   color: "#F8F9FC",
                   cursor: applying ? "not-allowed" : "pointer",
                 }}
-                onMouseEnter={(e) => { if (!applying) e.currentTarget.style.backgroundColor = "#4A7AD8"; }}
-                onMouseLeave={(e) => { if (!applying) e.currentTarget.style.backgroundColor = "#2E5BB8"; }}
+                onMouseEnter={(e) => { if (!applying) e.currentTarget.style.backgroundColor = "#2B60CA"; }}
+                onMouseLeave={(e) => { if (!applying) e.currentTarget.style.backgroundColor = "#274E9B"; }}
               >
                 {applying ? "신청 중..." : "공연자 신청하기"}
               </button>
@@ -439,10 +439,10 @@ export default function MyPage() {
 
             {profile.role === "member" && profile.performer_status === "pending" && (
               <div className="p-6" style={{ backgroundColor: "#E7ECF5" }}>
-                <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}>
+                <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}>
                   ⏳ 신청이 접수되었습니다
                 </p>
-                <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2E5BB8" }}>
+                <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#274E9B" }}>
                   관리자 검토 후 승인되면 공연자 권한이 부여됩니다. (보통 1~3일 소요)
                 </p>
               </div>
@@ -464,7 +464,7 @@ export default function MyPage() {
                   className="px-8 py-3 text-sm tracking-wider"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: applying ? "#6B7385" : "#2E5BB8",
+                    backgroundColor: applying ? "#6B7385" : "#274E9B",
                     color: "#F8F9FC",
                   }}
                 >

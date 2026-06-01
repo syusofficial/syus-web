@@ -46,20 +46,20 @@ export default function ShareButton({ url }: ShareButtonProps) {
         className="px-4 py-2 text-xs tracking-wide transition-colors"
         style={{
           fontFamily: "var(--font-noto-sans-kr)",
-          backgroundColor: copied ? "#2E5BB8" : "transparent",
-          color: copied ? "#F8F9FC" : "#2E5BB8",
-          border: `1px solid ${copied ? "#2E5BB8" : "#C5CCD9"}`,
+          backgroundColor: copied ? "#274E9B" : "transparent",
+          color: copied ? "#F8F9FC" : "#274E9B",
+          border: `1px solid ${copied ? "#274E9B" : "#C5CCD9"}`,
         }}
         onMouseEnter={(e) => {
           if (copied) return;
-          e.currentTarget.style.backgroundColor = "#2E5BB8";
+          e.currentTarget.style.backgroundColor = "#274E9B";
           e.currentTarget.style.color = "#F8F9FC";
-          e.currentTarget.style.borderColor = "#2E5BB8";
+          e.currentTarget.style.borderColor = "#274E9B";
         }}
         onMouseLeave={(e) => {
           if (copied) return;
           e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.color = "#2E5BB8";
+          e.currentTarget.style.color = "#274E9B";
           e.currentTarget.style.borderColor = "#C5CCD9";
         }}
       >

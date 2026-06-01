@@ -18,7 +18,7 @@ import type { User } from "@supabase/supabase-js";
 export function SyusLogoSvg({
   width = 200,
   height = 80,
-  color = "#2E5BB8",
+  color = "#274E9B",
 }: {
   width?: number;
   height?: number;
@@ -79,7 +79,7 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
       <Link
         href="/faq"
         style={linkStyle}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
       >
         도움말
@@ -98,7 +98,7 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
               href="/faq"
               className="px-3 py-2 text-xs transition-colors"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
             >
               자주 묻는 질문 (FAQ)
@@ -107,7 +107,7 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
               href="/contact"
               className="px-3 py-2 text-xs transition-colors"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
             >
               1:1 문의
@@ -132,7 +132,7 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
       <Link
         href="/shows"
         style={linkStyle}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
       >
         공연
@@ -160,7 +160,7 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
                   color: "#1A1A1A",
                   fontWeight: region === "전체" ? 600 : 400,
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
               >
                 {region}
@@ -261,7 +261,7 @@ export default function Nav() {
           <Link
             href="/archive"
             style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
           >
             기록
@@ -269,7 +269,7 @@ export default function Nav() {
           <Link
             href="/about"
             style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
           >
             소개
@@ -283,7 +283,7 @@ export default function Nav() {
           <span
             style={{
               fontFamily: "var(--font-cormorant)",
-              color: "#2E5BB8",
+              color: "#274E9B",
               fontSize: "0.65rem",
               letterSpacing: "0.4em",
             }}
@@ -299,7 +299,7 @@ export default function Nav() {
               {role === "admin" && (
                 <Link
                   href="/admin"
-                  style={{ ...linkStyle, color: "#2E5BB8", fontWeight: 600 }}
+                  style={{ ...linkStyle, color: "#274E9B", fontWeight: 600 }}
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
                   onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
                 >
@@ -309,7 +309,7 @@ export default function Nav() {
               <Link
                 href="/mypage"
                 style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
               >
                 마이페이지
@@ -319,11 +319,11 @@ export default function Nav() {
                 className="px-4 py-2 text-xs tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: "#2E5BB8",
+                  backgroundColor: "#274E9B",
                   color: "#F8F9FC",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#4A7AD8")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2E5BB8")}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#2B60CA")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#274E9B")}
               >
                 로그아웃
               </button>
@@ -333,7 +333,7 @@ export default function Nav() {
               <Link
                 href="/auth/login"
                 style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#2E5BB8")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#274E9B")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#1A1A1A")}
               >
                 로그인
@@ -343,11 +343,11 @@ export default function Nav() {
                 className="px-4 py-2 text-xs tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: "#2E5BB8",
+                  backgroundColor: "#274E9B",
                   color: "#F8F9FC",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#4A7AD8")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2E5BB8")}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#2B60CA")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#274E9B")}
               >
                 회원가입
               </Link>
@@ -364,7 +364,7 @@ export default function Nav() {
           <span
             style={{
               fontFamily: "var(--font-cormorant)",
-              color: "#2E5BB8",
+              color: "#274E9B",
               fontSize: "0.55rem",
               letterSpacing: "0.3em",
             }}
@@ -473,7 +473,7 @@ export default function Nav() {
                 {role === "admin" && (
                   <Link
                     href="/admin"
-                    style={{ ...linkStyle, padding: "8px 0", color: "#2E5BB8", fontWeight: 600 }}
+                    style={{ ...linkStyle, padding: "8px 0", color: "#274E9B", fontWeight: 600 }}
                     onClick={() => setMenuOpen(false)}
                   >
                     관리자
@@ -491,7 +491,7 @@ export default function Nav() {
                   className="py-3 text-sm tracking-wider text-center"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: "#2E5BB8",
+                    backgroundColor: "#274E9B",
                     color: "#F8F9FC",
                   }}
                 >
@@ -512,7 +512,7 @@ export default function Nav() {
                   className="py-3 text-sm tracking-wider text-center"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: "#2E5BB8",
+                    backgroundColor: "#274E9B",
                     color: "#F8F9FC",
                   }}
                   onClick={() => setMenuOpen(false)}

@@ -24,7 +24,7 @@ function renderAnswer(answer: string): React.ReactNode {
           href={match[2]}
           {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
           className="hover:underline"
-          style={{ color: "#2E5BB8", fontWeight: 500 }}
+          style={{ color: "#274E9B", fontWeight: 500 }}
         >
           {match[1]}
         </Link>
@@ -120,7 +120,7 @@ export default function FAQPage() {
           </p>
           <h1
             className="text-4xl md:text-5xl font-bold mb-3"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2E5BB8" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B" }}
           >
             자주 묻는 질문
           </h1>
@@ -147,7 +147,7 @@ export default function FAQPage() {
                 color: "#1A1A1A",
                 border: "1px solid transparent",
               }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#2E5BB8")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#274E9B")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
             {query && (
@@ -181,7 +181,7 @@ export default function FAQPage() {
                   className="w-full text-left px-5 py-3 transition-colors"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: "#2E5BB8",
+                    backgroundColor: "#274E9B",
                     color: "#F8F9FC",
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
@@ -208,9 +208,9 @@ export default function FAQPage() {
                 className="px-3 py-1.5 text-xs tracking-wide transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#2E5BB8" : "transparent",
-                  color: isActive ? "#F8F9FC" : "#2E5BB8",
-                  border: `1px solid ${isActive ? "#2E5BB8" : "#C5CCD9"}`,
+                  backgroundColor: isActive ? "#274E9B" : "transparent",
+                  color: isActive ? "#F8F9FC" : "#274E9B",
+                  border: `1px solid ${isActive ? "#274E9B" : "#C5CCD9"}`,
                 }}
               >
                 {c}
@@ -290,7 +290,7 @@ export default function FAQPage() {
                     <span
                       className="text-base shrink-0 mt-0.5 transition-transform"
                       style={{
-                        color: "#2E5BB8",
+                        color: "#274E9B",
                         transform: isOpen ? "rotate(45deg)" : "rotate(0)",
                       }}
                     >
@@ -319,7 +319,7 @@ export default function FAQPage() {
         {/* 1:1 문의 안내 */}
         <div
           className="mt-16 p-8 text-center"
-          style={{ backgroundColor: "#2E5BB8", color: "#F8F9FC" }}
+          style={{ backgroundColor: "#274E9B", color: "#F8F9FC" }}
         >
           <p
             className="text-xs tracking-[0.3em] uppercase mb-2"
@@ -345,7 +345,7 @@ export default function FAQPage() {
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
               backgroundColor: "#F8F9FC",
-              color: "#2E5BB8",
+              color: "#274E9B",
             }}
           >
             1:1 문의하기 →
