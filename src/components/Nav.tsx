@@ -67,7 +67,7 @@ const MENU_HOVER = {
   help: "#7BA86F",
 } as const;
 
-/** 호버 메뉴 — 메뉴별 hoverColor 지정 가능 */
+/** 호버 메뉴 — 메뉴별 hoverColor 지정 가능. 호버 시 underline 표시(클릭 가능 신호) */
 function NavMenuLink({
   href,
   label,
@@ -83,8 +83,15 @@ function NavMenuLink({
     <Link
       href={href}
       style={linkStyle}
-      onMouseEnter={(e) => (e.currentTarget.style.color = hoverColor)}
-      onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.color = hoverColor;
+        e.currentTarget.style.textDecoration = "underline";
+        e.currentTarget.style.textUnderlineOffset = "5px";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.color = "#202833";
+        e.currentTarget.style.textDecoration = "none";
+      }}
     >
       {label}
     </Link>
@@ -104,8 +111,15 @@ function ContactHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
       <Link
         href="/faq"
         style={linkStyle}
-        onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.help)}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = MENU_HOVER.help;
+          e.currentTarget.style.textDecoration = "underline";
+          e.currentTarget.style.textUnderlineOffset = "5px";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = "#202833";
+          e.currentTarget.style.textDecoration = "none";
+        }}
       >
         도움말
       </Link>
@@ -157,8 +171,15 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
       <Link
         href="/shows"
         style={linkStyle}
-        onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.shows)}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "#202833")}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = MENU_HOVER.shows;
+          e.currentTarget.style.textDecoration = "underline";
+          e.currentTarget.style.textUnderlineOffset = "5px";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = "#202833";
+          e.currentTarget.style.textDecoration = "none";
+        }}
       >
         공연
       </Link>
@@ -266,8 +287,9 @@ export default function Nav() {
   const linkStyle: React.CSSProperties = {
     fontFamily: "var(--font-noto-sans-kr)",
     color: "#202833",
-    fontSize: "0.8125rem",
-    letterSpacing: "0.08em",
+    fontSize: "0.95rem",
+    fontWeight: 600,
+    letterSpacing: "0.12em",
   };
 
   return (
@@ -275,10 +297,13 @@ export default function Nav() {
       className="fixed top-0 left-0 right-0 z-50"
       style={{ backgroundColor: "#FBF8F1", borderBottom: "1px solid #D8D3C9" }}
     >
-      {/* Desktop — 3열 그리드 (메인 행) */}
+      {/* Desktop — 3열 그리드 (메인 행)
+       * 2026-06-02 가독성 개선: 메뉴를 로고 가까이(우측 정렬) + 진한 글씨(weight 600) + 간격 확장(gap-12)
+       * 좌측 구석에 압축된 인상 해소.
+       */}
       <div className="hidden md:grid grid-cols-3 items-center max-w-7xl mx-auto px-8 pt-3 pb-2">
-        {/* Left */}
-        <div className="flex items-center gap-8">
+        {/* Left — 메뉴를 우측(로고 쪽)으로 정렬해 시각 무게중심을 중앙으로 */}
+        <div className="flex items-center gap-12 justify-end pr-4">
           <ShowsHoverMenu linkStyle={linkStyle} />
           <NavMenuLink href="/archive" label="기록" hoverColor={MENU_HOVER.archive} linkStyle={linkStyle} />
           <NavMenuLink href="/about" label="소개" hoverColor={MENU_HOVER.about} linkStyle={linkStyle} />
@@ -302,8 +327,8 @@ export default function Nav() {
           </span>
         </Link>
 
-        {/* Right */}
-        <div className="flex items-center gap-6 justify-end">
+        {/* Right — 로그인/회원가입을 로고 가까이(좌측)로 정렬해 좌우 균형 */}
+        <div className="flex items-center gap-6 justify-start pl-4">
           {user ? (
             <>
               {role === "admin" && (
