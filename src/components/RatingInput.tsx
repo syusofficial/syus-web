@@ -82,7 +82,7 @@ export default function RatingInput({ showId, isLoggedIn, initialMyScore }: Prop
   // 비로그인 — 안내 + 로그인 링크
   if (!isLoggedIn) {
     return (
-      <div className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+      <div className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
         별점을 부여하시려면{" "}
         <Link
           href="/auth/login"
@@ -144,7 +144,7 @@ export default function RatingInput({ showId, isLoggedIn, initialMyScore }: Prop
       </div>
       <p
         className="text-xs mt-2"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
       >
         {myScore !== null
           ? `회원님의 평가: ${myScore}점 · 다시 누르면 점수가 갱신됩니다.`

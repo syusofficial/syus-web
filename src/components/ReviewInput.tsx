@@ -36,7 +36,7 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
         className="p-5 text-sm"
         style={{
           fontFamily: "var(--font-noto-sans-kr)",
-          color: "#7A746C",
+          color: "#5F584F",
           backgroundColor: "#F0EBE0",
         }}
       >
@@ -82,7 +82,7 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
       <div className="flex items-center justify-between">
         <p
           className="text-[0.7rem]"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
         >
           {body.length} / 1000자 · 한 공연당 한 번 작성, 다시 제출하면 갱신됩니다.
         </p>

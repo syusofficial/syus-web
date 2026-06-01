@@ -191,7 +191,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
             className="text-center text-xs tracking-wider py-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              color: i === 0 ? "#A63D2F" : "#7A746C",
+              color: i === 0 ? "#A63D2F" : "#5F584F",
             }}
           >
             {w}
@@ -269,7 +269,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
       <div className="pt-8" style={{ borderTop: "1px solid #D8D3C9" }}>
         <p
           className="text-xs tracking-[0.3em] uppercase mb-3"
-          style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
         >
           Selected
         </p>
@@ -283,7 +283,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
         {selectedShows.length === 0 ? (
           <p
             className="text-sm py-12 text-center"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
           >
             이 날짜에 진행되는 공연이 없습니다.
           </p>
@@ -308,7 +308,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
                       </h4>
                       <p
                         className="text-xs"
-                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
                       >
                         {[
                           show.performer_name,
@@ -319,7 +319,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
                       {show.show_time && (
                         <p
                           className="text-xs mt-1"
-                          style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+                          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
                         >
                           {show.show_time}
                         </p>

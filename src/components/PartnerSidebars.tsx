@@ -11,7 +11,7 @@ export function InstitutionSidebar() {
         <div className="mb-5">
           <p
             className="text-[10px] tracking-[0.3em] uppercase mb-1.5"
-            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
           >
             Related Institutions
           </p>
@@ -47,7 +47,7 @@ export function InstitutionSidebar() {
                 <p className="text-xs leading-tight mb-0.5" style={{ color: "#1A1A1A" }}>
                   {inst.name}
                 </p>
-                <p className="text-[10px]" style={{ color: "#7A746C", fontFamily: "var(--font-inter)" }}>
+                <p className="text-[10px]" style={{ color: "#5F584F", fontFamily: "var(--font-inter)" }}>
                   {inst.desc}
                 </p>
               </a>
@@ -57,7 +57,7 @@ export function InstitutionSidebar() {
 
         <p
           className="mt-5 text-[10px] leading-relaxed"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
         >
           외부 사이트로 이동합니다.
         </p>
@@ -75,7 +75,7 @@ export function PartnerAdSidebar() {
           <div>
             <p
               className="text-[10px] tracking-[0.3em] uppercase mb-1.5"
-              style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
             >
               Recommended
             </p>
@@ -100,7 +100,7 @@ export function PartnerAdSidebar() {
             >
               <p
                 className="text-[11px] leading-relaxed mb-3"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
               >
                 이 자리에는 공연예술 관련
                 <br />
@@ -180,7 +180,7 @@ function PartnerCardBody({ ad }: { ad: { name: string; category: string; desc: s
       <div className="flex items-center justify-between mb-1.5">
         <span
           className="text-[9px] tracking-[0.2em] uppercase"
-          style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
         >
           {ad.category}
         </span>
@@ -201,7 +201,7 @@ function PartnerCardBody({ ad }: { ad: { name: string; category: string; desc: s
       </p>
       <p
         className="text-[10px] leading-relaxed"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
       >
         {ad.desc}
       </p>

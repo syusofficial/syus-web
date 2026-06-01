@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <div className="mb-12">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
           >
             Privacy Policy
           </p>
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           >
             개인정보처리방침
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
             시행일: 2026년 4월 25일
           </p>
         </div>
@@ -121,9 +121,9 @@ export default function PrivacyPage() {
               <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
-                    <th className="text-left py-2 pr-4" style={{ color: "#7A746C" }}>수탁자</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#7A746C" }}>위탁 업무</th>
-                    <th className="text-left py-2" style={{ color: "#7A746C" }}>국가</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>수탁자</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>위탁 업무</th>
+                    <th className="text-left py-2" style={{ color: "#5F584F" }}>국가</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -187,9 +187,9 @@ export default function PrivacyPage() {
             </h2>
             <div className="p-5" style={{ backgroundColor: "#F0EBE0" }}>
               <div className="grid grid-cols-[80px_1fr] gap-2 text-xs">
-                <span style={{ color: "#7A746C" }}>성명</span><span>이혁호 (대표)</span>
-                <span style={{ color: "#7A746C" }}>직책</span><span>사유유사 대표</span>
-                <span style={{ color: "#7A746C" }}>연락처</span><span>syusflux@gmail.com</span>
+                <span style={{ color: "#5F584F" }}>성명</span><span>이혁호 (대표)</span>
+                <span style={{ color: "#5F584F" }}>직책</span><span>사유유사 대표</span>
+                <span style={{ color: "#5F584F" }}>연락처</span><span>syusflux@gmail.com</span>
               </div>
             </div>
           </section>

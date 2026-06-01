@@ -346,7 +346,7 @@ export default async function HomePage() {
                   <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
                     곧 첫 무대가 오릅니다.
                   </p>
-                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                     공연자분들의 무대를 가장 먼저 만나보실 수 있도록 준비 중입니다.
                   </p>
                 </div>
@@ -446,7 +446,7 @@ function SectionGroup({
             className="text-xs tracking-[0.3em] uppercase mb-2"
             style={{
               fontFamily: "var(--font-inter)",
-              color: accent ? "#3B5A6B" : "#7A746C",
+              color: accent ? "#3B5A6B" : "#5F584F",
               fontWeight: accent ? 600 : 400,
             }}
           >

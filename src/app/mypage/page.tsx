@@ -149,13 +149,13 @@ export default function MyPage() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
             My Page
           </p>
           <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             {profile.name ?? "회원"}님
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
             {profile.email ?? "이메일 미제공 (소셜 가입)"} · {roleLabel}
           </p>
         </div>
@@ -174,7 +174,7 @@ export default function MyPage() {
               className="px-5 py-3 text-sm tracking-wide transition-colors whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: tab === t.key ? "#3B5A6B" : "#7A746C",
+                color: tab === t.key ? "#3B5A6B" : "#5F584F",
                 borderBottom: tab === t.key ? "2px solid #3B5A6B" : "2px solid transparent",
                 marginBottom: -1,
               }}
@@ -190,7 +190,7 @@ export default function MyPage() {
             <div className="p-6 space-y-4" style={{ backgroundColor: "#F0EBE0" }}>
               {/* 이름 (수정 가능) */}
               <div className="grid grid-cols-[100px_1fr] gap-4 items-center">
-                <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                   이름
                 </span>
                 {editingName ? (
@@ -213,7 +213,7 @@ export default function MyPage() {
                     <button
                       onClick={() => { setEditingName(false); setNewName(profile.name ?? ""); }}
                       className="px-3 py-2 text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", border: "1px solid #D8D3C9" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", border: "1px solid #D8D3C9" }}
                     >
                       취소
                     </button>
@@ -240,7 +240,7 @@ export default function MyPage() {
                 { label: "가입 경로", value: { email: "이메일", google: "Google", kakao: "카카오" }[authProvider] ?? authProvider },
               ].map((item) => (
                 <div key={item.label} className="grid grid-cols-[100px_1fr] gap-4 text-sm">
-                  <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                  <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                     {item.label}
                   </span>
                   <span style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
@@ -289,7 +289,7 @@ export default function MyPage() {
                         type="button"
                         onClick={() => { setShowPwForm(false); setNewPw(""); setConfirmPw(""); setPwMessage(""); }}
                         className="px-4 py-2 text-xs"
-                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", border: "1px solid #D8D3C9" }}
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", border: "1px solid #D8D3C9" }}
                       >
                         취소
                       </button>
@@ -300,7 +300,7 @@ export default function MyPage() {
             )}
 
             {authProvider !== "email" && (
-              <div className="p-4 text-xs" style={{ backgroundColor: "#F0EBE0", color: "#7A746C", fontFamily: "var(--font-noto-sans-kr)" }}>
+              <div className="p-4 text-xs" style={{ backgroundColor: "#F0EBE0", color: "#5F584F", fontFamily: "var(--font-noto-sans-kr)" }}>
                 {authProvider === "google" ? "Google" : "카카오"} 계정으로 가입하셨기 때문에 비밀번호는 해당 서비스에서 관리됩니다.
               </div>
             )}
@@ -320,7 +320,7 @@ export default function MyPage() {
               <h3 className="text-sm font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#A63D2F" }}>
                 회원 탈퇴
               </h3>
-              <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+              <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                 탈퇴 시 모든 정보(공연 등록 내역, 찜 목록, 가입 정보)가 영구 삭제되며 복구할 수 없습니다.
               </p>
               <button
@@ -353,7 +353,7 @@ export default function MyPage() {
           <>
             {likedShows.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                   아직 찜한 공연이 없습니다.
                 </p>
                 <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
@@ -373,7 +373,7 @@ export default function MyPage() {
           <>
             {recentShows.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                   최근 본 공연이 없습니다.
                 </p>
                 <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
@@ -382,7 +382,7 @@ export default function MyPage() {
               </div>
             ) : (
               <>
-                <p className="text-xs mb-6" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                <p className="text-xs mb-6" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                   이 기기에서 본 최근 10개 공연이 표시됩니다.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
@@ -426,7 +426,7 @@ export default function MyPage() {
                 className="px-8 py-3 text-sm tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: applying ? "#7A746C" : "#3B5A6B",
+                  backgroundColor: applying ? "#5F584F" : "#3B5A6B",
                   color: "#FBF8F1",
                   cursor: applying ? "not-allowed" : "pointer",
                 }}
@@ -464,7 +464,7 @@ export default function MyPage() {
                   className="px-8 py-3 text-sm tracking-wider"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: applying ? "#7A746C" : "#3B5A6B",
+                    backgroundColor: applying ? "#5F584F" : "#3B5A6B",
                     color: "#FBF8F1",
                   }}
                 >

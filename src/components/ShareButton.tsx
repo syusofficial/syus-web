@@ -36,7 +36,7 @@ export default function ShareButton({ url }: ShareButtonProps) {
     <div>
       <p
         className="text-xs tracking-[0.2em] uppercase mb-3"
-        style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
       >
         Share
       </p>

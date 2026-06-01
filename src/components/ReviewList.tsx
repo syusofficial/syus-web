@@ -23,7 +23,7 @@ export default function ReviewList({ showId, reviews }: Props) {
     return (
       <p
         className="text-sm py-8 text-center"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
       >
         아직 후기가 없습니다. 첫 후기를 남겨주세요.
       </p>
@@ -86,7 +86,7 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
           </p>
           <p
             className="text-xs"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
           >
             {formatReviewDate(review.createdAt)}
           </p>
@@ -116,7 +116,7 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
               className="text-[0.7rem] px-2 py-1 transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: review.reportedByMe ? "#7A746C" : "#7A746C",
+                color: review.reportedByMe ? "#5F584F" : "#5F584F",
                 border: "1px solid #D8D3C9",
                 background: "none",
                 cursor: review.reportedByMe ? "default" : "pointer",
@@ -140,7 +140,7 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
         <div className="mt-4 pt-4" style={{ borderTop: "1px solid #D8D3C9" }}>
           <p
             className="text-xs mb-2"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
           >
             신고 사유를 선택해주세요. 운영자가 24시간 내 확인합니다.
           </p>
@@ -183,7 +183,7 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
               className="text-xs px-3 py-1.5"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#7A746C",
+                color: "#5F584F",
                 border: "1px solid #D8D3C9",
                 background: "none",
               }}
@@ -197,7 +197,7 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
       {toast && (
         <p
           className="mt-3 text-[0.7rem]"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
         >
           {toast}
         </p>

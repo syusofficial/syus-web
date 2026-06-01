@@ -38,7 +38,7 @@ export default async function ShowsCalendarPage() {
           <div>
             <p
               className="text-xs tracking-[0.3em] uppercase mb-3"
-              style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
             >
               Calendar
             </p>
@@ -50,7 +50,7 @@ export default async function ShowsCalendarPage() {
             </h1>
             <p
               className="text-sm"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
             >
               날짜별로 진행되는 공연을 확인해보세요.
             </p>

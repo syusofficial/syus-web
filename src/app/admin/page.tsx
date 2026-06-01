@@ -35,11 +35,11 @@ const StatusBadge = ({ status }: { status: string }) => {
     approved: { label: "승인됨",  bg: "#D4EDD4", color: "#3A5E42" },
     rejected: { label: "반려됨",  bg: "#EDD4D4", color: "#A63D2F" },
     resolved: { label: "처리완료", bg: "#D4EDD4", color: "#3A5E42" },
-    member:   { label: "일반",    bg: "#F0EBE0", color: "#7A746C" },
+    member:   { label: "일반",    bg: "#F0EBE0", color: "#5F584F" },
     performer:{ label: "공연자",  bg: "#D4E4ED", color: "#2A5E7A" },
     admin:    { label: "관리자",  bg: "#EDD4E4", color: "#7A2A5E" },
   };
-  const s = map[status] ?? { label: status, bg: "#F0EBE0", color: "#7A746C" };
+  const s = map[status] ?? { label: status, bg: "#F0EBE0", color: "#5F584F" };
   return (
     <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color, fontFamily: "var(--font-inter)" }}>
       {s.label}
@@ -342,13 +342,13 @@ export default function AdminPage() {
     return (
       <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
         <div className="text-center space-y-4">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
             403
           </p>
           <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             접근 권한이 없습니다
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
             관리자 계정으로 로그인해주세요.
           </p>
         </div>
@@ -366,7 +366,7 @@ export default function AdminPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
             Admin
           </p>
           <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
@@ -417,7 +417,7 @@ export default function AdminPage() {
               className="px-6 py-3 text-sm tracking-wide transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: tab === t.key ? "#3B5A6B" : "#7A746C",
+                color: tab === t.key ? "#3B5A6B" : "#5F584F",
                 borderBottom: tab === t.key ? "2px solid #3B5A6B" : "2px solid transparent",
                 marginBottom: -1,
               }}
@@ -445,7 +445,7 @@ export default function AdminPage() {
             {tab === "shows" && (
               <div className="overflow-x-auto">
                 {shows.length === 0 ? (
-                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                     등록된 공연이 없습니다.
                   </p>
                 ) : (
@@ -453,7 +453,7 @@ export default function AdminPage() {
                     <thead>
                       <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
                         {["공연명", "공연자", "장소", "일정", "상태", "관리"].map((h) => (
-                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                             {h}
                           </th>
                         ))}
@@ -473,13 +473,13 @@ export default function AdminPage() {
                               {show.title}
                             </button>
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                             {show.performer_name ?? "—"}
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                             {show.venue}
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                             {show.schedule_start ?? "—"}
                           </td>
                           <td className="py-4 px-3">
@@ -535,7 +535,7 @@ export default function AdminPage() {
                   const pendingList = members.filter((m) => m.performer_status === "pending");
                   if (pendingList.length === 0) {
                     return (
-                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                         대기 중인 공연자 신청이 없습니다.
                       </p>
                     );
@@ -545,7 +545,7 @@ export default function AdminPage() {
                       <thead>
                         <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
                           {["이름", "이메일", "가입일", "관리"].map((h) => (
-                            <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                            <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                               {h}
                             </th>
                           ))}
@@ -557,10 +557,10 @@ export default function AdminPage() {
                             <td className="py-4 px-3 font-medium" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}>
                               {m.name ?? "—"}
                             </td>
-                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                               {m.email ?? <span style={{ fontStyle: "italic" }}>이메일 없음</span>}
                             </td>
-                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                            <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                               {m.created_at.slice(0, 10)}
                             </td>
                             <td className="py-4 px-3">
@@ -598,7 +598,7 @@ export default function AdminPage() {
             {tab === "members" && (
               <div className="overflow-x-auto">
                 {members.length === 0 ? (
-                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                     가입된 회원이 없습니다.
                   </p>
                 ) : (
@@ -606,7 +606,7 @@ export default function AdminPage() {
                     <thead>
                       <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
                         {["이름", "이메일", "역할", "가입일", "역할 변경", "관리"].map((h) => (
-                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                             {h}
                           </th>
                         ))}
@@ -618,13 +618,13 @@ export default function AdminPage() {
                           <td className="py-4 px-3 font-medium" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
                             {m.name ?? "—"}
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                             {m.email ?? <span style={{ fontStyle: "italic" }}>이메일 없음</span>}
                           </td>
                           <td className="py-4 px-3">
                             <StatusBadge status={m.role} />
                           </td>
-                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                             {m.created_at.slice(0, 10)}
                           </td>
                           <td className="py-4 px-3">
@@ -726,7 +726,7 @@ export default function AdminPage() {
 
                   if (filteredContacts.length === 0) {
                     return (
-                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                         {contactFilter === "전체" ? "접수된 문의가 없습니다." : `"${contactFilter}" 유형의 문의가 없습니다.`}
                       </p>
                     );
@@ -756,7 +756,7 @@ export default function AdminPage() {
                                     {c.name}
                                   </p>
                                 </div>
-                                <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                                <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                                   {c.email}
                                   {c.phone ? ` · ${c.phone}` : ""}
                                   {" · "}
@@ -804,7 +804,7 @@ export default function AdminPage() {
                 {contactView === "trash" && (
                   <>
                     {trashedContacts.length === 0 ? (
-                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                      <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                         휴지통이 비어 있습니다.
                       </p>
                     ) : (
@@ -843,7 +843,7 @@ export default function AdminPage() {
                                         {c.name}
                                       </p>
                                     </div>
-                                    <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                                    <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                                       {c.email}
                                       {c.phone ? ` · ${c.phone}` : ""}
                                       {" · 접수: "}
@@ -936,18 +936,18 @@ function ShowReviewModal({
 
   const InfoRow = ({ label, value }: { label: string; value?: string | null }) => (
     <div>
-      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
         {label}
       </p>
       <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
-        {value && value.trim() !== "" ? value : <span style={{ color: "#7A746C" }}>—</span>}
+        {value && value.trim() !== "" ? value : <span style={{ color: "#5F584F" }}>—</span>}
       </p>
     </div>
   );
 
   const LinkRow = ({ label, url }: { label: string; url?: string | null }) => (
     <div>
-      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+      <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
         {label}
       </p>
       {url && url.trim() !== "" ? (
@@ -961,7 +961,7 @@ function ShowReviewModal({
           {url} ↗
         </a>
       ) : (
-        <p className="text-sm" style={{ color: "#7A746C" }}>—</p>
+        <p className="text-sm" style={{ color: "#5F584F" }}>—</p>
       )}
     </div>
   );
@@ -994,7 +994,7 @@ function ShowReviewModal({
           {/* 헤더 */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+              <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                 Review
               </p>
               <StatusBadge status={show.status} />
@@ -1003,7 +1003,7 @@ function ShowReviewModal({
               {show.title}
             </h2>
             {show.subtitle && (
-              <p className="text-sm" style={{ fontFamily: "var(--font-inter)", color: "#7A746C", letterSpacing: "0.1em" }}>
+              <p className="text-sm" style={{ fontFamily: "var(--font-inter)", color: "#5F584F", letterSpacing: "0.1em" }}>
                 {show.subtitle}
               </p>
             )}
@@ -1017,7 +1017,7 @@ function ShowReviewModal({
                 <img src={show.poster_url} alt={show.title} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                     포스터 없음
                   </p>
                 </div>
@@ -1065,14 +1065,14 @@ function ShowReviewModal({
                 value={show.cast_members && show.cast_members.length > 0 ? show.cast_members.join(", ") : null}
               />
               <div>
-                <p className="text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                <p className="text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                   작품 소개
                 </p>
                 <p
                   className="text-sm leading-relaxed whitespace-pre-wrap p-4"
                   style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A", backgroundColor: "#F0EBE0" }}
                 >
-                  {show.description || <span style={{ color: "#7A746C" }}>작품 소개가 없습니다.</span>}
+                  {show.description || <span style={{ color: "#5F584F" }}>작품 소개가 없습니다.</span>}
                 </p>
               </div>
               <LinkRow label="티켓 예매 링크" url={show.ticket_url} />
@@ -1086,7 +1086,7 @@ function ShowReviewModal({
               style={{ borderTop: "1px solid #D8D3C9" }}
             >
               <div className="flex-1 min-w-0">
-                <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                   Editor&apos;s Pick
                 </p>
                 <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
@@ -1210,7 +1210,7 @@ function ReviewsAdminPanel({
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
               backgroundColor: filter === f.key ? "#3B5A6B" : "transparent",
-              color: filter === f.key ? "#FBF8F1" : "#7A746C",
+              color: filter === f.key ? "#FBF8F1" : "#5F584F",
               border: "1px solid #D8D3C9",
             }}
           >
@@ -1222,7 +1222,7 @@ function ReviewsAdminPanel({
       {filtered.length === 0 ? (
         <p
           className="text-center py-20 text-sm"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
         >
           {filter === "hidden" ? "검토 대기 중인 후기가 없습니다." : "표시할 후기가 없습니다."}
         </p>
@@ -1233,7 +1233,7 @@ function ReviewsAdminPanel({
               public: { bg: "#D4EDD4", color: "#3A5E42", label: "공개" },
               hidden: { bg: "#EDD4D4", color: "#A63D2F", label: "검토 대기" },
               blocked: { bg: "#1A1A1A", color: "#FBF8F1", label: "차단" },
-              pending: { bg: "#F0EBE0", color: "#7A746C", label: "대기" },
+              pending: { bg: "#F0EBE0", color: "#5F584F", label: "대기" },
             };
             const s = statusLabel[r.status] ?? statusLabel.pending;
             const mod = r.moderation as { score?: number; matched?: string[]; source?: string } | null;
@@ -1252,11 +1252,11 @@ function ReviewsAdminPanel({
                       <p className="text-sm font-semibold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#202833" }}>
                         {r.profiles?.name || "익명"}
                       </p>
-                      <span className="text-xs" style={{ color: "#7A746C" }}>
+                      <span className="text-xs" style={{ color: "#5F584F" }}>
                         · {r.shows?.title ?? "(공연 정보 없음)"}
                       </span>
                     </div>
-                    <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                    <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                       작성: {r.created_at.slice(0, 16).replace("T", " ")} · 신고 {r.report_count}건
                       {mod?.source && ` · 검열 ${mod.source}${mod.score !== undefined ? ` (${(mod.score * 100).toFixed(0)}%)` : ""}`}
                       {mod?.matched && mod.matched.length > 0 && ` · 매칭: ${mod.matched.join(", ")}`}

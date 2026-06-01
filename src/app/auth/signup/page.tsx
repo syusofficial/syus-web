@@ -92,7 +92,7 @@ export default function SignupPage() {
     <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6 py-12" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
             Account
           </p>
           <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
@@ -116,7 +116,7 @@ export default function SignupPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
               이름
             </label>
             <input
@@ -132,7 +132,7 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
               이메일
             </label>
             <input
@@ -148,11 +148,11 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
               비밀번호
             </label>
             <PasswordInput value={password} onChange={setPassword} required minLength={8} />
-            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>8자 이상</p>
+            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>8자 이상</p>
           </div>
 
           {/* ─── 약관 동의 섹션 ─── */}
@@ -210,7 +210,7 @@ export default function SignupPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading || !requiredChecked ? "#7A746C" : "#3B5A6B",
+              backgroundColor: loading || !requiredChecked ? "#5F584F" : "#3B5A6B",
               color: "#FBF8F1",
               cursor: loading || !requiredChecked ? "not-allowed" : "pointer",
             }}
@@ -221,7 +221,7 @@ export default function SignupPage() {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+        <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
           이미 계정이 있으신가요?{" "}
           <Link href="/auth/login" style={{ color: "#3B5A6B" }}>
             로그인
@@ -252,7 +252,7 @@ function ConsentRow({
         className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors"
         style={{
           backgroundColor: checked ? "#3B5A6B" : "transparent",
-          border: `1.5px solid ${checked ? "#3B5A6B" : "#7A746C"}`,
+          border: `1.5px solid ${checked ? "#3B5A6B" : "#5F584F"}`,
         }}
       >
         {checked && (

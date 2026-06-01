@@ -13,7 +13,7 @@
   --color-paper: #FBF8F1;          /* 메인 배경 — 웜 크림 */
   --color-paper-dark: #F0EBE0;     /* 카드·서브 배경 — 크림 다크 */
   --color-mist: #D8D3C9;           /* 라인·구분 — 웜 라인 */
-  --color-stone: #7A746C;          /* 서브 텍스트 — 웜 그레이 */
+  --color-stone: #5F584F;          /* 서브 텍스트 — 웜 다크 그레이 (대비 강화, WCAG AA) */
   --color-charcoal: #202833;       /* 본문 텍스트·강조 — 딥 인디고 */
 
   --color-blue: #3B5A6B;           /* 메인 — 미네랄 슬레이트 (코발트 대체) */
@@ -39,7 +39,7 @@
   --color-syus-green: #7BA86F;
   --color-syus-yellow: #C8D96F;
   --color-syus-charcoal: #202833;
-  --color-syus-grey: #7A746C;
+  --color-syus-grey: #5F584F;
   --color-syus-light-grey: #D8D3C9;
 
   /* Fonts — 마뗑킴 톤 (Spoqa Han Sans Neo Thin + Geist Thin)

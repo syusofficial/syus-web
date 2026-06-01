@@ -43,13 +43,13 @@ export default function FindIdPage() {
     <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
             Find ID
           </p>
           <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
             아이디 찾기
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
             가입 시 사용한 이름을 입력하시면
             <br />
             일부 가려진 이메일을 안내해드립니다.
@@ -58,7 +58,7 @@ export default function FindIdPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
               이름
             </label>
             <input
@@ -85,7 +85,7 @@ export default function FindIdPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#7A746C" : "#3B5A6B",
+              backgroundColor: loading ? "#5F584F" : "#3B5A6B",
               color: "#FBF8F1",
               cursor: loading ? "not-allowed" : "pointer",
             }}
@@ -102,13 +102,13 @@ export default function FindIdPage() {
                 <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
                   일치하는 계정이 없습니다
                 </p>
-                <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                   이름을 다시 확인해주세요.
                 </p>
               </div>
             ) : (
               <div>
-                <p className="text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                <p className="text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                   가입된 이메일
                 </p>
                 <div className="space-y-2">
@@ -118,7 +118,7 @@ export default function FindIdPage() {
                     </p>
                   ))}
                 </div>
-                <p className="mt-4 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                <p className="mt-4 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                   보안을 위해 일부만 표시됩니다.
                   <br />
                   전체 이메일은 가입 시 사용한 메일함에서 확인해주세요.

@@ -181,7 +181,7 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <span
                     className="text-lg font-bold w-6 text-center shrink-0"
-                    style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+                    style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
                   >
                     {i + 1}
                   </span>
@@ -194,7 +194,7 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
                     </p>
                     <p
                       className="text-xs truncate"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
                     >
                       {[x.show.performer_name, x.show.region, x.show.venue].filter(Boolean).join(" · ")}
                     </p>
@@ -221,7 +221,7 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
         className="text-xs pt-6"
         style={{
           fontFamily: "var(--font-noto-sans-kr)",
-          color: "#7A746C",
+          color: "#5F584F",
           borderTop: "1px solid #D8D3C9",
         }}
       >
@@ -239,7 +239,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <p
       className="text-xs tracking-[0.3em] uppercase mb-4"
-      style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+      style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
     >
       {children}
     </p>
@@ -250,7 +250,7 @@ function EmptyText({ children }: { children: React.ReactNode }) {
   return (
     <p
       className="text-sm py-8 text-center"
-      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", backgroundColor: "#F0EBE0" }}
+      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", backgroundColor: "#F0EBE0" }}
     >
       {children}
     </p>
@@ -409,7 +409,7 @@ function MonthlyChart({
                   className="flex-1 transition-all relative group"
                   style={{
                     height: `${showHeight}%`,
-                    backgroundColor: "#7A746C",
+                    backgroundColor: "#5F584F",
                     minHeight: m.shows > 0 ? "4px" : "0",
                   }}
                   title={`공연 등록: ${m.shows}`}
@@ -417,7 +417,7 @@ function MonthlyChart({
                   {m.shows > 0 && (
                     <span
                       className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs"
-                      style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
                     >
                       {m.shows}
                     </span>
@@ -426,7 +426,7 @@ function MonthlyChart({
               </div>
               <span
                 className="text-xs"
-                style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
               >
                 {m.label}
               </span>
@@ -440,7 +440,7 @@ function MonthlyChart({
           <span style={{ color: "#1A1A1A" }}>신규 가입</span>
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#7A746C" }} />
+          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#5F584F" }} />
           <span style={{ color: "#1A1A1A" }}>공연 등록</span>
         </span>
       </div>

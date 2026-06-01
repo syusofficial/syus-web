@@ -240,7 +240,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
         <Link
           href={show.status === "approved" ? "/shows" : "/performer"}
           className="text-xs tracking-[0.2em] uppercase transition-colors"
-          style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
         >
           ← {show.status === "approved" ? "공연 목록으로" : "공연 관리로"}
         </Link>
@@ -255,7 +255,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 <Image src={show.poster_url} alt={show.title} fill className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#7A746C" }}>
+                  <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#5F584F" }}>
                     포스터 없음
                   </span>
                 </div>
@@ -272,7 +272,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
           <div className="space-y-8">
             <div>
               {show.subtitle && (
-                <p className="text-sm italic mb-2" style={{ fontFamily: "var(--font-cormorant)", color: "#7A746C" }}>
+                <p className="text-sm italic mb-2" style={{ fontFamily: "var(--font-cormorant)", color: "#5F584F" }}>
                   {show.subtitle}
                 </p>
               )}
@@ -283,7 +283,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 {show.title}
               </h1>
               {show.performer_name && (
-                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}>
+                <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                   by{" "}
                   {show.organizer_id ? (
                     <Link
@@ -328,7 +328,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 <div className="grid grid-cols-[88px_1fr] gap-2">
                   <span
                     className="text-xs tracking-wider uppercase pt-0.5"
-                    style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+                    style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
                   >
                     소속
                   </span>
@@ -349,7 +349,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                           >
                             {schoolName}
                           </Link>
-                          {rest && <span style={{ color: "#7A746C", marginLeft: 4 }}>{rest}</span>}
+                          {rest && <span style={{ color: "#5F584F", marginLeft: 4 }}>{rest}</span>}
                         </>
                       );
                     })()}
@@ -375,7 +375,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   <div key={item!.label} className="grid grid-cols-[88px_1fr] gap-2">
                     <span
                       className="text-xs tracking-wider uppercase pt-0.5"
-                      style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
                     >
                       {item!.label}
                     </span>
@@ -391,7 +391,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
 
             {/* Description */}
             <div>
-              <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+              <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                 작품 소개
               </p>
               <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
@@ -402,7 +402,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {/* Directions */}
             {(show.directions || show.map_kakao_url || show.map_naver_url) && (
               <div>
-                <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}>
+                <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
                   오시는 길
                 </p>
                 {show.directions && (
@@ -450,7 +450,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   {ratingAvg !== null && (
                     <p
                       className="text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
                     >
                       <span style={{ color: "#C8D96F", fontSize: "0.95rem", marginRight: 4 }}>★</span>
                       <span style={{ color: "#1A1A1A", fontWeight: 600 }}>{ratingAvg.toFixed(1)}</span>
@@ -460,7 +460,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 </div>
                 <p
                   className="text-[0.7rem] mb-4 leading-relaxed"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", wordBreak: "keep-all" }}
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", wordBreak: "keep-all" }}
                 >
                   한 공연당 한 명이 한 번 평가합니다. 다시 누르시면 점수가 갱신되고, 본인 점수는
                   언제든 삭제하실 수 있습니다.
@@ -488,14 +488,14 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   </p>
                   <p
                     className="text-[0.7rem]"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
                   >
                     {reviewViews.filter((r) => r.status === "public").length}개
                   </p>
                 </div>
                 <p
                   className="text-[0.7rem] mb-4 leading-relaxed"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", wordBreak: "keep-all" }}
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", wordBreak: "keep-all" }}
                 >
                   비방·욕설·차별 표현은 자동 차단되며, 누락된 부적절 후기는 신고하시면 운영자가 24시간 내 확인합니다.
                   본인이 작성한 후기는 언제든 삭제할 수 있습니다.
@@ -549,7 +549,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 ) : (
                   <span
                     className="px-8 py-4 text-sm tracking-wider text-center"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#D8D3C9", color: "#7A746C" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#D8D3C9", color: "#5F584F" }}
                   >
                     예약 링크 없음
                   </span>
@@ -568,7 +568,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {show.status === "approved" && show.reservation_url && (
               <p
                 className="text-xs leading-relaxed pt-2"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C", wordBreak: "keep-all" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", wordBreak: "keep-all" }}
               >
                 ⓘ 외부 예약 폼(구글폼·네이버폼 등)으로 이동합니다. 입력하신 개인정보는 무대올림이
                 보관하지 않으며, 해당 폼을 운영하는 공연자(주최 측)가 직접 관리합니다.
@@ -586,7 +586,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             <div className="mb-10">
               <p
                 className="text-xs tracking-[0.3em] uppercase mb-3"
-                style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
               >
                 Related
               </p>

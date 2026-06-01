@@ -25,7 +25,7 @@ export default function NotFound() {
 
         <p
           className="text-sm leading-relaxed mb-10"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
         >
           찾으시는 페이지가 없거나,
           <br />
@@ -34,7 +34,7 @@ export default function NotFound() {
 
         <p
           className="text-xs italic mb-10"
-          style={{ fontFamily: "var(--font-cormorant)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-cormorant)", color: "#5F584F" }}
         >
           &ldquo;흘러가는 대로 다시 시작해보세요.&rdquo;
         </p>

@@ -62,7 +62,7 @@ export function SyusLogoSvg({
  */
 const MENU_HOVER = {
   shows: "#3B5A6B",
-  archive: "#7A746C",
+  archive: "#5F584F",
   about: "#202833",
   help: "#7BA86F",
 } as const;
@@ -490,7 +490,7 @@ export default function Nav() {
             {/* — 기능 섹션 — */}
             <p
               className="text-[0.65rem] tracking-[0.3em] uppercase"
-              style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
             >
               Menu
             </p>
@@ -503,7 +503,7 @@ export default function Nav() {
                 onClick={() => setMobileShowsOpen(!mobileShowsOpen)}
               >
                 <span>공연 <span style={{ color: MENU_HOVER.shows, fontSize: "0.7rem", marginLeft: 4 }}>· 지역별</span></span>
-                <span style={{ color: "#7A746C", fontSize: "0.75rem" }}>
+                <span style={{ color: "#5F584F", fontSize: "0.75rem" }}>
                   {mobileShowsOpen ? "▲" : "▼"}
                 </span>
               </button>
@@ -567,12 +567,12 @@ export default function Nav() {
                 onClick={() => setMobileGenresOpen(!mobileGenresOpen)}
               >
                 <span>
-                  <span className="text-[0.65rem] tracking-[0.3em] uppercase mr-2" style={{ color: "#7A746C" }}>
+                  <span className="text-[0.65rem] tracking-[0.3em] uppercase mr-2" style={{ color: "#5F584F" }}>
                     Genres
                   </span>
                   장르별 공연
                 </span>
-                <span style={{ color: "#7A746C", fontSize: "0.75rem" }}>
+                <span style={{ color: "#5F584F", fontSize: "0.75rem" }}>
                   {mobileGenresOpen ? "▲" : "▼"}
                 </span>
               </button>

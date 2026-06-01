@@ -80,7 +80,7 @@ export default async function Image({ params }: { params: { id: string } }) {
               <span style={{ fontSize: 24, color: "#3B5A6B", letterSpacing: 1, fontWeight: 700 }}>
                 무대올림
               </span>
-              <span style={{ fontSize: 13, color: "#7A746C", letterSpacing: 2, marginTop: 2 }}>
+              <span style={{ fontSize: 13, color: "#5F584F", letterSpacing: 2, marginTop: 2 }}>
                 운영 · 사유유사 SYUS
               </span>
             </div>
@@ -119,7 +119,7 @@ export default async function Image({ params }: { params: { id: string } }) {
         {/* 중앙: 공연명 */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", marginTop: 30 }}>
           {show.subtitle && (
-            <div style={{ fontSize: 22, color: "#7A746C", marginBottom: 18, fontStyle: "italic" }}>
+            <div style={{ fontSize: 22, color: "#5F584F", marginBottom: 18, fontStyle: "italic" }}>
               {show.subtitle}
             </div>
           )}
@@ -136,7 +136,7 @@ export default async function Image({ params }: { params: { id: string } }) {
             {show.title}
           </div>
           {show.performer_name && (
-            <div style={{ fontSize: 26, color: "#7A746C", marginTop: 20, letterSpacing: 1 }}>
+            <div style={{ fontSize: 26, color: "#5F584F", marginTop: 20, letterSpacing: 1 }}>
               by {show.performer_name}
             </div>
           )}

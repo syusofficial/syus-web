@@ -63,7 +63,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         <div className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
           📋 광고주에게 화면 공유로 보여주거나, <strong>인쇄(Ctrl+P) → PDF 저장</strong>으로 송부할 수 있습니다.
           <br />
-          <span style={{ color: "#7A746C" }}>광고 단가는 현재 placeholder입니다. 사장님이 직접 채워주세요.</span>
+          <span style={{ color: "#5F584F" }}>광고 단가는 현재 placeholder입니다. 사장님이 직접 채워주세요.</span>
         </div>
         <button
           onClick={handlePrint}
@@ -84,7 +84,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
       <section className="ad-section mb-12 pb-10" style={{ borderBottom: "2px solid #3B5A6B" }}>
         <p
           className="text-xs tracking-[0.3em] uppercase mb-2"
-          style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
         >
           Media Kit · {dateStr}
         </p>
@@ -210,7 +210,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
                   <th
                     key={h}
                     className="text-left py-3 px-3 text-xs tracking-wider uppercase"
-                    style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+                    style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
                   >
                     {h}
                   </th>
@@ -230,7 +230,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         </div>
         <p
           className="text-xs mt-4 leading-relaxed"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
         >
           ※ 모든 단가는 VAT 별도, 협의 가능. 게재 직전까지 광고 톤·디자인 협의 후 진행.
           <br />
@@ -251,7 +251,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
             </p>
             <p
               className="text-xs leading-relaxed"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
             >
               광고 목적·게재 기간·콘텐츠 제작 범위에 따라 별도 견적을 드립니다.
               상품·기간 묶음, 비영리·문화 기관 할인 등 협의 가능합니다.
@@ -329,7 +329,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         </div>
         <p
           className="text-xs"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
         >
           모집 기간: 즉시 ~ 5사 마감 시까지 / 문의: syusflux@gmail.com
         </p>
@@ -387,7 +387,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
       {/* ── 푸터 ─────────────────────── */}
       <p
         className="text-xs text-center mt-8"
-        style={{ fontFamily: "var(--font-cormorant)", color: "#7A746C", letterSpacing: "0.2em" }}
+        style={{ fontFamily: "var(--font-cormorant)", color: "#5F584F", letterSpacing: "0.2em" }}
       >
         SYUS · 思惟流沙 — 깊이 머물고, 가볍게 흘려보냅니다.
       </p>
@@ -404,7 +404,7 @@ function SectionTitle({ no, title }: { no: string; title: string }) {
     <div className="mb-5 flex items-baseline gap-3">
       <span
         className="text-xs tracking-[0.3em]"
-        style={{ fontFamily: "var(--font-inter)", color: "#7A746C" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
       >
         {no}
       </span>
@@ -426,7 +426,7 @@ function Stat({ label, value, suffix }: { label: string; value: number; suffix?:
         style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}
       >
         {value}
-        {suffix && <span className="text-sm ml-1" style={{ color: "#7A746C" }}>{suffix}</span>}
+        {suffix && <span className="text-sm ml-1" style={{ color: "#5F584F" }}>{suffix}</span>}
       </p>
       <p
         className="text-xs"
@@ -476,7 +476,7 @@ function PlacementRow({
         </p>
         <p
           className="text-xs leading-relaxed"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
         >
           {desc}
         </p>
@@ -511,7 +511,7 @@ function PriceRow({
         className="py-3 px-3 text-xs"
         style={{
           fontFamily: "var(--font-inter)",
-          color: highlight ? "#3B5A6B" : "#7A746C",
+          color: highlight ? "#3B5A6B" : "#5F584F",
           fontWeight: highlight ? 700 : 400,
         }}
       >
@@ -566,7 +566,7 @@ function Step({ no, title, desc }: { no: number; title: string; desc: string }) 
       </p>
       <p
         className="text-xs leading-relaxed"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#7A746C" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
       >
         {desc}
       </p>
