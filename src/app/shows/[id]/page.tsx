@@ -386,7 +386,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {/* Rating — 관람 후 별점 (1인 1평) */}
             {show.status === "approved" && (
               <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
-                <div className="flex items-baseline justify-between gap-3 flex-wrap mb-4">
+                <div className="flex items-baseline justify-between gap-3 flex-wrap mb-2">
                   <p
                     className="text-sm tracking-wide"
                     style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B", fontWeight: 600 }}
@@ -404,6 +404,13 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     </p>
                   )}
                 </div>
+                <p
+                  className="text-[0.7rem] mb-4 leading-relaxed"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385", wordBreak: "keep-all" }}
+                >
+                  한 공연당 한 명이 한 번 평가합니다. 다시 누르시면 점수가 갱신되고, 본인 점수는
+                  언제든 삭제하실 수 있습니다.
+                </p>
                 <RatingInput
                   showId={show.id}
                   isLoggedIn={!!user}
@@ -461,6 +468,17 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   문의하기
                 </Link>
               </div>
+            )}
+
+            {/* 외부 예약 폼 PII 고지 (법무·CS 권고) */}
+            {show.status === "approved" && show.reservation_url && (
+              <p
+                className="text-xs leading-relaxed pt-2"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385", wordBreak: "keep-all" }}
+              >
+                ⓘ 외부 예약 폼(구글폼·네이버폼 등)으로 이동합니다. 입력하신 개인정보는 무대올림이
+                보관하지 않으며, 해당 폼을 운영하는 공연자(주최 측)가 직접 관리합니다.
+              </p>
             )}
           </div>
         </div>
