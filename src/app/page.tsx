@@ -1,29 +1,55 @@
 import Link from "next/link";
 import ShowCard from "@/components/ShowCard";
+import HeroPosterStream, { type StreamItem } from "@/components/HeroPosterStream";
 import { createClient } from "@/lib/supabase/server";
 import { InstitutionSidebar, PartnerAdSidebar } from "@/components/PartnerSidebars";
 import { isEnded, todayKey, showEndKey } from "@/lib/showFilters";
 import type { Show } from "@/types";
 
-export const revalidate = 60; // 60초마다 재검증
+export const revalidate = 60;
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const { data: approvedRaw } = await supabase
-    .from("shows")
-    .select("*")
-    .eq("status", "approved")
-    .order("created_at", { ascending: false });
+
+  // 공연 + 좋아요 집계 동시 로드
+  const [showsRes, likesRes] = await Promise.all([
+    supabase.from("shows").select("*").eq("status", "approved").order("created_at", { ascending: false }),
+    supabase.from("likes").select("show_id"),
+  ]);
 
   const today = todayKey();
-  const allApproved = (approvedRaw as Show[] ?? []);
+  const allApproved = (showsRes.data as Show[] ?? []);
   const active = allApproved.filter((s) => !isEnded(s, today));
 
-  // ① 운영자 픽 — featured = true, 최대 6개 (진행 중·예정만)
-  const featured = active.filter((s) => s.featured).slice(0, 6);
+  // 좋아요 집계 — show_id 별 count
+  const likeMap = new Map<string, number>();
+  for (const row of (likesRes.data as { show_id: string }[] ?? [])) {
+    likeMap.set(row.show_id, (likeMap.get(row.show_id) ?? 0) + 1);
+  }
 
-  // ② 곧 시작하는 공연 — schedule_start 가까운 미래순, featured 제외, 최대 6개
+  // 인기 점수 = 조회 × 1 + 좋아요 × 3
+  // (예매 카운트는 자체 예매 도입 후 가중치 × 5로 추가 예정)
+  const scoreOf = (s: Show) => (s.view_count ?? 0) + (likeMap.get(s.id) ?? 0) * 3;
+
+  // TOP 5 — 인기 점수 순 상위 5개 (히어로 포스터 흐름)
+  const top5 = [...active]
+    .sort((a, b) => scoreOf(b) - scoreOf(a))
+    .slice(0, 5);
+
+  const streamItems: StreamItem[] = top5.map((s) => ({
+    id: s.id,
+    title: s.title,
+    poster_url: s.poster_url ?? null,
+    performer_name: s.performer_name ?? null,
+    schedule_start: s.schedule_start ?? null,
+    venue: s.venue ?? null,
+  }));
+
+  // 운영자 픽
+  const featured = active.filter((s) => s.featured).slice(0, 6);
   const featuredIds = new Set(featured.map((s) => s.id));
+
+  // 곧 시작하는 공연
   const upcoming = active
     .filter((s) => !featuredIds.has(s.id))
     .sort((a, b) => {
@@ -33,7 +59,6 @@ export default async function HomePage() {
     })
     .slice(0, 6);
 
-  // ③ 최근 등록 — featured·upcoming 제외, 최근 등록순, 최대 6개
   const featuredOrUpcomingIds = new Set([...featuredIds, ...upcoming.map((s) => s.id)]);
   const recent = active.filter((s) => !featuredOrUpcomingIds.has(s.id)).slice(0, 6);
 
@@ -41,137 +66,217 @@ export default async function HomePage() {
     <div>
       {/* ── Hero ── */}
       <section
-        className="pt-24 min-h-screen flex flex-col justify-between px-6 md:px-12 lg:px-20 relative"
+        className="pt-24 relative overflow-hidden"
         style={{
-          backgroundImage: `
-            linear-gradient(180deg, rgba(26, 26, 26, 0.5) 0%, rgba(26, 26, 26, 0.7) 55%, rgba(26, 26, 26, 0.88) 100%),
-            url('https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&q=80&w=2400')
-          `,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+          background:
+            "radial-gradient(ellipse at top left, #2B60CA 0%, #274E9B 35%, #1B2842 100%)",
+          color: "#F8F9FC",
         }}
       >
-        <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center py-20 relative z-10">
-          <p
-            className="text-xs tracking-[0.35em] uppercase mb-8"
-            style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.75 }}
-          >
-            思惟流沙 · System of Young Unbound Society
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-end">
-            <h1
-              className="text-[5rem] md:text-[7rem] lg:text-[9rem] font-black leading-none tracking-tighter"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC" }}
+        <div className="px-6 md:px-12 lg:px-20 pt-16 md:pt-20 pb-10">
+          <div className="max-w-[1600px] mx-auto">
+            <p
+              className="text-xs tracking-[0.4em] uppercase mb-8"
+              style={{ fontFamily: "var(--font-inter)", opacity: 0.7 }}
             >
-              사유
-              <br />
-              유사
-            </h1>
+              무대올림 · 운영: 사유유사 SYUS
+            </p>
 
-            <div className="pb-2 space-y-6">
-              <p
-                className="text-lg md:text-xl leading-relaxed"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC" }}
-              >
-                젊은 예술가들의 무대를
-                <br />
-                기록하고, 연결하고,
-                <br />
-                알리는 공간입니다.
-              </p>
-              <p
-                className="text-sm tracking-wider"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", opacity: 0.55 }}
-              >
-                젊은 예술가들의 큐레이션 플랫폼
-              </p>
-              <Link
-                href="/auth/signup"
-                className="inline-block px-7 py-3 text-sm tracking-wider transition-colors"
+            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-end mb-12">
+              <h1
+                className="text-[3rem] sm:text-[4.25rem] md:text-[5.5rem] lg:text-[6.5rem] font-black leading-[0.95] tracking-tighter"
                 style={{
-                  fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: "#F8F9FC",
-                  color: "#1A1A1A",
+                  fontFamily: "var(--font-noto-serif-kr)",
+                  color: "#F8F9FC",
+                  wordBreak: "keep-all",
+                  textWrap: "balance",
                 }}
               >
-                지금 시작하기
-              </Link>
+                오늘,
+                <br />
+                어느 대학의
+                <br />
+                <span style={{ color: "#F5C84F" }}>막</span>이 오른다.
+              </h1>
+
+              <div className="space-y-6 pb-4">
+                <p
+                  className="text-lg md:text-xl leading-relaxed"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    color: "#F8F9FC",
+                    wordBreak: "keep-all",
+                  }}
+                >
+                  대학 무대예술 공연을 올리고,
+                  <br />
+                  지역 관객이 무료 좌석을 예약하는 곳.
+                </p>
+                <p
+                  className="text-sm tracking-wider"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    color: "#F8F9FC",
+                    opacity: 0.65,
+                  }}
+                >
+                  연극 · 뮤지컬 · 무용 · 발레 · 국악 · 음악 · 전통연희
+                </p>
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <Link
+                    href="/shows"
+                    className="inline-block px-7 py-3 text-sm tracking-wider transition-colors"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      backgroundColor: "#F5C84F",
+                      color: "#1B2842",
+                      fontWeight: 600,
+                    }}
+                  >
+                    공연 둘러보기 →
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className="inline-block px-7 py-3 text-sm tracking-wider transition-colors"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      border: "1px solid rgba(248, 249, 252, 0.4)",
+                      color: "#F8F9FC",
+                    }}
+                  >
+                    무대 올리기
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div
-          className="max-w-7xl mx-auto w-full flex items-center justify-between py-5 relative z-10"
-          style={{ borderTop: "1px solid rgba(244, 237, 227, 0.2)" }}
-        >
-          <span
-            className="text-xs tracking-[0.2em] uppercase"
-            style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.6 }}
+        {/* 히어로 포스터 흐름 — TOP 5 */}
+        {streamItems.length > 0 && (
+          <div className="pb-12">
+            <div className="px-6 md:px-12 lg:px-20 mb-5">
+              <div className="max-w-[1600px] mx-auto flex items-baseline justify-between gap-4 flex-wrap">
+                <p
+                  className="text-xs tracking-[0.35em] uppercase"
+                  style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
+                >
+                  Top 5 · 지금 가장 주목받는 무대
+                </p>
+                <p
+                  className="text-[0.7rem] tracking-wider"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "rgba(248,249,252,0.5)" }}
+                >
+                  조회 · 좋아요 종합
+                </p>
+              </div>
+            </div>
+            <HeroPosterStream items={streamItems} />
+          </div>
+        )}
+
+        {/* 히어로 푸터 라인 */}
+        <div className="px-6 md:px-12 lg:px-20 pb-5">
+          <div
+            className="max-w-[1600px] mx-auto flex items-center justify-between py-4"
+            style={{ borderTop: "1px solid rgba(248, 249, 252, 0.18)" }}
           >
-            연극 · 뮤지컬 · 연기예술
-          </span>
-          <span
-            className="text-xs tracking-[0.2em] uppercase"
-            style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.6 }}
-          >
-            ↓ 공연 보기
-          </span>
+            <span
+              className="text-[0.7rem] tracking-[0.25em] uppercase"
+              style={{ fontFamily: "var(--font-inter)", opacity: 0.55 }}
+            >
+              지역 × 시기 × 장르
+            </span>
+            <span
+              className="text-[0.7rem] tracking-[0.25em] uppercase"
+              style={{ fontFamily: "var(--font-inter)", opacity: 0.55 }}
+            >
+              ↓ 공연 발견
+            </span>
+          </div>
         </div>
       </section>
 
-      {/* ── Brand Section ── */}
+      {/* ── 정체성 띠 ── */}
       <section
-        className="px-6 md:px-12 lg:px-20 py-24 md:py-32"
+        className="px-6 md:px-12 lg:px-20 py-20 md:py-24"
         style={{ backgroundColor: "#274E9B", color: "#F8F9FC" }}
       >
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_1.3fr] gap-12 md:gap-20 items-start">
             <div>
               <p
-                className="text-[1.5rem] sm:text-[1.75rem] md:text-[2.25rem] leading-snug font-light mb-10 max-w-[28ch]"
+                className="text-xs tracking-[0.4em] uppercase mb-6"
+                style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
+              >
+                About 무대올림
+              </p>
+              <p
+                className="text-[1.5rem] sm:text-[1.85rem] md:text-[2.25rem] leading-snug font-light"
                 style={{
-                  fontFamily: "var(--font-cormorant)",
+                  fontFamily: "var(--font-noto-serif-kr)",
                   color: "#F8F9FC",
-                  textWrap: "balance",
                   wordBreak: "keep-all",
+                  textWrap: "balance",
                 }}
               >
-                &ldquo;깊게 생각하고 오래 머물러, 자연스럽게 흘러 젊은 무대 위에 쌓이는 공간.&rdquo;
+                대학의 막은
+                <br />
+                매주 어딘가에서 오릅니다.
+                <br />
+                <span style={{ opacity: 0.65 }}>그 무대를 당신의 동네로.</span>
               </p>
-              <div style={{ width: 48, height: 1, backgroundColor: "#F8F9FC", opacity: 0.3 }} />
             </div>
 
-            <div className="space-y-10">
-              <p
-                className="text-sm tracking-[0.3em] uppercase pb-2"
-                style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.55, borderBottom: "1px solid rgba(244, 237, 227, 0.18)" }}
-              >
-                사유유사는
-              </p>
+            <div className="space-y-7">
               {[
-                { num: "01", title: "기록합니다", desc: "공연 포스터, 일정, 출연진 정보를 체계적으로 기록합니다." },
-                { num: "02", title: "연결합니다", desc: "예술가와 관객이 자연스럽게 만날 수 있는 공간을 만듭니다." },
-                { num: "03", title: "알립니다", desc: "젊은 무대의 이야기를 더 많은 사람에게 전달합니다." },
+                {
+                  num: "01",
+                  title: "올린다",
+                  desc: "학생 공연자가 무대를 올리고, 운영자가 한 번 더 정성스레 다듬어 공연 페이지로 띄웁니다.",
+                },
+                {
+                  num: "02",
+                  title: "발견한다",
+                  desc: "지역 · 시기 · 장르 세 축으로 좁혀, 이번 주말 우리 동네 대학 무대를 찾아냅니다.",
+                },
+                {
+                  num: "03",
+                  title: "예약한다",
+                  desc: "관객도 학생 공연자도 끝까지 무료. 무료 좌석을 미리 확보해 자리를 비워두지 않습니다.",
+                },
               ].map((item) => (
-                <div key={item.num} className="flex gap-6 items-start">
+                <div
+                  key={item.num}
+                  className="grid grid-cols-[48px_1fr] gap-5 items-start pt-6"
+                  style={{ borderTop: "1px solid rgba(248, 249, 252, 0.18)" }}
+                >
                   <span
-                    className="text-xs tracking-widest pt-1 shrink-0"
-                    style={{ fontFamily: "var(--font-inter)", color: "#F8F9FC", opacity: 0.35 }}
+                    className="text-2xl"
+                    style={{
+                      fontFamily: "var(--font-cormorant)",
+                      color: "#F5C84F",
+                      opacity: 0.85,
+                      lineHeight: 1,
+                    }}
                   >
                     {item.num}
                   </span>
                   <div>
                     <h3
-                      className="text-lg font-semibold mb-1.5"
+                      className="text-xl font-semibold mb-2"
                       style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC" }}
                     >
                       {item.title}
                     </h3>
                     <p
                       className="text-sm leading-relaxed"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F8F9FC", opacity: 0.65 }}
+                      style={{
+                        fontFamily: "var(--font-noto-sans-kr)",
+                        color: "#F8F9FC",
+                        opacity: 0.72,
+                        wordBreak: "keep-all",
+                      }}
                     >
                       {item.desc}
                     </p>
@@ -189,13 +294,10 @@ export default async function HomePage() {
         style={{ backgroundColor: "#F8F9FC" }}
       >
         <div className="max-w-[1600px] mx-auto">
-          {/* 3열 레이아웃: 좌 기관 · 중앙 공연 · 우 광고 */}
           <div className="grid grid-cols-1 xl:grid-cols-[200px_1fr_220px] gap-8 xl:gap-8">
             <InstitutionSidebar />
 
-            {/* 중앙 — 다중 큐레이션 섹션 */}
             <div className="space-y-20">
-              {/* ① 운영자 픽 (featured 있을 때만) */}
               {featured.length > 0 && (
                 <SectionGroup
                   badge="Editor's Pick"
@@ -205,25 +307,14 @@ export default async function HomePage() {
                 />
               )}
 
-              {/* ② 곧 시작하는 공연 */}
               {upcoming.length > 0 && (
-                <SectionGroup
-                  badge="Upcoming"
-                  title="곧 시작하는 공연"
-                  shows={upcoming}
-                />
+                <SectionGroup badge="Upcoming" title="곧 시작하는 공연" shows={upcoming} />
               )}
 
-              {/* ③ 최근 등록 */}
               {recent.length > 0 && (
-                <SectionGroup
-                  badge="Recent"
-                  title="최근 등록"
-                  shows={recent}
-                />
+                <SectionGroup badge="Recent" title="최근 등록" shows={recent} />
               )}
 
-              {/* 모든 섹션이 비었을 때 */}
               {featured.length === 0 && upcoming.length === 0 && recent.length === 0 && (
                 <div className="text-center py-24">
                   <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}>
@@ -232,7 +323,6 @@ export default async function HomePage() {
                 </div>
               )}
 
-              {/* 전체 보기 링크 */}
               <div className="pt-8 text-center" style={{ borderTop: "1px solid #C5CCD9" }}>
                 <Link
                   href="/shows"
@@ -254,40 +344,45 @@ export default async function HomePage() {
       </section>
 
       {/* ── CTA Section ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-24" style={{ backgroundColor: "#1A1A1A" }}>
+      <section className="px-6 md:px-12 lg:px-20 py-24" style={{ backgroundColor: "#1B2842" }}>
         <div className="max-w-7xl mx-auto text-center">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#F5C84F", fontWeight: 600 }}
           >
-            Join SYUS
+            Join 무대올림
           </p>
           <h2
-            className="text-[2rem] md:text-[3rem] font-light mb-4"
-            style={{ fontFamily: "var(--font-cormorant)", color: "#F8F9FC" }}
+            className="text-[2rem] md:text-[3rem] font-light mb-5"
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F8F9FC", wordBreak: "keep-all", textWrap: "balance" }}
           >
-            함께 무대를 만들어가실 분을 찾습니다.
+            당신의 무대를, 누군가의 주말로.
           </h2>
           <p
             className="text-sm mb-10 max-w-md mx-auto leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "rgba(248,249,252,0.6)", wordBreak: "keep-all" }}
           >
-            회원가입 후 공연자 신청을 통해 공연을 등록할 수 있습니다.
+            대학 무대예술 공연자라면 회원가입 후 무대를 올릴 수 있습니다.
             <br />
-            관리자 검토 후 게시됩니다.
+            운영자가 한 번 더 정성스레 다듬어 공연 페이지로 띄웁니다.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/auth/signup"
               className="px-8 py-3 text-sm tracking-wider transition-colors"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F8F9FC", color: "#1A1A1A" }}
+              style={{
+                fontFamily: "var(--font-noto-sans-kr)",
+                backgroundColor: "#F5C84F",
+                color: "#1B2842",
+                fontWeight: 600,
+              }}
             >
               회원가입
             </Link>
             <Link
               href="/contact"
               className="px-8 py-3 text-sm tracking-wider"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #6B7385", color: "#F8F9FC" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid rgba(248,249,252,0.45)", color: "#F8F9FC" }}
             >
               문의하기
             </Link>
