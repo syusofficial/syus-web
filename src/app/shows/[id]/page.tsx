@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import ShowViewTracker from "@/components/ShowViewTracker";
 import LikeButton from "@/components/LikeButton";
 import ShareButton from "@/components/ShareButton";
+import RatingInput from "@/components/RatingInput";
 import ShowCard from "@/components/ShowCard";
 import { isEnded, extractSchoolName, todayKey } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
@@ -23,9 +24,11 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
 
   if (!show) notFound();
 
+  // 현재 사용자 — 권한 체크 + 별점 본인 점수 양쪽에서 사용
+  const { data: { user } } = await supabase.auth.getUser();
+
   // 비승인 공연은 본인(organizer)이거나 관리자만 볼 수 있음
   if (show.status !== "approved") {
-    const { data: { user } } = await supabase.auth.getUser();
     if (!user) notFound();
 
     const { data: profile } = await supabase
@@ -38,6 +41,20 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     const isAdmin = profile?.role === "admin";
     if (!isOwner && !isAdmin) notFound();
   }
+
+  // 별점 데이터 — 평균·개수·본인 점수
+  const { data: ratingsData } = await supabase
+    .from("ratings")
+    .select("score, user_id")
+    .eq("show_id", id);
+  const ratings = (ratingsData as { score: number; user_id: string }[] | null) ?? [];
+  const ratingCount = ratings.length;
+  const ratingAvg = ratingCount > 0
+    ? ratings.reduce((sum, r) => sum + r.score, 0) / ratingCount
+    : null;
+  const myScore = user
+    ? ratings.find((r) => r.user_id === user.id)?.score ?? null
+    : null;
 
   // 추천 공연 — 같은 학교(+3) / 같은 공연자(+3) / 같은 장르(+2) / 같은 지역(+1)
   // 진행 중·예정 + approved + 자기 자신 제외, 점수 내림차순 상위 6개
@@ -349,6 +366,35 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     </a>
                   )}
                 </div>
+              </div>
+            )}
+
+            {/* Rating — 관람 후 별점 (1인 1평) */}
+            {show.status === "approved" && (
+              <div className="pt-6" style={{ borderTop: "1px solid #C5CCD9" }}>
+                <div className="flex items-baseline justify-between gap-3 flex-wrap mb-4">
+                  <p
+                    className="text-sm tracking-wide"
+                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#274E9B", fontWeight: 600 }}
+                  >
+                    관람하셨나요? 별점을 남겨주세요.
+                  </p>
+                  {ratingAvg !== null && (
+                    <p
+                      className="text-xs"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B7385" }}
+                    >
+                      <span style={{ color: "#F5C84F", fontSize: "0.95rem", marginRight: 4 }}>★</span>
+                      <span style={{ color: "#1A1A1A", fontWeight: 600 }}>{ratingAvg.toFixed(1)}</span>
+                      <span style={{ marginLeft: 4 }}>· {ratingCount}명 평가</span>
+                    </p>
+                  )}
+                </div>
+                <RatingInput
+                  showId={show.id}
+                  isLoggedIn={!!user}
+                  initialMyScore={myScore}
+                />
               </div>
             )}
 

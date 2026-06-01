@@ -11,10 +11,11 @@ export const revalidate = 60;
 export default async function HomePage() {
   const supabase = await createClient();
 
-  // 공연 + 좋아요 집계 동시 로드
-  const [showsRes, likesRes] = await Promise.all([
+  // 공연 + 좋아요 + 별점 집계 동시 로드
+  const [showsRes, likesRes, ratingsRes] = await Promise.all([
     supabase.from("shows").select("*").eq("status", "approved").order("created_at", { ascending: false }),
     supabase.from("likes").select("show_id"),
+    supabase.from("ratings").select("show_id, score"),
   ]);
 
   const today = todayKey();
@@ -27,9 +28,18 @@ export default async function HomePage() {
     likeMap.set(row.show_id, (likeMap.get(row.show_id) ?? 0) + 1);
   }
 
-  // 인기 점수 = 조회 × 1 + 좋아요 × 3
-  // (예매 카운트는 자체 예매 도입 후 가중치 × 5로 추가 예정)
-  const scoreOf = (s: Show) => (s.view_count ?? 0) + (likeMap.get(s.id) ?? 0) * 3;
+  // 별점 집계 — show_id 별 합계 (sum × 4 = 평균 × 개수 × 4 와 동치)
+  const ratingSumMap = new Map<string, number>();
+  for (const row of (ratingsRes.data as { show_id: string; score: number }[] ?? [])) {
+    ratingSumMap.set(row.show_id, (ratingSumMap.get(row.show_id) ?? 0) + row.score);
+  }
+
+  // 인기 점수 = 조회×1 + 좋아요×3 + 별점합×4
+  // (예매 카운트는 자체 예매 도입 후 가중치 ×5로 추가 예정)
+  const scoreOf = (s: Show) =>
+    (s.view_count ?? 0) +
+    (likeMap.get(s.id) ?? 0) * 3 +
+    (ratingSumMap.get(s.id) ?? 0) * 4;
 
   // TOP 5 — 인기 점수 순 상위 5개 (히어로 포스터 흐름)
   const top5 = [...active]
