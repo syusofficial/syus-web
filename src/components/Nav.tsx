@@ -288,7 +288,7 @@ export default function Nav() {
     fontFamily: "var(--font-noto-sans-kr)",
     color: "#202833",
     fontSize: "0.95rem",
-    fontWeight: 600,
+    fontWeight: 450,
     letterSpacing: "0.12em",
   };
 
@@ -303,7 +303,7 @@ export default function Nav() {
        */}
       <div className="hidden md:grid grid-cols-3 items-center max-w-7xl mx-auto px-8 pt-3 pb-2">
         {/* Left — 메뉴를 우측(로고 쪽)으로 정렬해 시각 무게중심을 중앙으로 */}
-        <div className="flex items-center gap-12 justify-end pr-4">
+        <div className="flex items-center gap-10 justify-end pr-4">
           <ShowsHoverMenu linkStyle={linkStyle} />
           <NavMenuLink href="/archive" label="기록" hoverColor={MENU_HOVER.archive} linkStyle={linkStyle} />
           <NavMenuLink href="/about" label="소개" hoverColor={MENU_HOVER.about} linkStyle={linkStyle} />
@@ -334,7 +334,7 @@ export default function Nav() {
               {role === "admin" && (
                 <Link
                   href="/admin"
-                  style={{ ...linkStyle, color: "#3B5A6B", fontWeight: 600 }}
+                  style={{ ...linkStyle, color: "#3B5A6B", fontWeight: 450 }}
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
                   onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
                 >
@@ -539,7 +539,7 @@ export default function Nav() {
             </Link>
             <Link
               href="/about"
-              style={{ ...linkStyle, padding: "8px 0", color: MENU_HOVER.about, fontWeight: 600 }}
+              style={{ ...linkStyle, padding: "8px 0", color: MENU_HOVER.about, fontWeight: 450 }}
               onClick={() => setMenuOpen(false)}
             >
               소개
@@ -605,7 +605,7 @@ export default function Nav() {
                   {role === "admin" && (
                     <Link
                       href="/admin"
-                      style={{ ...linkStyle, padding: "8px 0", color: "#3B5A6B", fontWeight: 600 }}
+                      style={{ ...linkStyle, padding: "8px 0", color: "#3B5A6B", fontWeight: 450 }}
                       onClick={() => setMenuOpen(false)}
                     >
                       관리자
