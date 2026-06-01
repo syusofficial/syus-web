@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { REGIONS, GENRES, SHOW_CATEGORIES } from "@/lib/constants";
 import { sanitizeSearchTerm } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
+import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
@@ -66,7 +67,12 @@ export default async function ShowsPage({
     }
   }
 
-  const { data: showsRaw } = await query.order("created_at", { ascending: false });
+  const [{ data: showsRaw }, { data: ratingsRaw }] = await Promise.all([
+    query.order("created_at", { ascending: false }),
+    supabase.from("ratings").select("show_id, score"),
+  ]);
+
+  const ratingMap = buildRatingMap(ratingsRaw as { show_id: string; score: number }[] | null);
 
   // 진행 중·예정 공연만 필터 (종료된 건 /archive로)
   const today = todayKey();
@@ -342,7 +348,7 @@ export default async function ShowsPage({
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
               {list.map((show) => (
-                <ShowCard key={show.id} show={show} />
+                <ShowCard key={show.id} show={show} rating={ratingMap.get(show.id) ?? null} />
               ))}
             </div>
 

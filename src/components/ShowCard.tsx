@@ -3,7 +3,18 @@ import Image from "next/image";
 import { Show } from "@/types";
 import LikeButton from "./LikeButton";
 
-export default function ShowCard({ show }: { show: Show }) {
+export type RatingSummary = {
+  avg: number;
+  count: number;
+};
+
+export default function ShowCard({
+  show,
+  rating,
+}: {
+  show: Show;
+  rating?: RatingSummary | null;
+}) {
   return (
     <div className="group block">
       <div className="relative">
@@ -31,6 +42,28 @@ export default function ShowCard({ show }: { show: Show }) {
         <div className="absolute top-2 right-2">
           <LikeButton showId={show.id} size={20} />
         </div>
+        {/* 별점 평균 — 좌상단 작은 배지 (평가 1건 이상일 때만) */}
+        {rating && rating.count > 0 && (
+          <div
+            className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1"
+            style={{
+              backgroundColor: "rgba(27, 40, 66, 0.85)",
+              color: "#F5C84F",
+              fontFamily: "var(--font-inter)",
+              fontSize: "0.7rem",
+              fontWeight: 600,
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <span style={{ lineHeight: 1 }}>★</span>
+            <span style={{ color: "#F8F9FC", lineHeight: 1 }}>
+              {rating.avg.toFixed(1)}
+            </span>
+            <span style={{ color: "rgba(248,249,252,0.6)", fontSize: "0.62rem", marginLeft: 1, lineHeight: 1 }}>
+              ({rating.count})
+            </span>
+          </div>
+        )}
       </div>
 
       <Link href={`/shows/${show.id}`} className="block">

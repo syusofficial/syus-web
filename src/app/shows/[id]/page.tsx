@@ -9,6 +9,7 @@ import RatingInput from "@/components/RatingInput";
 import ShowCard from "@/components/ShowCard";
 import { isEnded, extractSchoolName, todayKey } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
+import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
 
 export default async function ShowDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -87,6 +88,17 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
       .slice(0, 6);
 
     recommendations = scored.map((x) => x.show);
+  }
+
+  // 추천 공연들의 별점 요약 (있을 때만 쿼리)
+  let recRatingMap = new Map<string, { avg: number; count: number }>();
+  if (recommendations.length > 0) {
+    const recIds = recommendations.map((r) => r.id);
+    const { data: recRatings } = await supabase
+      .from("ratings")
+      .select("show_id, score")
+      .in("show_id", recIds);
+    recRatingMap = buildRatingMap(recRatings as { show_id: string; score: number }[] | null);
   }
 
   // JSON-LD 구조화 데이터 — Schema.org TheaterEvent (Google 검색 Rich Result)
@@ -458,7 +470,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12">
               {recommendations.map((s) => (
-                <ShowCard key={s.id} show={s} />
+                <ShowCard key={s.id} show={s} rating={recRatingMap.get(s.id) ?? null} />
               ))}
             </div>
           </section>

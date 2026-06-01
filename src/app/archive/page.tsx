@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { REGIONS, GENRES, SHOW_CATEGORIES } from "@/lib/constants";
 import { sanitizeSearchTerm } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
+import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
@@ -66,7 +67,11 @@ export default async function ArchivePage({
   }
 
   // 정렬: schedule_end 내림차순 (최근 종료부터). null은 뒤로.
-  const { data: showsRaw } = await query;
+  const [{ data: showsRaw }, { data: ratingsRaw }] = await Promise.all([
+    query,
+    supabase.from("ratings").select("show_id, score"),
+  ]);
+  const ratingMap = buildRatingMap(ratingsRaw as { show_id: string; score: number }[] | null);
 
   const today = todayKey();
   const allEnded = (showsRaw as Show[] ?? []).filter((s) => isEnded(s, today));
@@ -323,7 +328,7 @@ export default async function ArchivePage({
           <>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
               {list.map((show) => (
-                <ShowCard key={show.id} show={show} />
+                <ShowCard key={show.id} show={show} rating={ratingMap.get(show.id) ?? null} />
               ))}
             </div>
 

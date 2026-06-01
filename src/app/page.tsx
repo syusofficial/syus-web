@@ -1,9 +1,10 @@
 import Link from "next/link";
-import ShowCard from "@/components/ShowCard";
+import ShowCard, { type RatingSummary } from "@/components/ShowCard";
 import HeroPosterStream, { type StreamItem } from "@/components/HeroPosterStream";
 import { createClient } from "@/lib/supabase/server";
 import { InstitutionSidebar, PartnerAdSidebar } from "@/components/PartnerSidebars";
 import { isEnded, todayKey, showEndKey } from "@/lib/showFilters";
+import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
@@ -28,18 +29,21 @@ export default async function HomePage() {
     likeMap.set(row.show_id, (likeMap.get(row.show_id) ?? 0) + 1);
   }
 
-  // 별점 집계 — show_id 별 합계 (sum × 4 = 평균 × 개수 × 4 와 동치)
-  const ratingSumMap = new Map<string, number>();
-  for (const row of (ratingsRes.data as { show_id: string; score: number }[] ?? [])) {
-    ratingSumMap.set(row.show_id, (ratingSumMap.get(row.show_id) ?? 0) + row.score);
-  }
+  // 별점 집계 — show_id 별 { avg, count } 요약
+  const ratingMap = buildRatingMap(
+    ratingsRes.data as { show_id: string; score: number }[] | null
+  );
 
-  // 인기 점수 = 조회×1 + 좋아요×3 + 별점합×4
+  // 인기 점수 = 조회×1 + 좋아요×3 + (평균×개수)×4
   // (예매 카운트는 자체 예매 도입 후 가중치 ×5로 추가 예정)
-  const scoreOf = (s: Show) =>
-    (s.view_count ?? 0) +
-    (likeMap.get(s.id) ?? 0) * 3 +
-    (ratingSumMap.get(s.id) ?? 0) * 4;
+  const scoreOf = (s: Show) => {
+    const r = ratingMap.get(s.id);
+    return (
+      (s.view_count ?? 0) +
+      (likeMap.get(s.id) ?? 0) * 3 +
+      (r ? r.avg * r.count * 4 : 0)
+    );
+  };
 
   // TOP 5 — 인기 점수 순 상위 5개 (히어로 포스터 흐름)
   const top5 = [...active]
@@ -313,16 +317,27 @@ export default async function HomePage() {
                   badge="Editor's Pick"
                   title="이번 달 주목할 만한 공연"
                   shows={featured}
+                  ratingMap={ratingMap}
                   accent
                 />
               )}
 
               {upcoming.length > 0 && (
-                <SectionGroup badge="Upcoming" title="곧 시작하는 공연" shows={upcoming} />
+                <SectionGroup
+                  badge="Upcoming"
+                  title="곧 시작하는 공연"
+                  shows={upcoming}
+                  ratingMap={ratingMap}
+                />
               )}
 
               {recent.length > 0 && (
-                <SectionGroup badge="Recent" title="최근 등록" shows={recent} />
+                <SectionGroup
+                  badge="Recent"
+                  title="최근 등록"
+                  shows={recent}
+                  ratingMap={ratingMap}
+                />
               )}
 
               {featured.length === 0 && upcoming.length === 0 && recent.length === 0 && (
@@ -411,11 +426,13 @@ function SectionGroup({
   title,
   shows,
   accent,
+  ratingMap,
 }: {
   badge: string;
   title: string;
   shows: Show[];
   accent?: boolean;
+  ratingMap: Map<string, RatingSummary>;
 }) {
   return (
     <div>
@@ -441,7 +458,7 @@ function SectionGroup({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3 gap-x-6 gap-y-12">
         {shows.map((show) => (
-          <ShowCard key={show.id} show={show} />
+          <ShowCard key={show.id} show={show} rating={ratingMap.get(show.id) ?? null} />
         ))}
       </div>
     </div>
