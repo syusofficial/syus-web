@@ -237,11 +237,11 @@ export default function PerformerPage() {
       return;
     }
     if (!isValidUrl(mapKakaoUrl, { allowedHosts: KAKAO_MAP_HOSTS })) {
-      setError("카카오맵 링크는 카카오맵(kakao.com) 주소만 사용 가능합니다. 비워두시거나 카카오맵에서 복사한 링크를 입력해주세요.");
+      setError("카카오맵 링크는 카카오맵(kakao.com / kko.to) 주소만 사용 가능합니다. PC 링크 또는 모바일 공유 텍스트를 그대로 붙여넣어 주세요.");
       return;
     }
     if (!isValidUrl(mapNaverUrl, { allowedHosts: NAVER_MAP_HOSTS })) {
-      setError("네이버지도 링크는 네이버 지도(naver.com / naver.me) 주소만 사용 가능합니다. 비워두시거나 네이버 지도에서 복사한 링크를 입력해주세요.");
+      setError("네이버지도 링크는 네이버 지도(naver.com / naver.me) 주소만 사용 가능합니다. PC 링크 또는 모바일 공유 텍스트를 그대로 붙여넣어 주세요.");
       return;
     }
 
@@ -708,6 +708,10 @@ export default function PerformerPage() {
                     <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
                       관객이 공연장을 쉽게 찾을 수 있도록 지도 링크 첨부를 권장드립니다.
                       카카오맵 또는 네이버지도 중 <strong style={{ color: "#3B5A6B" }}>하나만 입력하셔도 됩니다.</strong>
+                      <br />
+                      <span style={{ color: "#3B5A6B" }}>모바일에서 공유한 형식</span>도 그대로 붙여넣을 수 있어요.
+                      <br />
+                      <span style={{ color: "#8E8579" }}>예) <code>[카카오맵] 낙산공원 https://kko.to/abc</code></span>
                     </p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -719,7 +723,7 @@ export default function PerformerPage() {
                         type="text"
                         value={form.map_kakao_url}
                         onChange={(e) => setForm({ ...form, map_kakao_url: e.target.value })}
-                        placeholder="https://place.map.kakao.com/..."
+                        placeholder="https://place.map.kakao.com/... 또는 모바일 공유 텍스트"
                         className="w-full px-4 py-3 text-sm outline-none"
                         style={inputStyle}
                         onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
@@ -734,7 +738,7 @@ export default function PerformerPage() {
                         type="text"
                         value={form.map_naver_url}
                         onChange={(e) => setForm({ ...form, map_naver_url: e.target.value })}
-                        placeholder="https://map.naver.com/..."
+                        placeholder="https://map.naver.com/... 또는 모바일 공유 텍스트"
                         className="w-full px-4 py-3 text-sm outline-none"
                         style={inputStyle}
                         onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}

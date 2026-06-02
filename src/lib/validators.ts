@@ -29,17 +29,37 @@ export function isValidUrl(url: string, options?: {
 }
 
 /**
- * URL 정규화 — 사용자가 프로토콜 없이 입력한 경우 자동으로 https:// 추가
+ * 입력 텍스트에서 첫 번째 http(s) URL을 추출.
+ * 모바일 공유 형식 대응 — 예) "[카카오맵] 낙산공원 https://kko.to/abc"
+ * URL이 없으면 원본을 trim해서 반환.
+ */
+export function extractFirstUrl(input: string): string {
+  if (!input) return "";
+  const trimmed = input.trim();
+  if (!trimmed) return "";
+  // 닫는 괄호·따옴표·꺾쇠는 URL 종료자로 처리
+  const match = trimmed.match(/https?:\/\/[^\s\])"'<>]+/i);
+  return match ? match[0] : trimmed;
+}
+
+/**
+ * URL 정규화 — 사용자 입력을 깨끗한 URL로 정리.
+ * 1) 모바일 공유 형식("[카카오맵] 낙산공원 https://kko.to/...")에서 URL 추출
+ * 2) 프로토콜 없으면 https:// 자동 prefix
  * - 빈 문자열은 그대로 빈 문자열 반환
- * - 이미 http:// 또는 https://로 시작하면 그대로 (앞뒤 공백만 제거)
- * - 그 외에는 https:// 자동 prefix
  */
 export function normalizeUrl(url: string): string {
   const trimmed = url?.trim() ?? "";
   if (!trimmed) return "";
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return `https://${trimmed}`;
+  const extracted = extractFirstUrl(trimmed);
+  if (/^https?:\/\//i.test(extracted)) return extracted;
+  return `https://${extracted}`;
 }
 
-export const KAKAO_MAP_HOSTS = ["kakao.com", "map.kakao.com", "place.map.kakao.com"];
+/**
+ * 지도 도메인 화이트리스트.
+ * 카카오: PC(map.kakao.com·place.map.kakao.com)·모바일 단축(kko.to) 모두 허용.
+ * 네이버: PC(map.naver.com)·모바일 단축(naver.me) 모두 허용.
+ */
+export const KAKAO_MAP_HOSTS = ["kakao.com", "map.kakao.com", "place.map.kakao.com", "kko.to"];
 export const NAVER_MAP_HOSTS = ["naver.com", "map.naver.com", "naver.me"];
