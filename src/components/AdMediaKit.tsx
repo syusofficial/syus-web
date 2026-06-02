@@ -181,7 +181,8 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
               ① 베타가 (현재 ~ 2026년 8월)
             </p>
             <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
-              런칭 협력사 모집 중. 후기·데이터 공유 동의 시 무료~할인 게재
+              <strong>첫 5사 런칭 협력사: 완전 무료</strong> (데이터·후기 공유 동의 조건).
+              6번째 이후는 베타 할인가.
             </p>
           </div>
           <div>
@@ -218,13 +219,13 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
               </tr>
             </thead>
             <tbody>
-              <PriceRow code="A" name="메인 히어로 배너 (월)"        beta="무료 ~ ₩200,000"  start="₩300,000 ~ ₩500,000"   stable="₩800,000 ~ ₩1,500,000" />
-              <PriceRow code="B" name="공연 목록 사이드 배너 (월)"   beta="무료 ~ ₩100,000"  start="₩150,000 ~ ₩250,000"   stable="₩400,000 ~ ₩800,000" />
-              <PriceRow code="C" name="공연 상세 하단 배너 (월)"     beta="무료 ~ ₩100,000"  start="₩100,000 ~ ₩200,000"   stable="₩300,000 ~ ₩600,000" />
-              <PriceRow code="D" name="검색 결과 스폰서드 (월)"      beta="무료 ~ ₩100,000"  start="₩100,000 ~ ₩200,000"   stable="₩300,000 ~ ₩600,000" />
-              <PriceRow code="E" name="아카이브 / 프로필 (월)"       beta="무료 ~ ₩100,000"  start="₩80,000 ~ ₩150,000"    stable="₩250,000 ~ ₩500,000" />
-              <PriceRow code="F" name="카드뉴스 광고 (회당)"         beta="무료 ~ ₩300,000"  start="₩300,000 ~ ₩500,000"   stable="₩800,000 ~ ₩1,500,000" />
-              <PriceRow code="★" name="패키지 (A+B+F · 월)"          beta="무료 ~ ₩500,000"  start="₩800,000 ~ ₩1,200,000" stable="₩2,000,000 ~ ₩3,000,000" highlight />
+              <PriceRow code="A" name="메인 히어로 배너 (월)"        beta="5사 무료 / ₩100,000~200,000"  start="₩300,000 ~ ₩500,000"   stable="₩800,000 ~ ₩1,500,000" />
+              <PriceRow code="B" name="공연 목록 사이드 배너 (월)"   beta="5사 무료 / ₩50,000~100,000"   start="₩150,000 ~ ₩250,000"   stable="₩400,000 ~ ₩800,000" />
+              <PriceRow code="C" name="공연 상세 하단 배너 (월)"     beta="5사 무료 / ₩50,000~100,000"   start="₩100,000 ~ ₩200,000"   stable="₩300,000 ~ ₩600,000" />
+              <PriceRow code="D" name="검색 결과 스폰서드 (월)"      beta="5사 무료 / ₩50,000~100,000"   start="₩100,000 ~ ₩200,000"   stable="₩300,000 ~ ₩600,000" />
+              <PriceRow code="E" name="아카이브 / 프로필 (월)"       beta="5사 무료 / ₩50,000~100,000"   start="₩80,000 ~ ₩150,000"    stable="₩250,000 ~ ₩500,000" />
+              <PriceRow code="F" name="카드뉴스 광고 (회당)"         beta="5사 무료 / ₩150,000~300,000"  start="₩300,000 ~ ₩500,000"   stable="₩800,000 ~ ₩1,500,000" />
+              <PriceRow code="★" name="패키지 (A+B+F · 월)"          beta="5사 무료 / ₩250,000~500,000"  start="₩800,000 ~ ₩1,200,000" stable="₩2,000,000 ~ ₩3,000,000" highlight />
             </tbody>
           </table>
         </div>
@@ -233,6 +234,8 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
           style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
         >
           ※ 모든 단가는 VAT 별도, 협의 가능. 게재 직전까지 광고 톤·디자인 협의 후 진행.
+          <br />
+          ※ <strong>첫 5사 런칭 협력사는 완전 무료</strong>(데이터·후기 공유 동의 / 게재 최소 1개월 / SYUS 푸터 상시 노출).
           <br />
           ※ SYUS의 비상업적 톤을 해치는 광고(과도한 자극·허위 광고 등)는 정중히 사양됩니다.
         </p>
