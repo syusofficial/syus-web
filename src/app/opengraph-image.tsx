@@ -59,7 +59,7 @@ export default async function OGImage() {
             display: "flex",
           }}
         >
-          대학 무대예술 공연 · 무료 좌석 예약
+          대학 무대예술 공연 · 관람료 없는 좌석 예약
         </div>
         <div
           style={{

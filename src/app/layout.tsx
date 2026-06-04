@@ -40,7 +40,7 @@ const SITE_URL = "https://syus.co.kr";
 const SITE_NAME = "무대올림";
 const SITE_TAGLINE = "운영: 사유유사 SYUS";
 const SITE_DESCRIPTION =
-  "오늘, 어느 대학의 막이 오른다. 무대올림은 대학 무대예술 공연을 올리고 지역 관객이 무료 좌석을 예약하는 플랫폼입니다. 연극·뮤지컬·무용·발레·국악·음악·전통연희.";
+  "오늘, 어느 대학의 막이 오른다. 무대올림은 대학 무대예술 공연을 올리고 지역 관객이 관람료 없이 좌석을 예약하는 비상업적 플랫폼입니다. 연극·뮤지컬·무용·발레·국악·음악·전통연희.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     template: "%s · 무대올림",
   },
   description: SITE_DESCRIPTION,
-  keywords: ["무대올림", "대학 공연", "무대예술", "무료 공연", "대학 연극", "대학 뮤지컬", "대학 무용", "대학 발레", "대학 국악", "대학 음악", "전통연희", "대학로", "지역 공연", "구글폼 예약", "학교 공연", "사유유사", "SYUS"],
+  keywords: ["무대올림", "대학 공연", "무대예술", "비상업 공연", "관람료 없는 공연", "대학 연극", "대학 뮤지컬", "대학 무용", "대학 발레", "대학 국악", "대학 음악", "전통연희", "대학로", "지역 공연", "구글폼 예약", "학교 공연", "사유유사", "SYUS"],
   authors: [{ name: "무대올림 (운영: 사유유사 SYUS)" }],
   creator: "사유유사 SYUS",
   publisher: "사유유사 SYUS",

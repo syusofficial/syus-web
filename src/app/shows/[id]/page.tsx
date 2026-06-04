@@ -534,7 +534,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                       fontWeight: 600,
                     }}
                   >
-                    무료 좌석 예약하기 →
+                    좌석 예약하기 →
                   </a>
                 ) : show.ticket_url ? (
                   <a

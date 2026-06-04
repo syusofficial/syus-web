@@ -28,14 +28,10 @@ export default function ForBusinessPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
       />
 
-      {/* ── Hero ── */}
+      {/* ── Hero ── 그라데이션+그레인 (사장님 요청 시각 효과) */}
       <section
-        className="px-6 md:px-12 lg:px-20 pt-16 md:pt-20 pb-24 md:pb-32 relative overflow-hidden"
-        style={{
-          background:
-            "radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%)",
-          color: "#FBF8F1",
-        }}
+        className="px-6 md:px-12 lg:px-20 pt-16 md:pt-20 pb-24 md:pb-32 relative overflow-hidden grad-grain grad-mineral-radial"
+        style={{ color: "#FBF8F1" }}
       >
         <div className="max-w-5xl mx-auto">
           <p

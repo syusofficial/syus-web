@@ -5,11 +5,11 @@ import { buildBreadcrumbList } from "@/lib/structuredData";
 export const metadata: Metadata = {
   title: "무대올림 · 소개",
   description:
-    "무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 무료 좌석을 예약하는 플랫폼입니다. 연극·뮤지컬·무용·발레·국악·음악·전통연희. 운영: 사유유사 SYUS.",
+    "무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 비상업적 플랫폼입니다. 연극·뮤지컬·무용·발레·국악·음악·전통연희. 운영: 사유유사 SYUS.",
   openGraph: {
     title: "무대올림 · 소개",
     description:
-      "대학 무대예술 공연을 올리고, 지역 관객이 무료 좌석을 예약하는 플랫폼.",
+      "대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 비상업적 플랫폼.",
   },
 };
 
@@ -26,14 +26,10 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
       />
 
-      {/* ── Hero ── */}
+      {/* ── Hero ── 그라데이션+그레인 (사장님 요청 시각 효과) */}
       <section
-        className="px-6 md:px-12 lg:px-20 pt-16 md:pt-20 pb-24 md:pb-32 relative overflow-hidden"
-        style={{
-          background:
-            "radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%)",
-          color: "#FBF8F1",
-        }}
+        className="px-6 md:px-12 lg:px-20 pt-16 md:pt-20 pb-24 md:pb-32 relative overflow-hidden grad-grain grad-mineral-radial"
+        style={{ color: "#FBF8F1" }}
       >
         <div className="max-w-5xl mx-auto">
           <p
@@ -68,7 +64,7 @@ export default function AboutPage() {
           >
             무대올림은 대학 무대예술 공연을 올리고,
             <br />
-            지역 관객이 무료 좌석을 예약하는 곳입니다.
+            지역 관객이 관람료 없이 좌석을 예약하는 곳입니다.
           </p>
 
           <div
@@ -187,9 +183,9 @@ export default function AboutPage() {
                 num: "03",
                 title: "예약한다",
                 body: [
-                  "대학 공연은 대부분 무료. 그래서 ‘티켓 판매’가 아니라 ‘무료 좌석 확보’입니다.",
-                  "관객도 학생 공연자도 끝까지 무료.",
-                  "돈은 후원자와 광고주에게서 옵니다.",
+                  "대학 공연은 대부분 관람료가 없습니다. 그래서 ‘티켓 판매’가 아니라 ‘좌석 확보’입니다.",
+                  "관객도 학생 공연자도 끝까지 비상업적으로.",
+                  "운영은 후원자와 광고주의 도움으로 이어집니다.",
                 ],
               },
             ].map((item) => (
@@ -269,9 +265,9 @@ export default function AboutPage() {
                 body: "전국 검색이 아니라 지역 축. 경기 남부 주민이 경기 남부 대학 무대를 본다.",
               },
               {
-                tag: "무료",
-                title: "끝까지 무료",
-                body: "관객·학생 공연자 모두 무료 좌석 예약. 결제도 정산도 환불 부담도 없습니다.",
+                tag: "관람료 없음",
+                title: "관람료 없이, 끝까지",
+                body: "관객·학생 공연자 모두 별도 비용 없이. 결제도 정산도 환불 부담도 없습니다.",
               },
               {
                 tag: "기록",
@@ -309,6 +305,112 @@ export default function AboutPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 공연자에게 ── 학생 공연자 입장에서 본 무대올림 (사장님 보완 요청) */}
+      <section
+        className="px-6 md:px-12 lg:px-20 py-24"
+        style={{ backgroundColor: "#F0EBE0" }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <p
+            className="text-xs tracking-[0.3em] uppercase mb-3"
+            style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B", fontWeight: 600 }}
+          >
+            For Performers
+          </p>
+          <h2
+            className="text-3xl md:text-4xl font-bold mb-4 leading-tight"
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B", wordBreak: "keep-all" }}
+          >
+            공연자에게,
+            <br className="md:hidden" />
+            왜 무대올림인가.
+          </h2>
+          <p
+            className="text-base md:text-lg leading-relaxed mb-12 max-w-3xl"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#202833", wordBreak: "keep-all" }}
+          >
+            대학에서 올린 한 번의 무대는 보통 그 주말에 흘러가버립니다.
+            무대올림은 그 무대를 기록하고, 가까운 관객에게 알리고, 다음 무대로 이어지는 다리를 놓습니다.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                num: "01",
+                tag: "노출",
+                title: "지역 관객에게 직접",
+                body: "전국 검색이 아니라 지역 큐레이션. 우리 학교 무대를 우리 지역 관객이 먼저 봅니다.",
+              },
+              {
+                num: "02",
+                tag: "아카이브",
+                title: "흘러간 무대도 남는다",
+                body: "공연이 끝나도 페이지는 살아 있습니다. 출연·연출·제작 크레딧이 그대로, 다음 오디션·진학 포트폴리오로.",
+              },
+              {
+                num: "03",
+                tag: "신뢰",
+                title: "비상업 운영, 사후 정산 없음",
+                body: "등록 비용·게재 수수료 없음. 관객 결제도 없습니다. 무대만 올리시면 됩니다.",
+              },
+            ].map((p) => (
+              <div
+                key={p.num}
+                className="p-6"
+                style={{ backgroundColor: "#FBF8F1", border: "1px solid #D8D3C9" }}
+              >
+                <div className="flex items-baseline justify-between mb-4">
+                  <span
+                    className="text-2xl font-bold"
+                    style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}
+                  >
+                    {p.num}
+                  </span>
+                  <span
+                    className="text-[0.65rem] tracking-[0.25em] uppercase px-2 py-0.5"
+                    style={{
+                      fontFamily: "var(--font-inter)",
+                      backgroundColor: "#3B5A6B",
+                      color: "#FBF8F1",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {p.tag}
+                  </span>
+                </div>
+                <p
+                  className="text-base font-bold mb-2"
+                  style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#202833" }}
+                >
+                  {p.title}
+                </p>
+                <p
+                  className="text-sm leading-relaxed"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", wordBreak: "keep-all" }}
+                >
+                  {p.body}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <Link
+              href="/performer"
+              className="inline-block px-8 py-4 text-sm tracking-wider transition-colors"
+              style={{
+                fontFamily: "var(--font-noto-sans-kr)",
+                backgroundColor: "#3B5A6B",
+                color: "#FBF8F1",
+                fontWeight: 600,
+              }}
+            >
+              공연자로 무대 올리기 →
+            </Link>
           </div>
         </div>
       </section>

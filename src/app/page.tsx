@@ -78,14 +78,10 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* ── Hero ── 무대올림 정체성 + 포스터 둥둥 격상 + Pretendard */}
+      {/* ── Hero ── 무대올림 정체성 + 포스터 둥둥 + 그라데이션+그레인 (사장님 요청) */}
       <section
-        className="pt-24 md:pt-36 relative overflow-hidden"
-        style={{
-          background:
-            "radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%)",
-          color: "#FBF8F1",
-        }}
+        className="pt-24 md:pt-36 relative overflow-hidden grad-grain grad-mineral-radial"
+        style={{ color: "#FBF8F1" }}
       >
         {/* 상단: 라벨 + 슬로건 (한 줄, 미니멀 Pretendard) */}
         <div className="px-6 md:px-12 lg:px-20 pt-10 md:pt-14 pb-6">
@@ -122,7 +118,7 @@ export default async function HomePage() {
                     wordBreak: "keep-all",
                   }}
                 >
-                  대학 무대예술 공연을 올리고, 지역 관객이 무료 좌석을 예약하는 곳.
+                  대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 곳.
                 </p>
                 <p
                   className="text-xs tracking-wider"
@@ -168,7 +164,7 @@ export default async function HomePage() {
         </div>
 
         {/* 메인 시각 자산: 포스터 둥둥 격상 영역 (히어로 중앙·하단의 큰 영역) */}
-        {streamItems.length > 0 && (
+        {streamItems.length > 0 ? (
           <div className="pt-4 pb-10">
             <div className="px-6 md:px-12 lg:px-20 mb-3">
               <div className="max-w-[1600px] mx-auto flex items-baseline justify-between gap-4 flex-wrap">
@@ -187,6 +183,58 @@ export default async function HomePage() {
               </div>
             </div>
             <HeroPosterStream items={streamItems} />
+          </div>
+        ) : (
+          /* 빈 상태 — 신규 방문자가 첫 진입 시 비어 보이지 않도록 안내 카드 노출 */
+          <div className="pt-4 pb-12">
+            <div className="px-6 md:px-12 lg:px-20">
+              <div className="max-w-3xl mx-auto text-center">
+                <p
+                  className="text-[0.7rem] tracking-[0.35em] uppercase mb-4"
+                  style={{ fontFamily: "var(--font-pretendard)", color: "#C8D96F", fontWeight: 600 }}
+                >
+                  Coming Soon
+                </p>
+                <p
+                  className="text-2xl md:text-3xl font-bold mb-4 leading-tight"
+                  style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1", wordBreak: "keep-all" }}
+                >
+                  곧, 어느 대학의 첫 막이 오릅니다.
+                </p>
+                <p
+                  className="text-sm md:text-base leading-relaxed mb-8 max-w-xl mx-auto"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "rgba(248,249,252,0.85)", wordBreak: "keep-all" }}
+                >
+                  공연자분들이 무대를 올리시는 동안 가장 먼저 만나보실 수 있도록 준비 중입니다.
+                  공연자라면 직접 무대를 올려주세요. 관객이라면 알림을 받아보세요.
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <Link
+                    href="/performer"
+                    className="px-6 py-3 text-sm tracking-wider transition-colors"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      backgroundColor: "#C8D96F",
+                      color: "#202833",
+                      fontWeight: 600,
+                    }}
+                  >
+                    공연자: 무대 올리기 →
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="px-6 py-3 text-sm tracking-wider transition-colors"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      color: "#FBF8F1",
+                      border: "1px solid rgba(248, 249, 252, 0.45)",
+                    }}
+                  >
+                    무대올림이 어떤 곳인가요
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -258,7 +306,7 @@ export default async function HomePage() {
                 {
                   num: "03",
                   title: "예약한다",
-                  desc: "관객도 학생 공연자도 끝까지 무료. 무료 좌석을 미리 확보해 자리를 비워두지 않습니다.",
+                  desc: "관객도 학생 공연자도 끝까지 비상업적으로. 좌석을 미리 확보해 자리를 비워두지 않습니다.",
                 },
               ].map((item) => (
                 <div
