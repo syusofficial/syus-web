@@ -1,6 +1,6 @@
-@import "tailwindcss";
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 @import url("https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css");
+@import "tailwindcss";
 
 @theme inline {
   /* 무대올림 / 사유유사 SYUS — 컬러 팔레트 (2026-06-02 Mineral Stage 전환)
