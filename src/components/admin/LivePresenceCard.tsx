@@ -36,54 +36,73 @@ export default function LivePresenceCard() {
   const latestStateRef = useRef<{ total: number; admin: number }>({ total: 0, admin: 0 });
 
   useEffect(() => {
-    const supabase = createClient();
-    const channel = supabase.channel(PRESENCE_CHANNEL);
+    // Realtime 연결 실패가 통계 탭을 죽이지 않도록 전체 useEffect를 try-catch로 격리
+    let cleanup: (() => void) | null = null;
+    try {
+      const supabase = createClient();
+      const channel = supabase.channel(PRESENCE_CHANNEL);
 
-    const computeAndSchedule = () => {
-      const state = channel.presenceState<PresenceMeta>();
-      // presenceState는 { sessionKey: [meta1, meta2, ...] } 형태
-      // 같은 sessionKey가 여러 탭으로 join한 경우 배열에 여러 meta — 사람 1명으로 카운트
-      const keys = Object.keys(state);
-      let admins = 0;
-      for (const key of keys) {
-        const metas = state[key];
-        // 한 세션에 admin 메타가 하나라도 있으면 admin 카운트
-        if (metas.some((m) => m.is_admin === true)) admins += 1;
-      }
-      latestStateRef.current = { total: keys.length, admin: admins };
-
-      if (debounceTimerRef.current !== null) return; // 이미 예약됨
-      debounceTimerRef.current = window.setTimeout(() => {
-        setTotalCount(latestStateRef.current.total);
-        setAdminCount(latestStateRef.current.admin);
-        debounceTimerRef.current = null;
-      }, SYNC_DEBOUNCE_MS);
-    };
-
-    channel
-      .on("presence", { event: "sync" }, computeAndSchedule)
-      .on("presence", { event: "join" }, computeAndSchedule)
-      .on("presence", { event: "leave" }, computeAndSchedule)
-      .subscribe((status) => {
-        setConnected(status === "SUBSCRIBED");
-        if (status === "SUBSCRIBED") {
-          // 첫 sync는 즉시 (5초 기다리지 않게)
-          const initial = channel.presenceState<PresenceMeta>();
-          const keys = Object.keys(initial);
+      const computeAndSchedule = () => {
+        try {
+          const state = channel.presenceState<PresenceMeta>();
+          const keys = Object.keys(state);
           let admins = 0;
           for (const key of keys) {
-            if (initial[key].some((m) => m.is_admin === true)) admins += 1;
+            const metas = state[key];
+            if (Array.isArray(metas) && metas.some((m) => m?.is_admin === true)) admins += 1;
           }
-          setTotalCount(keys.length);
-          setAdminCount(admins);
+          latestStateRef.current = { total: keys.length, admin: admins };
+
+          if (debounceTimerRef.current !== null) return;
+          debounceTimerRef.current = window.setTimeout(() => {
+            setTotalCount(latestStateRef.current.total);
+            setAdminCount(latestStateRef.current.admin);
+            debounceTimerRef.current = null;
+          }, SYNC_DEBOUNCE_MS);
+        } catch {
+          /* presence 처리 실패 — 카드는 0명으로 노출 */
         }
-      });
+      };
+
+      channel
+        .on("presence", { event: "sync" }, computeAndSchedule)
+        .on("presence", { event: "join" }, computeAndSchedule)
+        .on("presence", { event: "leave" }, computeAndSchedule)
+        .subscribe((status) => {
+          try {
+            setConnected(status === "SUBSCRIBED");
+            if (status === "SUBSCRIBED") {
+              const initial = channel.presenceState<PresenceMeta>();
+              const keys = Object.keys(initial);
+              let admins = 0;
+              for (const key of keys) {
+                const metas = initial[key];
+                if (Array.isArray(metas) && metas.some((m) => m?.is_admin === true)) admins += 1;
+              }
+              setTotalCount(keys.length);
+              setAdminCount(admins);
+            }
+          } catch {
+            /* subscribe callback 실패 무시 */
+          }
+        });
+
+      cleanup = () => {
+        if (debounceTimerRef.current !== null) {
+          window.clearTimeout(debounceTimerRef.current);
+        }
+        try {
+          supabase.removeChannel(channel).catch(() => {});
+        } catch {
+          /* 정리 실패 무시 */
+        }
+      };
+    } catch {
+      /* Realtime 초기화 실패 — 카드는 0명·연결 안 됨 상태로 노출 */
+    }
 
     return () => {
-      if (debounceTimerRef.current !== null) {
-        window.clearTimeout(debounceTimerRef.current);
-      }
-      supabase.removeChannel(channel).catch(() => {});
+      cleanup?.();
     };
   }, []);
 

@@ -73,7 +73,8 @@ export default function AdminPage() {
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-    const [showsRes, membersRes, contactsRes, likesRes, reviewsRes, pageViewsRes] = await Promise.all([
+    // Promise.allSettled로 격리 — page_views 테이블 미생성·RLS 오류가 통계 탭 전체를 죽이지 않도록
+    const results = await Promise.allSettled([
       supabase.from("shows").select("*").order("created_at", { ascending: false }),
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("contacts").select("*").order("created_at", { ascending: false }),
@@ -91,14 +92,22 @@ export default function AdminPage() {
         .limit(50000),
     ]);
 
-    const allContacts = (contactsRes.data as Contact[]) ?? [];
-    setShows((showsRes.data as Show[]) ?? []);
-    setMembers((membersRes.data as Profile[]) ?? []);
+    // 각 쿼리 결과 안전 추출 — rejected 또는 PostgrestError 시 빈 배열로 fallback
+    const safe = <T,>(idx: number): T[] => {
+      const r = results[idx];
+      if (r.status !== "fulfilled") return [];
+      const data = (r.value as { data: unknown }).data;
+      return Array.isArray(data) ? (data as T[]) : [];
+    };
+
+    const allContacts = safe<Contact>(2);
+    setShows(safe<Show>(0));
+    setMembers(safe<Profile>(1));
     setContacts(allContacts.filter((c) => !c.deleted_at));
     setTrashedContacts(allContacts.filter((c) => !!c.deleted_at));
-    setLikes((likesRes.data as { show_id: string }[]) ?? []);
-    setAdminReviews((reviewsRes.data as AdminReviewRow[] | null) ?? []);
-    setPageViews((pageViewsRes.data as { path: string; referrer: string | null; session_id: string | null; is_admin: boolean; created_at: string }[]) ?? []);
+    setLikes(safe<{ show_id: string }>(3));
+    setAdminReviews(safe<AdminReviewRow>(4));
+    setPageViews(safe<{ path: string; referrer: string | null; session_id: string | null; is_admin: boolean; created_at: string }>(5));
     setDataLoading(false);
   }, []);
 
