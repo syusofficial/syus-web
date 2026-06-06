@@ -57,6 +57,7 @@ export default function AdminPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [trashedContacts, setTrashedContacts] = useState<Contact[]>([]);
   const [likes, setLikes] = useState<{ show_id: string }[]>([]);
+  const [pageViews, setPageViews] = useState<{ path: string; session_id: string | null; is_admin: boolean; created_at: string }[]>([]);
   const [contactFilter, setContactFilter] = useState<string>("전체");
   const [contactView, setContactView] = useState<"active" | "trash">("active");
   const [dataLoading, setDataLoading] = useState(true);
@@ -68,7 +69,11 @@ export default function AdminPage() {
     const supabase = createClient();
     setDataLoading(true);
 
-    const [showsRes, membersRes, contactsRes, likesRes, reviewsRes] = await Promise.all([
+    // 방문자 로그 — 최근 90일치만 (집계 충분 + 쿼리 비용 방어)
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
+    const [showsRes, membersRes, contactsRes, likesRes, reviewsRes, pageViewsRes] = await Promise.all([
       supabase.from("shows").select("*").order("created_at", { ascending: false }),
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("contacts").select("*").order("created_at", { ascending: false }),
@@ -78,6 +83,12 @@ export default function AdminPage() {
         .select("id, show_id, user_id, body, status, moderation, report_count, created_at, profiles(name), shows(id, title)")
         .order("created_at", { ascending: false })
         .limit(200),
+      supabase
+        .from("page_views")
+        .select("path, session_id, is_admin, created_at")
+        .gte("created_at", ninetyDaysAgo.toISOString())
+        .order("created_at", { ascending: false })
+        .limit(50000),
     ]);
 
     const allContacts = (contactsRes.data as Contact[]) ?? [];
@@ -87,6 +98,7 @@ export default function AdminPage() {
     setTrashedContacts(allContacts.filter((c) => !!c.deleted_at));
     setLikes((likesRes.data as { show_id: string }[]) ?? []);
     setAdminReviews((reviewsRes.data as AdminReviewRow[] | null) ?? []);
+    setPageViews((pageViewsRes.data as { path: string; session_id: string | null; is_admin: boolean; created_at: string }[]) ?? []);
     setDataLoading(false);
   }, []);
 
@@ -433,7 +445,7 @@ export default function AdminPage() {
           <>
             {/* ── 통계 탭 ── */}
             {tab === "stats" && (
-              <AdminStats shows={shows} members={members} likes={likes} />
+              <AdminStats shows={shows} members={members} likes={likes} pageViews={pageViews} />
             )}
 
             {/* ── 광고 탭 (미디어킷) ── */}

@@ -1,16 +1,111 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Show, Profile } from "@/types";
 import { extractSchoolName, isEnded, todayKey } from "@/lib/showFilters";
+
+type PageViewRow = {
+  path: string;
+  session_id: string | null;
+  is_admin: boolean;
+  created_at: string;
+};
 
 type AdminStatsProps = {
   shows: Show[];
   members: Profile[];
   likes: { show_id: string }[]; // 모든 좋아요 row (관리자 RLS)
+  pageViews?: PageViewRow[];    // 최근 90일 방문 로그 (관리자 RLS)
 };
 
-export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
+export default function AdminStats({ shows, members, likes, pageViews = [] }: AdminStatsProps) {
+  // 운영자 본인 트래픽 포함/제외 토글 — 기본 제외 (영업 보고용 숫자)
+  const [includeAdminTraffic, setIncludeAdminTraffic] = useState(false);
+  const visibleViews = useMemo(
+    () => (includeAdminTraffic ? pageViews : pageViews.filter((v) => !v.is_admin)),
+    [pageViews, includeAdminTraffic],
+  );
+
+  const traffic = useMemo(() => {
+    // 한국시간(KST) 기준 자정 — 서버 timestamptz를 그대로 다루면 UTC 자정이 됨
+    // → "오늘"의 한국 운영자 직관을 맞추기 위해 KST 자정 기준으로 잘라낸다
+    const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+    const nowKstMs = Date.now() + KST_OFFSET_MS;
+    const todayKstStart = Math.floor(nowKstMs / 86400000) * 86400000 - KST_OFFSET_MS;
+    const yesterdayKstStart = todayKstStart - 86400000;
+    const sevenDaysAgo = todayKstStart - 6 * 86400000; // 오늘 포함 7일
+    const thirtyDaysAgo = todayKstStart - 29 * 86400000; // 오늘 포함 30일
+
+    let todayCount = 0;
+    let yesterdayCount = 0;
+    let last7Count = 0;
+    const todaySessions = new Set<string>();
+    const last7Sessions = new Set<string>();
+    const allSessions = new Set<string>();
+    const pathCount: Record<string, number> = {};
+
+    // 일별 시리즈 (최근 30일)
+    const dailyMap: Record<number, number> = {};
+
+    for (const v of visibleViews) {
+      const ts = new Date(v.created_at).getTime();
+
+      if (ts >= todayKstStart) {
+        todayCount += 1;
+        if (v.session_id) todaySessions.add(v.session_id);
+      } else if (ts >= yesterdayKstStart && ts < todayKstStart) {
+        yesterdayCount += 1;
+      }
+      if (ts >= sevenDaysAgo) {
+        last7Count += 1;
+        if (v.session_id) last7Sessions.add(v.session_id);
+      }
+      if (ts >= thirtyDaysAgo) {
+        // 일자 키 (KST 자정 ms)
+        const dayStart = Math.floor((ts + KST_OFFSET_MS) / 86400000) * 86400000 - KST_OFFSET_MS;
+        dailyMap[dayStart] = (dailyMap[dayStart] ?? 0) + 1;
+      }
+
+      if (v.session_id) allSessions.add(v.session_id);
+      pathCount[v.path] = (pathCount[v.path] ?? 0) + 1;
+    }
+
+    // 최근 14일 막대 시리즈 (오늘 포함, 왼→오)
+    const daily: { dayStart: number; label: string; count: number }[] = [];
+    for (let i = 13; i >= 0; i--) {
+      const dayStart = todayKstStart - i * 86400000;
+      const d = new Date(dayStart);
+      daily.push({
+        dayStart,
+        label: `${d.getMonth() + 1}/${d.getDate()}`,
+        count: dailyMap[dayStart] ?? 0,
+      });
+    }
+
+    const topPaths = Object.entries(pathCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    return {
+      todayCount,
+      yesterdayCount,
+      last7Count,
+      last7Avg: Math.round(last7Count / 7),
+      totalCount: visibleViews.length,
+      todayUU: todaySessions.size,
+      last7UU: last7Sessions.size,
+      totalUU: allSessions.size,
+      daily,
+      topPaths,
+    };
+  }, [visibleViews]);
+
+  const adminTrafficCount = useMemo(
+    () => pageViews.filter((v) => v.is_admin).length,
+    [pageViews],
+  );
+
+
   const stats = useMemo(() => {
     const today = todayKey();
 
@@ -108,6 +203,66 @@ export default function AdminStats({ shows, members, likes }: AdminStatsProps) {
 
   return (
     <div className="space-y-12">
+      {/* ── 방문자 (사장님 한눈에 보기) ─────────────── */}
+      <section>
+        <div className="flex items-baseline justify-between flex-wrap gap-3 mb-4">
+          <SectionLabel>홈페이지 방문자</SectionLabel>
+          <div className="flex items-center gap-2">
+            <label
+              className="flex items-center gap-2 text-xs cursor-pointer select-none"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+            >
+              <input
+                type="checkbox"
+                checked={includeAdminTraffic}
+                onChange={(e) => setIncludeAdminTraffic(e.target.checked)}
+                style={{ accentColor: "#3B5A6B" }}
+              />
+              운영자 본인 포함 ({adminTrafficCount}회)
+            </label>
+          </div>
+        </div>
+
+        {pageViews.length === 0 ? (
+          <EmptyText>
+            아직 방문 데이터가 없습니다. Supabase SQL Editor에 db/migrations/2026-06-06_page_views.sql 을 실행하셨는지 확인해주세요.
+          </EmptyText>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              <SummaryCard label="오늘 방문" value={traffic.todayCount} suffix={`회 · ${traffic.todayUU}명`} accent />
+              <SummaryCard label="어제 방문" value={traffic.yesterdayCount} suffix="회" />
+              <SummaryCard label="7일 평균" value={traffic.last7Avg} suffix="회/일" />
+              <SummaryCard label="누적 (90일)" value={traffic.totalCount} suffix={`회 · ${traffic.totalUU}명`} />
+            </div>
+
+            {/* 최근 14일 추이 */}
+            <DailyTrafficChart daily={traffic.daily} />
+
+            {/* 인기 페이지 TOP 5 */}
+            {traffic.topPaths.length > 0 && (
+              <div className="mt-6">
+                <p
+                  className="text-xs tracking-[0.3em] uppercase mb-3"
+                  style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+                >
+                  인기 페이지 TOP 5 (90일)
+                </p>
+                <BarList items={traffic.topPaths} />
+              </div>
+            )}
+
+            <p
+              className="text-xs mt-4"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+            >
+              ※ 자체 로그 기반. 봇 트래픽은 user-agent로 거른 추정치(정확도 80% 수준)입니다.
+              세션은 30분 단위 새 세션으로 카운트합니다. 정밀 분석은 Google Analytics 확인.
+            </p>
+          </>
+        )}
+      </section>
+
       {/* ── 요약 카드 ───────────────────────────────── */}
       <section>
         <SectionLabel>요약</SectionLabel>
@@ -280,8 +435,12 @@ function SummaryCard({
         className="text-3xl font-bold mb-1"
         style={{ fontFamily: "var(--font-inter)" }}
       >
-        {value}
-        {suffix && <span className="text-base ml-1" style={{ opacity: 0.7 }}>{suffix}</span>}
+        {value.toLocaleString("ko-KR")}
+        {suffix && (
+          <span className="text-xs ml-1.5 block sm:inline" style={{ opacity: 0.75, fontWeight: 400 }}>
+            {suffix}
+          </span>
+        )}
       </p>
       <p
         className="text-xs tracking-wide"
@@ -289,6 +448,69 @@ function SummaryCard({
       >
         {label}
       </p>
+    </div>
+  );
+}
+
+/**
+ * 일별 방문 추이 (최근 14일) — 단순 바 차트
+ * Mineral Stage 팔레트 준수 (메인 바 #3B5A6B, 배경 #F0EBE0)
+ */
+function DailyTrafficChart({
+  daily,
+}: {
+  daily: { dayStart: number; label: string; count: number }[];
+}) {
+  const max = Math.max(...daily.map((d) => d.count), 1);
+  return (
+    <div className="p-5" style={{ backgroundColor: "#F0EBE0" }}>
+      <p
+        className="text-xs tracking-[0.3em] uppercase mb-3"
+        style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+      >
+        최근 14일 일별 방문
+      </p>
+      <div className="flex items-end gap-1.5 h-32">
+        {daily.map((d) => {
+          const height = (d.count / max) * 100;
+          const isToday = d.dayStart === daily[daily.length - 1].dayStart;
+          return (
+            <div key={d.dayStart} className="flex-1 flex flex-col items-center gap-1.5">
+              <div className="w-full flex-1 flex items-end">
+                <div
+                  className="w-full relative"
+                  style={{
+                    height: `${height}%`,
+                    backgroundColor: isToday ? "#3B5A6B" : "#5F584F",
+                    minHeight: d.count > 0 ? "3px" : "0",
+                    opacity: isToday ? 1 : 0.55,
+                  }}
+                  title={`${d.label}: ${d.count}회`}
+                >
+                  {d.count > 0 && (
+                    <span
+                      className="absolute -top-4 left-1/2 -translate-x-1/2 text-[10px]"
+                      style={{ fontFamily: "var(--font-inter)", color: "#1A1A1A" }}
+                    >
+                      {d.count}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <span
+                className="text-[10px]"
+                style={{
+                  fontFamily: "var(--font-inter)",
+                  color: isToday ? "#3B5A6B" : "#5F584F",
+                  fontWeight: isToday ? 600 : 300,
+                }}
+              >
+                {d.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

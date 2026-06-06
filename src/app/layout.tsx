@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import LoadingScreen from "@/components/LoadingScreen";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import SessionManager from "@/components/SessionManager";
+import PageViewTracker from "@/components/PageViewTracker";
 
 const notoSerifKR = Noto_Serif_KR({
   variable: "--font-noto-serif-kr",
@@ -123,6 +124,7 @@ export default function RootLayout({
         <Footer />
         <GoogleAnalytics />
         <SessionManager />
+        <PageViewTracker />
       </body>
     </html>
   );
