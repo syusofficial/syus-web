@@ -61,11 +61,20 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     locale: "ko_KR",
     type: "website",
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "무대올림 — 오늘, 어느 대학의 막이 오른다. 운영: 사유유사 SYUS.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} · ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
+    images: ["/og-default.png"],
   },
   robots: {
     index: true,
@@ -100,6 +109,13 @@ export default function RootLayout({
       lang="ko"
       className={`${notoSerifKR.variable} ${notoSansKR.variable} ${cormorant.variable} ${geist.variable}`}
     >
+      <head>
+        {/* 폰트 CDN 안정화 — preconnect로 DNS·TLS 라운드트립 단축 (제작팀 진단 #3 부분 완화) */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://spoqa.github.io" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+        <link rel="dns-prefetch" href="https://spoqa.github.io" />
+      </head>
       <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: "#FBF8F1", color: "#202833" }}>
         <LoadingScreen />
         <Nav />

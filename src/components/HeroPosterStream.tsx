@@ -22,6 +22,8 @@ export type StreamItem = {
 export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
   // 마운트 후에만 애니메이션 활성화 — SSR/CSR 시점차로 인한 시각 점프 방지
   const [mounted, setMounted] = useState(false);
+  // 모바일 touch로 일시정지 (제작팀 진단 #5)
+  const [touchPaused, setTouchPaused] = useState(false);
   useEffect(() => setMounted(true), []);
 
   if (items.length === 0) return null;
@@ -30,7 +32,12 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
   const duplicated = [...items, ...items];
 
   return (
-    <div className={`hero-stream-wrapper${mounted ? " is-animated" : ""}`}>
+    <div
+      className={`hero-stream-wrapper${mounted ? " is-animated" : ""}${touchPaused ? " is-touch-paused" : ""}`}
+      onTouchStart={() => setTouchPaused(true)}
+      onTouchEnd={() => setTouchPaused(false)}
+      onTouchCancel={() => setTouchPaused(false)}
+    >
       <div className="hero-stream-track">
         {duplicated.map((item, idx) => {
           // 카드별 둥둥 위상 분산 — 진폭·지연·주기 무작위 느낌
@@ -114,7 +121,8 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
         .hero-stream-wrapper.is-animated .hero-stream-track {
           animation: hero-stream-flow 64s linear infinite;
         }
-        .hero-stream-wrapper:hover .hero-stream-track {
+        .hero-stream-wrapper:hover .hero-stream-track,
+        .hero-stream-wrapper.is-touch-paused .hero-stream-track {
           animation-play-state: paused;
         }
         .hero-stream-card {
@@ -134,7 +142,8 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
         .hero-stream-wrapper.is-animated .hero-card-bob {
           animation: hero-card-bob 7s ease-in-out infinite alternate;
         }
-        .hero-stream-wrapper:hover .hero-card-bob {
+        .hero-stream-wrapper:hover .hero-card-bob,
+        .hero-stream-wrapper.is-touch-paused .hero-card-bob {
           animation-play-state: paused;
         }
         .hero-stream-poster {

@@ -77,7 +77,7 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
       }}
     >
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-baseline gap-2 flex-wrap">
           <p
             className="text-sm font-semibold"
             style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#202833" }}
@@ -90,6 +90,21 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
           >
             {formatReviewDate(review.createdAt)}
           </p>
+          {/* 본인이고 status가 hidden일 때만 '검토 중' 라벨 노출 (제작팀 진단 #4) */}
+          {review.isMine && review.status === "hidden" && (
+            <span
+              className="text-[0.65rem] px-2 py-0.5 tracking-wider"
+              style={{
+                fontFamily: "var(--font-noto-sans-kr)",
+                backgroundColor: "#F0EBE0",
+                color: "#5F584F",
+                border: "1px solid #D8D3C9",
+              }}
+              title="자동 검열 통과 후 운영자 검토 대기 중입니다. 다른 분에게는 보이지 않습니다."
+            >
+              검토 중 · 비공개
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
           {review.isMine ? (
