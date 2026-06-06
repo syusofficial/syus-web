@@ -257,7 +257,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
             >
               광고 목적·게재 기간·콘텐츠 제작 범위에 따라 별도 견적을 드립니다.
-              상품·기간 묶음, 비영리·문화 기관 할인 등 협의 가능합니다.
+              상품·기간 묶음, 비상업적·문화 기관 할인 등 협의 가능합니다.
             </p>
           </div>
           <a

@@ -76,8 +76,40 @@ export default async function HomePage() {
   const featuredOrUpcomingIds = new Set([...featuredIds, ...upcoming.map((s) => s.id)]);
   const recent = active.filter((s) => !featuredOrUpcomingIds.has(s.id)).slice(0, 6);
 
+  // WebSite + Organization JSON-LD — 검색 결과 사이트링크 검색 박스 + 브랜드 카드 노출 보강
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "무대올림",
+    alternateName: "사유유사 SYUS",
+    url: "https://syus.co.kr",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://syus.co.kr/shows?q={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+  };
+  const orgJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "사유유사 SYUS",
+    alternateName: "무대올림",
+    url: "https://syus.co.kr",
+    logo: "https://syus.co.kr/og-default.png",
+    description:
+      "대학 무대예술 공연을 올리고 지역 관객이 관람료 없이 좌석을 예약하는 비상업 플랫폼.",
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
       {/* ── Hero ── 무대올림 정체성 + 포스터 둥둥 + 그라데이션+그레인 (사장님 요청) */}
       <section
         className="pt-24 md:pt-36 relative overflow-hidden grad-grain grad-mineral-radial"

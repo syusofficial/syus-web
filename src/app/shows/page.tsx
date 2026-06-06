@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import ShowCard from "@/components/ShowCard";
 import ShowsSearchBar from "@/components/ShowsSearchBar";
@@ -9,6 +10,49 @@ import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
+
+/**
+ * /shows 메타데이터 — 검색 결과·SNS 공유에 노출되는 정보.
+ * title은 root template("%s · 무대올림")을 통해 자동 합성됨.
+ */
+export const metadata: Metadata = {
+  title: "공연 일정",
+  description:
+    "오늘 막이 오르는 대학 무대예술 공연을 한 곳에서. 연극·뮤지컬·무용·발레·국악·음악·전통연희 등 16개 지역의 학생 공연을 관람료 없이 예약하세요.",
+  keywords: [
+    "대학 공연 일정",
+    "대학 연극",
+    "대학 뮤지컬",
+    "대학 무용",
+    "관람료 없는 공연",
+    "학생 공연",
+    "지역 공연",
+    "무대올림 공연",
+  ],
+  alternates: { canonical: "https://syus.co.kr/shows" },
+  openGraph: {
+    title: "공연 일정 · 무대올림",
+    description:
+      "오늘 막이 오르는 대학 무대예술 공연. 16개 지역, 8개 장르의 학생 공연을 한 곳에서.",
+    url: "https://syus.co.kr/shows",
+    type: "website",
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "무대올림 공연 일정",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "공연 일정 · 무대올림",
+    description:
+      "오늘 막이 오르는 대학 무대예술 공연. 16개 지역, 8개 장르의 학생 공연.",
+    images: ["/og-default.png"],
+  },
+};
 
 const PAGE_SIZE = 12;
 

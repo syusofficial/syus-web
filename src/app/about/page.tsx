@@ -3,13 +3,31 @@ import Link from "next/link";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 
 export const metadata: Metadata = {
-  title: "무대올림 · 소개",
+  title: "소개",
   description:
     "무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 비상업적 플랫폼입니다. 연극·뮤지컬·무용·발레·국악·음악·전통연희. 운영: 사유유사 SYUS.",
+  alternates: { canonical: "https://syus.co.kr/about" },
   openGraph: {
-    title: "무대올림 · 소개",
+    title: "소개 · 무대올림",
     description:
-      "대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 비상업적 플랫폼.",
+      "대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 비상업적 플랫폼. 운영: 사유유사 SYUS.",
+    url: "https://syus.co.kr/about",
+    type: "website",
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "무대올림 — 오늘, 어느 대학의 막이 오른다.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "소개 · 무대올림",
+    description:
+      "대학 무대예술 공연 비상업 플랫폼. 16개 지역·8개 장르의 학생 공연을 한 곳에서.",
+    images: ["/og-default.png"],
   },
 };
 
