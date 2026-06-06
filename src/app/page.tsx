@@ -97,7 +97,7 @@ export default async function HomePage() {
     url: "https://syus.co.kr",
     logo: "https://syus.co.kr/og-default.png",
     description:
-      "대학 무대예술 공연을 올리고 지역 관객이 관람료 없이 좌석을 예약하는 비상업 플랫폼.",
+      "대학 무대예술 공연을 올리고 지역 관객이 관람료 없이 좌석을 예약하는 플랫폼. 공연팀 게재료 없음.",
   };
 
   return (
@@ -338,7 +338,7 @@ export default async function HomePage() {
                 {
                   num: "03",
                   title: "예약한다",
-                  desc: "관객도 학생 공연자도 끝까지 비상업적으로. 좌석을 미리 확보해 자리를 비워두지 않습니다.",
+                  desc: "관객 결제도, 공연팀 게재료도 받지 않습니다. 좌석을 미리 확보해 자리를 비워두지 않습니다.",
                 },
               ].map((item) => (
                 <div

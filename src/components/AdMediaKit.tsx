@@ -237,7 +237,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
           <br />
           ※ <strong>첫 5사 런칭 협력사는 완전 무료</strong>(데이터·후기 공유 동의 / 게재 최소 1개월 / SYUS 푸터 상시 노출).
           <br />
-          ※ SYUS의 비상업적 톤을 해치는 광고(과도한 자극·허위 광고 등)는 정중히 사양됩니다.
+          ※ SYUS는 공연자·학과로부터 등록·게재 수수료를 받지 않으며, 광고·구독·제휴로 운영됩니다. 사이트 톤을 해치는 광고(과도한 자극·허위 광고 등)는 정중히 사양됩니다.
         </p>
 
         {/* 1:1 견적 CTA — 표 안 단가는 가이드, 실제는 협의 */}
@@ -257,7 +257,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
             >
               광고 목적·게재 기간·콘텐츠 제작 범위에 따라 별도 견적을 드립니다.
-              상품·기간 묶음, 비상업적·문화 기관 할인 등 협의 가능합니다.
+              상품·기간 묶음, 공공·문화 기관 할인 등 협의 가능합니다.
             </p>
           </div>
           <a

@@ -5,12 +5,12 @@ import { buildBreadcrumbList } from "@/lib/structuredData";
 export const metadata: Metadata = {
   title: "소개",
   description:
-    "무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 비상업적 플랫폼입니다. 연극·뮤지컬·무용·발레·국악·음악·전통연희. 운영: 사유유사 SYUS.",
+    "무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 플랫폼입니다. 무대를 올리는 쪽에 게재료를 받지 않습니다. 연극·뮤지컬·무용·발레·국악·음악·전통연희. 운영: 사유유사 SYUS.",
   alternates: { canonical: "https://syus.co.kr/about" },
   openGraph: {
     title: "소개 · 무대올림",
     description:
-      "대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 비상업적 플랫폼. 운영: 사유유사 SYUS.",
+      "대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 플랫폼. 공연팀에게 게재료를 받지 않습니다. 운영: 사유유사 SYUS.",
     url: "https://syus.co.kr/about",
     type: "website",
     images: [
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "소개 · 무대올림",
     description:
-      "대학 무대예술 공연 비상업 플랫폼. 16개 지역·8개 장르의 학생 공연을 한 곳에서.",
+      "대학 무대예술 공연 플랫폼. 공연팀 게재료 없음. 16개 지역·8개 장르의 학생 공연을 한 곳에서.",
     images: ["/og-default.png"],
   },
 };
@@ -202,7 +202,7 @@ export default function AboutPage() {
                 title: "예약한다",
                 body: [
                   "대학 공연은 대부분 관람료가 없습니다. 그래서 ‘티켓 판매’가 아니라 ‘좌석 확보’입니다.",
-                  "관객도 학생 공연자도 끝까지 비상업적으로.",
+                  "관객 결제도, 공연팀 게재료도 받지 않습니다.",
                   "운영은 후원자와 광고주의 도움으로 이어집니다.",
                 ],
               },
@@ -372,7 +372,7 @@ export default function AboutPage() {
               {
                 num: "03",
                 tag: "신뢰",
-                title: "비상업 운영, 사후 정산 없음",
+                title: "공연팀 게재료 없음, 사후 정산 없음",
                 body: "등록 비용·게재 수수료 없음. 관객 결제도 없습니다. 무대만 올리시면 됩니다.",
               },
             ].map((p) => (
