@@ -57,7 +57,7 @@ export default function AdminPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [trashedContacts, setTrashedContacts] = useState<Contact[]>([]);
   const [likes, setLikes] = useState<{ show_id: string }[]>([]);
-  const [pageViews, setPageViews] = useState<{ path: string; session_id: string | null; is_admin: boolean; created_at: string }[]>([]);
+  const [pageViews, setPageViews] = useState<{ path: string; referrer: string | null; session_id: string | null; is_admin: boolean; created_at: string }[]>([]);
   const [contactFilter, setContactFilter] = useState<string>("전체");
   const [contactView, setContactView] = useState<"active" | "trash">("active");
   const [dataLoading, setDataLoading] = useState(true);
@@ -85,7 +85,7 @@ export default function AdminPage() {
         .limit(200),
       supabase
         .from("page_views")
-        .select("path, session_id, is_admin, created_at")
+        .select("path, referrer, session_id, is_admin, created_at")
         .gte("created_at", ninetyDaysAgo.toISOString())
         .order("created_at", { ascending: false })
         .limit(50000),
@@ -98,7 +98,7 @@ export default function AdminPage() {
     setTrashedContacts(allContacts.filter((c) => !!c.deleted_at));
     setLikes((likesRes.data as { show_id: string }[]) ?? []);
     setAdminReviews((reviewsRes.data as AdminReviewRow[] | null) ?? []);
-    setPageViews((pageViewsRes.data as { path: string; session_id: string | null; is_admin: boolean; created_at: string }[]) ?? []);
+    setPageViews((pageViewsRes.data as { path: string; referrer: string | null; session_id: string | null; is_admin: boolean; created_at: string }[]) ?? []);
     setDataLoading(false);
   }, []);
 

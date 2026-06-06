@@ -3,9 +3,11 @@
 import { useMemo, useState } from "react";
 import type { Show, Profile } from "@/types";
 import { extractSchoolName, isEnded, todayKey } from "@/lib/showFilters";
+import LivePresenceCard from "@/components/admin/LivePresenceCard";
 
 type PageViewRow = {
   path: string;
+  referrer: string | null;
   session_id: string | null;
   is_admin: boolean;
   created_at: string;
@@ -17,6 +19,35 @@ type AdminStatsProps = {
   likes: { show_id: string }[]; // 모든 좋아요 row (관리자 RLS)
   pageViews?: PageViewRow[];    // 최근 90일 방문 로그 (관리자 RLS)
 };
+
+/**
+ * 유입 출처 분류 — referrer 문자열에서 채널 라벨 추출
+ * - 사이트 내부(syus.co.kr / *.vercel.app) referrer는 제외 (호출자에서 거름)
+ * - 매칭 우선순위: 인스타 → 네이버 → 카카오 → 구글 → 다음 → 기타
+ */
+const REFERRER_RULES: { label: string; patterns: RegExp[] }[] = [
+  { label: "인스타그램",  patterns: [/(^|\.)instagram\.com$/i, /(^|\.)l\.instagram\.com$/i] },
+  { label: "네이버",      patterns: [/(^|\.)naver\.com$/i, /(^|\.)search\.naver\.com$/i] },
+  { label: "카카오",      patterns: [/(^|\.)kakao\.com$/i, /(^|\.)pf\.kakao\.com$/i] },
+  { label: "다음",        patterns: [/(^|\.)daum\.net$/i] },
+  { label: "구글",        patterns: [/(^|\.)google\.com$/i, /(^|\.)google\.co\.kr$/i] },
+];
+
+function classifyReferrer(referrer: string | null): string {
+  if (!referrer || referrer.trim() === "") return "직접 진입";
+  let host = "";
+  try {
+    host = new URL(referrer).hostname.toLowerCase();
+  } catch {
+    return "기타";
+  }
+  // 자체 도메인은 호출자에서 미리 걸러내지만 방어적으로 한 번 더
+  if (/(^|\.)syus\.co\.kr$/i.test(host)) return "직접 진입";
+  for (const rule of REFERRER_RULES) {
+    if (rule.patterns.some((p) => p.test(host))) return rule.label;
+  }
+  return "기타";
+}
 
 export default function AdminStats({ shows, members, likes, pageViews = [] }: AdminStatsProps) {
   // 운영자 본인 트래픽 포함/제외 토글 — 기본 제외 (영업 보고용 숫자)
@@ -47,6 +78,12 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
     // 일별 시리즈 (최근 30일)
     const dailyMap: Record<number, number> = {};
 
+    // 유입 출처 집계 — 오늘 / 7일 / 30일 (방문 row 기준, 세션 중복 허용)
+    // PageViewTracker가 자체 origin referrer는 이미 null로 정규화해 보냄 (내부 이동 제외)
+    const referrerToday: Record<string, number> = {};
+    const referrer7: Record<string, number> = {};
+    const referrer30: Record<string, number> = {};
+
     for (const v of visibleViews) {
       const ts = new Date(v.created_at).getTime();
 
@@ -64,6 +101,18 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
         // 일자 키 (KST 자정 ms)
         const dayStart = Math.floor((ts + KST_OFFSET_MS) / 86400000) * 86400000 - KST_OFFSET_MS;
         dailyMap[dayStart] = (dailyMap[dayStart] ?? 0) + 1;
+      }
+
+      // 유입 출처 분류 — 자체 도메인은 classify 내부에서 "직접 진입"으로 흘림
+      const refLabel = classifyReferrer(v.referrer);
+      if (ts >= todayKstStart) {
+        referrerToday[refLabel] = (referrerToday[refLabel] ?? 0) + 1;
+      }
+      if (ts >= sevenDaysAgo) {
+        referrer7[refLabel] = (referrer7[refLabel] ?? 0) + 1;
+      }
+      if (ts >= thirtyDaysAgo) {
+        referrer30[refLabel] = (referrer30[refLabel] ?? 0) + 1;
       }
 
       if (v.session_id) allSessions.add(v.session_id);
@@ -86,6 +135,19 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5);
 
+    // 유입 출처 — 30일 기준 TOP 5 (직접 진입 포함)
+    // 0건은 표시하지 않음 (가짜 숫자 금지)
+    const referrerTop = Object.entries(referrer30)
+      .filter(([, v]) => v > 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    const referrerByPeriod = {
+      today: Object.entries(referrerToday).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]),
+      week: Object.entries(referrer7).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]),
+      month: Object.entries(referrer30).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]),
+    };
+
     return {
       todayCount,
       yesterdayCount,
@@ -97,6 +159,8 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
       totalUU: allSessions.size,
       daily,
       topPaths,
+      referrerTop,
+      referrerByPeriod,
     };
   }, [visibleViews]);
 
@@ -203,6 +267,9 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
 
   return (
     <div className="space-y-12">
+      {/* ── 실시간 동시접속 ─────────────── */}
+      <LivePresenceCard />
+
       {/* ── 방문자 (사장님 한눈에 보기) ─────────────── */}
       <section>
         <div className="flex items-baseline justify-between flex-wrap gap-3 mb-4">
@@ -249,6 +316,13 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
                   인기 페이지 TOP 5 (90일)
                 </p>
                 <BarList items={traffic.topPaths} />
+              </div>
+            )}
+
+            {/* 유입 출처 (오늘 / 7일 / 30일) */}
+            {traffic.referrerTop.length > 0 && (
+              <div className="mt-8">
+                <ReferrerBreakdown byPeriod={traffic.referrerByPeriod} top={traffic.referrerTop} />
               </div>
             )}
 
@@ -666,6 +740,123 @@ function MonthlyChart({
           <span style={{ color: "#1A1A1A" }}>공연 등록</span>
         </span>
       </div>
+    </div>
+  );
+}
+
+/**
+ * 유입 출처 — 기간 토글(오늘 / 7일 / 30일) + TOP 5 백분율 바
+ * 정렬은 count 내림차순 (BarList 내부에서 이미 정렬 가정)
+ */
+function ReferrerBreakdown({
+  byPeriod,
+  top,
+}: {
+  byPeriod: { today: [string, number][]; week: [string, number][]; month: [string, number][] };
+  top: [string, number][];
+}) {
+  const [range, setRange] = useState<"today" | "week" | "month">("month");
+  const items = byPeriod[range];
+  const total = items.reduce((sum, [, v]) => sum + v, 0);
+
+  // 채널별 컬러 — Mineral Stage 톤 + 약한 변주
+  const COLOR: Record<string, string> = {
+    "인스타그램": "#3B5A6B",
+    "네이버":     "#2A7A6A",
+    "카카오":     "#7A6A2A",
+    "구글":       "#5A4A7A",
+    "다음":       "#7A4A2A",
+    "직접 진입":  "#5F584F",
+    "기타":       "#A0978A",
+  };
+
+  return (
+    <div className="p-5" style={{ backgroundColor: "#F0EBE0" }}>
+      <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+        <p
+          className="text-xs tracking-[0.3em] uppercase"
+          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+        >
+          유입 출처 TOP 5
+        </p>
+        <div className="flex gap-1">
+          {([
+            { key: "today", label: "오늘" },
+            { key: "week",  label: "7일" },
+            { key: "month", label: "30일" },
+          ] as const).map((opt) => {
+            const active = range === opt.key;
+            return (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => setRange(opt.key)}
+                className="px-3 py-1 text-xs transition-colors"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  backgroundColor: active ? "#3B5A6B" : "transparent",
+                  color: active ? "#FBF8F1" : "#5F584F",
+                  border: `1px solid ${active ? "#3B5A6B" : "#D8D3C9"}`,
+                }}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {items.length === 0 ? (
+        <p
+          className="text-xs py-6 text-center"
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+        >
+          이 기간에는 유입 데이터가 없습니다.
+        </p>
+      ) : (
+        <ul className="space-y-2">
+          {items.slice(0, 5).map(([label, count]) => {
+            const pct = total > 0 ? (count / total) * 100 : 0;
+            const color = COLOR[label] ?? "#A0978A";
+            return (
+              <li key={label} className="flex items-center gap-3">
+                <div
+                  className="w-20 text-xs shrink-0"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+                >
+                  {label}
+                </div>
+                <div
+                  className="flex-1 h-6 relative"
+                  style={{ backgroundColor: "#E5DFD0" }}
+                >
+                  <div
+                    className="h-full transition-all"
+                    style={{ width: `${pct}%`, backgroundColor: color }}
+                  />
+                  <span
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
+                    style={{
+                      fontFamily: "var(--font-inter)",
+                      color: pct > 55 ? "#FBF8F1" : "#1A1A1A",
+                    }}
+                  >
+                    {pct.toFixed(0)}% · {count}
+                  </span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      <p
+        className="text-[10px] mt-3"
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+      >
+        ※ 직접 진입 = 즐겨찾기·URL 직접 입력·인스타 앱 외 referrer 미제공. 사이트 내부 이동은 제외 처리.
+        {top.length > 0 && ` 최근 30일 누적 1위: ${top[0][0]}.`}
+      </p>
     </div>
   );
 }
