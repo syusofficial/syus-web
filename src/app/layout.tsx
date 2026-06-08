@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Noto_Serif_KR, Noto_Sans_KR, Cormorant_Garamond, Geist } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
@@ -51,7 +52,29 @@ export const metadata: Metadata = {
     template: "%s · 무대올림",
   },
   description: SITE_DESCRIPTION,
-  keywords: ["무대올림", "대학 공연", "무대예술", "게재료 없는 공연 등록", "관람료 없는 공연", "대학 연극", "대학 뮤지컬", "대학 무용", "대학 발레", "대학 국악", "대학 음악", "전통연희", "대학로", "지역 공연", "구글폼 예약", "학교 공연", "사유유사", "SYUS"],
+  keywords: [
+    "공연팀 게재료 없는 공연 등록",
+    "대학 공연 정보",
+    "학교별 공연 검색",
+    "공연 아카이브",
+    "무대올림",
+    "대학 공연",
+    "무대예술",
+    "관람료 없는 공연",
+    "대학 연극",
+    "대학 뮤지컬",
+    "대학 무용",
+    "대학 발레",
+    "대학 국악",
+    "대학 음악",
+    "전통연희",
+    "대학로",
+    "지역 공연",
+    "구글폼 예약",
+    "학교 공연",
+    "사유유사",
+    "SYUS",
+  ],
   authors: [{ name: "무대올림 (운영: 사유유사 SYUS)" }],
   creator: "사유유사 SYUS",
   publisher: "사유유사 SYUS",
@@ -127,6 +150,14 @@ export default function RootLayout({
         <SessionManager />
         <PageViewTracker />
         <RealtimePresence />
+        {/* Cloudflare Web Analytics — 환경변수 토큰 있을 때만 로드 (게이트) */}
+        {process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN ? (
+          <Script
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={`{"token": "${process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN}"}`}
+            strategy="afterInteractive"
+          />
+        ) : null}
       </body>
     </html>
   );
