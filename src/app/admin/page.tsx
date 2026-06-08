@@ -8,6 +8,10 @@ import AdminStats from "@/components/AdminStats";
 import AdMediaKit from "@/components/AdMediaKit";
 import { CONTACT_CATEGORIES } from "@/lib/constants";
 import { adminDeleteReview, adminUpdateReviewStatus, adminBanUser } from "@/app/actions/reviews";
+import {
+  approvePerformerApplication as approvePerformerAction,
+  rejectPerformerApplication as rejectPerformerAction,
+} from "@/app/actions/performer";
 import type { Show, Profile, Contact, Review } from "@/types";
 
 type Tab = "stats" | "media-kit" | "shows" | "applications" | "members" | "contacts" | "reviews";
@@ -322,31 +326,31 @@ export default function AdminPage() {
     }
   };
 
-  /** 공연자 신청 승인 — role을 performer로 변경 + status를 approved로 */
+  /**
+   * 공연자 신청 승인 — server action으로 위임.
+   * DB 갱신 + 승인 메일 발송이 서버에서 한 흐름으로 처리된다.
+   * 화면은 ok 응답을 받으면 낙관적으로 갱신한다.
+   */
   const approvePerformerApplication = async (id: string) => {
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("profiles")
-      .update({ role: "performer", performer_status: "approved" })
-      .eq("id", id);
-    if (!error) {
+    const result = await approvePerformerAction(id);
+    if (result.ok) {
       setMembers((prev) => prev.map((m) =>
         m.id === id ? { ...m, role: "performer", performer_status: "approved" } : m
       ));
+    } else {
+      alert(result.message);
     }
   };
 
-  /** 공연자 신청 반려 — role은 그대로 member, status만 rejected */
+  /** 공연자 신청 반려 — server action으로 위임 (메일 발송 없음, 상태만 변경) */
   const rejectPerformerApplication = async (id: string) => {
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("profiles")
-      .update({ performer_status: "rejected" })
-      .eq("id", id);
-    if (!error) {
+    const result = await rejectPerformerAction(id);
+    if (result.ok) {
       setMembers((prev) => prev.map((m) =>
         m.id === id ? { ...m, performer_status: "rejected" } : m
       ));
+    } else {
+      alert(result.message);
     }
   };
 
