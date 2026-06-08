@@ -150,12 +150,22 @@ export default function RootLayout({
         <SessionManager />
         <PageViewTracker />
         <RealtimePresence />
-        {/* Cloudflare Web Analytics — 항상 로드 (검증 통과용). 토큰 없을 때는 빈 문자열로 fallback */}
-        <Script
-          src="https://static.cloudflareinsights.com/beacon.min.js"
-          data-cf-beacon={`{"token": "${process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN ?? ""}"}`}
-          strategy="afterInteractive"
-        />
+        {/* Microsoft Clarity — 세션 녹화·히트맵. NEXT_PUBLIC_CLARITY_PROJECT_ID 있을 때만 로드 */}
+        {process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID ? (
+          <Script
+            id="ms-clarity"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(c,l,a,r,i,t,y){
+                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "${process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID}");
+              `,
+            }}
+          />
+        ) : null}
       </body>
     </html>
   );
