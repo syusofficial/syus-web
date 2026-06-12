@@ -74,6 +74,48 @@ body {
 }
 
 /* ──────────────────────────────────────────────────
+ * 다크 모드 (auto) — 사장님 결정 2026-06-08
+ * prefers-color-scheme 만 감지. 토글 UI 없음.
+ * Mineral Stage 팔레트 다크 변형:
+ *   본문 배경 = 딥 네이비 #1B2842 (charcoal보다 한 단계 연한)
+ *   본문 텍스트 = 크림 #FBF8F1
+ *   카드 = 한 단계 짙은 #15203A
+ *   CTA 라임 = 그대로 (보색이므로 다크에서도 유효)
+ *   메인 코발트/슬레이트는 라이트 변형으로 가독성 보정
+ * 인라인 스타일이 워낙 많아 :root 변수 + html 셀렉터 둘 다 안전망으로 둔다.
+ * 기존 인라인 backgroundColor:"#FBF8F1" 류를 일괄 덮어쓰지 않고,
+ * 점진적으로 컴포넌트별 토큰 전환할 때 사용한다.
+ * ────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #1B2842;
+    --color-paper-dark: #15203A;
+    --color-mist: #2C3854;
+    --color-stone: #BFB8AC;
+    --color-charcoal: #FBF8F1;
+    --color-cream: #1B2842;
+    --color-cream-dark: #15203A;
+    --color-blue: #7BA0B6;
+    --color-blue-light: #9FBCCC;
+    --color-navy: #FBF8F1;
+    --color-syus-brown: #7BA0B6;
+    --color-syus-brown-light: #9FBCCC;
+    --color-syus-blue: #7BA0B6;
+    --color-syus-navy: #FBF8F1;
+    --color-syus-charcoal: #FBF8F1;
+    --color-syus-grey: #BFB8AC;
+    --color-syus-light-grey: #2C3854;
+  }
+  body {
+    background-color: #1B2842;
+    color: #FBF8F1;
+  }
+  ::-webkit-scrollbar-track { background: #1B2842; }
+  ::-webkit-scrollbar-thumb { background: #7BA0B6; }
+  ::selection { background: #7BA0B6; color: #1B2842; }
+}
+
+/* ──────────────────────────────────────────────────
  * 그라데이션 + 그레인 효과 (사장님 요청)
  * 사용: <div className="grad-grain grad-mineral">…</div>
  * 외부 파일 0, SVG noise 인라인.

@@ -34,6 +34,9 @@ export default function MyPage() {
   const [pwSaving, setPwSaving] = useState(false);
   const [pwMessage, setPwMessage] = useState("");
 
+  // 관심 공연 알림 토글
+  const [notifySaving, setNotifySaving] = useState(false);
+
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data }) => {
@@ -118,6 +121,18 @@ export default function MyPage() {
       setShowPwForm(false);
     }
     setPwSaving(false);
+  };
+
+  const handleNotifyToggle = async (next: boolean) => {
+    if (!profile) return;
+    setNotifySaving(true);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("profiles")
+      .update({ notify_show_reminders: next })
+      .eq("id", profile.id);
+    if (!error) setProfile({ ...profile, notify_show_reminders: next });
+    setNotifySaving(false);
   };
 
   const handlePerformerApply = async () => {
@@ -304,6 +319,35 @@ export default function MyPage() {
                 {authProvider === "google" ? "Google" : "카카오"} 계정으로 가입하셨기 때문에 비밀번호는 해당 서비스에서 관리됩니다.
               </div>
             )}
+
+            {/* 관심 공연 알림 — 좋아요한 공연 D-3 / D-1 메일 */}
+            <div className="p-6" style={{ backgroundColor: "#F0EBE0" }}>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="text-sm font-bold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+                    관심 공연 알림
+                  </h3>
+                  <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
+                    찜한 공연이 사흘 뒤, 또는 내일 막을 올릴 때 메일로 짧게 알려드립니다.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleNotifyToggle(!(profile.notify_show_reminders ?? true))}
+                  disabled={notifySaving}
+                  aria-pressed={profile.notify_show_reminders ?? true}
+                  className="shrink-0 px-4 py-2 text-xs transition-colors"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    backgroundColor: (profile.notify_show_reminders ?? true) ? "#3B5A6B" : "transparent",
+                    color: (profile.notify_show_reminders ?? true) ? "#FBF8F1" : "#5F584F",
+                    border: (profile.notify_show_reminders ?? true) ? "1px solid #3B5A6B" : "1px solid #D8D3C9",
+                  }}
+                >
+                  {notifySaving ? "저장 중..." : (profile.notify_show_reminders ?? true) ? "받는 중" : "받지 않음"}
+                </button>
+              </div>
+            </div>
 
             {(profile.role === "performer" || profile.role === "admin") && (
               <Link

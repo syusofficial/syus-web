@@ -121,9 +121,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FBF8F1",
+  // 다크 모드 auto — 시스템 테마에 따라 브라우저 상단바 색이 갈린다.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FBF8F1" },
+    { media: "(prefers-color-scheme: dark)", color: "#1B2842" },
+  ],
   width: "device-width",
   initialScale: 1,
+  // OS 다크 모드일 때 네이티브 폼·스크롤바도 자동 톤 변환
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({

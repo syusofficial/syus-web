@@ -213,6 +213,31 @@ function ShowsHoverMenu({ linkStyle }: { linkStyle: React.CSSProperties }) {
               </Link>
             ))}
           </div>
+          {/* 학과 디렉토리 — 활성 학과만 (2026-06-12 신설) */}
+          <div
+            className="px-4 py-2.5"
+            style={{
+              backgroundColor: "#F0EBE0",
+              borderLeft: "1px solid #D8D3C9",
+              borderRight: "1px solid #D8D3C9",
+              borderBottom: "1px solid #D8D3C9",
+            }}
+          >
+            <Link
+              href="/universities"
+              className="block text-xs transition-colors"
+              style={{
+                fontFamily: "var(--font-noto-sans-kr)",
+                color: "#3B5A6B",
+                fontWeight: 500,
+                letterSpacing: "0.05em",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = MENU_HOVER.shows)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#3B5A6B")}
+            >
+              학과 디렉토리 →
+            </Link>
+          </div>
         </div>
       )}
     </div>
@@ -508,25 +533,42 @@ export default function Nav() {
                 </span>
               </button>
               {mobileShowsOpen && (
-                <div className="grid grid-cols-3 gap-1 mt-2 pb-2">
-                  {REGIONS.map((region) => (
-                    <Link
-                      key={region}
-                      href={region === "전체" ? "/shows" : `/shows?region=${encodeURIComponent(region)}`}
-                      className="px-2 py-2 text-xs"
-                      style={{
-                        fontFamily: "var(--font-noto-sans-kr)",
-                        color: "#202833",
-                        backgroundColor: "#F0EBE0",
-                        textAlign: "center",
-                        fontWeight: region === "전체" ? 600 : 400,
-                      }}
-                      onClick={() => { setMenuOpen(false); setMobileShowsOpen(false); }}
-                    >
-                      {region}
-                    </Link>
-                  ))}
-                </div>
+                <>
+                  <div className="grid grid-cols-3 gap-1 mt-2 pb-2">
+                    {REGIONS.map((region) => (
+                      <Link
+                        key={region}
+                        href={region === "전체" ? "/shows" : `/shows?region=${encodeURIComponent(region)}`}
+                        className="px-2 py-2 text-xs"
+                        style={{
+                          fontFamily: "var(--font-noto-sans-kr)",
+                          color: "#202833",
+                          backgroundColor: "#F0EBE0",
+                          textAlign: "center",
+                          fontWeight: region === "전체" ? 600 : 400,
+                        }}
+                        onClick={() => { setMenuOpen(false); setMobileShowsOpen(false); }}
+                      >
+                        {region}
+                      </Link>
+                    ))}
+                  </div>
+                  <Link
+                    href="/universities"
+                    className="block px-2 py-2 text-xs"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      color: "#3B5A6B",
+                      backgroundColor: "#F0EBE0",
+                      textAlign: "center",
+                      fontWeight: 500,
+                      letterSpacing: "0.05em",
+                    }}
+                    onClick={() => { setMenuOpen(false); setMobileShowsOpen(false); }}
+                  >
+                    학과 디렉토리 →
+                  </Link>
+                </>
               )}
             </div>
 

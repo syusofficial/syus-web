@@ -41,6 +41,8 @@ export type Profile = {
   role: "member" | "performer" | "admin";
   performer_status?: "pending" | "approved" | "rejected" | null;
   created_at: string;
+  /** 관심 공연 D-3/D-1 알림 메일 수신 동의. 기본 true. */
+  notify_show_reminders?: boolean | null;
 };
 
 export type ReviewStatus = "pending" | "public" | "hidden" | "blocked";
