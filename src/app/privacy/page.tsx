@@ -6,13 +6,52 @@ export const metadata: Metadata = {
   description: "사유유사의 개인정보처리방침",
 };
 
+// ─── 변경 고지 배너 (7일 노출) ───────────────────────────────
+// 시행일(2026-06-15) ~ 시행 +7일(2026-06-22) 동안만 노출.
+// 종료일이 지나면 서버 컴포넌트 SSR 시점에 자동으로 사라짐.
+const BANNER_START = "2026-06-15";
+const BANNER_END = "2026-06-22";
+
+function shouldShowBanner(now: Date): boolean {
+  const today = now.toISOString().slice(0, 10); // YYYY-MM-DD (UTC 기준, 7일 윈도라 시차 영향 미미)
+  return today >= BANNER_START && today <= BANNER_END;
+}
+
 export default function PrivacyPage() {
+  const showBanner = shouldShowBanner(new Date());
+
   return (
     <div
       className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-16"
       style={{ backgroundColor: "#FBF8F1" }}
     >
       <div className="max-w-3xl mx-auto">
+        {/* 변경 고지 배너 — 2026-06-15 ~ 2026-06-22 */}
+        {showBanner && (
+          <div
+            className="mb-8 p-4 md:p-5"
+            style={{
+              backgroundColor: "#FFE066",
+              borderLeft: "4px solid #3B5A6B",
+            }}
+          >
+            <p
+              className="text-xs tracking-[0.25em] uppercase mb-2"
+              style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}
+            >
+              Notice
+            </p>
+            <p
+              className="text-sm leading-relaxed"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+            >
+              <strong>2026-06-15 개인정보처리방침이 v2.1로 개정되었습니다.</strong>
+              <br />
+              주요 변경: 만 14세 미만 가입 거부 명시 · 위탁사(Microsoft Clarity·OpenAI·Resend) 추가 · 마케팅 수신 동의 2경로 즉시 철회 안내.
+            </p>
+          </div>
+        )}
+
         {/* Header */}
         <div className="mb-12">
           <p
@@ -28,113 +67,123 @@ export default function PrivacyPage() {
             개인정보처리방침
           </h1>
           <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
-            시행일: 2026년 4월 25일
+            시행일: 2026-06-15 (v2.1) · 이전 시행일: 2026-04-25
           </p>
         </div>
 
         {/* Content */}
         <div className="space-y-10 text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
           <p>
-            사유유사(이하 &ldquo;회사&rdquo;)는 이용자의 개인정보를 소중하게 생각하며,
-            「개인정보 보호법」 및 관계 법령이 정한 바를 준수하고 있습니다.
+            사유유사(이하 &ldquo;회사&rdquo;)는 이용자의 개인정보를 소중하게 다루며,
+            「개인정보 보호법」, 「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관계 법령이 정한 바를 준수합니다.
+            회사는 본 처리방침을 통해 어떤 정보를, 어떤 목적으로, 얼마 동안 보관하는지 정직하게 알립니다.
           </p>
 
+          {/* 제1조 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
               제1조 (개인정보의 처리 목적)
             </h2>
+            <p className="mb-2">
+              회사는 다음의 목적을 위해 개인정보를 처리하며, 처리 목적이 변경될 경우 「개인정보 보호법」 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행합니다.
+            </p>
             <ol className="list-decimal pl-5 space-y-1">
-              <li>회원 가입 및 관리: 회원 식별, 본인 확인, 서비스 이용에 따른 본인확인</li>
-              <li>서비스 제공: 공연 정보 열람, 공연 등록(공연자), 마이페이지 기능 제공</li>
-              <li>고충 처리: 민원인의 신원 확인, 문의사항 확인 및 처리결과 통보</li>
-              <li>서비스 개선: 이용 통계 분석 (Google Analytics)</li>
+              <li>회원 가입 및 관리 — 회원 식별, 본인 확인, 부정 이용 방지</li>
+              <li>서비스 제공 — 공연 정보 열람, 공연 등록, 후기 작성, 1:1 문의 응대</li>
+              <li>서비스 개선 — 이용 통계 분석, 콘텐츠 품질 점검, 오류 진단</li>
+              <li>마케팅 활용(선택) — 신규 콘텐츠·공연 소식 안내(동의 회원에 한정)</li>
             </ol>
           </section>
 
+          {/* 제2조 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제2조 (처리하는 개인정보 항목)
+              제2조 (만 14세 미만 아동의 가입 제한)
+            </h2>
+            <p>
+              회사는 만 14세 미만 아동의 회원 가입을 받지 않습니다. 회원 가입 시 생년월일을 확인하여 만 14세 미만으로 확인되는 경우 가입이 제한됩니다.
+              만 14세 미만 아동이 보호자의 동의 없이 가입한 사실이 확인되는 즉시 해당 계정과 수집된 개인정보를 지체 없이 파기합니다.
+            </p>
+          </section>
+
+          {/* 제3조 */}
+          <section>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+              제3조 (처리하는 개인정보 항목)
             </h2>
             <div className="space-y-3">
               <div>
                 <p className="font-semibold mb-1">1. 회원가입 시 수집 항목</p>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>필수: 이메일, 이름, 비밀번호(암호화 저장)</li>
-                  <li>자동 수집: IP 주소, 접속 로그, 쿠키, 브라우저 정보</li>
+                  <li>필수: 이메일, 이름, 비밀번호(bcrypt 단방향 암호화 저장), 생년월일(만 14세 이상 확인 용도)</li>
+                  <li>동의 시점 기록: 이용약관·개인정보처리방침 동의 일시, 마케팅 수신 동의 여부</li>
                 </ul>
               </div>
               <div>
-                <p className="font-semibold mb-1">2. 공연 등록(공연자) 시 수집 항목</p>
+                <p className="font-semibold mb-1">2. 소셜 로그인 시 수집 항목</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Google 로그인: 이메일, 이름, 프로필 이미지 URL, Google 식별자</li>
+                  <li>Kakao 로그인: 이메일, 닉네임, 프로필 이미지 URL, Kakao 식별자</li>
+                  <li>회사는 위 항목 중 서비스 제공에 필요한 최소한만 보관하며, 추가 항목 요청 시 별도 동의를 받습니다.</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">3. 1:1 문의 시 수집 항목</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>필수: 이름, 이메일, 문의 유형, 문의 내용</li>
+                  <li>선택: 연락처(전화번호)</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">4. 공연 후기 작성 시 수집 항목</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>회원 닉네임(공개), 별점, 후기 본문, 작성 일시</li>
+                  <li>자동 검열 로그: 매칭 단어·검열 점수(운영자만 열람, 외부 미공개)</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">5. 공연 등록(공연자) 시 수집 항목</p>
                 <ul className="list-disc pl-5 space-y-1">
                   <li>공연명, 포스터 이미지, 공연장 정보, 주소, 공연 기간, 출연진 등</li>
+                  <li>등록자 회원 식별자</li>
                 </ul>
               </div>
               <div>
-                <p className="font-semibold mb-1">3. 문의 시 수집 항목</p>
+                <p className="font-semibold mb-1">6. 자동 수집 항목</p>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>이름, 이메일, 문의 내용</li>
-                </ul>
-              </div>
-              <div>
-                <p className="font-semibold mb-1">4. 후기 작성 시 수집 항목</p>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>회원 닉네임(공개), 후기 본문, 작성 일시</li>
-                  <li>자동 검열 결과(매칭 단어·점수): 운영자만 열람, 외부 미공개</li>
+                  <li>IP 주소, 접속 로그, 브라우저·디바이스 정보, 쿠키, 로컬스토리지(서비스 이용 편의용 키)</li>
                 </ul>
               </div>
             </div>
           </section>
 
+          {/* 제4조 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제3조 (개인정보의 처리 및 보유기간)
+              제4조 (개인정보의 처리 및 보유 기간)
             </h2>
-            <ol className="list-decimal pl-5 space-y-1">
-              <li>회원 가입 및 관리: 회원 탈퇴 시까지</li>
-              <li>공연 정보: 공연자가 삭제 요청 시 또는 회원 탈퇴 시까지</li>
-              <li>문의 기록: 접수 후 3년 (소비자분쟁 해결기준에 따름)</li>
-              <li>공연 후기: 회원 탈퇴 시 닉네임은 &lsquo;익명 관람객&rsquo;으로 익명 처리되며 본문은 사이트 신뢰도 보존을 위해 유지됩니다. 회원이 작성 직후 본인 삭제 시에는 완전 삭제됩니다.</li>
-              <li>자동 검열 로그(매칭 단어·점수): 게시물 보유 기간과 동일. 분쟁·소명 자료로만 활용.</li>
-              <li>관련 법령에 의한 보존의무가 있는 경우 해당 기간까지 보관합니다.</li>
-            </ol>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제4조 (개인정보의 제3자 제공)
-            </h2>
-            <p>
-              회사는 원칙적으로 이용자의 개인정보를 제3자에게 제공하지 않습니다. 다만, 다음의 경우는 예외로 합니다.
-            </p>
-            <ol className="list-decimal pl-5 space-y-1 mt-2">
-              <li>이용자가 사전에 동의한 경우</li>
-              <li>법령의 규정에 의하거나, 수사 목적으로 법령에 정해진 절차와 방법에 따라 수사기관의 요구가 있는 경우</li>
-            </ol>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제5조 (개인정보 처리의 위탁)
-            </h2>
-            <p>회사는 원활한 서비스 제공을 위해 다음과 같이 개인정보 처리 업무를 위탁하고 있습니다.</p>
-            <div className="mt-3 overflow-x-auto">
+            <div className="overflow-x-auto">
               <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
-                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>수탁자</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>위탁 업무</th>
-                    <th className="text-left py-2" style={{ color: "#5F584F" }}>국가</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>구분</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>보유 기간</th>
+                    <th className="text-left py-2" style={{ color: "#5F584F" }}>근거</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    ["Supabase Inc.", "데이터베이스 및 인증", "미국"],
-                    ["Vercel Inc.",   "웹 서비스 호스팅",       "미국"],
-                    ["Google LLC",    "웹 트래픽 분석 (GA4)",    "미국"],
-                    ["OpenAI, L.L.C.", "후기 자동 검열(Moderation API)", "미국"],
+                    ["회원 가입 정보", "회원 탈퇴 시까지", "서비스 제공 목적 종료"],
+                    ["1:1 문의 기록", "접수 후 3년", "소비자분쟁 해결기준"],
+                    ["공연 정보", "공연자 삭제 요청 또는 회원 탈퇴 시까지", "서비스 제공 목적 종료"],
+                    ["공연 후기", "탈퇴 시 닉네임 익명화('익명 관람객'), 본문 유지 / 본인 직접 삭제 시 즉시 완전 삭제", "사이트 신뢰도 보존(약관 동의 시 명시)"],
+                    ["자동 검열 로그", "게시물 보유 기간과 동일", "분쟁·소명 자료"],
+                    ["접속 로그·IP", "3개월", "「통신비밀보호법」 제15조의2"],
+                    ["페이지뷰 통계", "90일", "서비스 개선 목적 종료"],
+                    ["마케팅 수신 동의 회원 정보", "동의 철회 시 또는 회원 탈퇴 시까지", "—"],
                   ].map((row) => (
                     <tr key={row[0]} style={{ borderBottom: "1px solid #F0EBE0" }}>
-                      {row.map((c, i) => <td key={i} className="py-2 pr-4">{c}</td>)}
+                      {row.map((c, i) => <td key={i} className="py-2 pr-4 align-top">{c}</td>)}
                     </tr>
                   ))}
                 </tbody>
@@ -142,76 +191,183 @@ export default function PrivacyPage() {
             </div>
           </section>
 
+          {/* 제5조 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제6조 (정보주체의 권리·의무)
+              제5조 (개인정보의 제3자 제공)
             </h2>
-            <p>이용자는 언제든지 다음의 권리를 행사할 수 있습니다.</p>
+            <p>회사는 이용자의 개인정보를 제3자에게 제공하지 않습니다. 다음의 경우에 한해 예외로 합니다.</p>
             <ol className="list-decimal pl-5 space-y-1 mt-2">
-              <li>개인정보 열람 요구</li>
-              <li>오류가 있을 경우 정정 요구</li>
-              <li>삭제 요구</li>
-              <li>처리정지 요구</li>
+              <li>이용자가 사전에 동의한 경우</li>
+              <li>「개인정보 보호법」 제17조 제1항 제2호 등 법령에 특별한 규정이 있는 경우</li>
+              <li>수사기관이 법령에 정해진 절차와 방법에 따라 요구하는 경우</li>
             </ol>
-            <p className="mt-3">
-              권리 행사는 이메일(<a href="mailto:syusflux@gmail.com" style={{ color: "#3B5A6B" }}>syusflux@gmail.com</a>)을 통해 하실 수 있으며,
-              회사는 지체없이 조치하겠습니다.
-            </p>
           </section>
 
+          {/* 제6조 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제7조 (개인정보의 파기)
+              제6조 (개인정보 처리의 위탁 및 국외 이전)
             </h2>
             <p>
-              회사는 개인정보 보유기간 경과 또는 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 지체없이 해당 개인정보를 파기합니다.
-              전자적 파일 형태는 복구가 불가능한 방법으로 영구 삭제하며, 출력물 형태는 분쇄 또는 소각하여 파기합니다.
+              회사는 원활한 서비스 제공을 위해 다음과 같이 개인정보 처리 업무를 위탁하고 있으며, 위탁 계약 시 「개인정보 보호법」 제26조에 따라 안전조치를 명시하고 있습니다.
+              다음 표에 기재된 수탁자 중 일부는 국외에 서버를 두고 있으며, 회원가입·문의 접수 시 본 처리방침 동의로써 국외 이전에 대한 동의를 갈음합니다(「개인정보 보호법」 제28조의8).
+            </p>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>수탁자</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>위탁 업무</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>국가</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>이전 방법·시점</th>
+                    <th className="text-left py-2" style={{ color: "#5F584F" }}>보유 기간</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["Supabase Inc.", "데이터베이스·인증·스토리지", "미국", "회원가입·서비스 이용 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
+                    ["Vercel Inc.", "웹 서비스 호스팅·서버리스 함수", "미국", "서비스 이용 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
+                    ["Google LLC", "웹 트래픽 분석(GA4), 로그인 인증(OAuth)", "미국", "서비스 이용 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
+                    ["Microsoft Corporation", "사용자 행동 분석(Clarity)", "미국", "서비스 이용 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
+                    ["Kakao Corp.", "로그인 인증(OAuth)", "대한민국", "로그인 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
+                    ["OpenAI, L.L.C.", "후기 자동 검열(Moderation API)", "미국", "후기 작성 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
+                    ["Resend, Inc.", "이메일 발송(가입 안내·답변 통지)", "미국", "이메일 발송 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
+                  ].map((row) => (
+                    <tr key={row[0]} style={{ borderBottom: "1px solid #F0EBE0" }}>
+                      {row.map((c, i) => <td key={i} className="py-2 pr-4 align-top">{c}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3">
+              이용자는 국외 이전에 동의하지 않을 권리가 있으며, 거부 시 일부 서비스(회원 가입·로그인·문의 접수·후기 작성·이메일 통지) 이용이 제한될 수 있습니다.
             </p>
           </section>
 
+          {/* 제7조 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제8조 (개인정보의 안전성 확보조치)
+              제7조 (정보주체와 법정대리인의 권리·의무 및 행사 방법)
             </h2>
-            <ol className="list-decimal pl-5 space-y-1">
-              <li>비밀번호 암호화 저장 (bcrypt)</li>
-              <li>모든 통신 구간 HTTPS 암호화 (TLS)</li>
-              <li>접근 권한 분리 (RLS) 및 최소 권한 원칙 적용</li>
-              <li>Content Security Policy 등 보안 헤더 설정</li>
+            <p>이용자는 언제든지 다음 권리를 행사할 수 있습니다.</p>
+            <ol className="list-decimal pl-5 space-y-1 mt-2">
+              <li>개인정보 열람 요구</li>
+              <li>오류 등이 있을 경우 정정 요구</li>
+              <li>삭제 요구 (법령상 보존 의무가 있는 정보는 제외)</li>
+              <li>처리정지 요구</li>
+              <li>마케팅 수신 동의 등 동의 철회</li>
             </ol>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제9조 (개인정보 보호책임자)
-            </h2>
-            <div className="p-5" style={{ backgroundColor: "#F0EBE0" }}>
-              <div className="grid grid-cols-[80px_1fr] gap-2 text-xs">
-                <span style={{ color: "#5F584F" }}>성명</span><span>이혁호 (대표)</span>
-                <span style={{ color: "#5F584F" }}>직책</span><span>사유유사 대표</span>
-                <span style={{ color: "#5F584F" }}>연락처</span><span>syusflux@gmail.com</span>
-              </div>
+            <p className="mt-3">
+              권리 행사는 이메일(
+              <a href="mailto:syusflux@gmail.com" style={{ color: "#3B5A6B" }}>syusflux@gmail.com</a>
+              ), 1:1 문의(
+              <Link href="/contact" style={{ color: "#3B5A6B" }}>/contact</Link>
+              ) 또는 마이페이지(
+              <Link href="/mypage" style={{ color: "#3B5A6B" }}>/mypage</Link>
+              )를 통해 하실 수 있으며, 회사는 지체 없이(영업일 기준 10일 이내) 조치합니다.
+            </p>
+            <div className="mt-4 p-4" style={{ backgroundColor: "#F0EBE0" }}>
+              <p className="font-semibold mb-2">마케팅 수신 동의 철회 방법</p>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>마이페이지(/mypage) → 설정 → 마케팅 수신 옵션 토글로 즉시 철회</li>
+                <li>회사로부터 받은 마케팅 이메일 본문 하단의 &ldquo;수신 거부&rdquo; 링크 클릭으로 즉시 철회</li>
+              </ol>
+              <p className="mt-2 text-xs" style={{ color: "#5F584F" }}>
+                위 두 경로 중 어느 것을 이용하셔도 동일하게 즉시 처리되며, 별도 절차나 추가 인증이 필요하지 않습니다.
+              </p>
             </div>
           </section>
 
+          {/* 제8조 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제10조 (쿠키의 운용 및 거부)
+              제8조 (개인정보의 파기 절차 및 방법)
             </h2>
-            <p>
-              회사는 로그인 상태 유지 및 이용자의 서비스 이용 편의 증진을 위해 쿠키를 사용합니다.
-              이용자는 브라우저 설정에서 쿠키 저장을 거부할 수 있으나, 이 경우 로그인 등 일부 서비스 이용에 제한이 발생할 수 있습니다.
+            <ol className="list-decimal pl-5 space-y-1">
+              <li>파기 절차 — 회사는 보유 기간이 경과하거나 처리 목적이 달성된 개인정보를 지체 없이 파기합니다. 다른 법령에 따라 보존 의무가 있는 경우 별도의 데이터베이스로 분리 보관 후 파기합니다.</li>
+              <li>파기 방법 — 전자적 파일 형태는 복구 불가능한 방법(논리적·물리적 삭제)으로 영구 삭제하며, 출력물 형태는 분쇄 또는 소각하여 파기합니다.</li>
+            </ol>
+          </section>
+
+          {/* 제9조 */}
+          <section>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+              제9조 (개인정보의 안전성 확보 조치)
+            </h2>
+            <p>회사는 「개인정보 보호법」 제28조의2 및 동법 시행령 제30조에 따라 다음의 안전조치를 시행합니다.</p>
+            <ol className="list-decimal pl-5 space-y-1 mt-2">
+              <li>관리적 조치 — 내부 관리 계획 수립, 접근 권한 분리(RLS), 최소 권한 원칙 적용</li>
+              <li>기술적 조치 — 비밀번호 단방향 암호화(bcrypt), 모든 통신 구간 HTTPS/TLS 암호화, 데이터베이스 접근 통제, Content Security Policy 등 보안 헤더</li>
+              <li>물리적 조치 — 클라우드 인프라(Supabase·Vercel)의 데이터센터 보안 정책 준수</li>
+            </ol>
+          </section>
+
+          {/* 제10조 */}
+          <section>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+              제10조 (개인정보 자동 수집 장치의 설치·운영 및 거부)
+            </h2>
+            <p>회사는 이용자 편의 증진과 서비스 개선을 위해 다음의 자동 수집 장치를 운영합니다.</p>
+            <ol className="list-decimal pl-5 space-y-1 mt-2">
+              <li><strong>쿠키·로컬스토리지</strong> — 로그인 상태 유지, 문의 쿨다운 등 서비스 제공에 필요한 최소 범위</li>
+              <li><strong>GA4 (Google Analytics 4)</strong> — 페이지뷰·유입 경로 등 익명 통계</li>
+              <li><strong>Microsoft Clarity</strong> — 사용자 행동 패턴(클릭·스크롤·세션 리플레이) 분석. 입력값은 마스킹되어 비밀번호·문의 내용 등 식별 가능한 텍스트는 수집되지 않습니다.</li>
+              <li><strong>Realtime Presence</strong> — 현재 접속자 수 표시(개인 식별 정보 미수집)</li>
+              <li><strong>페이지뷰 집계</strong> — 페이지별 조회 수 집계(90일 보유)</li>
+            </ol>
+            <p className="mt-3">
+              이용자는 브라우저 설정에서 쿠키 저장을 거부하거나, Google Analytics Opt-out(
+              <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "#3B5A6B" }}>tools.google.com/dlpage/gaoptout</a>
+              ), Microsoft Clarity 옵트아웃(
+              <a href="https://clarity.microsoft.com/" target="_blank" rel="noopener noreferrer" style={{ color: "#3B5A6B" }}>clarity.microsoft.com</a>
+              ) 절차를 이용할 수 있습니다. 다만 이 경우 로그인 등 일부 서비스 이용에 제한이 발생할 수 있습니다.
             </p>
           </section>
 
+          {/* 제11조 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
-              제11조 (변경 고지)
+              제11조 (개인정보 보호 담당자)
             </h2>
             <p>
-              본 방침의 내용이 추가·변경되는 경우, 변경사항의 시행 7일 전에 본 페이지를 통해 고지합니다.
+              회사는 이용자의 개인정보 처리에 관한 업무를 총괄해서 책임지고, 처리 관련 이용자의 불만 처리 및 피해 구제 등을 위하여 아래와 같이 개인정보 보호 담당자를 지정하고 있습니다.
+            </p>
+            <div className="mt-3 p-5" style={{ backgroundColor: "#F0EBE0" }}>
+              <div className="grid grid-cols-[110px_1fr] gap-2 text-xs">
+                <span style={{ color: "#5F584F" }}>개인정보 보호 담당자</span><span>운영자 이혁호</span>
+                <span style={{ color: "#5F584F" }}>사업자등록번호</span><span>168-05-03666</span>
+                <span style={{ color: "#5F584F" }}>연락처</span><span>syusflux@gmail.com</span>
+                <span style={{ color: "#5F584F" }}>담당 부서</span><span>사유유사 운영팀</span>
+              </div>
+            </div>
+            <p className="mt-3">
+              이용자는 회사의 서비스를 이용하면서 발생한 모든 개인정보 보호 관련 문의·불만 처리·피해 구제 등을 위 담당자에게 문의하실 수 있으며, 회사는 신속하고 충분한 답변을 드리겠습니다.
+              기타 개인정보 침해에 대한 신고·상담이 필요한 경우 다음 기관에 문의하시기 바랍니다.
+            </p>
+            <ul className="list-disc pl-5 space-y-1 mt-2 text-xs">
+              <li>개인정보 침해신고센터 (privacy.kisa.or.kr / 국번 없이 118)</li>
+              <li>개인정보 분쟁조정위원회 (kopico.go.kr / 1833-6972)</li>
+              <li>대검찰청 사이버수사과 (spo.go.kr / 국번 없이 1301)</li>
+              <li>경찰청 사이버수사국 (ecrm.cyber.go.kr / 국번 없이 182)</li>
+            </ul>
+          </section>
+
+          {/* 제12조 */}
+          <section>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+              제12조 (처리방침의 변경)
+            </h2>
+            <p>
+              본 처리방침의 내용이 추가·삭제·수정되는 경우, <strong>시행 7일 전부터 본 페이지를 통해 고지</strong>합니다.
+              다만 수집 항목·이용 목적·제3자 제공·위탁 등 이용자 권리에 중대한 영향을 미치는 변경의 경우 <strong>시행 30일 전부터 고지</strong>하며, 회원 가입 시 동의한 이메일 주소로 개별 통지합니다.
             </p>
           </section>
+
+          <p className="pt-2 text-xs" style={{ color: "#5F584F" }}>
+            본 처리방침은 2026-06-15부터 시행됩니다.
+          </p>
 
           <div className="pt-8 text-center" style={{ borderTop: "1px solid #D8D3C9" }}>
             <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}>

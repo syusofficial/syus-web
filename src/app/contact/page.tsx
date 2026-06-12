@@ -16,6 +16,8 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // PIPA v2.1 — 문의 폼 개인정보 수집·이용 동의 (필수)
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +25,11 @@ export default function ContactPage() {
 
     if (!form.category) {
       setError("문의 유형을 선택해주세요.");
+      return;
+    }
+
+    if (!privacyAgreed) {
+      setError("개인정보 수집·이용에 동의해주세요.");
       return;
     }
 
@@ -240,6 +247,38 @@ export default function ContactPage() {
             />
           </div>
 
+          {/* PIPA v2.1 — 개인정보 수집·이용 동의 (필수) */}
+          <div className="pt-2" style={{ borderTop: "1px solid #D8D3C9" }}>
+            <label className="flex items-start gap-2.5 cursor-pointer select-none pt-4">
+              <span
+                className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors mt-0.5"
+                style={{
+                  backgroundColor: privacyAgreed ? "#3B5A6B" : "transparent",
+                  border: `1.5px solid ${privacyAgreed ? "#3B5A6B" : "#5F584F"}`,
+                }}
+              >
+                {privacyAgreed && (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FBF8F1" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                )}
+              </span>
+              <input
+                type="checkbox"
+                checked={privacyAgreed}
+                onChange={() => setPrivacyAgreed((v) => !v)}
+                className="sr-only"
+              />
+              <span className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+                <span style={{ color: "#A63D2F", marginRight: "4px" }}>[필수]</span>
+                개인정보 수집·이용에 동의합니다 (수집 항목: 이름·이메일·문의 내용 / 보유 기간: 3년 또는 처리 완료 시까지).{" "}
+                <Link href="/privacy" target="_blank" className="underline" style={{ color: "#3B5A6B" }}>
+                  자세히
+                </Link>
+              </span>
+            </label>
+          </div>
+
           {error && (
             <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C0392B" }}>
               {error}
@@ -248,16 +287,16 @@ export default function ContactPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !privacyAgreed}
             className="px-10 py-3 text-sm tracking-wider transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#5F584F" : "#3B5A6B",
+              backgroundColor: loading || !privacyAgreed ? "#5F584F" : "#3B5A6B",
               color: "#FBF8F1",
-              cursor: loading ? "not-allowed" : "pointer",
+              cursor: loading || !privacyAgreed ? "not-allowed" : "pointer",
             }}
-            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#5C7C8E"; }}
-            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.backgroundColor = "#3B5A6B"; }}
+            onMouseEnter={(e) => { if (!loading && privacyAgreed) e.currentTarget.style.backgroundColor = "#5C7C8E"; }}
+            onMouseLeave={(e) => { if (!loading && privacyAgreed) e.currentTarget.style.backgroundColor = "#3B5A6B"; }}
           >
             {loading ? "전송 중..." : "문의 보내기"}
           </button>

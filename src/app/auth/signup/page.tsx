@@ -10,28 +10,44 @@ import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButto
 type Consents = {
   terms: boolean;       // 이용약관 (필수)
   privacy: boolean;     // 개인정보 (필수)
+  age14: boolean;       // 만 14세 이상 (필수, PIPA v2.1 2026-06-15 시행)
   marketing: boolean;   // 마케팅 (선택)
 };
+
+/**
+ * 생년월일(YYYY-MM-DD) 기준 만 14세 이상인지 확인.
+ * 오늘 날짜에서 14년을 뺀 날짜와 비교 — 윤년·생일 미도래까지 자연스럽게 처리.
+ */
+function isAtLeast14(birthDate: string): boolean {
+  if (!birthDate) return false;
+  const birth = new Date(birthDate);
+  if (Number.isNaN(birth.getTime())) return false;
+  const today = new Date();
+  const cutoff = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate());
+  return birth.getTime() <= cutoff.getTime();
+}
 
 export default function SignupPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [birthDate, setBirthDate] = useState(""); // YYYY-MM-DD (PIPA v2.1)
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [consents, setConsents] = useState<Consents>({
     terms: false,
     privacy: false,
+    age14: false,
     marketing: false,
   });
 
-  const allChecked = consents.terms && consents.privacy && consents.marketing;
-  const requiredChecked = consents.terms && consents.privacy;
+  const allChecked = consents.terms && consents.privacy && consents.age14 && consents.marketing;
+  const requiredChecked = consents.terms && consents.privacy && consents.age14;
 
   const toggleAll = () => {
     const next = !allChecked;
-    setConsents({ terms: next, privacy: next, marketing: next });
+    setConsents({ terms: next, privacy: next, age14: next, marketing: next });
   };
 
   const toggleOne = (key: keyof Consents) => {
@@ -47,6 +63,18 @@ export default function SignupPage() {
       return;
     }
 
+    // 생년월일 필수
+    if (!birthDate) {
+      setError("생년월일을 입력해주세요.");
+      return;
+    }
+
+    // 만 14세 이상 확인 — 서버 액션 전 클라이언트 차단 (PIPA v2.1)
+    if (!isAtLeast14(birthDate)) {
+      setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
+      return;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
@@ -56,19 +84,40 @@ export default function SignupPage() {
       options: {
         data: {
           name,
+          birth_date: birthDate,
           marketing_opt_in: consents.marketing,
           terms_agreed_at: new Date().toISOString(),
           privacy_agreed_at: new Date().toISOString(),
+          age14_confirmed_at: new Date().toISOString(),
         },
       },
     });
 
     if (error) {
-      setError(error.message === "User already registered"
-        ? "이미 가입된 이메일입니다."
-        : "회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
+      // DB 레벨 14세 게이트(check constraint)가 막은 경우 안내문 통일
+      const msg = error.message ?? "";
+      if (/profiles_birth_date_age_check/i.test(msg)) {
+        setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
+      } else {
+        setError(msg === "User already registered"
+          ? "이미 가입된 이메일입니다."
+          : "회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
+      }
       setLoading(false);
       return;
+    }
+
+    // profiles.birth_date 백필 — handle_new_user trigger가 metadata에서 못 가져오는 경우 대비
+    // (있으면 덮어쓰지 않도록 update만 사용; profiles row가 아직 없을 수 있어 실패는 무시)
+    if (data.user?.id) {
+      try {
+        await supabase
+          .from("profiles")
+          .update({ birth_date: birthDate })
+          .eq("id", data.user.id);
+      } catch {
+        // trigger가 동시 처리 중일 수 있음 — 다음 로그인/온보딩에서 채워짐
+      }
     }
 
     // 이메일 컨펌이 OFF여도 안전을 위해 세션이 있는지 확인
@@ -155,6 +204,27 @@ export default function SignupPage() {
             <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>8자 이상</p>
           </div>
 
+          {/* 생년월일 — PIPA v2.1 만 14세 이상 확인 용도 */}
+          <div>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
+              생년월일
+            </label>
+            <input
+              type="date"
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+              required
+              max={new Date().toISOString().slice(0, 10)}
+              className="w-full px-4 py-3 text-sm outline-none"
+              style={inputStyle}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+            />
+            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
+              만 14세 이상만 가입할 수 있습니다.
+            </p>
+          </div>
+
           {/* ─── 약관 동의 섹션 ─── */}
           <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #D8D3C9" }}>
             <ConsentRow
@@ -189,6 +259,12 @@ export default function SignupPage() {
                     </Link>
                   </>
                 }
+              />
+              <ConsentRow
+                checked={consents.age14}
+                onChange={() => toggleOne("age14")}
+                required
+                label="만 14세 이상입니다."
               />
               <ConsentRow
                 checked={consents.marketing}
