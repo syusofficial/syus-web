@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import { FAQS, FAQ_CATEGORIES, type FAQCategory } from "@/lib/faqs";
+import { FAQS, FAQ_CATEGORIES, type FAQCategory, type FAQ } from "@/lib/faqs";
+import { expandSearchTerms } from "@/lib/faq-synonyms";
+import { sanitizeSearchTerm } from "@/lib/showFilters";
 
 /** "[텍스트](URL)" 형식을 React 노드로 변환 */
 function renderAnswer(answer: string): React.ReactNode {
@@ -72,20 +74,46 @@ export default function FAQPage() {
   const popularFaqs = useMemo(() => FAQS.filter((f) => f.popular), []);
 
   const filteredFaqs = useMemo(() => {
-    let list = FAQS;
+    let list: FAQ[] = FAQS;
     if (activeCategory !== "전체") {
       list = list.filter((f) => f.category === activeCategory);
     }
-    if (query.trim()) {
-      const q = query.trim().toLowerCase();
-      list = list.filter(
-        (f) =>
-          f.question.toLowerCase().includes(q) ||
-          f.answer.toLowerCase().includes(q) ||
-          f.category.toLowerCase().includes(q)
-      );
+
+    const raw = sanitizeSearchTerm(query);
+    if (raw) {
+      // 동의어 확장 토큰 (소문자 기준)
+      const tokens = expandSearchTerms(raw);
+
+      // 매칭 + 점수 계산 — 질문 일치(3) > 카테고리 일치(2) > 답변 일치(1)
+      const scored = list
+        .map((f) => {
+          const q = f.question.toLowerCase();
+          const a = f.answer.toLowerCase();
+          const c = f.category.toLowerCase();
+          let score = 0;
+          for (const t of tokens) {
+            if (!t) continue;
+            if (q.includes(t)) score += 3;
+            if (c.includes(t)) score += 2;
+            if (a.includes(t)) score += 1;
+          }
+          return { faq: f, score };
+        })
+        .filter((x) => x.score > 0);
+
+      // popular 우선, 그 다음 점수, 동순위는 원래 순서 유지
+      scored.sort((a, b) => {
+        const popDiff = Number(!!b.faq.popular) - Number(!!a.faq.popular);
+        if (popDiff !== 0) return popDiff;
+        return b.score - a.score;
+      });
+      return scored.map((x) => x.faq);
     }
-    return list;
+
+    // 검색어 없을 때도 popular을 상단으로
+    return [...list].sort(
+      (a, b) => Number(!!b.popular) - Number(!!a.popular)
+    );
   }, [query, activeCategory]);
 
   const toggle = (id: string) => setOpenId(openId === id ? null : id);
@@ -231,7 +259,7 @@ export default function FAQPage() {
         {/* FAQ 목록 (Accordion) */}
         {filteredFaqs.length === 0 ? (
           <div
-            className="text-center py-16"
+            className="text-center py-12 px-6"
             style={{ backgroundColor: "#F0EBE0" }}
           >
             <p
@@ -241,11 +269,42 @@ export default function FAQPage() {
               검색 결과가 없습니다.
             </p>
             <p
-              className="text-xs"
+              className="text-xs mb-6 leading-relaxed"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
             >
-              다른 검색어를 시도하시거나 1:1 문의를 이용해주세요.
+              찾으시는 내용이 없으시면 아래 경로로 알려주세요.
             </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+              <Link
+                href="/contact"
+                className="inline-block px-6 py-2.5 text-xs tracking-wider transition-colors"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  backgroundColor: "#3B5A6B",
+                  color: "#FBF8F1",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#5C7C8E")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#3B5A6B")}
+              >
+                1:1 문의 보내기 →
+              </Link>
+              <a
+                href="http://pf.kakao.com/_xkPVTX"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-6 py-2.5 text-xs tracking-wider transition-colors"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  backgroundColor: "transparent",
+                  color: "#3B5A6B",
+                  border: "1px solid #3B5A6B",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D8D3C9")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+              >
+                카카오톡 채널 열기 →
+              </a>
+            </div>
           </div>
         ) : (
           <div className="space-y-2">

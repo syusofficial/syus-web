@@ -115,8 +115,30 @@ export default function ContactPage() {
           </h1>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
             아래에서 문의 유형을 선택하시고 내용을 남겨주세요.
+          </p>
+        </div>
+
+        {/* 회신 안내 (SLA) */}
+        <div
+          className="mb-6 p-5"
+          style={{
+            backgroundColor: "#FBF8F1",
+            border: "1px solid #D8D3C9",
+          }}
+        >
+          <p
+            className="text-xs tracking-wider uppercase mb-2"
+            style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+          >
+            회신 안내
+          </p>
+          <p
+            className="text-sm leading-relaxed"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}
+          >
+            보내주신 문의는 영업일 기준 24시간 이내에 운영자가 직접 회신드립니다.
             <br />
-            1~2일 이내에 답변드리겠습니다.
+            운영자 1인 구조 특성상 야간·주말·공휴일은 다음 영업일에 순차로 처리됩니다.
           </p>
         </div>
 
