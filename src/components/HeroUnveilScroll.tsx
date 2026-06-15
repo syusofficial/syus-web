@@ -1,0 +1,551 @@
+"use client";
+
+/**
+ * HeroUnveilScroll — unveil.fr 스타일 세로 스크롤 히어로 (2026-06-15 디자인 시안)
+ *
+ * 사장님 지시:
+ *  - https://unveil.fr 형식 — 스크롤하며 넘겨지는 히어로
+ *  - 공연 포스터들이 대각선으로 나열
+ *
+ * 구현 방향:
+ *  - 세로 스크롤 영역(100vh×N). 안에서 sticky 텍스트 + 대각선 포스터 흐름.
+ *  - 포스터는 grid 안에 rotate(-12 ~ 12deg)로 흩뿌려 대각선 인상을 만든다.
+ *  - 스크롤 진행도(0~1)에 따라 translate3d + opacity로 포스터들이 위로 흐른다.
+ *  - 모바일: 대각선 줄이고(±4deg), 단순 세로 흐름으로 약화.
+ *
+ * 잠금:
+ *  - Mineral Stage 팔레트 + Pretendard/Geist 폰트 토큰
+ *  - 광고형 어휘 금지(주목·놓치지 마세요·지금 바로)
+ *  - prefers-reduced-motion 시 정지
+ *
+ * 빈 상태:
+ *  - items.length === 0 이면 안내 카드 노출
+ */
+
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import type { StreamItem } from "@/components/HeroPosterStream";
+
+type Props = {
+  items: StreamItem[];
+  /** 한 줄 카피 — 사장님 잠금 카피. 기본값: "오늘, 어느 대학의 막이 오른다." */
+  headline?: string;
+  /** 보조 카피. 기본값: "머무른 무대를 모아, 가볍게 흘려보냅니다." */
+  subline?: string;
+};
+
+export default function HeroUnveilScroll({
+  items,
+  headline = "오늘, 어느 대학의 막이 오른다.",
+  subline = "머무른 무대를 모아, 가볍게 흘려보냅니다.",
+}: Props) {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const [progress, setProgress] = useState(0); // 0 ~ 1
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // 스크롤 진행도 계산 — 섹션 상단이 viewport 상단에 맞춰진 순간부터, 섹션 하단이 viewport 상단에 닿는 순간까지
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    let raf = 0;
+    const compute = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      const scrolled = Math.min(Math.max(-rect.top, 0), total);
+      const p = total > 0 ? scrolled / total : 0;
+      setProgress(p);
+    };
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        compute();
+        raf = 0;
+      });
+    };
+
+    compute();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  if (items.length === 0) {
+    return (
+      <section className="unveil-empty">
+        <div className="unveil-empty-inner">
+          <p className="unveil-empty-eyebrow">Coming Soon</p>
+          <h1 className="unveil-empty-headline">곧, 어느 대학의 첫 막이 오릅니다.</h1>
+          <p className="unveil-empty-body">
+            공연자분들이 무대를 올리시는 동안 가장 먼저 만나보실 수 있도록 준비 중입니다.
+          </p>
+          <div className="unveil-empty-ctas">
+            <Link href="/performer" className="unveil-cta-primary">
+              공연자: 무대 올리기 →
+            </Link>
+            <Link href="/about" className="unveil-cta-ghost">
+              무대올림이 어떤 곳인가요
+            </Link>
+          </div>
+        </div>
+        <style>{`
+          .unveil-empty {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 24px 80px;
+            background:
+              radial-gradient(60% 80% at 50% 30%, rgba(59, 90, 107, 0.5), transparent 70%),
+              linear-gradient(180deg, #1B2842 0%, #202833 100%);
+            color: #FBF8F1;
+          }
+          .unveil-empty-inner { max-width: 720px; text-align: center; }
+          .unveil-empty-eyebrow {
+            font-family: var(--font-inter);
+            font-size: 0.72rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: #C8D96F;
+            font-weight: 600;
+            margin-bottom: 18px;
+          }
+          .unveil-empty-headline {
+            font-family: var(--font-noto-serif-kr);
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 700;
+            line-height: 1.3;
+            color: #FBF8F1;
+            margin-bottom: 18px;
+            word-break: keep-all;
+          }
+          .unveil-empty-body {
+            font-family: var(--font-noto-sans-kr);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: rgba(248, 249, 252, 0.78);
+            margin-bottom: 28px;
+            word-break: keep-all;
+          }
+          .unveil-empty-ctas {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+          }
+          .unveil-cta-primary {
+            padding: 14px 24px;
+            font-family: var(--font-noto-sans-kr);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            background-color: #C8D96F;
+            color: #202833;
+            text-decoration: none;
+          }
+          .unveil-cta-ghost {
+            padding: 14px 24px;
+            font-family: var(--font-noto-sans-kr);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            color: #FBF8F1;
+            border: 1px solid rgba(248, 249, 252, 0.4);
+            text-decoration: none;
+          }
+        `}</style>
+      </section>
+    );
+  }
+
+  // 포스터 위치 계산 — 대각선 그리드
+  // 5개 포스터 기준 좌표(viewport % 단위, 화면을 가로지르는 대각선 흐름)
+  const POSITIONS: { x: number; y: number; rotate: number; scale: number }[] = [
+    { x: 8,  y: 8,  rotate: -8,  scale: 0.95 },
+    { x: 60, y: 12, rotate: 6,   scale: 1.05 },
+    { x: 22, y: 38, rotate: -12, scale: 1.0  },
+    { x: 70, y: 52, rotate: 9,   scale: 0.92 },
+    { x: 38, y: 70, rotate: -6,  scale: 1.08 },
+  ];
+
+  return (
+    <section
+      ref={sectionRef}
+      className={`unveil-scroll${mounted ? " is-mounted" : ""}`}
+      style={{ ["--p" as string]: progress }}
+      aria-label="대학 무대예술 — 인기 공연 다섯"
+    >
+      {/* sticky 텍스트 레이어 */}
+      <div className="unveil-sticky">
+        <div className="unveil-bg-grain" aria-hidden="true" />
+        <div className="unveil-bg-mineral" aria-hidden="true" />
+
+        {/* 상단 라벨 */}
+        <div className="unveil-eyebrow">
+          <span>무대올림 · 운영 사유유사 SYUS</span>
+          <span className="unveil-eyebrow-meta">Top 5 · 조회 · 좋아요 · 별점 종합</span>
+        </div>
+
+        {/* 헤드 카피 */}
+        <div className="unveil-copy">
+          <h1 className="unveil-headline">{headline}</h1>
+          <p className="unveil-subline">{subline}</p>
+          <div className="unveil-ctas">
+            <Link href="/shows" className="unveil-cta-primary">
+              공연 둘러보기 →
+            </Link>
+            <Link href="/auth/signup" className="unveil-cta-ghost">
+              무대 올리기
+            </Link>
+          </div>
+        </div>
+
+        {/* 대각선 포스터 흐름 */}
+        <div className="unveil-posters" aria-hidden={items.length === 0}>
+          {items.slice(0, POSITIONS.length).map((item, i) => {
+            const pos = POSITIONS[i];
+            // 각 포스터마다 진행도에 따른 y 오프셋(개별 페이즈)
+            return (
+              <Link
+                key={item.id}
+                href={`/shows/${item.id}`}
+                className="unveil-poster"
+                style={{
+                  ["--x" as string]: `${pos.x}%`,
+                  ["--y" as string]: `${pos.y}%`,
+                  ["--rot" as string]: `${pos.rotate}deg`,
+                  ["--scale" as string]: pos.scale,
+                  ["--idx" as string]: i,
+                }}
+              >
+                <div className="unveil-poster-frame">
+                  {item.poster_url ? (
+                    <Image
+                      src={item.poster_url}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 180px, 280px"
+                      className="unveil-poster-img"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="unveil-poster-placeholder">
+                      <span style={{ fontFamily: "var(--font-cormorant)" }}>無</span>
+                    </div>
+                  )}
+                  <div className="unveil-poster-rank">
+                    <span style={{ fontFamily: "var(--font-cormorant)" }}>{i + 1}</span>
+                  </div>
+                </div>
+                <div className="unveil-poster-caption">
+                  <p className="unveil-poster-title">{item.title}</p>
+                  <p className="unveil-poster-meta">
+                    {[
+                      item.performer_name,
+                      item.schedule_start?.replace(/-/g, ".").slice(2, 10),
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* 하단 진행 라인 */}
+        <div className="unveil-progress-row">
+          <span className="unveil-progress-label">지역 × 시기 × 장르</span>
+          <div className="unveil-progress-bar">
+            <div className="unveil-progress-fill" />
+          </div>
+          <span className="unveil-progress-label">↓ 공연 발견</span>
+        </div>
+      </div>
+
+      <style>{`
+        .unveil-scroll {
+          position: relative;
+          /* 220vh 길이 — 사용자가 스크롤하면서 포스터가 흐르는 시간 확보 */
+          height: 220vh;
+          background-color: #1B2842;
+        }
+        .unveil-sticky {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          min-height: 640px;
+          overflow: hidden;
+          color: #FBF8F1;
+          display: grid;
+          grid-template-rows: auto 1fr auto;
+          padding: 96px 24px 32px;
+        }
+        @media (min-width: 1024px) {
+          .unveil-sticky { padding: 112px 56px 36px; }
+        }
+        .unveil-bg-mineral {
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(70% 60% at 30% 30%, rgba(59, 90, 107, 0.85), transparent 60%),
+            radial-gradient(60% 60% at 75% 70%, rgba(27, 40, 66, 0.95), transparent 70%),
+            linear-gradient(180deg, #1B2842 0%, #202833 100%);
+          z-index: 0;
+        }
+        .unveil-bg-grain {
+          position: absolute;
+          inset: 0;
+          opacity: 0.06;
+          mix-blend-mode: overlay;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+          z-index: 1;
+        }
+
+        .unveil-eyebrow {
+          position: relative;
+          z-index: 3;
+          max-width: 1600px;
+          margin: 0 auto;
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          gap: 12px;
+          font-family: var(--font-inter);
+          font-size: 0.7rem;
+          letter-spacing: 0.32em;
+          text-transform: uppercase;
+          font-weight: 500;
+          opacity: 0.72;
+        }
+        .unveil-eyebrow-meta {
+          color: #C8D96F;
+          font-weight: 600;
+          opacity: 0.95;
+        }
+
+        .unveil-copy {
+          position: relative;
+          z-index: 3;
+          max-width: 1600px;
+          margin: 0 auto;
+          width: 100%;
+          align-self: center;
+          /* 스크롤이 진행될수록 카피는 약간 위로 + opacity 살짝 감소 */
+          transform: translate3d(0, calc(var(--p, 0) * -40px), 0);
+          opacity: calc(1 - var(--p, 0) * 0.5);
+          pointer-events: auto;
+        }
+        .unveil-headline {
+          font-family: var(--font-pretendard, var(--font-noto-sans-kr));
+          font-size: clamp(2.2rem, 5vw, 4.4rem);
+          font-weight: 700;
+          line-height: 1.12;
+          letter-spacing: -0.035em;
+          color: #FBF8F1;
+          margin-bottom: 18px;
+          word-break: keep-all;
+          text-wrap: balance;
+          max-width: 720px;
+        }
+        .unveil-subline {
+          font-family: var(--font-noto-serif-kr);
+          font-size: clamp(0.95rem, 1.6vw, 1.2rem);
+          color: rgba(248, 249, 252, 0.85);
+          max-width: 540px;
+          line-height: 1.6;
+          margin-bottom: 28px;
+          word-break: keep-all;
+        }
+        .unveil-ctas {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+        .unveil-cta-primary {
+          padding: 14px 22px;
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.85rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          background-color: #C8D96F;
+          color: #202833;
+          text-decoration: none;
+        }
+        .unveil-cta-ghost {
+          padding: 14px 22px;
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.85rem;
+          font-weight: 500;
+          letter-spacing: 0.12em;
+          color: #FBF8F1;
+          border: 1px solid rgba(248, 249, 252, 0.42);
+          text-decoration: none;
+        }
+
+        /* ── 대각선 포스터 흐름 ── */
+        .unveil-posters {
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .unveil-poster {
+          position: absolute;
+          left: var(--x);
+          top: var(--y);
+          width: 160px;
+          pointer-events: auto;
+          text-decoration: none;
+          color: #FBF8F1;
+          /* 스크롤 진행도(0~1)와 카드 인덱스에 따라 위로 흐른다.
+             각 카드는 (idx * 8%)만큼 시작 위치 다르게 → 시차 발생. */
+          transform: translate3d(
+              0,
+              calc(var(--p, 0) * -60vh + (var(--idx, 0) * 6vh)),
+              0
+            )
+            rotate(var(--rot, 0deg)) scale(var(--scale, 1));
+          opacity: calc(1 - max(0, var(--p, 0) - 0.7) * 3);
+          transition: transform 0s; /* 스크롤 트래킹이 부드러우니 transition 0 */
+          will-change: transform, opacity;
+        }
+        @media (min-width: 768px) {
+          .unveil-poster { width: 220px; }
+        }
+        @media (min-width: 1280px) {
+          .unveil-poster { width: 260px; }
+        }
+        @media (max-width: 767px) {
+          /* 모바일 — 회전 약화, 가로 위치 안쪽으로 */
+          .unveil-poster {
+            width: 130px;
+            transform: translate3d(
+                0,
+                calc(var(--p, 0) * -50vh + (var(--idx, 0) * 5vh)),
+                0
+              )
+              rotate(calc(var(--rot, 0deg) * 0.4))
+              scale(var(--scale, 1));
+          }
+        }
+
+        .unveil-poster-frame {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 4 / 5;
+          overflow: hidden;
+          background: #202833;
+          box-shadow:
+            0 24px 48px rgba(0, 0, 0, 0.45),
+            0 8px 16px rgba(27, 40, 66, 0.55);
+        }
+        .unveil-poster-img {
+          object-fit: cover;
+        }
+        .unveil-poster-placeholder {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(248, 249, 252, 0.4);
+          background: linear-gradient(135deg, #202833 0%, #3B5A6B 100%);
+          font-size: 2.2rem;
+        }
+        .unveil-poster-rank {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          width: 34px;
+          height: 34px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #C8D96F;
+          color: #202833;
+          font-size: 1.2rem;
+          font-weight: 700;
+          line-height: 1;
+        }
+        .unveil-poster-caption { padding-top: 12px; }
+        .unveil-poster-title {
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #FBF8F1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          letter-spacing: -0.015em;
+        }
+        .unveil-poster-meta {
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.68rem;
+          color: rgba(248, 249, 252, 0.6);
+          margin-top: 4px;
+          letter-spacing: 0.02em;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        /* ── 진행 라인 ── */
+        .unveil-progress-row {
+          position: relative;
+          z-index: 3;
+          max-width: 1600px;
+          margin: 0 auto;
+          width: 100%;
+          display: grid;
+          grid-template-columns: auto 1fr auto;
+          align-items: center;
+          gap: 16px;
+          padding-top: 16px;
+          border-top: 1px solid rgba(248, 249, 252, 0.18);
+        }
+        .unveil-progress-label {
+          font-family: var(--font-inter);
+          font-size: 0.7rem;
+          letter-spacing: 0.25em;
+          text-transform: uppercase;
+          color: rgba(248, 249, 252, 0.72);
+          font-weight: 500;
+        }
+        .unveil-progress-bar {
+          height: 1px;
+          background: rgba(248, 249, 252, 0.18);
+          position: relative;
+        }
+        .unveil-progress-fill {
+          position: absolute;
+          inset: 0;
+          background: #C8D96F;
+          transform-origin: left center;
+          transform: scaleX(var(--p, 0));
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .unveil-poster,
+          .unveil-copy,
+          .unveil-progress-fill {
+            transform: none !important;
+            opacity: 1 !important;
+          }
+        }
+      `}</style>
+    </section>
+  );
+}

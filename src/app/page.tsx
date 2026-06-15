@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ShowCard, { type RatingSummary } from "@/components/ShowCard";
 import HeroPosterStream, { type StreamItem } from "@/components/HeroPosterStream";
+import HeroUnveilScroll from "@/components/HeroUnveilScroll";
 import { createClient } from "@/lib/supabase/server";
 import { InstitutionSidebar, PartnerAdSidebar } from "@/components/PartnerSidebars";
 import { isEnded, todayKey, showEndKey } from "@/lib/showFilters";
@@ -110,187 +111,39 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
       />
-      {/* ── Hero ── 무대올림 정체성 + 포스터 둥둥 + 그라데이션+그레인 (사장님 요청) */}
-      <section
-        className="pt-24 md:pt-36 relative overflow-hidden grad-grain grad-mineral-radial"
-        style={{ color: "#FBF8F1" }}
-      >
-        {/* 상단: 라벨 + 슬로건 (한 줄, 미니멀 Pretendard) */}
-        <div className="px-6 md:px-12 lg:px-20 pt-10 md:pt-14 pb-6">
-          <div className="max-w-[1600px] mx-auto">
-            <p
-              className="text-[0.7rem] tracking-[0.4em] uppercase mb-5"
-              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.65 }}
-            >
-              무대올림 · 운영 사유유사 SYUS
-            </p>
+      {/* ── Hero (unveil.fr 스타일 세로 스크롤 + 대각선 포스터) ──
+        * 2026-06-15 시안: 스크롤 진행에 따라 텍스트는 위로, 포스터는 시차로 흘러간다.
+        * 기존 HeroPosterStream(가로 흐름)은 보조 영역으로 옮겨 TOP 5의 두 번째 보기로 유지.
+        */}
+      <HeroUnveilScroll items={streamItems} />
 
-            <h1
-              className="text-[2.25rem] sm:text-[3rem] md:text-[3.75rem] lg:text-[4.5rem] leading-[1.12] mb-7"
-              style={{
-                fontFamily: "var(--font-pretendard)",
-                fontWeight: 700,
-                color: "#FBF8F1",
-                letterSpacing: "-0.035em",
-                wordBreak: "keep-all",
-                textWrap: "balance",
-              }}
-            >
-              오늘, 어느 대학의 <span style={{ color: "#C8D96F", fontWeight: 800 }}>막</span>이 오른다.
-            </h1>
-
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-              <div>
-                <p
-                  className="text-base md:text-lg leading-relaxed mb-2"
-                  style={{
-                    fontFamily: "var(--font-pretendard)",
-                    fontWeight: 400,
-                    color: "#FBF8F1",
-                    wordBreak: "keep-all",
-                  }}
-                >
-                  대학 무대예술 공연을 올리고, 지역 관객이 관람료 없이 좌석을 예약하는 곳.
-                </p>
-                <p
-                  className="text-xs tracking-wider"
-                  style={{
-                    fontFamily: "var(--font-pretendard)",
-                    fontWeight: 400,
-                    color: "#FBF8F1",
-                    opacity: 0.72,
-                  }}
-                >
-                  연극 · 뮤지컬 · 무용 · 발레 · 국악 · 음악 · 전통연희
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2.5">
-                <Link
-                  href="/shows"
-                  className="inline-block px-6 py-3 text-sm tracking-wider transition-colors"
-                  style={{
-                    fontFamily: "var(--font-pretendard)",
-                    fontWeight: 600,
-                    backgroundColor: "#C8D96F",
-                    color: "#202833",
-                  }}
-                >
-                  공연 둘러보기 →
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="inline-block px-6 py-3 text-sm tracking-wider transition-colors"
-                  style={{
-                    fontFamily: "var(--font-pretendard)",
-                    fontWeight: 500,
-                    border: "1px solid rgba(248, 249, 252, 0.4)",
-                    color: "#FBF8F1",
-                  }}
-                >
-                  무대 올리기
-                </Link>
-              </div>
+      {/* ── 보조: TOP 5 가로 흐름 (기존 자산 보존) ── */}
+      {streamItems.length > 0 && (
+        <section
+          className="relative overflow-hidden"
+          style={{ background: "linear-gradient(180deg, #202833 0%, #1B2842 100%)", color: "#FBF8F1" }}
+        >
+          <div className="px-6 md:px-12 lg:px-20 pt-16 pb-2">
+            <div className="max-w-[1600px] mx-auto flex items-baseline justify-between gap-4 flex-wrap">
+              <p
+                className="text-[0.7rem] tracking-[0.35em] uppercase"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C8D96F", fontWeight: 600 }}
+              >
+                Top 5 · 다시 보기
+              </p>
+              <p
+                className="text-[0.68rem] tracking-wider"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", fontWeight: 400, color: "rgba(248,249,252,0.65)" }}
+              >
+                조회 · 좋아요 · 별점 종합
+              </p>
             </div>
           </div>
-        </div>
-
-        {/* 메인 시각 자산: 포스터 둥둥 격상 영역 (히어로 중앙·하단의 큰 영역) */}
-        {streamItems.length > 0 ? (
-          <div className="pt-4 pb-10">
-            <div className="px-6 md:px-12 lg:px-20 mb-3">
-              <div className="max-w-[1600px] mx-auto flex items-baseline justify-between gap-4 flex-wrap">
-                <p
-                  className="text-[0.7rem] tracking-[0.35em] uppercase"
-                  style={{ fontFamily: "var(--font-pretendard)", color: "#C8D96F", fontWeight: 600 }}
-                >
-                  Top 5 · 지금 가장 주목받는 무대
-                </p>
-                <p
-                  className="text-[0.68rem] tracking-wider"
-                  style={{ fontFamily: "var(--font-pretendard)", fontWeight: 400, color: "rgba(248,249,252,0.65)" }}
-                >
-                  조회 · 좋아요 · 별점 종합
-                </p>
-              </div>
-            </div>
+          <div className="pb-16">
             <HeroPosterStream items={streamItems} />
           </div>
-        ) : (
-          /* 빈 상태 — 신규 방문자가 첫 진입 시 비어 보이지 않도록 안내 카드 노출 */
-          <div className="pt-4 pb-12">
-            <div className="px-6 md:px-12 lg:px-20">
-              <div className="max-w-3xl mx-auto text-center">
-                <p
-                  className="text-[0.7rem] tracking-[0.35em] uppercase mb-4"
-                  style={{ fontFamily: "var(--font-pretendard)", color: "#C8D96F", fontWeight: 600 }}
-                >
-                  Coming Soon
-                </p>
-                <p
-                  className="text-2xl md:text-3xl font-bold mb-4 leading-tight"
-                  style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1", wordBreak: "keep-all" }}
-                >
-                  곧, 어느 대학의 첫 막이 오릅니다.
-                </p>
-                <p
-                  className="text-sm md:text-base leading-relaxed mb-8 max-w-xl mx-auto"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "rgba(248,249,252,0.85)", wordBreak: "keep-all" }}
-                >
-                  공연자분들이 무대를 올리시는 동안 가장 먼저 만나보실 수 있도록 준비 중입니다.
-                  공연자라면 직접 무대를 올려주세요. 관객이라면 알림을 받아보세요.
-                </p>
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  <Link
-                    href="/performer"
-                    className="px-6 py-3 text-sm tracking-wider transition-colors"
-                    style={{
-                      fontFamily: "var(--font-noto-sans-kr)",
-                      backgroundColor: "#C8D96F",
-                      color: "#202833",
-                      fontWeight: 600,
-                    }}
-                  >
-                    공연자: 무대 올리기 →
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="px-6 py-3 text-sm tracking-wider transition-colors"
-                    style={{
-                      fontFamily: "var(--font-noto-sans-kr)",
-                      color: "#FBF8F1",
-                      border: "1px solid rgba(248, 249, 252, 0.45)",
-                    }}
-                  >
-                    무대올림이 어떤 곳인가요
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 히어로 푸터 라인 */}
-        <div className="px-6 md:px-12 lg:px-20 pb-5">
-          <div
-            className="max-w-[1600px] mx-auto flex items-center justify-between py-4"
-            style={{ borderTop: "1px solid rgba(248, 249, 252, 0.18)" }}
-          >
-            <span
-              className="text-[0.7rem] tracking-[0.25em] uppercase"
-              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.72 }}
-            >
-              지역 × 시기 × 장르
-            </span>
-            <span
-              className="text-[0.7rem] tracking-[0.25em] uppercase"
-              style={{ fontFamily: "var(--font-pretendard)", fontWeight: 500, opacity: 0.72 }}
-            >
-              ↓ 공연 발견
-            </span>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── 정체성 띠 ── */}
       <section

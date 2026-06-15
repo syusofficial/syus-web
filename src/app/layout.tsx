@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Noto_Serif_KR, Noto_Sans_KR, Cormorant_Garamond, Geist } from "next/font/google";
 import "./globals.css";
-import Nav from "@/components/Nav";
+import NavMega from "@/components/NavMega";
 import Footer from "@/components/Footer";
 import LoadingScreen from "@/components/LoadingScreen";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -149,7 +149,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: "#FBF8F1", color: "#202833" }}>
         <LoadingScreen />
-        <Nav />
+        <NavMega />
         <main className="flex-1">{children}</main>
         <Footer />
         <GoogleAnalytics />
