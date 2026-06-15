@@ -19,6 +19,13 @@
  *  - ESC 키로 닫기
  *  - 메가 메뉴 바깥 클릭/포커스 이탈 시 닫기
  *  - prefers-reduced-motion 시 트랜지션 0
+ *
+ * 2026-06-15 hover 안정화 (사장님 1차 미리보기 수정):
+ *  - 자간(letter-spacing) 한 단계 더 벌림 (0.12em→0.2em, 0.1em→0.18em)
+ *  - 좌측 메뉴 gap 36→48px, 우측 gap 22→32px
+ *  - 마우스가 trigger→베이지 메가 패널로 이동 중 닫히지 않도록 close를 150ms 지연
+ *    예약하고, wrapper 안으로 다시 들어오면 취소. (옵션 B: setTimeout + cancelClose)
+ *  - trigger와 panel 사이 시각적 공백은 panel ::before(투명 bridge 16px)로 메움.
  */
 
 import Link from "next/link";
@@ -222,6 +229,37 @@ export default function NavMega() {
   const [openChapter, setOpenChapter] = useState<Chapter["key"] | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
 
+  // ── 메가 메뉴 hover 안정화 ──
+  // 마우스가 trigger → panel 사이 공백을 지나거나, 잠깐 떠도 즉시 닫히지 않도록
+  // close를 150ms 지연 예약하고, 다시 wrapper 안으로 들어오면 취소한다.
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cancelClose = useCallback(() => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+  const scheduleClose = useCallback(() => {
+    cancelClose();
+    closeTimerRef.current = setTimeout(() => {
+      setOpenChapter(null);
+      closeTimerRef.current = null;
+    }, 150);
+  }, [cancelClose]);
+  const openChapterImmediate = useCallback(
+    (key: Chapter["key"]) => {
+      cancelClose();
+      setOpenChapter(key);
+    },
+    [cancelClose]
+  );
+  // 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
   // 모바일 드로어
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileChapter, setMobileChapter] = useState<Chapter["key"] | null>(null);
@@ -316,7 +354,8 @@ export default function NavMega() {
           {/* 좌측 4메뉴 */}
           <div
             className="navmega-left"
-            onMouseLeave={() => setOpenChapter(null)}
+            onMouseLeave={scheduleClose}
+            onMouseEnter={cancelClose}
           >
             {CHAPTERS.map((ch) => {
               const isOpen = openChapter === ch.key;
@@ -324,8 +363,19 @@ export default function NavMega() {
                 <div
                   key={ch.key}
                   className={`navmega-item${isOpen ? " is-open" : ""}`}
-                  onMouseEnter={() => setOpenChapter(ch.key)}
-                  onFocus={() => setOpenChapter(ch.key)}
+                  onMouseEnter={() => openChapterImmediate(ch.key)}
+                  onFocus={() => openChapterImmediate(ch.key)}
+                  onBlur={(e) => {
+                    // 같은 wrapper 내부로 포커스 이동하는 경우는 닫지 않는다
+                    if (
+                      e.currentTarget.parentElement &&
+                      !e.currentTarget.parentElement.contains(
+                        e.relatedTarget as Node | null
+                      )
+                    ) {
+                      scheduleClose();
+                    }
+                  }}
                 >
                   <button
                     type="button"
@@ -381,10 +431,12 @@ export default function NavMega() {
         </div>
 
         {/* 메가 패널 — 한 챕터씩 슬라이드 다운 */}
+        {/* hover 안정화: 패널 진입 시 close 타이머 취소, 떠나면 지연 close. */}
+        {/* 트리거와 패널 사이 시각적 공백은 ::before bridge로 메워 mouseleave 깜빡임 방지. */}
         <div
           className={`mega-panel${openCurrent ? " is-open" : ""}`}
-          onMouseEnter={() => openCurrent && setOpenChapter(openCurrent.key)}
-          onMouseLeave={() => setOpenChapter(null)}
+          onMouseEnter={cancelClose}
+          onMouseLeave={scheduleClose}
           aria-hidden={!openCurrent}
         >
           {openCurrent && <MegaPanel chapter={openCurrent} />}
@@ -550,7 +602,7 @@ export default function NavMega() {
         }
         .navmega-left {
           display: flex;
-          gap: 36px;
+          gap: 48px;
           justify-content: flex-end;
         }
         .navmega-item { position: relative; }
@@ -562,7 +614,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.95rem;
           font-weight: 500;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.2em;
           color: #202833;
           cursor: pointer;
           transition: color 0.15s ease;
@@ -599,7 +651,7 @@ export default function NavMega() {
 
         .navmega-right {
           display: flex;
-          gap: 22px;
+          gap: 32px;
           align-items: center;
           justify-content: flex-start;
         }
@@ -607,7 +659,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.9rem;
           font-weight: 500;
-          letter-spacing: 0.1em;
+          letter-spacing: 0.18em;
           color: #202833;
           text-decoration: none;
           transition: color 0.15s ease;
@@ -621,7 +673,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.8rem;
           font-weight: 600;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.2em;
           background-color: #3B5A6B;
           color: #FBF8F1;
           cursor: pointer;
@@ -642,9 +694,19 @@ export default function NavMega() {
           opacity: 0;
           transition: max-height 0.28s ease, opacity 0.18s ease;
         }
+        /* trigger와 panel 사이 시각적 공백 위에서도 hover 유지되는 투명 bridge */
+        .mega-panel.is-open::before {
+          content: "";
+          position: absolute;
+          left: 0; right: 0;
+          top: -16px;
+          height: 16px;
+          background: transparent;
+        }
         .mega-panel.is-open {
           max-height: 560px;
           opacity: 1;
+          overflow: visible;
         }
         .mega-panel-inner {
           max-width: 1600px;
@@ -817,7 +879,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 1rem;
           font-weight: 500;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.16em;
           color: #202833;
           cursor: pointer;
         }
@@ -905,6 +967,7 @@ export default function NavMega() {
           color: #202833;
           text-decoration: none;
           padding: 6px 0;
+          letter-spacing: 0.16em;
         }
         .navmega-mobile-cta {
           appearance: none;
@@ -913,7 +976,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.85rem;
           font-weight: 600;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.2em;
           background-color: #3B5A6B;
           color: #FBF8F1;
           text-decoration: none;
