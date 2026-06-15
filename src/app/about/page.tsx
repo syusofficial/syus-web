@@ -556,8 +556,12 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-24" style={{ backgroundColor: "#4A3B33" }}>
+      {/* ── CTA ──
+          색 분리: Footer(Silhouette)와 같은 톤 묶임 방지 → CTA는 Teal 베이스로 전환. */}
+      <section
+        className="px-6 md:px-12 lg:px-20 py-24"
+        style={{ background: "linear-gradient(180deg, #2C7384 0%, #0B5563 100%)" }}
+      >
         <div className="max-w-3xl mx-auto text-center">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"

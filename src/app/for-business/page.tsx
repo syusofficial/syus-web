@@ -214,11 +214,14 @@ export default function ForBusinessPage() {
         </div>
       </section>
 
-      {/* ── 5. CTA ── */}
+      {/* ── 5. CTA ──
+          색 분리: 이전 그라데이션 끝이 #4A3B33(Silhouette)이라 Footer와 한 덩어리로 보였음.
+          CTA 끝을 Teal 본 톤(#0B5563)으로 안착 → Footer(Silhouette) 경계가 살아난다.
+          (직전 04 Process 섹션은 별도 커밋에서 Teal 톤으로 정리되거나 유지) */}
       <section
         className="px-6 md:px-12 lg:px-20 py-24 md:py-32 text-center"
         style={{
-          background: "linear-gradient(180deg, #0B5563 0%, #4A3B33 100%)",
+          background: "linear-gradient(180deg, #2C7384 0%, #0B5563 100%)",
           color: "#F0EEE9",
         }}
       >

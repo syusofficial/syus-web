@@ -308,8 +308,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── CTA Section ── */}
-      <section className="px-6 md:px-12 lg:px-20 xl:px-24 py-24" style={{ backgroundColor: "#4A3B33" }}>
+      {/* ── CTA Section ──
+          색 분리: Footer(Silhouette #4A3B33)와 묶이는 '갈색 밭' 방지.
+          CTA는 Transformative Teal 베이스(#0B5563), 위에서 살짝 밝게 시작해
+          아래쪽이 Teal 본 톤으로 안착 → Footer(Silhouette)와 자연스러운 색 경계가 생긴다. */}
+      <section
+        className="px-6 md:px-12 lg:px-20 xl:px-24 py-24"
+        style={{ background: "linear-gradient(180deg, #2C7384 0%, #0B5563 100%)" }}
+      >
         {/* 본문(타이틀+카피)은 가독성 위해 좁게 유지(max-w-md), 컨테이너만 풀폭 */}
         <div className="max-w-[1800px] mx-auto text-center">
           <p
