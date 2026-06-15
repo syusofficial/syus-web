@@ -59,9 +59,9 @@ export default function Footer() {
               className="text-sm leading-relaxed"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE, wordBreak: "keep-all" }}
             >
-              대학 무대예술 공연을 올리고,
+              우리는 대학 무대예술 공연을 올리고,
               <br />
-              지역 관객이 관람료 없이 좌석을 예약하는 곳.
+              관객이 편하게 방문하여 공연을 더욱 원활히 관람할 수 있도록 이끌어 드립니다.
             </p>
           </div>
 
