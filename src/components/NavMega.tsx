@@ -595,15 +595,24 @@ export default function NavMega() {
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: center;
-          max-width: 1600px;
+          /* 2026-06-15 2차 수정: 사장님 지시 — NAV가 헤더 풀 너비를 시원하게 차지하도록.
+             1600 → 1800px. 좌우 패딩도 늘려 헤더 가장자리에 호흡 확보. */
+          max-width: 1800px;
           margin: 0 auto;
-          padding: 14px 32px;
-          gap: 32px;
+          padding: 16px 48px;
+          gap: 48px;
+        }
+        @media (min-width: 1600px) {
+          .navmega-row { padding: 16px 72px; }
         }
         .navmega-left {
           display: flex;
-          gap: 48px;
+          /* gap 48 → 72px (메뉴 간 간격) */
+          gap: 72px;
           justify-content: flex-end;
+        }
+        @media (min-width: 1600px) {
+          .navmega-left { gap: 88px; }
         }
         .navmega-item { position: relative; }
         .navmega-trigger {
@@ -614,7 +623,8 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.95rem;
           font-weight: 500;
-          letter-spacing: 0.2em;
+          /* 글자 간격 더 벌림 0.2 → 0.3em — 사장님 지시 "더욱 넓혀" */
+          letter-spacing: 0.3em;
           color: #202833;
           cursor: pointer;
           transition: color 0.15s ease;
@@ -651,15 +661,20 @@ export default function NavMega() {
 
         .navmega-right {
           display: flex;
-          gap: 32px;
+          /* 2026-06-15 2차 수정: 우측 메뉴 간격 32 → 56px */
+          gap: 56px;
           align-items: center;
           justify-content: flex-start;
+        }
+        @media (min-width: 1600px) {
+          .navmega-right { gap: 72px; }
         }
         .navmega-side {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.9rem;
           font-weight: 500;
-          letter-spacing: 0.18em;
+          /* 0.18 → 0.28em */
+          letter-spacing: 0.28em;
           color: #202833;
           text-decoration: none;
           transition: color 0.15s ease;
@@ -669,11 +684,12 @@ export default function NavMega() {
         .navmega-cta {
           appearance: none;
           border: 0;
-          padding: 10px 18px;
+          padding: 10px 20px;
           font-family: var(--font-noto-sans-kr);
           font-size: 0.8rem;
           font-weight: 600;
-          letter-spacing: 0.2em;
+          /* 0.2 → 0.3em */
+          letter-spacing: 0.3em;
           background-color: #3B5A6B;
           color: #FBF8F1;
           cursor: pointer;
@@ -709,9 +725,13 @@ export default function NavMega() {
           overflow: visible;
         }
         .mega-panel-inner {
-          max-width: 1600px;
+          /* 2026-06-15 2차: 1800px 풀폭 */
+          max-width: 1800px;
           margin: 0 auto;
-          padding: 32px 32px 40px;
+          padding: 36px 48px 44px;
+        }
+        @media (min-width: 1600px) {
+          .mega-panel-inner { padding: 36px 72px 44px; }
         }
         .mega-panel-grid {
           display: grid;

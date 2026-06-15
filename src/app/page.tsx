@@ -123,8 +123,9 @@ export default async function HomePage() {
           className="relative overflow-hidden"
           style={{ background: "linear-gradient(180deg, #202833 0%, #1B2842 100%)", color: "#FBF8F1" }}
         >
-          <div className="px-6 md:px-12 lg:px-20 pt-16 pb-2">
-            <div className="max-w-[1600px] mx-auto flex items-baseline justify-between gap-4 flex-wrap">
+          <div className="px-6 md:px-12 lg:px-20 xl:px-24 pt-16 pb-2">
+            {/* 2026-06-15 2차 수정: 페이지 폭 1600 → 1800px */}
+            <div className="max-w-[1800px] mx-auto flex items-baseline justify-between gap-4 flex-wrap">
               <p
                 className="text-[0.7rem] tracking-[0.35em] uppercase"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C8D96F", fontWeight: 600 }}
@@ -147,10 +148,11 @@ export default async function HomePage() {
 
       {/* ── 정체성 띠 ── */}
       <section
-        className="px-6 md:px-12 lg:px-20 py-20 md:py-24"
+        className="px-6 md:px-12 lg:px-20 xl:px-24 py-20 md:py-24"
         style={{ backgroundColor: "#3B5A6B", color: "#FBF8F1" }}
       >
-        <div className="max-w-7xl mx-auto">
+        {/* 2026-06-15 2차 수정: 1280 → 1800px. 본문 가독성 위해 안쪽 그리드는 두 컬럼 비율로 자연 제한. */}
+        <div className="max-w-[1800px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-[1fr_1.3fr] gap-12 md:gap-20 items-start">
             <div>
               <p
@@ -238,11 +240,12 @@ export default async function HomePage() {
 
       {/* ── Shows Section ── */}
       <section
-        className="px-6 md:px-12 lg:px-16 xl:px-8 py-24 md:py-32"
+        className="px-6 md:px-12 lg:px-16 xl:px-20 py-24 md:py-32"
         style={{ backgroundColor: "#FBF8F1" }}
       >
-        <div className="max-w-[1600px] mx-auto">
-          <div className="grid grid-cols-1 xl:grid-cols-[200px_1fr_220px] gap-8 xl:gap-8">
+        {/* 2026-06-15 2차 수정: 1600 → 1800px. 사이드바 폭은 유지하고 중앙 콘텐츠가 넓어진다. */}
+        <div className="max-w-[1800px] mx-auto">
+          <div className="grid grid-cols-1 xl:grid-cols-[220px_1fr_240px] gap-8 xl:gap-10">
             <InstitutionSidebar />
 
             <div className="space-y-20">
@@ -306,8 +309,9 @@ export default async function HomePage() {
       </section>
 
       {/* ── CTA Section ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-24" style={{ backgroundColor: "#202833" }}>
-        <div className="max-w-7xl mx-auto text-center">
+      <section className="px-6 md:px-12 lg:px-20 xl:px-24 py-24" style={{ backgroundColor: "#202833" }}>
+        {/* 본문(타이틀+카피)은 가독성 위해 좁게 유지(max-w-md), 컨테이너만 풀폭 */}
+        <div className="max-w-[1800px] mx-auto text-center">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"
             style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}

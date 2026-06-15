@@ -29,16 +29,21 @@ import type { StreamItem } from "@/components/HeroPosterStream";
 
 type Props = {
   items: StreamItem[];
-  /** 한 줄 카피 — 사장님 잠금 카피. 기본값: "오늘, 어느 대학의 막이 오른다." */
+  /**
+   * 한 줄 카피 — 미사용 (2026-06-15 2차 미리보기 수정: H1을 "무대올림" 브랜드 각인으로 교체).
+   * 이전 카피("오늘, 어느 대학의 막이 오른다.")는 사장님 요청으로 폐기.
+   * prop은 외부 호환을 위해 남겨두되 렌더에는 반영하지 않는다.
+   */
   headline?: string;
-  /** 보조 카피. 기본값: "머무른 무대를 모아, 가볍게 흘려보냅니다." */
+  /** 보조 카피 — 미사용. subline도 부제 영역 전용 카피로 교체됨. */
   subline?: string;
 };
 
 export default function HeroUnveilScroll({
   items,
-  headline = "오늘, 어느 대학의 막이 오른다.",
-  subline = "머무른 무대를 모아, 가볍게 흘려보냅니다.",
+  // 2026-06-15 2차 수정: headline/subline은 더 이상 사용하지 않는다.
+  // headline = "오늘, 어느 대학의 막이 오른다.",
+  // subline = "머무른 무대를 모아, 가볍게 흘려보냅니다.",
 }: Props) {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const [progress, setProgress] = useState(0); // 0 ~ 1
@@ -197,10 +202,20 @@ export default function HeroUnveilScroll({
           <span className="unveil-eyebrow-meta">Top 5 · 조회 · 좋아요 · 별점 종합</span>
         </div>
 
-        {/* 헤드 카피 */}
+        {/* 헤드 카피 — 2026-06-15 2차 수정: "무대올림" 브랜드 각인 + 사장님 부제 */}
         <div className="unveil-copy">
-          <h1 className="unveil-headline">{headline}</h1>
-          <p className="unveil-subline">{subline}</p>
+          <h1 className="unveil-headline">
+            {/* "올림" 두 글자에 페일 라임 강조 — 메모리 §1 강조 한 글자 예외 범위 내 */}
+            무대<span className="unveil-headline-accent">올림</span>
+          </h1>
+          <p className="unveil-subline">
+            {/* 사장님 지시 띄어쓰기 그대로:
+                "대학 무대예술", "관람할 수 있도록", "이끌어 드립니다"
+                콤마 뒤 줄바꿈 — <br/> 사용 */}
+            우리는 대학 무대예술 공연을 올리고,
+            <br />
+            관객이 편하게 방문하여 공연을 더욱 원활히 관람할 수 있도록 이끌어 드립니다.
+          </p>
           <div className="unveil-ctas">
             <Link href="/shows" className="unveil-cta-primary">
               공연 둘러보기 →
@@ -284,8 +299,9 @@ export default function HeroUnveilScroll({
         .unveil-sticky {
           position: sticky;
           top: 0;
+          /* 2026-06-15 2차 수정: 첫 화면 임팩트 강화 — min-height 더 키움 */
           height: 100vh;
-          min-height: 640px;
+          min-height: 720px;
           overflow: hidden;
           color: #FBF8F1;
           display: grid;
@@ -293,7 +309,11 @@ export default function HeroUnveilScroll({
           padding: 96px 24px 32px;
         }
         @media (min-width: 1024px) {
-          .unveil-sticky { padding: 112px 56px 36px; }
+          /* 시원한 좌우 여백 — 1800px 풀폭과 맞춘다 */
+          .unveil-sticky { padding: 120px 72px 40px; min-height: 820px; }
+        }
+        @media (min-width: 1600px) {
+          .unveil-sticky { padding: 128px 96px 44px; }
         }
         .unveil-bg-mineral {
           position: absolute;
@@ -316,7 +336,8 @@ export default function HeroUnveilScroll({
         .unveil-eyebrow {
           position: relative;
           z-index: 3;
-          max-width: 1600px;
+          /* 2026-06-15 2차: 페이지 폭 확장 (1800px) */
+          max-width: 1800px;
           margin: 0 auto;
           width: 100%;
           display: flex;
@@ -324,8 +345,8 @@ export default function HeroUnveilScroll({
           align-items: baseline;
           gap: 12px;
           font-family: var(--font-inter);
-          font-size: 0.7rem;
-          letter-spacing: 0.32em;
+          font-size: 0.72rem;
+          letter-spacing: 0.34em;
           text-transform: uppercase;
           font-weight: 500;
           opacity: 0.72;
@@ -339,7 +360,8 @@ export default function HeroUnveilScroll({
         .unveil-copy {
           position: relative;
           z-index: 3;
-          max-width: 1600px;
+          /* 2026-06-15 2차: 1800px 풀폭 + 좌우 시원한 여백 */
+          max-width: 1800px;
           margin: 0 auto;
           width: 100%;
           align-self: center;
@@ -348,26 +370,34 @@ export default function HeroUnveilScroll({
           opacity: calc(1 - var(--p, 0) * 0.5);
           pointer-events: auto;
         }
+        /* 2026-06-15 2차: "무대올림" 브랜드 각인 — 매우 크게 */
         .unveil-headline {
-          font-family: var(--font-pretendard, var(--font-noto-sans-kr));
-          font-size: clamp(2.2rem, 5vw, 4.4rem);
+          font-family: var(--font-noto-serif-kr);
+          font-size: clamp(4.4rem, 11vw, 9.5rem);
           font-weight: 700;
-          line-height: 1.12;
-          letter-spacing: -0.035em;
+          line-height: 1.02;
+          letter-spacing: -0.04em;
           color: #FBF8F1;
-          margin-bottom: 18px;
+          margin-bottom: 36px;
           word-break: keep-all;
           text-wrap: balance;
-          max-width: 720px;
+          max-width: 100%;
         }
+        /* "올림" 페일 라임 강조 — CTA 외 큰 면적 사용 X 룰 안에서 두 글자 포인트 */
+        .unveil-headline-accent {
+          color: #C8D96F;
+        }
+        /* 부제 — 한 줄에 한 호흡, 콤마 뒤 줄바꿈은 마크업의 <br/>로 처리 */
         .unveil-subline {
-          font-family: var(--font-noto-serif-kr);
-          font-size: clamp(0.95rem, 1.6vw, 1.2rem);
-          color: rgba(248, 249, 252, 0.85);
-          max-width: 540px;
-          line-height: 1.6;
-          margin-bottom: 28px;
+          font-family: var(--font-noto-sans-kr);
+          font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+          color: rgba(248, 249, 252, 0.82);
+          max-width: 720px;
+          line-height: 1.75;
+          margin-bottom: 36px;
           word-break: keep-all;
+          font-weight: 300;
+          letter-spacing: 0.01em;
         }
         .unveil-ctas {
           display: flex;
@@ -406,7 +436,7 @@ export default function HeroUnveilScroll({
           position: absolute;
           left: var(--x);
           top: var(--y);
-          width: 160px;
+          width: 180px;
           pointer-events: auto;
           text-decoration: none;
           color: #FBF8F1;
@@ -423,10 +453,14 @@ export default function HeroUnveilScroll({
           will-change: transform, opacity;
         }
         @media (min-width: 768px) {
-          .unveil-poster { width: 220px; }
+          .unveil-poster { width: 240px; }
         }
         @media (min-width: 1280px) {
-          .unveil-poster { width: 260px; }
+          /* 2026-06-15 2차: 포스터 더 크게 — 시선 집중 */
+          .unveil-poster { width: 300px; }
+        }
+        @media (min-width: 1600px) {
+          .unveil-poster { width: 340px; }
         }
         @media (max-width: 767px) {
           /* 모바일 — 회전 약화, 가로 위치 안쪽으로 */
@@ -506,7 +540,8 @@ export default function HeroUnveilScroll({
         .unveil-progress-row {
           position: relative;
           z-index: 3;
-          max-width: 1600px;
+          /* 2026-06-15 2차: 1800px 풀폭 */
+          max-width: 1800px;
           margin: 0 auto;
           width: 100%;
           display: grid;
