@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ShowCard, { type RatingSummary } from "@/components/ShowCard";
-import HeroPosterStream, { type StreamItem } from "@/components/HeroPosterStream";
+// 2026-06-16 G-1안: 보조 TOP 5 가로 흐름 제거 → 컴포넌트 import 해제, StreamItem 타입만 유지
+import { type StreamItem } from "@/components/HeroPosterStream";
 import HeroUnveilScroll from "@/components/HeroUnveilScroll";
 import { createClient } from "@/lib/supabase/server";
 import { InstitutionSidebar, PartnerAdSidebar } from "@/components/PartnerSidebars";
@@ -113,38 +114,12 @@ export default async function HomePage() {
       />
       {/* ── Hero (unveil.fr 스타일 세로 스크롤 + 대각선 포스터) ──
         * 2026-06-15 시안: 스크롤 진행에 따라 텍스트는 위로, 포스터는 시차로 흘러간다.
-        * 기존 HeroPosterStream(가로 흐름)은 보조 영역으로 옮겨 TOP 5의 두 번째 보기로 유지.
+        * 2026-06-16 옵션 2 G-1안 (사장님 결정): 보조 "TOP 5 다시 보기" 영역 제거.
+        *   메인 첫 화면이 두 곳(HeroUnveilScroll + HeroPosterStream 가로 흐름)으로 갈리며
+        *   TOP 5가 중복 노출되던 문제를 정리. HeroPosterStream 컴포넌트 자체는 보존
+        *   (다른 페이지에서 재사용 가능). page.tsx에서만 호출 해제.
         */}
       <HeroUnveilScroll items={streamItems} />
-
-      {/* ── 보조: TOP 5 가로 흐름 (기존 자산 보존) ── */}
-      {streamItems.length > 0 && (
-        <section
-          className="relative overflow-hidden"
-          style={{ background: "linear-gradient(180deg, #4A3B33 0%, #1F1814 100%)", color: "#F0EEE9" }}
-        >
-          <div className="px-6 md:px-12 lg:px-20 xl:px-24 pt-16 pb-2">
-            {/* 2026-06-15 2차 수정: 페이지 폭 1600 → 1800px */}
-            <div className="max-w-[1800px] mx-auto flex items-baseline justify-between gap-4 flex-wrap">
-              <p
-                className="text-[0.7rem] tracking-[0.35em] uppercase"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C99FB1", fontWeight: 600 }}
-              >
-                Top 5 · 다시 보기
-              </p>
-              <p
-                className="text-[0.68rem] tracking-wider"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", fontWeight: 400, color: "rgba(248,249,252,0.65)" }}
-              >
-                조회 · 좋아요 · 별점 종합
-              </p>
-            </div>
-          </div>
-          <div className="pb-16">
-            <HeroPosterStream items={streamItems} />
-          </div>
-        </section>
-      )}
 
       {/* ── 정체성 띠 ── */}
       <section

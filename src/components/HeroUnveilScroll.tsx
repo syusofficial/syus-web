@@ -20,6 +20,14 @@
  *
  * 빈 상태:
  *  - items.length === 0 이면 안내 카드 노출
+ *
+ * 2026-06-16 옵션 2 통합 성능 패스 (사장님 결정):
+ *  C: 스크롤 트래킹 React state 제거 — DOM에 --p CSS 변수 직접 갱신(매 프레임 리렌더 회피)
+ *  E: sticky 영역 220vh → 160vh (스크롤 흐름 유지하며 영역 단축)
+ *  A: 포스터 좌표 재배치 — 카피 영역(가운데 14~57%) 비우는 대각선 흐름
+ *  B: Image 최적화 — unoptimized 제거, priority(첫 2장), sizes 정확화
+ *  H1: 사장님 직접 작성 카피 — "오늘도 우리들의 막이 오릅니다" + 부제
+ *      "우리"라는 1인칭 복수형으로 운영자·공연자 학생을 같은 호흡에 묶음
  */
 
 import Link from "next/link";
@@ -46,7 +54,6 @@ export default function HeroUnveilScroll({
   // subline = "머무른 무대를 모아, 가볍게 흘려보냅니다.",
 }: Props) {
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const [progress, setProgress] = useState(0); // 0 ~ 1
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -54,6 +61,11 @@ export default function HeroUnveilScroll({
   }, []);
 
   // 스크롤 진행도 계산 — 섹션 상단이 viewport 상단에 맞춰진 순간부터, 섹션 하단이 viewport 상단에 닿는 순간까지
+  //
+  // 2026-06-16 옵션 2 C안: React state 우회.
+  //   기존: setProgress(p) → 매 프레임 컴포넌트 리렌더 → 자식(포스터 5장·캡션·CTA) 재조정 비용
+  //   변경: el.style.setProperty("--p", p) → DOM 변수만 갱신 → CSS calc()가 transform/opacity 흡수
+  //   React 렌더 트리는 손대지 않음. 모바일 60fps 유지 + 데스크톱 렉 해소.
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -65,7 +77,8 @@ export default function HeroUnveilScroll({
       const total = rect.height - window.innerHeight;
       const scrolled = Math.min(Math.max(-rect.top, 0), total);
       const p = total > 0 ? scrolled / total : 0;
-      setProgress(p);
+      // DOM 변수 직접 갱신 — React state 우회 (C안 핵심)
+      el.style.setProperty("--p", String(p));
     };
 
     const onScroll = () => {
@@ -212,19 +225,26 @@ export default function HeroUnveilScroll({
 
   // 포스터 위치 계산 — 대각선 그리드
   // 5개 포스터 기준 좌표(viewport % 단위, 화면을 가로지르는 대각선 흐름)
+  //
+  // 2026-06-16 옵션 2 A안 (사장님 결정): 카피 영역 가독성 확보.
+  //   기존 좌표는 22%·38% 등 중앙 카피(가로 14~57%) 위로 포스터가 겹쳐 H1이 묻혔다.
+  //   새 좌표는 좌상·우상·우중·좌하(카피 아래)·우하 — 중앙은 비우고 좌·우 대각선만 유지.
+  //   실데이터가 3개일 때도 슬라이스 순서가 자연스럽게(좌상→우상→우중) 흐른다.
   const POSITIONS: { x: number; y: number; rotate: number; scale: number }[] = [
-    { x: 8,  y: 8,  rotate: -8,  scale: 0.95 },
-    { x: 60, y: 12, rotate: 6,   scale: 1.05 },
-    { x: 22, y: 38, rotate: -12, scale: 1.0  },
-    { x: 70, y: 52, rotate: 9,   scale: 0.92 },
-    { x: 38, y: 70, rotate: -6,  scale: 1.08 },
+    { x: 6,  y: 8,  rotate: -7,  scale: 0.95 }, // 좌상단
+    { x: 68, y: 10, rotate: 6,   scale: 1.05 }, // 우상단
+    { x: 72, y: 38, rotate: -10, scale: 1.0  }, // 우중단
+    { x: 8,  y: 60, rotate: 8,   scale: 0.92 }, // 좌하단 (카피 아래)
+    { x: 65, y: 70, rotate: -6,  scale: 1.08 }, // 우하단
   ];
 
   return (
     <section
       ref={sectionRef}
       className={`unveil-scroll${mounted ? " is-mounted" : ""}`}
-      style={{ ["--p" as string]: progress }}
+      // 2026-06-16 옵션 2 C안: style prop에서 --p 제거.
+      // 스크롤 핸들러가 el.style.setProperty("--p", p)로 직접 갱신하므로
+      // React가 매 프레임 inline style을 재계산할 필요 없음.
       aria-label="대학 무대예술 — 인기 공연 다섯"
     >
       {/* sticky 텍스트 레이어 */}
@@ -238,19 +258,16 @@ export default function HeroUnveilScroll({
           <span className="unveil-eyebrow-meta">Top 5 · 조회 · 좋아요 · 별점 종합</span>
         </div>
 
-        {/* 헤드 카피 — 2026-06-15 2차 수정: "무대올림" 브랜드 각인 + 사장님 부제 */}
+        {/* 헤드 카피 — 2026-06-16 사장님 직접 작성안 적용
+            의도: "우리들의" 1인칭 복수형으로 운영자(이혁호)와 공연자 학생을 같은 호흡에 묶음.
+            메인 ↔ /about 카피 분리 — about는 "무대올림" 브랜드 각인 유지, 메인은 이 카피로.
+            띄어쓰기·마침표 한 글자도 다르지 않게. */}
         <div className="unveil-copy">
           <h1 className="unveil-headline">
-            {/* "올림" 두 글자에 페일 라임 강조 — 메모리 §1 강조 한 글자 예외 범위 내 */}
-            무대<span className="unveil-headline-accent">올림</span>
+            오늘도 우리들의 막이 오릅니다
           </h1>
           <p className="unveil-subline">
-            {/* 사장님 지시 띄어쓰기 그대로:
-                "대학 무대예술", "관람할 수 있도록", "이끌어 드립니다"
-                콤마 뒤 줄바꿈 — <br/> 사용 */}
-            우리는 대학 무대예술 공연을 올리고,
-            <br />
-            관객이 편하게 방문하여 공연을 더욱 원활히 관람할 수 있도록 이끌어 드립니다.
+            대학 무대예술의 오늘을 한데 모아두고 기록하고 알립니다
           </p>
           <div className="unveil-ctas">
             <Link href="/shows" className="unveil-cta-primary">
@@ -282,13 +299,20 @@ export default function HeroUnveilScroll({
               >
                 <div className="unveil-poster-frame">
                   {item.poster_url ? (
+                    /*
+                      2026-06-16 옵션 2 B안:
+                        - unoptimized 제거 → Next.js Image 최적화 파이프라인(WebP/AVIF·리사이즈) 정상 동작
+                        - priority(첫 2장) → LCP(첫 화면 큰 이미지) 가속, preload hint 자동 삽입
+                        - sizes 정확화 → 브레이크포인트별 실제 폭(.unveil-poster width 토큰)과 일치
+                          모바일 130 / 태블릿 180 / 데스크톱 240 / xl 300 / 1600+ 340
+                    */
                     <Image
                       src={item.poster_url}
                       alt={item.title}
                       fill
-                      sizes="(max-width: 768px) 180px, 280px"
+                      sizes="(max-width: 767px) 130px, (max-width: 1023px) 180px, (max-width: 1279px) 240px, (max-width: 1599px) 300px, 340px"
                       className="unveil-poster-img"
-                      unoptimized
+                      priority={i < 2}
                     />
                   ) : (
                     <div className="unveil-poster-placeholder">
@@ -328,8 +352,11 @@ export default function HeroUnveilScroll({
       <style>{`
         .unveil-scroll {
           position: relative;
-          /* 220vh 길이 — 사용자가 스크롤하면서 포스터가 흐르는 시간 확보 */
-          height: 220vh;
+          /* 2026-06-16 옵션 2 E안: 220vh → 160vh.
+             사장님 피드백 "스크롤이 너무 길어서 묻힌다"에 대응.
+             160vh로도 포스터 시차 흐름·카피 페이드 충분히 살아남.
+             첫 화면(100vh)을 떠난 뒤 60vh만 더 끌고 다음 섹션으로 자연 전환. */
+          height: 160vh;
           background-color: #1F1814;
         }
         .unveil-sticky {
