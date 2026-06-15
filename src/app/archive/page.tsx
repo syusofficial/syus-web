@@ -134,11 +134,17 @@ export default async function ArchivePage({
         {/* Header */}
         <div className="mb-12 flex items-end justify-between gap-4 flex-wrap">
           <div>
+            {/* 2026-06-15 Phase 1(권고 5): 자간 0.2em 통일, 첫 글자만 대문자, 한글 부제. */}
             <p
-              className="text-xs tracking-[0.3em] uppercase mb-3"
-              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+              className="text-xs mb-3"
+              style={{
+                fontFamily: "var(--font-inter)",
+                color: "#5F584F",
+                letterSpacing: "0.2em",
+                textTransform: "none",
+              }}
             >
-              Archive
+              Archive · 지난 기록
             </p>
             <h1
               className="text-4xl md:text-5xl font-bold mb-3"

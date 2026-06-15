@@ -116,11 +116,16 @@ export default async function UniversitiesPage() {
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         {/* 헤더 */}
         <header className="mb-10 sm:mb-14">
+          {/* 2026-06-15 Phase 1(권고 5): 풀대문자 UNIVERSITIES → 첫 글자만 대문자 Universities + 자간 0.2em 통일. */}
           <p
-            className="text-xs sm:text-sm tracking-widest mb-3"
-            style={{ color: "var(--color-stone, #5F584F)", letterSpacing: "0.2em" }}
+            className="text-xs sm:text-sm mb-3"
+            style={{
+              color: "var(--color-stone, #5F584F)",
+              letterSpacing: "0.2em",
+              textTransform: "none",
+            }}
           >
-            UNIVERSITIES
+            Universities · 학과 디렉토리
           </p>
           <h1
             className="text-2xl sm:text-4xl font-light mb-4"

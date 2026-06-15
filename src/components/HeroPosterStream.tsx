@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { genreDotColor } from "@/lib/constants";
 
 export type StreamItem = {
   id: string;
@@ -11,6 +12,8 @@ export type StreamItem = {
   performer_name: string | null;
   schedule_start: string | null;
   venue: string | null;
+  /** 장르(8장르) — 첫 카드 라벨·전체 카드 도트 컬러에 사용. */
+  genre?: string | null;
 };
 
 /**
@@ -77,17 +80,21 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
                       </span>
                     </div>
                   )}
-                  {/* 랭크 배지 (1~5, 복제분은 무시) */}
-                  {idx < items.length && (
-                    <div className="hero-stream-rank">
-                      <span style={{ fontFamily: "var(--font-cormorant)" }}>
-                        {idx + 1}
-                      </span>
-                    </div>
+                  {/* 첫 카드(원본 idx 0)만 큐레이션 라벨 — 직접 서열(1·2·3) 표기 없음. 2026-06-15 Phase 1. */}
+                  {idx === 0 && (
+                    <div className="hero-stream-lead-label">이번 주의 무대</div>
                   )}
                 </div>
                 <div className="hero-stream-caption">
                   <p className="hero-stream-title" title={item.title}>
+                    {/* 8장르 도트 — 미네랄 채도 변형만 (lib/constants GENRE_TINT) */}
+                    {item.genre && (
+                      <span
+                        className="hero-stream-dot"
+                        style={{ backgroundColor: genreDotColor(item.genre) }}
+                        aria-hidden
+                      />
+                    )}
                     {item.title}
                   </p>
                   <p className="hero-stream-meta">
@@ -166,20 +173,19 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           color: rgba(248, 249, 252, 0.4);
           background: linear-gradient(135deg, #202833 0%, #3B5A6B 100%);
         }
-        .hero-stream-rank {
+        /* 2026-06-15 Phase 1: 첫 카드 큐레이션 라벨 — 노란 1·2·3 랭크 배지 폐기. */
+        .hero-stream-lead-label {
           position: absolute;
           top: 12px;
           left: 12px;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #C8D96F;
-          color: #202833;
-          font-size: 1.4rem;
-          font-weight: 700;
+          padding: 4px 8px;
+          background: rgba(27, 40, 66, 0.75);
+          color: #FBF8F1;
+          font-family: var(--font-inter);
+          font-size: 0.62rem;
+          letter-spacing: 0.2em;
           line-height: 1;
+          backdrop-filter: blur(4px);
         }
         .hero-stream-caption {
           padding-top: 18px;
@@ -193,6 +199,17 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           text-overflow: ellipsis;
           white-space: nowrap;
           letter-spacing: -0.015em;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        /* 8장르 도트 — 미네랄 채도 변형 (lib/constants GENRE_TINT) */
+        .hero-stream-dot {
+          display: inline-block;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          flex-shrink: 0;
         }
         .hero-stream-meta {
           font-family: var(--font-pretendard);
