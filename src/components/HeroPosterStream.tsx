@@ -178,7 +178,7 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           align-items: center;
           justify-content: center;
           background: #5C2A42;
-          color: #4A3B33;
+          color: #F0EEE9;
           font-size: 1.4rem;
           font-weight: 700;
           line-height: 1;
