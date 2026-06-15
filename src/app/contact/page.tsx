@@ -344,7 +344,7 @@ export default function ContactPage() {
               </p>
             </a>
             <a
-              href="http://pf.kakao.com/_xkPVTX"
+              href="https://pf.kakao.com/_xkPVTX"
               target="_blank"
               rel="noopener noreferrer"
               className="block p-4 transition-colors"

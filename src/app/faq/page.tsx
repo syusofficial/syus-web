@@ -289,7 +289,7 @@ export default function FAQPage() {
                 1:1 문의 보내기 →
               </Link>
               <a
-                href="http://pf.kakao.com/_xkPVTX"
+                href="https://pf.kakao.com/_xkPVTX"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block px-6 py-2.5 text-xs tracking-wider transition-colors"

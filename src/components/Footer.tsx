@@ -225,7 +225,7 @@ export default function Footer() {
           <div className="flex gap-3">
             <span style={{ minWidth: "100px", color: FOOTER_META }}>카카오톡</span>
             <a
-              href="http://pf.kakao.com/_xkPVTX"
+              href="https://pf.kakao.com/_xkPVTX"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors"
