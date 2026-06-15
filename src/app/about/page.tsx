@@ -56,33 +56,36 @@ export default function AboutPage() {
           >
             About 무대올림
           </p>
+          {/* 2026-06-15 사장님 직접 수정: "무대올림" 브랜드 각인 + 부제 (촌스럽다는 평가로 폐기) */}
           <h1
-            className="text-[3rem] sm:text-[4rem] md:text-[5rem] leading-[1.05] font-black tracking-tighter mb-10"
+            className="leading-[0.95] font-black tracking-tighter mb-10"
             style={{
               fontFamily: "var(--font-noto-serif-kr)",
+              fontSize: "clamp(4.4rem, 11vw, 9.5rem)",
               color: "#FBF8F1",
               wordBreak: "keep-all",
               textWrap: "balance",
+              letterSpacing: "-0.04em",
             }}
           >
-            오늘,
-            <br />
-            어느 대학의
-            <br />
-            <span style={{ color: "#C8D96F" }}>막</span>이 오른다.
+            {/* "올림" 두 글자에만 페일 라임 강조 — 메모리 §1 강조 한 글자 예외 범위 */}
+            무대<span style={{ color: "#C8D96F" }}>올림</span>
           </h1>
           <p
-            className="text-lg md:text-xl leading-relaxed max-w-2xl"
+            className="leading-relaxed max-w-2xl"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
+              fontSize: "clamp(1.05rem, 1.8vw, 1.35rem)",
               color: "#FBF8F1",
               opacity: 0.9,
               wordBreak: "keep-all",
+              fontWeight: 300,
             }}
           >
-            무대올림은 대학 무대예술 공연을 올리고,
+            {/* 사장님 지시 띄어쓰기 그대로: "대학 무대예술", "관람할 수 있도록", "이끌어 드립니다" */}
+            우리는 대학 무대예술 공연을 올리고,
             <br />
-            지역 관객이 관람료 없이 좌석을 예약하는 곳입니다.
+            관객이 편하게 방문하여 공연을 더욱 원활히 관람할 수 있도록 이끌어 드립니다.
           </p>
 
           <div
