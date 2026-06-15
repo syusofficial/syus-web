@@ -395,7 +395,7 @@ export default async function HomePage() {
             <div className="space-y-20">
               {featured.length > 0 && (
                 <SectionGroup
-                  badge="이번 주의 무대"
+                  badge="Editor's Pick"
                   title="이번 달 주목할 만한 공연"
                   shows={featured}
                   ratingMap={ratingMap}
@@ -522,15 +522,12 @@ function SectionGroup({
     <div>
       <div className="flex items-end justify-between mb-8 pb-4" style={{ borderBottom: "1px solid #D8D3C9" }}>
         <div>
-          {/* 2026-06-15 Phase 1(권고 5): 한글 라벨은 자간 0.05em + uppercase 미적용, 영문은 자간 0.2em + 첫 글자 대문자만. */}
           <p
-            className="text-xs mb-2"
+            className="text-xs tracking-[0.3em] uppercase mb-2"
             style={{
               fontFamily: "var(--font-inter)",
               color: accent ? "#3B5A6B" : "#5F584F",
               fontWeight: accent ? 600 : 400,
-              letterSpacing: /[가-힣]/.test(badge) ? "0.05em" : "0.2em",
-              textTransform: "none",
             }}
           >
             {badge}

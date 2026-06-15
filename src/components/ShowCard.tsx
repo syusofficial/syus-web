@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Show } from "@/types";
-import { genreDotColor } from "@/lib/constants";
 import LikeButton from "./LikeButton";
 
 export type RatingSummary = {
@@ -74,14 +73,6 @@ export default function ShowCard({
               className="text-base font-semibold leading-snug transition-colors group-hover:opacity-70"
               style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
             >
-              {/* 8장르 도트 — 미네랄 채도 변형 (lib/constants GENRE_TINT). 2026-06-15 Phase 1. */}
-              {show.genre && (
-                <span
-                  className="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle"
-                  style={{ backgroundColor: genreDotColor(show.genre) }}
-                  aria-hidden
-                />
-              )}
               {show.title}
             </h3>
             {show.subtitle && (

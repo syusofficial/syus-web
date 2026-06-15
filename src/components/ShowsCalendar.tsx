@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import type { Show } from "@/types";
-import { calendarGenreColor, CALENDAR_PRIMARY_GENRES, CALENDAR_ETC_COLOR } from "@/lib/constants";
 
 type ShowsCalendarProps = {
   shows: Show[];
@@ -247,32 +246,18 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
               }}
             >
               <span className="text-sm font-medium">{cell.date.getDate()}</span>
-              {/* 2026-06-15 Phase 1(권고 4): 카운트 배지 → 장르별 막대. 미네랄 채도 변형 5장르 + 회색 통합. */}
               {hasShows && (
-                <span className="flex flex-col items-stretch w-full gap-[2px] mt-1 px-[3px]">
-                  {dayShows.slice(0, 3).map((s, i) => (
-                    <span
-                      key={`${s.id}-${i}`}
-                      className="block w-full"
-                      style={{
-                        height: 3,
-                        backgroundColor: isSelected ? "#FBF8F1" : calendarGenreColor(s.genre),
-                      }}
-                      aria-hidden
-                    />
-                  ))}
-                  {dayShows.length > 3 && (
-                    <span
-                      className="text-[8px] leading-none mt-[1px]"
-                      style={{
-                        fontFamily: "var(--font-inter)",
-                        color: isSelected ? "#FBF8F1" : "#5F584F",
-                        textAlign: "center",
-                      }}
-                    >
-                      +{dayShows.length - 3}
-                    </span>
-                  )}
+                <span
+                  className="mt-1 text-[10px] tracking-wide px-1.5 py-0.5"
+                  style={{
+                    backgroundColor: isSelected ? "#FBF8F1" : "#3B5A6B",
+                    color: isSelected ? "#3B5A6B" : "#FBF8F1",
+                    fontFamily: "var(--font-inter)",
+                    minWidth: 18,
+                    textAlign: "center",
+                  }}
+                >
+                  {dayShows.length}
                 </span>
               )}
             </button>
@@ -280,51 +265,13 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
         })}
       </div>
 
-      {/* 캘린더 범례 — 자주 등록 5장르 + 그 외 통합 회색 (2026-06-15 Phase 1 권고 4). */}
-      <div
-        className="flex flex-wrap gap-x-4 gap-y-1.5 mb-8 pt-3"
-        style={{ borderTop: "1px dotted #D8D3C9" }}
-      >
-        {CALENDAR_PRIMARY_GENRES.map((g) => (
-          <span
-            key={g}
-            className="inline-flex items-center gap-1.5 text-[10px]"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
-          >
-            <span
-              className="inline-block"
-              style={{ width: 10, height: 3, backgroundColor: calendarGenreColor(g) }}
-              aria-hidden
-            />
-            {g}
-          </span>
-        ))}
-        <span
-          className="inline-flex items-center gap-1.5 text-[10px]"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
-        >
-          <span
-            className="inline-block"
-            style={{ width: 10, height: 3, backgroundColor: CALENDAR_ETC_COLOR }}
-            aria-hidden
-          />
-          그 외 (발레·전통연희·기타)
-        </span>
-      </div>
-
       {/* 선택된 날짜의 공연 목록 */}
       <div className="pt-8" style={{ borderTop: "1px solid #D8D3C9" }}>
-        {/* 2026-06-15 Phase 1(권고 5): 자간 0.2em 통일, 첫 글자만 대문자. */}
         <p
-          className="text-xs mb-3"
-          style={{
-            fontFamily: "var(--font-inter)",
-            color: "#5F584F",
-            letterSpacing: "0.2em",
-            textTransform: "none",
-          }}
+          className="text-xs tracking-[0.3em] uppercase mb-3"
+          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
         >
-          Selected · 선택한 날짜
+          Selected
         </p>
         <h3
           className="text-2xl font-bold mb-6"
