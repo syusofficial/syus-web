@@ -11,13 +11,13 @@ export function InstitutionSidebar() {
         <div className="mb-5">
           <p
             className="text-[10px] tracking-[0.3em] uppercase mb-1.5"
-            style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
           >
             Related Institutions
           </p>
           <h3
             className="text-sm font-bold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
           >
             연관 기관
           </h3>
@@ -36,18 +36,18 @@ export function InstitutionSidebar() {
                   fontFamily: "var(--font-noto-sans-kr)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderLeftColor = "#3B5A6B";
-                  e.currentTarget.style.backgroundColor = "#F0EBE0";
+                  e.currentTarget.style.borderLeftColor = "#0B5563";
+                  e.currentTarget.style.backgroundColor = "#E6E1D6";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderLeftColor = "transparent";
                   e.currentTarget.style.backgroundColor = "transparent";
                 }}
               >
-                <p className="text-xs leading-tight mb-0.5" style={{ color: "#1A1A1A" }}>
+                <p className="text-xs leading-tight mb-0.5" style={{ color: "#4A3B33" }}>
                   {inst.name}
                 </p>
-                <p className="text-[10px]" style={{ color: "#5F584F", fontFamily: "var(--font-inter)" }}>
+                <p className="text-[10px]" style={{ color: "#6B5C50", fontFamily: "var(--font-inter)" }}>
                   {inst.desc}
                 </p>
               </a>
@@ -57,7 +57,7 @@ export function InstitutionSidebar() {
 
         <p
           className="mt-5 text-[10px] leading-relaxed"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
         >
           외부 사이트로 이동합니다.
         </p>
@@ -75,13 +75,13 @@ export function PartnerAdSidebar() {
           <div>
             <p
               className="text-[10px] tracking-[0.3em] uppercase mb-1.5"
-              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
             >
               Recommended
             </p>
             <h3
               className="text-sm font-bold"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
             >
               제휴 · 추천
             </h3>
@@ -96,11 +96,11 @@ export function PartnerAdSidebar() {
           {PARTNER_ADS.length === 0 ? (
             <div
               className="p-4 text-center"
-              style={{ border: "1px dashed #D8D3C9" }}
+              style={{ border: "1px dashed #D4CFC1" }}
             >
               <p
                 className="text-[11px] leading-relaxed mb-3"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
               >
                 이 자리에는 공연예술 관련
                 <br />
@@ -108,7 +108,7 @@ export function PartnerAdSidebar() {
               </p>
               <p
                 className="text-[10px] leading-relaxed"
-                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}
               >
                 팸플릿 제작 · 연기 아카데미
                 <br />
@@ -127,14 +127,14 @@ export function PartnerAdSidebar() {
                       target="_blank"
                       rel="noopener noreferrer sponsored"
                       className="block p-4 transition-all"
-                      style={{ backgroundColor: "#F0EBE0" }}
+                      style={{ backgroundColor: "#E6E1D6" }}
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#DDD0BD")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F0EBE0")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E6E1D6")}
                     >
                       <PartnerCardBody ad={ad} />
                     </a>
                   ) : (
-                    <div className="p-4" style={{ backgroundColor: "#F0EBE0" }}>
+                    <div className="p-4" style={{ backgroundColor: "#E6E1D6" }}>
                       <PartnerCardBody ad={ad} />
                     </div>
                   )}
@@ -147,23 +147,23 @@ export function PartnerAdSidebar() {
         {/* 광고 문의 CTA */}
         <div
           className="mt-5 pt-5"
-          style={{ borderTop: "1px solid #D8D3C9" }}
+          style={{ borderTop: "1px solid #D4CFC1" }}
         >
           <Link
             href="/contact"
             className="block text-center py-2.5 text-xs transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              color: "#3B5A6B",
-              border: "1px solid #D8D3C9",
+              color: "#0B5563",
+              border: "1px solid #D4CFC1",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#3B5A6B";
-              e.currentTarget.style.color = "#FBF8F1";
+              e.currentTarget.style.backgroundColor = "#0B5563";
+              e.currentTarget.style.color = "#F0EEE9";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "#3B5A6B";
+              e.currentTarget.style.color = "#0B5563";
             }}
           >
             제휴 · 광고 문의
@@ -180,14 +180,14 @@ function PartnerCardBody({ ad }: { ad: { name: string; category: string; desc: s
       <div className="flex items-center justify-between mb-1.5">
         <span
           className="text-[9px] tracking-[0.2em] uppercase"
-          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
         >
           {ad.category}
         </span>
         {ad.tag && (
           <span
             className="text-[9px] px-1.5 py-0.5"
-            style={{ backgroundColor: "#3B5A6B", color: "#FBF8F1", fontFamily: "var(--font-inter)" }}
+            style={{ backgroundColor: "#0B5563", color: "#F0EEE9", fontFamily: "var(--font-inter)" }}
           >
             {ad.tag}
           </span>
@@ -195,13 +195,13 @@ function PartnerCardBody({ ad }: { ad: { name: string; category: string; desc: s
       </div>
       <p
         className="text-xs font-semibold leading-tight mb-1.5"
-        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}
+        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}
       >
         {ad.name}
       </p>
       <p
         className="text-[10px] leading-relaxed"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
       >
         {ad.desc}
       </p>

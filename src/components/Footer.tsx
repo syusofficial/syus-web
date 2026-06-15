@@ -29,29 +29,29 @@ export default function Footer() {
     router.refresh();
   };
 
-  // 다크 배경(#1A1A1A) 위에서는 #5F584F가 약 3.0:1 (AA 미달)
+  // 다크 배경(#4A3B33) 위에서는 #6B5C50가 약 3.0:1 (AA 미달)
   // 크림 계열 흰색을 opacity 72%로 사용하면 약 9:1 — 위계는 살리고 가독성 확보
   const linkCls = "text-sm transition-colors";
   const FOOTER_LINK_BASE = "rgba(248, 249, 252, 0.72)";
-  const FOOTER_LINK_HOVER = "#FBF8F1";
+  const FOOTER_LINK_HOVER = "#F0EEE9";
   const FOOTER_META = "rgba(248, 249, 252, 0.55)"; // 약 6:1 — 라벨용 보조 정보
   const linkStyle: React.CSSProperties = { fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE };
 
   return (
-    <footer style={{ backgroundColor: "#1A1A1A", color: "#FBF8F1" }}>
+    <footer style={{ backgroundColor: "#4A3B33", color: "#F0EEE9" }}>
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand */}
           <div>
             <p
               className="text-2xl font-bold mb-2"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F0EEE9" }}
             >
               무대올림
             </p>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}
+              style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
             >
               운영: 사유유사 SYUS
             </p>
@@ -168,7 +168,7 @@ export default function Footer() {
                   <span className="inline-flex items-baseline gap-2">
                     <span
                       className="text-sm"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9" }}
                     >
                       {p.name}
                     </span>
@@ -257,16 +257,16 @@ export default function Footer() {
           <Link
             href="/terms"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B5C50")}
           >
             이용약관
           </Link>
           <Link
             href="/privacy"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", fontWeight: 600 }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
@@ -275,18 +275,18 @@ export default function Footer() {
           <Link
             href="/faq"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B5C50")}
           >
             자주 묻는 질문
           </Link>
           <Link
             href="/contact"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#FBF8F1")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#5F584F")}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B5C50")}
           >
             1:1 문의
           </Link>
@@ -296,13 +296,13 @@ export default function Footer() {
         <div className="pt-6 mt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <p
             className="text-xs tracking-wider"
-            style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
           >
             © 2026 무대올림 · 운영: 사유유사 SYUS. All rights reserved.
           </p>
           <p
             className="text-xs"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
           >
             오늘, 어느 대학의 막이 오른다.
           </p>

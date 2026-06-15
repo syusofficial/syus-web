@@ -58,39 +58,39 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
       {/* 인쇄 / 출력 안내 (인쇄 시 숨김) */}
       <div
         className="print-hide mb-8 p-4 flex items-center justify-between gap-4 flex-wrap"
-        style={{ backgroundColor: "#F0EBE0" }}
+        style={{ backgroundColor: "#E6E1D6" }}
       >
-        <div className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
+        <div className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
           📋 광고주에게 화면 공유로 보여주거나, <strong>인쇄(Ctrl+P) → PDF 저장</strong>으로 송부할 수 있습니다.
           <br />
-          <span style={{ color: "#5F584F" }}>광고 단가는 현재 placeholder입니다. 사장님이 직접 채워주세요.</span>
+          <span style={{ color: "#6B5C50" }}>광고 단가는 현재 placeholder입니다. 사장님이 직접 채워주세요.</span>
         </div>
         <button
           onClick={handlePrint}
           className="px-4 py-2 text-xs tracking-wider transition-colors shrink-0"
           style={{
             fontFamily: "var(--font-noto-sans-kr)",
-            backgroundColor: "#3B5A6B",
-            color: "#FBF8F1",
+            backgroundColor: "#0B5563",
+            color: "#F0EEE9",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#5C7C8E")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#3B5A6B")}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#2C7384")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#0B5563")}
         >
           인쇄 / PDF 저장
         </button>
       </div>
 
       {/* ── 표지 ─────────────────────────── */}
-      <section className="ad-section mb-12 pb-10" style={{ borderBottom: "2px solid #3B5A6B" }}>
+      <section className="ad-section mb-12 pb-10" style={{ borderBottom: "2px solid #0B5563" }}>
         <p
           className="text-xs tracking-[0.3em] uppercase mb-2"
-          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
         >
           Media Kit · {dateStr}
         </p>
         <h1
           className="text-4xl md:text-5xl font-bold mb-4"
-          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
         >
           사유유사 SYUS
           <br />
@@ -98,7 +98,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         </h1>
         <p
           className="text-base leading-relaxed max-w-2xl"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
         >
           대학 무대예술 공연자들의 무대를 올리고, 지역 관객이 무료 좌석을 예약하는 플랫폼.
           연극·뮤지컬·무용·발레·국악·음악·전통연희 등 한국 대학 무대를 사랑하는 관객들과
@@ -117,15 +117,15 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
           <Stat label="등록 학교" value={summary.schoolCount} suffix="개" />
           <Stat label="활동 지역" value={summary.regionCount} suffix="개" />
         </div>
-        <div className="p-5" style={{ backgroundColor: "#F0EBE0" }}>
+        <div className="p-5" style={{ backgroundColor: "#E6E1D6" }}>
           <p
             className="text-sm leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
           >
-            <strong style={{ color: "#3B5A6B" }}>주요 사용자</strong> — 18~28세 대학생·신진 공연자, 공연 관객(2030 여성 비중 높음),
+            <strong style={{ color: "#0B5563" }}>주요 사용자</strong> — 18~28세 대학생·신진 공연자, 공연 관객(2030 여성 비중 높음),
             연기·연출 전공 지망생, 공연 동호인.
             <br />
-            <strong style={{ color: "#3B5A6B" }}>강한 관심사</strong> — 공연 정보, 연기 학원/오디션, 공연 의상·분장,
+            <strong style={{ color: "#0B5563" }}>강한 관심사</strong> — 공연 정보, 연기 학원/오디션, 공연 의상·분장,
             소극장·연습실 대관, 공연 음향·조명 장비, 대학로 카페, 신학기 책방·문구.
           </p>
         </div>
@@ -175,21 +175,21 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         <SectionTitle no="03" title="광고 상품 · 단가" />
 
         {/* 시기별 단가 안내 박스 */}
-        <div className="mb-6 p-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs" style={{ backgroundColor: "#F0EBE0" }}>
+        <div className="mb-6 p-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs" style={{ backgroundColor: "#E6E1D6" }}>
           <div>
             <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#A63D2F" }}>
               ① 베타가 (현재 ~ 2026년 8월)
             </p>
-            <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
+            <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
               <strong>첫 5사 런칭 협력사: 완전 무료</strong> (데이터·후기 공유 동의 조건).
               6번째 이후는 베타 할인가.
             </p>
           </div>
           <div>
-            <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               ② 시작가 (2026년 9~12월)
             </p>
-            <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
+            <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
               정식 출시 단가. 회원 1,000명+ 기준 합리적 가격대
             </p>
           </div>
@@ -197,7 +197,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
             <p className="font-semibold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A5E42" }}>
               ③ 안정가 (2027년 이후)
             </p>
-            <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}>
+            <p className="leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
               회원 5,000명+, MAU 3,000+ 가정. 시장 안착 단가
             </p>
           </div>
@@ -206,12 +206,12 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
             <thead>
-              <tr style={{ borderBottom: "2px solid #3B5A6B" }}>
+              <tr style={{ borderBottom: "2px solid #0B5563" }}>
                 {["코드", "상품 (기간)", "① 베타가", "② 시작가", "③ 안정가"].map((h) => (
                   <th
                     key={h}
                     className="text-left py-3 px-3 text-xs tracking-wider uppercase"
-                    style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+                    style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
                   >
                     {h}
                   </th>
@@ -231,7 +231,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         </div>
         <p
           className="text-xs mt-4 leading-relaxed"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
         >
           ※ 모든 단가는 VAT 별도, 협의 가능. 게재 직전까지 광고 톤·디자인 협의 후 진행.
           <br />
@@ -243,18 +243,18 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         {/* 1:1 견적 CTA — 표 안 단가는 가이드, 실제는 협의 */}
         <div
           className="mt-6 p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-          style={{ border: "1px solid #3B5A6B", backgroundColor: "#FBF8F1" }}
+          style={{ border: "1px solid #0B5563", backgroundColor: "#F0EEE9" }}
         >
           <div>
             <p
               className="text-sm font-semibold mb-1"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
             >
               표 안 단가는 가이드 라인입니다. 실제 단가는 협의 후 확정합니다.
             </p>
             <p
               className="text-xs leading-relaxed"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
             >
               광고 목적·게재 기간·콘텐츠 제작 범위에 따라 별도 견적을 드립니다.
               상품·기간 묶음, 공공·문화 기관 할인 등 협의 가능합니다.
@@ -265,12 +265,12 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
             className="px-6 py-3 text-sm tracking-wider transition-colors shrink-0"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: "#C8D96F",
-              color: "#202833",
+              backgroundColor: "#5C2A42",
+              color: "#F0EEE9",
               fontWeight: 600,
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D5E482")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8D96F")}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#6E3450")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#5C2A42")}
           >
             1:1 견적 문의 →
           </a>
@@ -278,14 +278,14 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
       </section>
 
       {/* ── 3+. 런칭 협력사 모집 ────────────────── */}
-      <section className="ad-section mb-12 p-6" style={{ border: "2px solid #3B5A6B" }}>
+      <section className="ad-section mb-12 p-6" style={{ border: "2px solid #0B5563" }}>
         <div className="flex items-baseline gap-3 mb-4">
           <span
             className="text-xs px-2 py-0.5"
             style={{
               fontFamily: "var(--font-inter)",
-              backgroundColor: "#3B5A6B",
-              color: "#FBF8F1",
+              backgroundColor: "#0B5563",
+              color: "#F0EEE9",
               letterSpacing: "0.2em",
             }}
           >
@@ -293,24 +293,24 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
           </span>
           <h3
             className="text-xl font-bold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
           >
             런칭 협력사 5사 모집
           </h3>
         </div>
         <p
           className="text-sm leading-relaxed mb-4"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
         >
           SYUS 정식 출시(2026년 9월) 이전까지 첫 5개 광고주를 <strong>런칭 협력사</strong>로 모집합니다.
           베타가(무료~할인) 게재 + SYUS 푸터 상시 노출 + &lsquo;런칭 협력사&rsquo; 라벨이 부여됩니다.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-          <div className="p-4" style={{ backgroundColor: "#F0EBE0" }}>
-            <p className="text-xs font-semibold mb-2 tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B", letterSpacing: "0.15em" }}>
+          <div className="p-4" style={{ backgroundColor: "#E6E1D6" }}>
+            <p className="text-xs font-semibold mb-2 tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#0B5563", letterSpacing: "0.15em" }}>
               협력사 혜택
             </p>
-            <ul className="text-xs leading-relaxed space-y-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+            <ul className="text-xs leading-relaxed space-y-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
               <li>· 베타가(무료~할인) 게재 — 시장 최저가</li>
               <li>· SYUS 사이트 푸터 상시 노출 (모든 페이지)</li>
               <li>· &lsquo;런칭 협력사&rsquo; 공식 라벨 부여</li>
@@ -318,11 +318,11 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
               <li>· 정식 출시 후 가격 인상에서 1년간 동결</li>
             </ul>
           </div>
-          <div className="p-4" style={{ backgroundColor: "#F0EBE0" }}>
-            <p className="text-xs font-semibold mb-2 tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B", letterSpacing: "0.15em" }}>
+          <div className="p-4" style={{ backgroundColor: "#E6E1D6" }}>
+            <p className="text-xs font-semibold mb-2 tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#0B5563", letterSpacing: "0.15em" }}>
               참여 조건
             </p>
-            <ul className="text-xs leading-relaxed space-y-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+            <ul className="text-xs leading-relaxed space-y-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
               <li>· SYUS 톤과 어울리는 광고 콘텐츠 (공연·문화 인접 권장)</li>
               <li>· 게재 후 효과 데이터 공유 동의</li>
               <li>· 후기·인터뷰 가능 (선택, 비강제)</li>
@@ -332,7 +332,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         </div>
         <p
           className="text-xs"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
         >
           모집 기간: 즉시 ~ 5사 마감 시까지 / 문의: syusflux@gmail.com
         </p>
@@ -350,7 +350,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
       </section>
 
       {/* ── 5. 문의 ─────────────────────── */}
-      <section className="ad-section mb-12 p-8" style={{ backgroundColor: "#3B5A6B", color: "#FBF8F1" }}>
+      <section className="ad-section mb-12 p-8" style={{ backgroundColor: "#0B5563", color: "#F0EEE9" }}>
         <p
           className="text-xs tracking-[0.3em] uppercase mb-3"
           style={{ fontFamily: "var(--font-inter)", opacity: 0.7 }}
@@ -366,13 +366,13 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         <div className="space-y-2 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
           <p>
             <span style={{ opacity: 0.7, marginRight: 8 }}>이메일</span>
-            <a href="mailto:syusflux@gmail.com" style={{ color: "#FBF8F1", textDecoration: "underline" }}>
+            <a href="mailto:syusflux@gmail.com" style={{ color: "#F0EEE9", textDecoration: "underline" }}>
               syusflux@gmail.com
             </a>
           </p>
           <p>
             <span style={{ opacity: 0.7, marginRight: 8 }}>웹사이트</span>
-            <a href="https://syus.co.kr" target="_blank" rel="noopener noreferrer" style={{ color: "#FBF8F1", textDecoration: "underline" }}>
+            <a href="https://syus.co.kr" target="_blank" rel="noopener noreferrer" style={{ color: "#F0EEE9", textDecoration: "underline" }}>
               https://syus.co.kr
             </a>
           </p>
@@ -390,7 +390,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
       {/* ── 푸터 ─────────────────────── */}
       <p
         className="text-xs text-center mt-8"
-        style={{ fontFamily: "var(--font-cormorant)", color: "#5F584F", letterSpacing: "0.2em" }}
+        style={{ fontFamily: "var(--font-cormorant)", color: "#6B5C50", letterSpacing: "0.2em" }}
       >
         SYUS · 思惟流沙 — 깊이 머물고, 가볍게 흘려보냅니다.
       </p>
@@ -407,13 +407,13 @@ function SectionTitle({ no, title }: { no: string; title: string }) {
     <div className="mb-5 flex items-baseline gap-3">
       <span
         className="text-xs tracking-[0.3em]"
-        style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
       >
         {no}
       </span>
       <h2
         className="text-xl md:text-2xl font-bold"
-        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
       >
         {title}
       </h2>
@@ -423,17 +423,17 @@ function SectionTitle({ no, title }: { no: string; title: string }) {
 
 function Stat({ label, value, suffix }: { label: string; value: number; suffix?: string }) {
   return (
-    <div className="p-5 text-center" style={{ backgroundColor: "#F0EBE0" }}>
+    <div className="p-5 text-center" style={{ backgroundColor: "#E6E1D6" }}>
       <p
         className="text-3xl font-bold mb-1"
-        style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#0B5563" }}
       >
         {value}
-        {suffix && <span className="text-sm ml-1" style={{ color: "#5F584F" }}>{suffix}</span>}
+        {suffix && <span className="text-sm ml-1" style={{ color: "#6B5C50" }}>{suffix}</span>}
       </p>
       <p
         className="text-xs"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
       >
         {label}
       </p>
@@ -456,16 +456,16 @@ function PlacementRow({
     <div
       className="flex items-start gap-4 p-4"
       style={{
-        backgroundColor: highlight ? "#F0EBE0" : "transparent",
-        border: `1px solid ${highlight ? "#3B5A6B" : "#D8D3C9"}`,
+        backgroundColor: highlight ? "#E6E1D6" : "transparent",
+        border: `1px solid ${highlight ? "#0B5563" : "#D4CFC1"}`,
       }}
     >
       <span
         className="w-10 h-10 flex items-center justify-center text-base font-bold shrink-0"
         style={{
           fontFamily: "var(--font-inter)",
-          backgroundColor: highlight ? "#3B5A6B" : "#F0EBE0",
-          color: highlight ? "#FBF8F1" : "#3B5A6B",
+          backgroundColor: highlight ? "#0B5563" : "#E6E1D6",
+          color: highlight ? "#F0EEE9" : "#0B5563",
         }}
       >
         {code}
@@ -473,13 +473,13 @@ function PlacementRow({
       <div className="flex-1">
         <p
           className="text-sm font-semibold mb-1"
-          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}
+          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}
         >
           {name}
         </p>
         <p
           className="text-xs leading-relaxed"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
         >
           {desc}
         </p>
@@ -506,15 +506,15 @@ function PriceRow({
   return (
     <tr
       style={{
-        borderBottom: "1px solid #D8D3C9",
-        backgroundColor: highlight ? "#F0EBE0" : "transparent",
+        borderBottom: "1px solid #D4CFC1",
+        backgroundColor: highlight ? "#E6E1D6" : "transparent",
       }}
     >
       <td
         className="py-3 px-3 text-xs"
         style={{
           fontFamily: "var(--font-inter)",
-          color: highlight ? "#3B5A6B" : "#5F584F",
+          color: highlight ? "#0B5563" : "#6B5C50",
           fontWeight: highlight ? 700 : 400,
         }}
       >
@@ -524,7 +524,7 @@ function PriceRow({
         className="py-3 px-3 text-sm"
         style={{
           fontFamily: "var(--font-noto-serif-kr)",
-          color: "#1A1A1A",
+          color: "#4A3B33",
           fontWeight: highlight ? 600 : 500,
         }}
       >
@@ -538,7 +538,7 @@ function PriceRow({
       </td>
       <td
         className="py-3 px-3 text-xs whitespace-nowrap font-semibold"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}
       >
         {start}
       </td>
@@ -554,22 +554,22 @@ function PriceRow({
 
 function Step({ no, title, desc }: { no: number; title: string; desc: string }) {
   return (
-    <div className="p-4" style={{ backgroundColor: "#F0EBE0" }}>
+    <div className="p-4" style={{ backgroundColor: "#E6E1D6" }}>
       <p
         className="text-2xl font-bold mb-2"
-        style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#0B5563" }}
       >
         {String(no).padStart(2, "0")}
       </p>
       <p
         className="text-sm font-semibold mb-1"
-        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}
+        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}
       >
         {title}
       </p>
       <p
         className="text-xs leading-relaxed"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
       >
         {desc}
       </p>

@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/client";
  * - 5초 디바운스: presence sync 이벤트가 빈번하므로 setState를 묶어서 호출
  * - 운영자 본인 제외 토글: metadata.is_admin === true 인 항목 제외 가능
  * - 사장님 보호: 0명이어도 자연스럽게 노출 (가짜 숫자 금지)
- * - Mineral Stage 팔레트 (#3B5A6B / #F0EBE0) 준수
+ * - Mineral Stage 팔레트 (#0B5563 / #E6E1D6) 준수
  */
 
 const PRESENCE_CHANNEL = "syus-presence";
@@ -113,19 +113,19 @@ export default function LivePresenceCard() {
       <div className="flex items-baseline justify-between flex-wrap gap-3 mb-4">
         <p
           className="text-xs tracking-[0.3em] uppercase"
-          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
         >
           지금 보고 있는 사람
         </p>
         <label
           className="flex items-center gap-2 text-xs cursor-pointer select-none"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
         >
           <input
             type="checkbox"
             checked={excludeAdmin}
             onChange={(e) => setExcludeAdmin(e.target.checked)}
-            style={{ accentColor: "#3B5A6B" }}
+            style={{ accentColor: "#0B5563" }}
           />
           운영자 본인 제외 ({adminCount}명)
         </label>
@@ -133,14 +133,14 @@ export default function LivePresenceCard() {
 
       <div
         className="p-6 flex items-center justify-between gap-4 flex-wrap"
-        style={{ backgroundColor: "#3B5A6B", color: "#FBF8F1" }}
+        style={{ backgroundColor: "#0B5563", color: "#F0EEE9" }}
       >
         <div className="flex items-baseline gap-3">
           {/* 라이브 표시 점 — 연결 시 깜빡임 */}
           <span
             className="inline-block w-2 h-2 rounded-full"
             style={{
-              backgroundColor: connected ? "#C9E265" : "#5F584F",
+              backgroundColor: connected ? "#C9E265" : "#6B5C50",
               boxShadow: connected ? "0 0 0 4px rgba(201,226,101,0.18)" : "none",
               animation: connected ? "syus-pulse 1.6s ease-in-out infinite" : "none",
             }}

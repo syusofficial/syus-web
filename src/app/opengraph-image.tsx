@@ -16,14 +16,14 @@ export default async function OGImage() {
           alignItems: "center",
           justifyContent: "center",
           background:
-            "radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%)",
+            "radial-gradient(ellipse at top left, #2C7384 0%, #0B5563 35%, #4A3B33 100%)",
           padding: "80px",
         }}
       >
         <div
           style={{
             fontSize: 22,
-            color: "#C8D96F",
+            color: "#C99FB1",
             letterSpacing: "0.35em",
             textTransform: "uppercase",
             fontWeight: 600,
@@ -36,7 +36,7 @@ export default async function OGImage() {
           style={{
             fontSize: 110,
             fontWeight: 900,
-            color: "#FBF8F1",
+            color: "#F0EEE9",
             letterSpacing: "-0.02em",
             lineHeight: 1.05,
             textAlign: "center",
@@ -46,13 +46,13 @@ export default async function OGImage() {
         >
           <span>오늘, 어느 대학의</span>
           <span>
-            <span style={{ color: "#C8D96F" }}>막</span>이 오른다.
+            <span style={{ color: "#C99FB1" }}>막</span>이 오른다.
           </span>
         </div>
         <div
           style={{
             fontSize: 26,
-            color: "#FBF8F1",
+            color: "#F0EEE9",
             opacity: 0.75,
             marginTop: 56,
             letterSpacing: "0.05em",
@@ -64,7 +64,7 @@ export default async function OGImage() {
         <div
           style={{
             fontSize: 18,
-            color: "#FBF8F1",
+            color: "#F0EEE9",
             opacity: 0.5,
             marginTop: 18,
             letterSpacing: "0.25em",

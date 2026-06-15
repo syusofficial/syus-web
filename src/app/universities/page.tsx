@@ -112,25 +112,25 @@ export default async function UniversitiesPage() {
   const activeRegions = [...byRegion.entries()].filter(([, list]) => list.length > 0);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--color-paper, #FBF8F1)" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--color-paper, #F0EEE9)" }}>
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         {/* 헤더 */}
         <header className="mb-10 sm:mb-14">
           <p
             className="text-xs sm:text-sm tracking-widest mb-3"
-            style={{ color: "var(--color-stone, #5F584F)", letterSpacing: "0.2em" }}
+            style={{ color: "var(--color-stone, #6B5C50)", letterSpacing: "0.2em" }}
           >
             UNIVERSITIES
           </p>
           <h1
             className="text-2xl sm:text-4xl font-light mb-4"
-            style={{ color: "var(--color-charcoal, #202833)" }}
+            style={{ color: "var(--color-charcoal, #4A3B33)" }}
           >
             학과 디렉토리
           </h1>
           <p
             className="text-sm sm:text-base leading-relaxed max-w-2xl"
-            style={{ color: "var(--color-stone, #5F584F)", fontWeight: 300 }}
+            style={{ color: "var(--color-stone, #6B5C50)", fontWeight: 300 }}
           >
             무대올림에 공연을 올린 적이 있는 학과만 모아 두었습니다.
             현재 {totalDepts.toLocaleString("ko-KR")}개 학과가 자리하고 있고,
@@ -142,7 +142,7 @@ export default async function UniversitiesPage() {
         {totalDepts === 0 ? (
           <div
             className="py-16 text-center"
-            style={{ color: "var(--color-stone, #5F584F)" }}
+            style={{ color: "var(--color-stone, #6B5C50)" }}
           >
             <p className="text-sm font-light">
               아직 표시할 학과가 없습니다. 첫 공연이 올라가면 이 자리에 학과가 새겨집니다.
@@ -151,8 +151,8 @@ export default async function UniversitiesPage() {
               href="/performer/apply"
               className="inline-block mt-6 px-6 py-3 text-sm transition-opacity hover:opacity-80"
               style={{
-                backgroundColor: "var(--color-accent-yellow, #C8D96F)",
-                color: "var(--color-charcoal, #202833)",
+                backgroundColor: "var(--color-accent-yellow, #5C2A42)",
+                color: "var(--color-charcoal, #4A3B33)",
                 letterSpacing: "0.05em",
               }}
             >
@@ -163,16 +163,16 @@ export default async function UniversitiesPage() {
           <div className="space-y-12 sm:space-y-16">
             {activeRegions.map(([region, list]) => (
               <section key={region}>
-                <div className="flex items-baseline justify-between mb-5 pb-3" style={{ borderBottom: "1px solid var(--color-mist, #D8D3C9)" }}>
+                <div className="flex items-baseline justify-between mb-5 pb-3" style={{ borderBottom: "1px solid var(--color-mist, #D4CFC1)" }}>
                   <h2
                     className="text-lg sm:text-xl font-normal"
-                    style={{ color: "var(--color-blue, #3B5A6B)" }}
+                    style={{ color: "var(--color-blue, #0B5563)" }}
                   >
                     {region}
                   </h2>
                   <span
                     className="text-xs"
-                    style={{ color: "var(--color-stone, #5F584F)" }}
+                    style={{ color: "var(--color-stone, #6B5C50)" }}
                   >
                     {list.length}개 학과 · 공연 {list.reduce((sum, e) => sum + e.count, 0)}건
                   </span>
@@ -188,22 +188,22 @@ export default async function UniversitiesPage() {
                           href={href}
                           className="block p-4 sm:p-5 h-full transition-colors"
                           style={{
-                            backgroundColor: "var(--color-paper-dark, #F0EBE0)",
-                            border: "1px solid var(--color-mist, #D8D3C9)",
+                            backgroundColor: "var(--color-paper-dark, #E6E1D6)",
+                            border: "1px solid var(--color-mist, #D4CFC1)",
                           }}
                         >
                           <div className="flex items-start justify-between gap-2 mb-2">
                             <span
                               className="text-sm sm:text-base font-normal leading-snug"
-                              style={{ color: "var(--color-charcoal, #202833)" }}
+                              style={{ color: "var(--color-charcoal, #4A3B33)" }}
                             >
                               {entry.name}
                             </span>
                             <span
                               className="shrink-0 text-xs px-2 py-0.5"
                               style={{
-                                backgroundColor: "var(--color-blue, #3B5A6B)",
-                                color: "var(--color-paper, #FBF8F1)",
+                                backgroundColor: "var(--color-blue, #0B5563)",
+                                color: "var(--color-paper, #F0EEE9)",
                               }}
                             >
                               {entry.count}
@@ -212,10 +212,10 @@ export default async function UniversitiesPage() {
                           {entry.latestTitle ? (
                             <p
                               className="text-xs leading-relaxed line-clamp-2"
-                              style={{ color: "var(--color-stone, #5F584F)" }}
+                              style={{ color: "var(--color-stone, #6B5C50)" }}
                             >
                               최근 ·{" "}
-                              <span style={{ color: "var(--color-charcoal, #202833)" }}>
+                              <span style={{ color: "var(--color-charcoal, #4A3B33)" }}>
                                 {entry.latestTitle}
                               </span>
                               {latestYmd ? (
@@ -237,8 +237,8 @@ export default async function UniversitiesPage() {
         <div
           className="mt-16 pt-8 text-xs leading-relaxed"
           style={{
-            borderTop: "1px solid var(--color-mist, #D8D3C9)",
-            color: "var(--color-stone, #5F584F)",
+            borderTop: "1px solid var(--color-mist, #D4CFC1)",
+            color: "var(--color-stone, #6B5C50)",
           }}
         >
           <p className="mb-2">
@@ -246,7 +246,7 @@ export default async function UniversitiesPage() {
           </p>
           <p>
             아직 보이지 않는 학과의 학생·운영자께서는{" "}
-            <Link href="/performer/apply" style={{ color: "var(--color-blue, #3B5A6B)", textDecoration: "underline" }}>
+            <Link href="/performer/apply" style={{ color: "var(--color-blue, #0B5563)", textDecoration: "underline" }}>
               공연자 신청
             </Link>
             을 해주시면, 첫 공연 승인과 함께 자리가 새겨집니다.

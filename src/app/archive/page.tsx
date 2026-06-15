@@ -124,7 +124,7 @@ export default async function ArchivePage({
   return (
     <div
       className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-16"
-      style={{ backgroundColor: "#FBF8F1" }}
+      style={{ backgroundColor: "#F0EEE9" }}
     >
       <script
         type="application/ld+json"
@@ -136,25 +136,25 @@ export default async function ArchivePage({
           <div>
             <p
               className="text-xs tracking-[0.3em] uppercase mb-3"
-              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
             >
               Archive
             </p>
             <h1
               className="text-4xl md:text-5xl font-bold mb-3"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
             >
               지난 공연
             </h1>
             <p
               className="text-sm leading-relaxed mb-1"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
             >
               지나갔지만 사라지지 않은 무대들.
             </p>
             <p
               className="text-sm"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
             >
               {totalCount}개의 기록
             </p>
@@ -164,8 +164,8 @@ export default async function ArchivePage({
             className="px-4 py-2 text-xs tracking-wide transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              color: "#3B5A6B",
-              border: "1px solid #D8D3C9",
+              color: "#0B5563",
+              border: "1px solid #D4CFC1",
             }}
           >
             진행 중 공연으로
@@ -180,7 +180,7 @@ export default async function ArchivePage({
           <div className="mb-6 flex flex-wrap gap-2 items-center">
             <span
               className="text-xs tracking-wider uppercase mr-2"
-              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
             >
               연도
             </span>
@@ -200,9 +200,9 @@ export default async function ArchivePage({
                   className="px-3 py-1 text-xs"
                   style={{
                     fontFamily: "var(--font-inter)",
-                    backgroundColor: isActive ? "#3B5A6B" : "transparent",
-                    color: isActive ? "#FBF8F1" : "#5F584F",
-                    border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
+                    backgroundColor: isActive ? "#0B5563" : "transparent",
+                    color: isActive ? "#F0EEE9" : "#6B5C50",
+                    border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                   }}
                 >
                   {y ?? "전체"}
@@ -230,9 +230,9 @@ export default async function ArchivePage({
                 className="px-3 py-1.5 text-xs tracking-wide transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#3B5A6B" : "transparent",
-                  color: isActive ? "#FBF8F1" : "#3B5A6B",
-                  border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
+                  backgroundColor: isActive ? "#0B5563" : "transparent",
+                  color: isActive ? "#F0EEE9" : "#0B5563",
+                  border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                 }}
               >
                 {r}
@@ -245,7 +245,7 @@ export default async function ArchivePage({
         <div className="mb-6 flex flex-wrap gap-2 items-center">
           <span
             className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
           >
             장르
           </span>
@@ -265,9 +265,9 @@ export default async function ArchivePage({
                 className="px-3 py-1 text-xs"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#3B5A6B" : "transparent",
-                  color: isActive ? "#FBF8F1" : "#5F584F",
-                  border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
+                  backgroundColor: isActive ? "#0B5563" : "transparent",
+                  color: isActive ? "#F0EEE9" : "#6B5C50",
+                  border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                 }}
               >
                 {g ?? "전체"}
@@ -279,11 +279,11 @@ export default async function ArchivePage({
         {/* 공연 구분 필터 */}
         <div
           className="mb-12 pb-6 flex flex-wrap gap-2 items-center"
-          style={{ borderBottom: "1px solid #D8D3C9" }}
+          style={{ borderBottom: "1px solid #D4CFC1" }}
         >
           <span
             className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
           >
             구분
           </span>
@@ -303,9 +303,9 @@ export default async function ArchivePage({
                 className="px-3 py-1 text-xs"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#3B5A6B" : "transparent",
-                  color: isActive ? "#FBF8F1" : "#5F584F",
-                  border: `1px solid ${isActive ? "#3B5A6B" : "#D8D3C9"}`,
+                  backgroundColor: isActive ? "#0B5563" : "transparent",
+                  color: isActive ? "#F0EEE9" : "#6B5C50",
+                  border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                 }}
               >
                 {c ?? "전체"}
@@ -317,10 +317,10 @@ export default async function ArchivePage({
         {/* 기록 그리드 — 4열로 좀 더 빽빽하게 (갤러리 느낌) */}
         {list.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-sm mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
+            <p className="text-sm mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
               조건에 맞는 기록이 없습니다.
             </p>
-            <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
+            <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
               필터를 바꾸어 다시 살펴보세요.
             </p>
           </div>
@@ -339,17 +339,17 @@ export default async function ArchivePage({
                   <Link
                     href={buildPageUrl(currentPage - 1)}
                     className="px-3 py-2 text-xs"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B", border: "1px solid #D8D3C9" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
                   >
                     ← 이전
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs" style={{ color: "#D8D3C9", border: "1px solid #D8D3C9" }}>← 이전</span>
+                  <span className="px-3 py-2 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>← 이전</span>
                 )}
 
                 {generatePageNumbers(currentPage, totalPages).map((p, i) =>
                   p === "..." ? (
-                    <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#5F584F" }}>···</span>
+                    <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#6B5C50" }}>···</span>
                   ) : (
                     <Link
                       key={p}
@@ -357,9 +357,9 @@ export default async function ArchivePage({
                       className="px-3 py-2 text-xs"
                       style={{
                         fontFamily: "var(--font-inter)",
-                        backgroundColor: p === currentPage ? "#3B5A6B" : "transparent",
-                        color: p === currentPage ? "#FBF8F1" : "#3B5A6B",
-                        border: `1px solid ${p === currentPage ? "#3B5A6B" : "#D8D3C9"}`,
+                        backgroundColor: p === currentPage ? "#0B5563" : "transparent",
+                        color: p === currentPage ? "#F0EEE9" : "#0B5563",
+                        border: `1px solid ${p === currentPage ? "#0B5563" : "#D4CFC1"}`,
                         minWidth: "36px",
                         textAlign: "center",
                       }}
@@ -373,12 +373,12 @@ export default async function ArchivePage({
                   <Link
                     href={buildPageUrl(currentPage + 1)}
                     className="px-3 py-2 text-xs"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3B5A6B", border: "1px solid #D8D3C9" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
                   >
                     다음 →
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs" style={{ color: "#D8D3C9", border: "1px solid #D8D3C9" }}>다음 →</span>
+                  <span className="px-3 py-2 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>다음 →</span>
                 )}
               </div>
             )}

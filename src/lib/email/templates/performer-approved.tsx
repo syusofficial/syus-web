@@ -16,7 +16,7 @@ type Props = {
 const FONT_FAMILY = "'Spoqa Han Sans Neo', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif";
 
 const BODY = {
-  backgroundColor: "#FBF8F1",
+  backgroundColor: "#F0EEE9",
   fontFamily: FONT_FAMILY,
   margin: 0,
   padding: "32px 0",
@@ -34,7 +34,7 @@ const GREETING = {
   fontFamily: FONT_FAMILY,
   fontSize: "16px",
   lineHeight: "1.8",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   margin: "0 0 24px",
 } as const;
 
@@ -42,7 +42,7 @@ const PARAGRAPH = {
   fontFamily: FONT_FAMILY,
   fontSize: "15px",
   lineHeight: "1.9",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   margin: "0 0 16px",
 } as const;
 
@@ -67,7 +67,7 @@ const CTA_WRAP = {
 
 const CTA_BUTTON = {
   backgroundColor: "#D6E58F",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   fontFamily: FONT_FAMILY,
   fontSize: "14px",
   fontWeight: 600,
@@ -80,7 +80,7 @@ const CTA_BUTTON = {
 const SIGNOFF = {
   ...PARAGRAPH,
   marginTop: "32px",
-  color: "#5F584F",
+  color: "#6B5C50",
 } as const;
 
 const SIGNATURE = {

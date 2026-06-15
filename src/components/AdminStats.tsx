@@ -277,13 +277,13 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
           <div className="flex items-center gap-2">
             <label
               className="flex items-center gap-2 text-xs cursor-pointer select-none"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
             >
               <input
                 type="checkbox"
                 checked={includeAdminTraffic}
                 onChange={(e) => setIncludeAdminTraffic(e.target.checked)}
-                style={{ accentColor: "#3B5A6B" }}
+                style={{ accentColor: "#0B5563" }}
               />
               운영자 본인 포함 ({adminTrafficCount}회)
             </label>
@@ -311,7 +311,7 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
               <div className="mt-6">
                 <p
                   className="text-xs tracking-[0.3em] uppercase mb-3"
-                  style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+                  style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
                 >
                   인기 페이지 TOP 5 (90일)
                 </p>
@@ -328,7 +328,7 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
 
             <p
               className="text-xs mt-4"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
             >
               ※ 자체 로그 기반. 봇 트래픽은 user-agent로 거른 추정치(정확도 80% 수준)입니다.
               세션은 30분 단위 새 세션으로 카운트합니다. 정밀 분석은 Google Analytics 확인.
@@ -352,7 +352,7 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
       <section>
         <SectionLabel>회원 분포</SectionLabel>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <RoleCard label="일반 회원" value={stats.roleCount.member} total={stats.totalMembers} bg="#F0EBE0" color="#3B5A6B" />
+          <RoleCard label="일반 회원" value={stats.roleCount.member} total={stats.totalMembers} bg="#E6E1D6" color="#0B5563" />
           <RoleCard label="공연자" value={stats.roleCount.performer} total={stats.totalMembers} bg="#D4E4ED" color="#2A5E7A" />
           <RoleCard label="관리자" value={stats.roleCount.admin} total={stats.totalMembers} bg="#EDD4E4" color="#7A2A5E" />
         </div>
@@ -405,25 +405,25 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
               <li
                 key={x.show.id}
                 className="flex items-center justify-between p-4"
-                style={{ backgroundColor: "#F0EBE0" }}
+                style={{ backgroundColor: "#E6E1D6" }}
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <span
                     className="text-lg font-bold w-6 text-center shrink-0"
-                    style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+                    style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
                   >
                     {i + 1}
                   </span>
                   <div className="flex-1 min-w-0">
                     <p
                       className="font-semibold truncate"
-                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}
+                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}
                     >
                       {x.show.title}
                     </p>
                     <p
                       className="text-xs truncate"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
                     >
                       {[x.show.performer_name, x.show.region, x.show.venue].filter(Boolean).join(" · ")}
                     </p>
@@ -433,8 +433,8 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
                   className="px-3 py-1 text-xs shrink-0 ml-3"
                   style={{
                     fontFamily: "var(--font-inter)",
-                    backgroundColor: "#3B5A6B",
-                    color: "#FBF8F1",
+                    backgroundColor: "#0B5563",
+                    color: "#F0EEE9",
                   }}
                 >
                   ♥ {x.likes}
@@ -450,8 +450,8 @@ export default function AdminStats({ shows, members, likes, pageViews = [] }: Ad
         className="text-xs pt-6"
         style={{
           fontFamily: "var(--font-noto-sans-kr)",
-          color: "#5F584F",
-          borderTop: "1px solid #D8D3C9",
+          color: "#6B5C50",
+          borderTop: "1px solid #D4CFC1",
         }}
       >
         ※ 페이지뷰 / 세션 / 트래픽 데이터는 Google Analytics에서 별도 확인. 통계는 60초 단위로 캐시됩니다.
@@ -468,7 +468,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <p
       className="text-xs tracking-[0.3em] uppercase mb-4"
-      style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+      style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
     >
       {children}
     </p>
@@ -479,7 +479,7 @@ function EmptyText({ children }: { children: React.ReactNode }) {
   return (
     <p
       className="text-sm py-8 text-center"
-      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", backgroundColor: "#F0EBE0" }}
+      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", backgroundColor: "#E6E1D6" }}
     >
       {children}
     </p>
@@ -501,8 +501,8 @@ function SummaryCard({
     <div
       className="p-6 text-center"
       style={{
-        backgroundColor: accent ? "#3B5A6B" : "#F0EBE0",
-        color: accent ? "#FBF8F1" : "#1A1A1A",
+        backgroundColor: accent ? "#0B5563" : "#E6E1D6",
+        color: accent ? "#F0EEE9" : "#4A3B33",
       }}
     >
       <p
@@ -528,7 +528,7 @@ function SummaryCard({
 
 /**
  * 일별 방문 추이 (최근 14일) — 단순 바 차트
- * Mineral Stage 팔레트 준수 (메인 바 #3B5A6B, 배경 #F0EBE0)
+ * Mineral Stage 팔레트 준수 (메인 바 #0B5563, 배경 #E6E1D6)
  */
 function DailyTrafficChart({
   daily,
@@ -537,10 +537,10 @@ function DailyTrafficChart({
 }) {
   const max = Math.max(...daily.map((d) => d.count), 1);
   return (
-    <div className="p-5" style={{ backgroundColor: "#F0EBE0" }}>
+    <div className="p-5" style={{ backgroundColor: "#E6E1D6" }}>
       <p
         className="text-xs tracking-[0.3em] uppercase mb-3"
-        style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
       >
         최근 14일 일별 방문
       </p>
@@ -555,7 +555,7 @@ function DailyTrafficChart({
                   className="w-full relative"
                   style={{
                     height: `${height}%`,
-                    backgroundColor: isToday ? "#3B5A6B" : "#5F584F",
+                    backgroundColor: isToday ? "#0B5563" : "#6B5C50",
                     minHeight: d.count > 0 ? "3px" : "0",
                     opacity: isToday ? 1 : 0.55,
                   }}
@@ -564,7 +564,7 @@ function DailyTrafficChart({
                   {d.count > 0 && (
                     <span
                       className="absolute -top-4 left-1/2 -translate-x-1/2 text-[10px]"
-                      style={{ fontFamily: "var(--font-inter)", color: "#1A1A1A" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#4A3B33" }}
                     >
                       {d.count}
                     </span>
@@ -575,7 +575,7 @@ function DailyTrafficChart({
                 className="text-[10px]"
                 style={{
                   fontFamily: "var(--font-inter)",
-                  color: isToday ? "#3B5A6B" : "#5F584F",
+                  color: isToday ? "#0B5563" : "#6B5C50",
                   fontWeight: isToday ? 600 : 300,
                 }}
               >
@@ -640,19 +640,19 @@ function BarList({ items }: { items: [string, number][] }) {
           <div key={label} className="flex items-center gap-3">
             <div
               className="w-32 text-sm shrink-0 truncate"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
               title={label}
             >
               {label}
             </div>
-            <div className="flex-1 h-7 relative" style={{ backgroundColor: "#F0EBE0" }}>
+            <div className="flex-1 h-7 relative" style={{ backgroundColor: "#E6E1D6" }}>
               <div
                 className="h-full transition-all"
-                style={{ width: `${percent}%`, backgroundColor: "#3B5A6B" }}
+                style={{ width: `${percent}%`, backgroundColor: "#0B5563" }}
               />
               <span
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
-                style={{ fontFamily: "var(--font-inter)", color: percent > 50 ? "#FBF8F1" : "#1A1A1A" }}
+                style={{ fontFamily: "var(--font-inter)", color: percent > 50 ? "#F0EEE9" : "#4A3B33" }}
               >
                 {value}
               </span>
@@ -675,7 +675,7 @@ function MonthlyChart({
   );
 
   return (
-    <div className="p-6" style={{ backgroundColor: "#F0EBE0" }}>
+    <div className="p-6" style={{ backgroundColor: "#E6E1D6" }}>
       <div className="flex items-end gap-3 h-40 mb-3">
         {months.map((m) => {
           const signupHeight = (m.signups / max) * 100;
@@ -687,7 +687,7 @@ function MonthlyChart({
                   className="flex-1 transition-all relative group"
                   style={{
                     height: `${signupHeight}%`,
-                    backgroundColor: "#3B5A6B",
+                    backgroundColor: "#0B5563",
                     minHeight: m.signups > 0 ? "4px" : "0",
                   }}
                   title={`신규 가입: ${m.signups}`}
@@ -695,7 +695,7 @@ function MonthlyChart({
                   {m.signups > 0 && (
                     <span
                       className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs"
-                      style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#0B5563" }}
                     >
                       {m.signups}
                     </span>
@@ -705,7 +705,7 @@ function MonthlyChart({
                   className="flex-1 transition-all relative group"
                   style={{
                     height: `${showHeight}%`,
-                    backgroundColor: "#5F584F",
+                    backgroundColor: "#6B5C50",
                     minHeight: m.shows > 0 ? "4px" : "0",
                   }}
                   title={`공연 등록: ${m.shows}`}
@@ -713,7 +713,7 @@ function MonthlyChart({
                   {m.shows > 0 && (
                     <span
                       className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs"
-                      style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+                      style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
                     >
                       {m.shows}
                     </span>
@@ -722,7 +722,7 @@ function MonthlyChart({
               </div>
               <span
                 className="text-xs"
-                style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
               >
                 {m.label}
               </span>
@@ -732,12 +732,12 @@ function MonthlyChart({
       </div>
       <div className="flex gap-4 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#3B5A6B" }} />
-          <span style={{ color: "#1A1A1A" }}>신규 가입</span>
+          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#0B5563" }} />
+          <span style={{ color: "#4A3B33" }}>신규 가입</span>
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#5F584F" }} />
-          <span style={{ color: "#1A1A1A" }}>공연 등록</span>
+          <span className="w-3 h-3 inline-block" style={{ backgroundColor: "#6B5C50" }} />
+          <span style={{ color: "#4A3B33" }}>공연 등록</span>
         </span>
       </div>
     </div>
@@ -761,21 +761,21 @@ function ReferrerBreakdown({
 
   // 채널별 컬러 — Mineral Stage 톤 + 약한 변주
   const COLOR: Record<string, string> = {
-    "인스타그램": "#3B5A6B",
+    "인스타그램": "#0B5563",
     "네이버":     "#2A7A6A",
     "카카오":     "#7A6A2A",
     "구글":       "#5A4A7A",
     "다음":       "#7A4A2A",
-    "직접 진입":  "#5F584F",
+    "직접 진입":  "#6B5C50",
     "기타":       "#A0978A",
   };
 
   return (
-    <div className="p-5" style={{ backgroundColor: "#F0EBE0" }}>
+    <div className="p-5" style={{ backgroundColor: "#E6E1D6" }}>
       <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
         <p
           className="text-xs tracking-[0.3em] uppercase"
-          style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
         >
           유입 출처 TOP 5
         </p>
@@ -794,9 +794,9 @@ function ReferrerBreakdown({
                 className="px-3 py-1 text-xs transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: active ? "#3B5A6B" : "transparent",
-                  color: active ? "#FBF8F1" : "#5F584F",
-                  border: `1px solid ${active ? "#3B5A6B" : "#D8D3C9"}`,
+                  backgroundColor: active ? "#0B5563" : "transparent",
+                  color: active ? "#F0EEE9" : "#6B5C50",
+                  border: `1px solid ${active ? "#0B5563" : "#D4CFC1"}`,
                 }}
               >
                 {opt.label}
@@ -809,7 +809,7 @@ function ReferrerBreakdown({
       {items.length === 0 ? (
         <p
           className="text-xs py-6 text-center"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
         >
           이 기간에는 유입 데이터가 없습니다.
         </p>
@@ -822,7 +822,7 @@ function ReferrerBreakdown({
               <li key={label} className="flex items-center gap-3">
                 <div
                   className="w-20 text-xs shrink-0"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
                 >
                   {label}
                 </div>
@@ -838,7 +838,7 @@ function ReferrerBreakdown({
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
                     style={{
                       fontFamily: "var(--font-inter)",
-                      color: pct > 55 ? "#FBF8F1" : "#1A1A1A",
+                      color: pct > 55 ? "#F0EEE9" : "#4A3B33",
                     }}
                   >
                     {pct.toFixed(0)}% · {count}
@@ -852,7 +852,7 @@ function ReferrerBreakdown({
 
       <p
         className="text-[10px] mt-3"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
       >
         ※ 직접 진입 = 즐겨찾기·URL 직접 입력·인스타 앱 외 referrer 미제공. 사이트 내부 이동은 제외 처리.
         {top.length > 0 && ` 최근 30일 누적 1위: ${top[0][0]}.`}

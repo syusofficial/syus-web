@@ -36,15 +36,15 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
         className="p-5 text-sm"
         style={{
           fontFamily: "var(--font-noto-sans-kr)",
-          color: "#5F584F",
-          backgroundColor: "#F0EBE0",
+          color: "#6B5C50",
+          backgroundColor: "#E6E1D6",
         }}
       >
         후기를 작성하시려면{" "}
         <Link
           href="/auth/login"
           className="underline"
-          style={{ color: "#3B5A6B", fontWeight: 600 }}
+          style={{ color: "#0B5563", fontWeight: 600 }}
         >
           로그인
         </Link>
@@ -72,9 +72,9 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
         className="w-full p-3 text-sm leading-relaxed transition-colors"
         style={{
           fontFamily: "var(--font-noto-sans-kr)",
-          color: "#202833",
-          backgroundColor: "#FBF8F1",
-          border: "1px solid #D8D3C9",
+          color: "#4A3B33",
+          backgroundColor: "#F0EEE9",
+          border: "1px solid #D4CFC1",
           resize: "vertical",
           minHeight: "120px",
         }}
@@ -82,7 +82,7 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
       <div className="flex items-center justify-between">
         <p
           className="text-[0.7rem]"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
         >
           {body.length} / 1000자 · 한 공연당 한 번 작성, 다시 제출하면 갱신됩니다.
         </p>
@@ -92,8 +92,8 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
           className="px-5 py-2 text-xs tracking-wider transition-colors"
           style={{
             fontFamily: "var(--font-noto-sans-kr)",
-            backgroundColor: isPending || body.trim().length < 10 ? "#D8D3C9" : "#C8D96F",
-            color: "#202833",
+            backgroundColor: isPending || body.trim().length < 10 ? "#D4CFC1" : "#5C2A42",
+            color: "#4A3B33",
             fontWeight: 600,
             cursor: isPending ? "wait" : "pointer",
           }}
@@ -106,8 +106,8 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
           className="px-4 py-3 text-xs leading-relaxed"
           style={{
             fontFamily: "var(--font-noto-sans-kr)",
-            backgroundColor: feedback.ok ? "#F0EBE0" : "#FDECEC",
-            color: feedback.ok ? "#202833" : "#D54545",
+            backgroundColor: feedback.ok ? "#E6E1D6" : "#FDECEC",
+            color: feedback.ok ? "#4A3B33" : "#D54545",
             border: `1px solid ${feedback.ok ? "#7BA86F" : "#D54545"}`,
           }}
         >

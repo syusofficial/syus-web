@@ -32,15 +32,15 @@ export default function ForgotPasswordPage() {
 
   if (done) {
     return (
-      <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
+      <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F0EEE9" }}>
         <div className="w-full max-w-sm text-center space-y-6">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
+          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
             Email Sent
           </p>
-          <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+          <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
             이메일을 확인해주세요
           </h2>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
             <strong>{email}</strong>으로
             <br />
             비밀번호 재설정 링크를 보냈습니다.
@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
           <Link
             href="/auth/login"
             className="inline-block px-8 py-3 text-sm tracking-wider"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#3B5A6B", color: "#FBF8F1" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#0B5563", color: "#F0EEE9" }}
           >
             로그인 페이지로
           </Link>
@@ -61,22 +61,22 @@ export default function ForgotPasswordPage() {
 
   const inputStyle: React.CSSProperties = {
     fontFamily: "var(--font-noto-sans-kr)",
-    backgroundColor: "#F0EBE0",
-    color: "#1A1A1A",
+    backgroundColor: "#E6E1D6",
+    color: "#4A3B33",
     border: "1px solid transparent",
   };
 
   return (
-    <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F0EEE9" }}>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
             Password Reset
           </p>
-          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
             비밀번호 찾기
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
             가입 시 사용한 이메일을 입력하시면
             <br />
             재설정 링크를 보내드립니다.
@@ -84,19 +84,19 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* 소셜 로그인 가입자 안내 */}
-        <div className="mb-6 p-4 text-xs leading-relaxed" style={{ backgroundColor: "#F0EBE0", color: "#3B5A6B", fontFamily: "var(--font-noto-sans-kr)" }}>
+        <div className="mb-6 p-4 text-xs leading-relaxed" style={{ backgroundColor: "#E6E1D6", color: "#0B5563", fontFamily: "var(--font-noto-sans-kr)" }}>
           <strong>Google · 카카오로 가입하셨다면?</strong>
           <br />
           비밀번호 재설정이 아닌 해당 서비스에서 직접 로그인해주세요.
           <br />
-          <Link href="/auth/login" className="underline" style={{ color: "#3B5A6B" }}>
+          <Link href="/auth/login" className="underline" style={{ color: "#0B5563" }}>
             로그인 페이지로 돌아가기 →
           </Link>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
               이메일
             </label>
             <input
@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
               required
               className="w-full px-4 py-3 text-sm outline-none transition-colors"
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5A6B")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
@@ -123,8 +123,8 @@ export default function ForgotPasswordPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#5F584F" : "#3B5A6B",
-              color: "#FBF8F1",
+              backgroundColor: loading ? "#6B5C50" : "#0B5563",
+              color: "#F0EEE9",
               cursor: loading ? "not-allowed" : "pointer",
             }}
           >
@@ -133,9 +133,9 @@ export default function ForgotPasswordPage() {
         </form>
 
         <div className="mt-8 flex items-center justify-center gap-4 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
-          <Link href="/auth/login" style={{ color: "#3B5A6B" }}>로그인</Link>
-          <span style={{ color: "#D8D3C9" }}>|</span>
-          <Link href="/auth/find-id" style={{ color: "#3B5A6B" }}>아이디 찾기</Link>
+          <Link href="/auth/login" style={{ color: "#0B5563" }}>로그인</Link>
+          <span style={{ color: "#D4CFC1" }}>|</span>
+          <Link href="/auth/find-id" style={{ color: "#0B5563" }}>아이디 찾기</Link>
         </div>
       </div>
     </div>

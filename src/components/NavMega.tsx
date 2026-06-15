@@ -9,7 +9,7 @@
  *  - hover 시 한 챕터에서 여러 페이지를 한눈에 — 메가 메뉴 슬라이드 다운
  *
  * 잠금:
- *  - Mineral Stage 팔레트(#3B5A6B 메인 / #FBF8F1 배경 / #C8D96F CTA / #202833 본문 / #5F584F 보조)
+ *  - Mineral Stage 팔레트(#0B5563 메인 / #F0EEE9 배경 / #5C2A42 CTA / #4A3B33 본문 / #6B5C50 보조)
  *  - 금지어(비영리·비상업적·(주)·주식회사·대표이사·공익 플랫폼·무료 서비스) 포함하지 않음
  *  - 폰트 토큰(--font-noto-sans-kr / --font-noto-serif-kr / --font-inter) 그대로
  *  - 모바일: 메가 메뉴 X, 햄버거 드로어 + 아코디언 챕터
@@ -580,8 +580,8 @@ export default function NavMega() {
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 50;
-          background-color: #FBF8F1;
-          border-bottom: 1px solid #D8D3C9;
+          background-color: #F0EEE9;
+          border-bottom: 1px solid #D4CFC1;
           font-family: var(--font-noto-sans-kr);
         }
 
@@ -625,20 +625,20 @@ export default function NavMega() {
           font-weight: 500;
           /* 글자 간격 더 벌림 0.2 → 0.3em — 사장님 지시 "더욱 넓혀" */
           letter-spacing: 0.3em;
-          color: #202833;
+          color: #4A3B33;
           cursor: pointer;
           transition: color 0.15s ease;
         }
         .navmega-trigger:hover,
         .navmega-trigger:focus-visible,
         .navmega-item.is-open .navmega-trigger {
-          color: #3B5A6B;
+          color: #0B5563;
         }
         .navmega-item.is-open .navmega-trigger::after {
           content: "";
           display: block;
           height: 1px;
-          background: #3B5A6B;
+          background: #0B5563;
           margin-top: 4px;
         }
 
@@ -651,7 +651,7 @@ export default function NavMega() {
         }
         .navmega-logo-text {
           font-family: var(--font-noto-serif-kr);
-          color: #3B5A6B;
+          color: #0B5563;
           font-size: 0.9rem;
           font-weight: 700;
           letter-spacing: 0.05em;
@@ -675,12 +675,12 @@ export default function NavMega() {
           font-weight: 500;
           /* 0.18 → 0.28em */
           letter-spacing: 0.28em;
-          color: #202833;
+          color: #4A3B33;
           text-decoration: none;
           transition: color 0.15s ease;
         }
-        .navmega-side:hover { color: #3B5A6B; }
-        .navmega-side-admin { color: #3B5A6B; }
+        .navmega-side:hover { color: #0B5563; }
+        .navmega-side-admin { color: #0B5563; }
         .navmega-cta {
           appearance: none;
           border: 0;
@@ -690,20 +690,20 @@ export default function NavMega() {
           font-weight: 600;
           /* 0.2 → 0.3em */
           letter-spacing: 0.3em;
-          background-color: #3B5A6B;
-          color: #FBF8F1;
+          background-color: #0B5563;
+          color: #F0EEE9;
           cursor: pointer;
           text-decoration: none;
           transition: background-color 0.15s ease;
         }
-        .navmega-cta:hover { background-color: #2D4554; }
+        .navmega-cta:hover { background-color: #073D48; }
 
         /* ── 메가 패널 ── */
         .mega-panel {
           position: absolute;
           left: 0; right: 0;
-          background-color: #FBF8F1;
-          border-bottom: 1px solid #D8D3C9;
+          background-color: #F0EEE9;
+          border-bottom: 1px solid #D4CFC1;
           box-shadow: 0 12px 24px rgba(32, 40, 51, 0.08);
           max-height: 0;
           overflow: hidden;
@@ -743,8 +743,8 @@ export default function NavMega() {
         .mega-feature {
           grid-column: span 3;
           padding: 22px;
-          background-color: #F0EBE0;
-          border-left: 2px solid #C8D96F;
+          background-color: #E6E1D6;
+          border-left: 2px solid #5C2A42;
         }
 
         .mega-col-heading {
@@ -753,13 +753,13 @@ export default function NavMega() {
           font-weight: 600;
           letter-spacing: 0.32em;
           text-transform: uppercase;
-          color: #3B5A6B;
+          color: #0B5563;
           margin-bottom: 4px;
         }
         .mega-col-tagline {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.75rem;
-          color: #5F584F;
+          color: #6B5C50;
           margin-bottom: 14px;
           line-height: 1.5;
         }
@@ -771,22 +771,22 @@ export default function NavMega() {
           border-bottom: 1px solid transparent;
           transition: border-color 0.15s ease;
         }
-        .mega-item:hover { border-bottom-color: #D8D3C9; }
+        .mega-item:hover { border-bottom-color: #D4CFC1; }
         .mega-item-label {
           display: block;
           font-family: var(--font-noto-sans-kr);
           font-size: 0.9rem;
           font-weight: 500;
-          color: #202833;
+          color: #4A3B33;
           letter-spacing: 0.02em;
         }
-        .mega-item:hover .mega-item-label { color: #3B5A6B; }
+        .mega-item:hover .mega-item-label { color: #0B5563; }
         .mega-item-desc {
           display: block;
           margin-top: 3px;
           font-family: var(--font-noto-sans-kr);
           font-size: 0.72rem;
-          color: #5F584F;
+          color: #6B5C50;
           letter-spacing: 0.02em;
         }
 
@@ -800,30 +800,30 @@ export default function NavMega() {
           padding: 10px 8px;
           font-family: var(--font-noto-sans-kr);
           font-size: 0.8rem;
-          color: #202833;
-          background-color: #F0EBE0;
+          color: #4A3B33;
+          background-color: #E6E1D6;
           text-align: center;
           text-decoration: none;
           letter-spacing: 0.05em;
           transition: background-color 0.15s ease, color 0.15s ease;
         }
         .mega-region-cell:hover {
-          background-color: #3B5A6B;
-          color: #FBF8F1;
+          background-color: #0B5563;
+          color: #F0EEE9;
         }
 
         .mega-feature-heading {
           font-family: var(--font-noto-serif-kr);
           font-size: 1rem;
           font-weight: 700;
-          color: #3B5A6B;
+          color: #0B5563;
           margin-bottom: 8px;
           letter-spacing: 0.02em;
         }
         .mega-feature-body {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.8rem;
-          color: #202833;
+          color: #4A3B33;
           line-height: 1.6;
           margin-bottom: 14px;
           word-break: keep-all;
@@ -834,9 +834,9 @@ export default function NavMega() {
           font-size: 0.78rem;
           font-weight: 600;
           letter-spacing: 0.08em;
-          color: #3B5A6B;
+          color: #0B5563;
           text-decoration: none;
-          border-bottom: 1px solid #3B5A6B;
+          border-bottom: 1px solid #0B5563;
           padding-bottom: 2px;
         }
 
@@ -866,7 +866,7 @@ export default function NavMega() {
           display: block;
           height: 1px;
           width: 22px;
-          background-color: #202833;
+          background-color: #4A3B33;
           transition: transform 0.2s ease, opacity 0.2s ease;
         }
         .navmega-hamburger.is-open span:nth-child(1) {
@@ -878,8 +878,8 @@ export default function NavMega() {
         }
 
         .navmega-mobile-drawer {
-          border-top: 1px solid #D8D3C9;
-          background-color: #FBF8F1;
+          border-top: 1px solid #D4CFC1;
+          background-color: #F0EEE9;
           padding: 12px 20px 28px;
           max-height: calc(100vh - 64px);
           overflow-y: auto;
@@ -900,10 +900,10 @@ export default function NavMega() {
           font-size: 1rem;
           font-weight: 500;
           letter-spacing: 0.16em;
-          color: #202833;
+          color: #4A3B33;
           cursor: pointer;
         }
-        .navmega-mobile-chevron { color: #5F584F; font-size: 0.7rem; }
+        .navmega-mobile-chevron { color: #6B5C50; font-size: 0.7rem; }
         .navmega-mobile-chapter-body {
           padding-bottom: 16px;
         }
@@ -914,7 +914,7 @@ export default function NavMega() {
           font-weight: 600;
           letter-spacing: 0.3em;
           text-transform: uppercase;
-          color: #3B5A6B;
+          color: #0B5563;
           margin-bottom: 8px;
         }
         .navmega-mobile-col ul {
@@ -925,7 +925,7 @@ export default function NavMega() {
           padding: 10px 0;
           font-family: var(--font-noto-sans-kr);
           font-size: 0.92rem;
-          color: #202833;
+          color: #4A3B33;
           text-decoration: none;
         }
         .navmega-mobile-grid {
@@ -938,28 +938,28 @@ export default function NavMega() {
           padding: 10px 4px;
           font-family: var(--font-noto-sans-kr);
           font-size: 0.78rem;
-          color: #202833;
-          background-color: #F0EBE0;
+          color: #4A3B33;
+          background-color: #E6E1D6;
           text-align: center;
           text-decoration: none;
         }
         .navmega-mobile-feature {
           margin-top: 16px;
           padding: 14px;
-          background-color: #F0EBE0;
-          border-left: 2px solid #C8D96F;
+          background-color: #E6E1D6;
+          border-left: 2px solid #5C2A42;
         }
         .navmega-mobile-feature-heading {
           font-family: var(--font-noto-serif-kr);
           font-size: 0.95rem;
           font-weight: 700;
-          color: #3B5A6B;
+          color: #0B5563;
           margin-bottom: 6px;
         }
         .navmega-mobile-feature-body {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.78rem;
-          color: #202833;
+          color: #4A3B33;
           line-height: 1.55;
           margin-bottom: 10px;
           word-break: keep-all;
@@ -968,15 +968,15 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.78rem;
           font-weight: 600;
-          color: #3B5A6B;
+          color: #0B5563;
           text-decoration: none;
-          border-bottom: 1px solid #3B5A6B;
+          border-bottom: 1px solid #0B5563;
           padding-bottom: 2px;
         }
         .navmega-mobile-account {
           margin-top: 24px;
           padding-top: 20px;
-          border-top: 1px solid #D8D3C9;
+          border-top: 1px solid #D4CFC1;
           display: flex;
           flex-direction: column;
           gap: 12px;
@@ -984,7 +984,7 @@ export default function NavMega() {
         .navmega-mobile-account > a {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.92rem;
-          color: #202833;
+          color: #4A3B33;
           text-decoration: none;
           padding: 6px 0;
           letter-spacing: 0.16em;
@@ -997,8 +997,8 @@ export default function NavMega() {
           font-size: 0.85rem;
           font-weight: 600;
           letter-spacing: 0.2em;
-          background-color: #3B5A6B;
-          color: #FBF8F1;
+          background-color: #0B5563;
+          color: #F0EEE9;
           text-decoration: none;
           text-align: center;
           cursor: pointer;

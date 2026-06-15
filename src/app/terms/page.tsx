@@ -223,38 +223,38 @@ export default function TermsPage() {
   ];
 
   return (
-    <div className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-16" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-16" style={{ backgroundColor: "#F0EEE9" }}>
       <div className="max-w-3xl mx-auto">
         <div className="mb-12">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
           >
             Terms of Service
           </p>
           <h1
             className="text-3xl md:text-4xl font-bold mb-3"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
           >
             이용약관
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
             시행일: 2026년 4월 25일
           </p>
         </div>
 
-        <div className="space-y-10 text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+        <div className="space-y-10 text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
           {sections.map((s) => (
             <section key={s.h}>
-              <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+              <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
                 {s.h}
               </h2>
               {s.body}
             </section>
           ))}
 
-          <div className="pt-8 text-center" style={{ borderTop: "1px solid #D8D3C9" }}>
-            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}>
+          <div className="pt-8 text-center" style={{ borderTop: "1px solid #D4CFC1" }}>
+            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#0B5563" }}>
               ← 홈으로
             </Link>
           </div>

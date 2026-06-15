@@ -26,7 +26,7 @@ export default function PrivacyPage() {
   return (
     <div
       className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-16"
-      style={{ backgroundColor: "#FBF8F1" }}
+      style={{ backgroundColor: "#F0EEE9" }}
     >
       <div className="max-w-3xl mx-auto">
         {/* 변경 고지 배너 — 2026-06-15 ~ 2026-06-22 */}
@@ -35,18 +35,18 @@ export default function PrivacyPage() {
             className="mb-8 p-4 md:p-5"
             style={{
               backgroundColor: "#FFE066",
-              borderLeft: "4px solid #3B5A6B",
+              borderLeft: "4px solid #0B5563",
             }}
           >
             <p
               className="text-xs tracking-[0.25em] uppercase mb-2"
-              style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#0B5563" }}
             >
               Notice
             </p>
             <p
               className="text-sm leading-relaxed"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
             >
               <strong>2026-06-15 개인정보처리방침이 v2.1로 개정되었습니다.</strong>
               <br />
@@ -59,23 +59,23 @@ export default function PrivacyPage() {
         <div className="mb-12">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
           >
             Privacy Policy
           </p>
           <h1
             className="text-3xl md:text-4xl font-bold mb-3"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
           >
             개인정보처리방침
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
             시행일: 2026-06-15 (v2.1) · 이전 시행일: 2026-04-25
           </p>
         </div>
 
         {/* Content */}
-        <div className="space-y-10 text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A" }}>
+        <div className="space-y-10 text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
           <p>
             사유유사(이하 &ldquo;회사&rdquo;)는 이용자의 개인정보를 소중하게 다루며,
             「개인정보 보호법」, 「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관계 법령이 정한 바를 준수합니다.
@@ -84,7 +84,7 @@ export default function PrivacyPage() {
 
           {/* 제1조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제1조 (개인정보의 처리 목적)
             </h2>
             <p className="mb-2">
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
 
           {/* 제2조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제2조 (만 14세 미만 아동의 가입 제한)
             </h2>
             <p>
@@ -111,7 +111,7 @@ export default function PrivacyPage() {
 
           {/* 제3조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제3조 (처리하는 개인정보 항목)
             </h2>
             <div className="space-y-3">
@@ -162,16 +162,16 @@ export default function PrivacyPage() {
 
           {/* 제4조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제4조 (개인정보의 처리 및 보유 기간)
             </h2>
             <div className="overflow-x-auto">
               <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
                 <thead>
-                  <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
-                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>구분</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>보유 기간</th>
-                    <th className="text-left py-2" style={{ color: "#5F584F" }}>근거</th>
+                  <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
+                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>구분</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>보유 기간</th>
+                    <th className="text-left py-2" style={{ color: "#6B5C50" }}>근거</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -185,7 +185,7 @@ export default function PrivacyPage() {
                     ["페이지뷰 통계", "90일", "서비스 개선 목적 종료"],
                     ["마케팅 수신 동의 회원 정보", "동의 철회 시 또는 회원 탈퇴 시까지", "—"],
                   ].map((row) => (
-                    <tr key={row[0]} style={{ borderBottom: "1px solid #F0EBE0" }}>
+                    <tr key={row[0]} style={{ borderBottom: "1px solid #E6E1D6" }}>
                       {row.map((c, i) => <td key={i} className="py-2 pr-4 align-top">{c}</td>)}
                     </tr>
                   ))}
@@ -196,7 +196,7 @@ export default function PrivacyPage() {
 
           {/* 제5조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제5조 (개인정보의 제3자 제공)
             </h2>
             <p>회사는 이용자의 개인정보를 제3자에게 제공하지 않습니다. 다음의 경우에 한해 예외로 합니다.</p>
@@ -209,7 +209,7 @@ export default function PrivacyPage() {
 
           {/* 제6조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제6조 (개인정보 처리의 위탁 및 국외 이전)
             </h2>
             <p>
@@ -219,12 +219,12 @@ export default function PrivacyPage() {
             <div className="mt-3 overflow-x-auto">
               <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
                 <thead>
-                  <tr style={{ borderBottom: "1px solid #D8D3C9" }}>
-                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>수탁자</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>위탁 업무</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>국가</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#5F584F" }}>이전 방법·시점</th>
-                    <th className="text-left py-2" style={{ color: "#5F584F" }}>보유 기간</th>
+                  <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
+                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>수탁자</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>위탁 업무</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>국가</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>이전 방법·시점</th>
+                    <th className="text-left py-2" style={{ color: "#6B5C50" }}>보유 기간</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -237,7 +237,7 @@ export default function PrivacyPage() {
                     ["OpenAI, L.L.C.", "후기 자동 검열(Moderation API)", "미국", "후기 작성 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
                     ["Resend, Inc.", "이메일 발송(가입 안내·답변 통지)", "미국", "이메일 발송 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
                   ].map((row) => (
-                    <tr key={row[0]} style={{ borderBottom: "1px solid #F0EBE0" }}>
+                    <tr key={row[0]} style={{ borderBottom: "1px solid #E6E1D6" }}>
                       {row.map((c, i) => <td key={i} className="py-2 pr-4 align-top">{c}</td>)}
                     </tr>
                   ))}
@@ -251,7 +251,7 @@ export default function PrivacyPage() {
 
           {/* 제7조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제7조 (정보주체와 법정대리인의 권리·의무 및 행사 방법)
             </h2>
             <p>이용자는 언제든지 다음 권리를 행사할 수 있습니다.</p>
@@ -264,20 +264,20 @@ export default function PrivacyPage() {
             </ol>
             <p className="mt-3">
               권리 행사는 이메일(
-              <a href="mailto:syusflux@gmail.com" style={{ color: "#3B5A6B" }}>syusflux@gmail.com</a>
+              <a href="mailto:syusflux@gmail.com" style={{ color: "#0B5563" }}>syusflux@gmail.com</a>
               ), 1:1 문의(
-              <Link href="/contact" style={{ color: "#3B5A6B" }}>/contact</Link>
+              <Link href="/contact" style={{ color: "#0B5563" }}>/contact</Link>
               ) 또는 마이페이지(
-              <Link href="/mypage" style={{ color: "#3B5A6B" }}>/mypage</Link>
+              <Link href="/mypage" style={{ color: "#0B5563" }}>/mypage</Link>
               )를 통해 하실 수 있으며, 회사는 지체 없이(영업일 기준 10일 이내) 조치합니다.
             </p>
-            <div className="mt-4 p-4" style={{ backgroundColor: "#F0EBE0" }}>
+            <div className="mt-4 p-4" style={{ backgroundColor: "#E6E1D6" }}>
               <p className="font-semibold mb-2">마케팅 수신 동의 철회 방법</p>
               <ol className="list-decimal pl-5 space-y-1">
                 <li>마이페이지(/mypage) → 설정 → 마케팅 수신 옵션 토글로 즉시 철회</li>
                 <li>회사로부터 받은 마케팅 이메일 본문 하단의 &ldquo;수신 거부&rdquo; 링크 클릭으로 즉시 철회</li>
               </ol>
-              <p className="mt-2 text-xs" style={{ color: "#5F584F" }}>
+              <p className="mt-2 text-xs" style={{ color: "#6B5C50" }}>
                 위 두 경로 중 어느 것을 이용하셔도 동일하게 즉시 처리되며, 별도 절차나 추가 인증이 필요하지 않습니다.
               </p>
             </div>
@@ -285,7 +285,7 @@ export default function PrivacyPage() {
 
           {/* 제8조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제8조 (개인정보의 파기 절차 및 방법)
             </h2>
             <ol className="list-decimal pl-5 space-y-1">
@@ -296,7 +296,7 @@ export default function PrivacyPage() {
 
           {/* 제9조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제9조 (개인정보의 안전성 확보 조치)
             </h2>
             <p>회사는 「개인정보 보호법」 제28조의2 및 동법 시행령 제30조에 따라 다음의 안전조치를 시행합니다.</p>
@@ -309,7 +309,7 @@ export default function PrivacyPage() {
 
           {/* 제10조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제10조 (개인정보 자동 수집 장치의 설치·운영 및 거부)
             </h2>
             <p>회사는 이용자 편의 증진과 서비스 개선을 위해 다음의 자동 수집 장치를 운영합니다.</p>
@@ -322,27 +322,27 @@ export default function PrivacyPage() {
             </ol>
             <p className="mt-3">
               이용자는 브라우저 설정에서 쿠키 저장을 거부하거나, Google Analytics Opt-out(
-              <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "#3B5A6B" }}>tools.google.com/dlpage/gaoptout</a>
+              <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "#0B5563" }}>tools.google.com/dlpage/gaoptout</a>
               ), Microsoft Clarity 옵트아웃(
-              <a href="https://clarity.microsoft.com/" target="_blank" rel="noopener noreferrer" style={{ color: "#3B5A6B" }}>clarity.microsoft.com</a>
+              <a href="https://clarity.microsoft.com/" target="_blank" rel="noopener noreferrer" style={{ color: "#0B5563" }}>clarity.microsoft.com</a>
               ) 절차를 이용할 수 있습니다. 다만 이 경우 로그인 등 일부 서비스 이용에 제한이 발생할 수 있습니다.
             </p>
           </section>
 
           {/* 제11조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제11조 (개인정보 보호 담당자)
             </h2>
             <p>
               회사는 이용자의 개인정보 처리에 관한 업무를 총괄해서 책임지고, 처리 관련 이용자의 불만 처리 및 피해 구제 등을 위하여 아래와 같이 개인정보 보호 담당자를 지정하고 있습니다.
             </p>
-            <div className="mt-3 p-5" style={{ backgroundColor: "#F0EBE0" }}>
+            <div className="mt-3 p-5" style={{ backgroundColor: "#E6E1D6" }}>
               <div className="grid grid-cols-[110px_1fr] gap-2 text-xs">
-                <span style={{ color: "#5F584F" }}>개인정보 보호 담당자</span><span>운영자 이혁호</span>
-                <span style={{ color: "#5F584F" }}>사업자등록번호</span><span>168-05-03666</span>
-                <span style={{ color: "#5F584F" }}>연락처</span><span>syusflux@gmail.com</span>
-                <span style={{ color: "#5F584F" }}>담당 부서</span><span>사유유사 운영팀</span>
+                <span style={{ color: "#6B5C50" }}>개인정보 보호 담당자</span><span>운영자 이혁호</span>
+                <span style={{ color: "#6B5C50" }}>사업자등록번호</span><span>168-05-03666</span>
+                <span style={{ color: "#6B5C50" }}>연락처</span><span>syusflux@gmail.com</span>
+                <span style={{ color: "#6B5C50" }}>담당 부서</span><span>사유유사 운영팀</span>
               </div>
             </div>
             <p className="mt-3">
@@ -359,7 +359,7 @@ export default function PrivacyPage() {
 
           {/* 제12조 */}
           <section>
-            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}>
+            <h2 className="text-lg font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               제12조 (처리방침의 변경)
             </h2>
             <p>
@@ -368,12 +368,12 @@ export default function PrivacyPage() {
             </p>
           </section>
 
-          <p className="pt-2 text-xs" style={{ color: "#5F584F" }}>
+          <p className="pt-2 text-xs" style={{ color: "#6B5C50" }}>
             본 처리방침은 2026-06-15부터 시행됩니다.
           </p>
 
-          <div className="pt-8 text-center" style={{ borderTop: "1px solid #D8D3C9" }}>
-            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#3B5A6B" }}>
+          <div className="pt-8 text-center" style={{ borderTop: "1px solid #D4CFC1" }}>
+            <Link href="/" className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#0B5563" }}>
               ← 홈으로
             </Link>
           </div>

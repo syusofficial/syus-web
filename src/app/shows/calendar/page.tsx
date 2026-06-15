@@ -26,7 +26,7 @@ export default async function ShowsCalendarPage() {
   return (
     <div
       className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-16"
-      style={{ backgroundColor: "#FBF8F1" }}
+      style={{ backgroundColor: "#F0EEE9" }}
     >
       <script
         type="application/ld+json"
@@ -38,19 +38,19 @@ export default async function ShowsCalendarPage() {
           <div>
             <p
               className="text-xs tracking-[0.3em] uppercase mb-3"
-              style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
             >
               Calendar
             </p>
             <h1
               className="text-4xl md:text-5xl font-bold mb-3"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
             >
               공연 캘린더
             </h1>
             <p
               className="text-sm"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
             >
               날짜별로 진행되는 공연을 확인해보세요.
             </p>
@@ -60,8 +60,8 @@ export default async function ShowsCalendarPage() {
             className="px-4 py-2 text-xs tracking-wide transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              color: "#3B5A6B",
-              border: "1px solid #D8D3C9",
+              color: "#0B5563",
+              border: "1px solid #D4CFC1",
             }}
           >
             그리드로 보기

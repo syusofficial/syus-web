@@ -87,6 +87,10 @@ export default function HeroUnveilScroll({
   }, []);
 
   if (items.length === 0) {
+    // 2026-06-15 3차 미리보기 수정 (사장님 지시):
+    //   - 첫 화면 임팩트 강화: min-height 80vh → 100dvh (iOS Safari 100vh 이슈 회피)
+    //   - 헤드라인·CTA 시원하게 확대
+    //   - 2026 트렌드 4색 — Teal(메인) · Silhouette(딥 배경) · Damson(CTA) · Cloud Dancer(텍스트)
     return (
       <section className="unveil-empty">
         <div className="unveil-empty-inner">
@@ -106,68 +110,100 @@ export default function HeroUnveilScroll({
         </div>
         <style>{`
           .unveil-empty {
-            min-height: 80vh;
+            /* 100dvh — 모바일 사파리에서도 첫 화면을 정확히 가득 채운다.
+               dvh 미지원 환경(구형 브라우저) 대비 min-height: 100vh fallback */
+            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 120px 24px 80px;
+            /* 패딩 시원하게 — 위쪽은 NAV 높이(약 96px) 고려 */
+            padding: 140px 24px 100px;
+            position: relative;
             background:
-              radial-gradient(60% 80% at 50% 30%, rgba(59, 90, 107, 0.5), transparent 70%),
-              linear-gradient(180deg, #1B2842 0%, #202833 100%);
-            color: #FBF8F1;
+              radial-gradient(70% 70% at 50% 35%, rgba(11, 85, 99, 0.55), transparent 70%),
+              linear-gradient(180deg, #1F1814 0%, #4A3B33 100%);
+            color: #F0EEE9;
           }
-          .unveil-empty-inner { max-width: 720px; text-align: center; }
+          .unveil-empty-inner {
+            max-width: 880px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+          }
           .unveil-empty-eyebrow {
             font-family: var(--font-inter);
-            font-size: 0.72rem;
-            letter-spacing: 0.35em;
+            font-size: 0.78rem;
+            letter-spacing: 0.4em;
             text-transform: uppercase;
-            color: #C8D96F;
+            /* 어두운 배경 위에서 Damson은 잘 안 보임 — Damson 라이트 변형 사용 */
+            color: #C99FB1;
             font-weight: 600;
-            margin-bottom: 18px;
+            margin-bottom: 28px;
           }
           .unveil-empty-headline {
             font-family: var(--font-noto-serif-kr);
-            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            /* 헤드라인 시원하게 — 2.6rem → 4.4rem 최대 */
+            font-size: clamp(2.4rem, 6vw, 4.4rem);
             font-weight: 700;
-            line-height: 1.3;
-            color: #FBF8F1;
-            margin-bottom: 18px;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: #F0EEE9;
+            margin-bottom: 28px;
             word-break: keep-all;
+            text-wrap: balance;
           }
           .unveil-empty-body {
             font-family: var(--font-noto-sans-kr);
-            font-size: 0.95rem;
-            line-height: 1.7;
-            color: rgba(248, 249, 252, 0.78);
-            margin-bottom: 28px;
+            /* 본문도 1.1rem로 — 어두운 배경 대비 가독성 */
+            font-size: clamp(1rem, 1.5vw, 1.15rem);
+            line-height: 1.8;
+            color: rgba(240, 238, 233, 0.85);
+            margin-bottom: 44px;
             word-break: keep-all;
+            max-width: 620px;
+            margin-left: auto;
+            margin-right: auto;
           }
           .unveil-empty-ctas {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             justify-content: center;
             flex-wrap: wrap;
           }
           .unveil-cta-primary {
-            padding: 14px 24px;
+            /* CTA 시원하게 — 패딩 14/24 → 18/32 */
+            padding: 18px 32px;
             font-family: var(--font-noto-sans-kr);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            letter-spacing: 0.12em;
-            background-color: #C8D96F;
-            color: #202833;
+            letter-spacing: 0.14em;
+            /* Damson + Cloud Dancer 텍스트 (가독성 확보) */
+            background-color: #5C2A42;
+            color: #F0EEE9;
             text-decoration: none;
+            transition: background-color 0.18s ease;
+          }
+          .unveil-cta-primary:hover {
+            background-color: #6E3450;
           }
           .unveil-cta-ghost {
-            padding: 14px 24px;
+            padding: 18px 32px;
             font-family: var(--font-noto-sans-kr);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 500;
-            letter-spacing: 0.12em;
-            color: #FBF8F1;
-            border: 1px solid rgba(248, 249, 252, 0.4);
+            letter-spacing: 0.14em;
+            color: #F0EEE9;
+            border: 1px solid rgba(240, 238, 233, 0.45);
             text-decoration: none;
+            transition: border-color 0.18s ease, background-color 0.18s ease;
+          }
+          .unveil-cta-ghost:hover {
+            border-color: rgba(240, 238, 233, 0.85);
+            background-color: rgba(240, 238, 233, 0.05);
+          }
+          @media (min-width: 1024px) {
+            .unveil-empty { padding: 160px 48px 120px; }
           }
         `}</style>
       </section>
@@ -294,7 +330,7 @@ export default function HeroUnveilScroll({
           position: relative;
           /* 220vh 길이 — 사용자가 스크롤하면서 포스터가 흐르는 시간 확보 */
           height: 220vh;
-          background-color: #1B2842;
+          background-color: #1F1814;
         }
         .unveil-sticky {
           position: sticky;
@@ -303,7 +339,7 @@ export default function HeroUnveilScroll({
           height: 100vh;
           min-height: 720px;
           overflow: hidden;
-          color: #FBF8F1;
+          color: #F0EEE9;
           display: grid;
           grid-template-rows: auto 1fr auto;
           padding: 96px 24px 32px;
@@ -318,10 +354,11 @@ export default function HeroUnveilScroll({
         .unveil-bg-mineral {
           position: absolute;
           inset: 0;
+          /* 2026-06-15 3차: 4색 그라데이션 — Teal(상단 좌)·Silhouette 다크(하단 우) */
           background:
-            radial-gradient(70% 60% at 30% 30%, rgba(59, 90, 107, 0.85), transparent 60%),
-            radial-gradient(60% 60% at 75% 70%, rgba(27, 40, 66, 0.95), transparent 70%),
-            linear-gradient(180deg, #1B2842 0%, #202833 100%);
+            radial-gradient(70% 60% at 30% 30%, rgba(11, 85, 99, 0.85), transparent 60%),
+            radial-gradient(60% 60% at 75% 70%, rgba(31, 24, 20, 0.95), transparent 70%),
+            linear-gradient(180deg, #1F1814 0%, #4A3B33 100%);
           z-index: 0;
         }
         .unveil-bg-grain {
@@ -352,7 +389,8 @@ export default function HeroUnveilScroll({
           opacity: 0.72;
         }
         .unveil-eyebrow-meta {
-          color: #C8D96F;
+          /* 어두운 배경 위 Damson은 안 보임 — Damson 라이트 변형 사용 */
+          color: #C99FB1;
           font-weight: 600;
           opacity: 0.95;
         }
@@ -377,15 +415,16 @@ export default function HeroUnveilScroll({
           font-weight: 700;
           line-height: 1.02;
           letter-spacing: -0.04em;
-          color: #FBF8F1;
+          color: #F0EEE9;
           margin-bottom: 36px;
           word-break: keep-all;
           text-wrap: balance;
           max-width: 100%;
         }
-        /* "올림" 페일 라임 강조 — CTA 외 큰 면적 사용 X 룰 안에서 두 글자 포인트 */
+        /* "올림" 강조 — 어두운 배경 위 Damson 라이트 변형
+           (메모리 §1 강조 한·두 글자 예외 범위) */
         .unveil-headline-accent {
-          color: #C8D96F;
+          color: #C99FB1;
         }
         /* 부제 — 한 줄에 한 호흡, 콤마 뒤 줄바꿈은 마크업의 <br/>로 처리 */
         .unveil-subline {
@@ -410,17 +449,20 @@ export default function HeroUnveilScroll({
           font-size: 0.85rem;
           font-weight: 600;
           letter-spacing: 0.12em;
-          background-color: #C8D96F;
-          color: #202833;
+          /* Damson + Cloud Dancer 텍스트 — Damson 위 Silhouette는 안 보임 */
+          background-color: #5C2A42;
+          color: #F0EEE9;
           text-decoration: none;
+          transition: background-color 0.18s ease;
         }
+        .unveil-cta-primary:hover { background-color: #6E3450; }
         .unveil-cta-ghost {
           padding: 14px 22px;
           font-family: var(--font-noto-sans-kr);
           font-size: 0.85rem;
           font-weight: 500;
           letter-spacing: 0.12em;
-          color: #FBF8F1;
+          color: #F0EEE9;
           border: 1px solid rgba(248, 249, 252, 0.42);
           text-decoration: none;
         }
@@ -439,7 +481,7 @@ export default function HeroUnveilScroll({
           width: 180px;
           pointer-events: auto;
           text-decoration: none;
-          color: #FBF8F1;
+          color: #F0EEE9;
           /* 스크롤 진행도(0~1)와 카드 인덱스에 따라 위로 흐른다.
              각 카드는 (idx * 8%)만큼 시작 위치 다르게 → 시차 발생. */
           transform: translate3d(
@@ -481,7 +523,7 @@ export default function HeroUnveilScroll({
           width: 100%;
           aspect-ratio: 4 / 5;
           overflow: hidden;
-          background: #202833;
+          background: #4A3B33;
           box-shadow:
             0 24px 48px rgba(0, 0, 0, 0.45),
             0 8px 16px rgba(27, 40, 66, 0.55);
@@ -496,7 +538,7 @@ export default function HeroUnveilScroll({
           align-items: center;
           justify-content: center;
           color: rgba(248, 249, 252, 0.4);
-          background: linear-gradient(135deg, #202833 0%, #3B5A6B 100%);
+          background: linear-gradient(135deg, #4A3B33 0%, #0B5563 100%);
           font-size: 2.2rem;
         }
         .unveil-poster-rank {
@@ -508,8 +550,9 @@ export default function HeroUnveilScroll({
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #C8D96F;
-          color: #202833;
+          /* Damson + Cloud Dancer 텍스트 (랭킹 가독성) */
+          background: #5C2A42;
+          color: #F0EEE9;
           font-size: 1.2rem;
           font-weight: 700;
           line-height: 1;
@@ -519,7 +562,7 @@ export default function HeroUnveilScroll({
           font-family: var(--font-noto-sans-kr);
           font-size: 0.85rem;
           font-weight: 600;
-          color: #FBF8F1;
+          color: #F0EEE9;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -567,7 +610,8 @@ export default function HeroUnveilScroll({
         .unveil-progress-fill {
           position: absolute;
           inset: 0;
-          background: #C8D96F;
+          /* 어두운 배경 위 — Damson 라이트 변형 */
+          background: #C99FB1;
           transform-origin: left center;
           transform: scaleX(var(--p, 0));
         }

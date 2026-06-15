@@ -3,44 +3,46 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* 무대올림 / 사유유사 SYUS — 컬러 팔레트 (2026-06-02 Mineral Stage 전환)
-   * 사장님 결정: 안 ② Mineral Stage — 2026 Future Dusk 트렌드.
-   * 메인: 미네랄 슬레이트 (차분한 청회색)
-   * 배경: 웜 크림 (오프화이트가 살짝 따뜻해진)
-   * CTA: 페일 라임 (보색 강조)
-   * 톤: 무대올림(과감)·사유유사(차분) 한 화면 공존
+  /* 무대올림 / 사유유사 SYUS — 컬러 팔레트 (2026-06-15 3차 미리보기: 2026 트렌드 4색 전환)
+   * 사장님 직접 제시:
+   *   #F0EEE9 Cloud Dancer (Pantone 11-4201) — 따뜻한 오프화이트, 메인 배경
+   *   #0B5563 Transformative Teal (WGSN·Coloro) — 변화·지속가능성·깊이, 메인
+   *   #4A3B33 Silhouette (Benjamin Moore) — 숯빛 번트 엄버, 본문·하단
+   *   #5C2A42 Divine Damson (Graham & Brown) — 잘 익은 자두빛, CTA·럭셔리 포인트
+   * 보조 톤: 각 4색의 라이트/다크 변형을 은은히. 4색 결 유지. 무지개·고채도 X.
+   * 변경 폭: 토큰 이름은 그대로 두고 값만 4색으로 교체 (인라인 hex도 src 전체 치환).
    */
-  --color-paper: #FBF8F1;          /* 메인 배경 — 웜 크림 */
-  --color-paper-dark: #F0EBE0;     /* 카드·서브 배경 — 크림 다크 */
-  --color-mist: #D8D3C9;           /* 라인·구분 — 웜 라인 */
-  --color-stone: #5F584F;          /* 서브 텍스트 — 웜 다크 그레이 (대비 강화, WCAG AA) */
-  --color-charcoal: #202833;       /* 본문 텍스트·강조 — 딥 인디고 */
+  --color-paper: #F0EEE9;          /* 메인 배경 — Cloud Dancer */
+  --color-paper-dark: #E6E1D6;     /* 카드·서브 배경 — Cloud Dancer 다크 톤 */
+  --color-mist: #D4CFC1;           /* 라인·구분 — Cloud Dancer 라인 */
+  --color-stone: #6B5C50;          /* 서브 텍스트 — Silhouette 라이트 (WCAG AA) */
+  --color-charcoal: #4A3B33;       /* 본문 텍스트·강조 — Silhouette */
 
-  --color-blue: #3B5A6B;           /* 메인 — 미네랄 슬레이트 (코발트 대체) */
-  --color-blue-light: #5C7C8E;     /* 호버·서브 강조 — 미네랄 라이트 */
-  --color-navy: #202833;           /* 딥 인디고 (헤딩·풋터) */
+  --color-blue: #0B5563;           /* 메인 — Transformative Teal */
+  --color-blue-light: #2C7384;     /* 호버·서브 강조 — Teal 라이트 */
+  --color-navy: #4A3B33;           /* 본문 강조·풋터 — Silhouette */
 
-  --color-accent-green: #7BA86F;   /* 세이지 그린 (성공·확인) */
-  --color-accent-red: #D54545;     /* 포인트 빨강 (경고·삭제) */
-  --color-accent-yellow: #C8D96F;  /* 페일 라임 (CTA — 노랑 대체) */
-  --color-accent-yellow-hover: #D5E482;
+  --color-accent-green: #7BA86F;   /* 세이지 그린 (성공·확인) — 유지 */
+  --color-accent-red: #D54545;     /* 포인트 빨강 (경고·삭제) — 유지 */
+  --color-accent-yellow: #5C2A42;  /* CTA — Divine Damson (라임에서 자두빛 보라 전환) */
+  --color-accent-yellow-hover: #6E3450;
 
   /* SYUS 원 정체성 브라운 — 로고만 유지 (사장님 결정) */
   --color-syus-logo: #6D3115;
 
   /* legacy alias — 기존 컴포넌트 호환용 (이름 유지, 값만 변경) */
-  --color-cream: #FBF8F1;
-  --color-cream-dark: #F0EBE0;
-  --color-syus-brown: #3B5A6B;
-  --color-syus-brown-light: #5C7C8E;
-  --color-syus-blue: #3B5A6B;
-  --color-syus-navy: #202833;
+  --color-cream: #F0EEE9;
+  --color-cream-dark: #E6E1D6;
+  --color-syus-brown: #0B5563;
+  --color-syus-brown-light: #2C7384;
+  --color-syus-blue: #0B5563;
+  --color-syus-navy: #4A3B33;
   --color-syus-red: #D54545;
   --color-syus-green: #7BA86F;
-  --color-syus-yellow: #C8D96F;
-  --color-syus-charcoal: #202833;
-  --color-syus-grey: #5F584F;
-  --color-syus-light-grey: #D8D3C9;
+  --color-syus-yellow: #5C2A42;
+  --color-syus-charcoal: #4A3B33;
+  --color-syus-grey: #6B5C50;
+  --color-syus-light-grey: #D4CFC1;
 
   /* Fonts — 마뗑킴 톤 (Spoqa Han Sans Neo Thin + Geist Thin)
    * 토큰 이름은 유지(코드 영향 최소화), 값만 슬림 톤으로 교체
@@ -58,19 +60,19 @@ html {
 }
 
 body {
-  background-color: #FBF8F1;
-  color: #202833;
+  background-color: #F0EEE9;
+  color: #4A3B33;
   font-family: "Spoqa Han Sans Neo", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 300; /* 마뗑킴 톤 — 슬림 weight 기본 */
 }
 
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #FBF8F1; }
-::-webkit-scrollbar-thumb { background: #3B5A6B; border-radius: 2px; }
+::-webkit-scrollbar-track { background: #F0EEE9; }
+::-webkit-scrollbar-thumb { background: #0B5563; border-radius: 2px; }
 
 ::selection {
-  background: #3B5A6B;
-  color: #FBF8F1;
+  background: #0B5563;
+  color: #F0EEE9;
 }
 
 /* ──────────────────────────────────────────────────
@@ -87,32 +89,41 @@ body {
  * 점진적으로 컴포넌트별 토큰 전환할 때 사용한다.
  * ────────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
+  /* 다크 모드 — 4색 다크 변형
+   *   본문 배경 = Silhouette 다크 #1F1814
+   *   본문 텍스트 = Cloud Dancer #F0EEE9
+   *   카드 = 한 단계 짙은 #261D18
+   *   CTA Damson 라이트 = #8C4A65 (다크 위 가독성)
+   *   메인 Teal 라이트 = #4A98AA
+   */
   :root {
-    --color-paper: #1B2842;
-    --color-paper-dark: #15203A;
-    --color-mist: #2C3854;
-    --color-stone: #BFB8AC;
-    --color-charcoal: #FBF8F1;
-    --color-cream: #1B2842;
-    --color-cream-dark: #15203A;
-    --color-blue: #7BA0B6;
-    --color-blue-light: #9FBCCC;
-    --color-navy: #FBF8F1;
-    --color-syus-brown: #7BA0B6;
-    --color-syus-brown-light: #9FBCCC;
-    --color-syus-blue: #7BA0B6;
-    --color-syus-navy: #FBF8F1;
-    --color-syus-charcoal: #FBF8F1;
-    --color-syus-grey: #BFB8AC;
-    --color-syus-light-grey: #2C3854;
+    --color-paper: #1F1814;
+    --color-paper-dark: #261D18;
+    --color-mist: #3C2F28;
+    --color-stone: #C9C0B2;
+    --color-charcoal: #F0EEE9;
+    --color-cream: #1F1814;
+    --color-cream-dark: #261D18;
+    --color-blue: #4A98AA;
+    --color-blue-light: #6BB0C0;
+    --color-navy: #F0EEE9;
+    --color-syus-brown: #4A98AA;
+    --color-syus-brown-light: #6BB0C0;
+    --color-syus-blue: #4A98AA;
+    --color-syus-navy: #F0EEE9;
+    --color-syus-charcoal: #F0EEE9;
+    --color-syus-grey: #C9C0B2;
+    --color-syus-light-grey: #3C2F28;
+    --color-accent-yellow: #8C4A65;
+    --color-accent-yellow-hover: #A35777;
   }
   body {
-    background-color: #1B2842;
-    color: #FBF8F1;
+    background-color: #1F1814;
+    color: #F0EEE9;
   }
-  ::-webkit-scrollbar-track { background: #1B2842; }
-  ::-webkit-scrollbar-thumb { background: #7BA0B6; }
-  ::selection { background: #7BA0B6; color: #1B2842; }
+  ::-webkit-scrollbar-track { background: #1F1814; }
+  ::-webkit-scrollbar-thumb { background: #4A98AA; }
+  ::selection { background: #4A98AA; color: #1F1814; }
 }
 
 /* ──────────────────────────────────────────────────
@@ -121,17 +132,19 @@ body {
  * 외부 파일 0, SVG noise 인라인.
  * ────────────────────────────────────────────────── */
 
+/* 2026-06-15 3차: Teal-Silhouette 그라데이션 (구 Mineral 클래스명 유지, 값만 교체) */
 .grad-mineral {
-  background: linear-gradient(135deg, #5C7C8E 0%, #3B5A6B 45%, #202833 100%);
+  background: linear-gradient(135deg, #2C7384 0%, #0B5563 45%, #4A3B33 100%);
 }
 .grad-mineral-soft {
-  background: linear-gradient(180deg, #FBF8F1 0%, #F0EBE0 100%);
+  background: linear-gradient(180deg, #F0EEE9 0%, #E6E1D6 100%);
 }
 .grad-mineral-radial {
-  background: radial-gradient(ellipse at top left, #5C7C8E 0%, #3B5A6B 35%, #202833 100%);
+  background: radial-gradient(ellipse at top left, #2C7384 0%, #0B5563 35%, #4A3B33 100%);
 }
+/* 구 .grad-lime — CTA 그라데이션. Damson 톤으로 교체 (클래스명 유지) */
 .grad-lime {
-  background: linear-gradient(135deg, #D5E482 0%, #C8D96F 100%);
+  background: linear-gradient(135deg, #6E3450 0%, #5C2A42 100%);
 }
 
 .grad-grain {

@@ -129,7 +129,7 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           display: block;
           flex-shrink: 0;
           width: 260px;
-          color: #FBF8F1;
+          color: #F0EEE9;
         }
         @media (min-width: 768px) {
           .hero-stream-card { width: 320px; }
@@ -151,7 +151,7 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           width: 100%;
           aspect-ratio: 4 / 5;
           overflow: hidden;
-          background: #202833;
+          background: #4A3B33;
           box-shadow:
             0 22px 40px rgba(0, 0, 0, 0.42),
             0 6px 14px rgba(27, 40, 66, 0.5);
@@ -164,7 +164,7 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           align-items: center;
           justify-content: center;
           color: rgba(248, 249, 252, 0.4);
-          background: linear-gradient(135deg, #202833 0%, #3B5A6B 100%);
+          background: linear-gradient(135deg, #4A3B33 0%, #0B5563 100%);
         }
         .hero-stream-rank {
           position: absolute;
@@ -175,8 +175,8 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #C8D96F;
-          color: #202833;
+          background: #5C2A42;
+          color: #4A3B33;
           font-size: 1.4rem;
           font-weight: 700;
           line-height: 1;
@@ -188,7 +188,7 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           font-family: var(--font-pretendard);
           font-size: 1rem;
           font-weight: 600;
-          color: #FBF8F1;
+          color: #F0EEE9;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;

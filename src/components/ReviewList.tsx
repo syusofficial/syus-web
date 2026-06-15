@@ -23,7 +23,7 @@ export default function ReviewList({ showId, reviews }: Props) {
     return (
       <p
         className="text-sm py-8 text-center"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
       >
         아직 후기가 없습니다. 첫 후기를 남겨주세요.
       </p>
@@ -72,21 +72,21 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
     <article
       className="p-5"
       style={{
-        backgroundColor: "#FBF8F1",
-        border: "1px solid #D8D3C9",
+        backgroundColor: "#F0EEE9",
+        border: "1px solid #D4CFC1",
       }}
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-baseline gap-2 flex-wrap">
           <p
             className="text-sm font-semibold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#202833" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}
           >
             {review.authorLabel}
           </p>
           <p
             className="text-xs"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
           >
             {formatReviewDate(review.createdAt)}
           </p>
@@ -96,9 +96,9 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
               className="text-[0.65rem] px-2 py-0.5 tracking-wider"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                backgroundColor: "#F0EBE0",
-                color: "#5F584F",
-                border: "1px solid #D8D3C9",
+                backgroundColor: "#E6E1D6",
+                color: "#6B5C50",
+                border: "1px solid #D4CFC1",
               }}
               title="자동 검열 통과 후 운영자 검토 대기 중입니다. 다른 분에게는 보이지 않습니다."
             >
@@ -131,8 +131,8 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
               className="text-[0.7rem] px-2 py-1 transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: review.reportedByMe ? "#5F584F" : "#5F584F",
-                border: "1px solid #D8D3C9",
+                color: review.reportedByMe ? "#6B5C50" : "#6B5C50",
+                border: "1px solid #D4CFC1",
                 background: "none",
                 cursor: review.reportedByMe ? "default" : "pointer",
               }}
@@ -146,16 +146,16 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
 
       <p
         className="text-sm leading-relaxed whitespace-pre-wrap"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#202833", wordBreak: "keep-all" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
       >
         {review.body}
       </p>
 
       {reportOpen && !review.isMine && (
-        <div className="mt-4 pt-4" style={{ borderTop: "1px solid #D8D3C9" }}>
+        <div className="mt-4 pt-4" style={{ borderTop: "1px solid #D4CFC1" }}>
           <p
             className="text-xs mb-2"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
           >
             신고 사유를 선택해주세요. 운영자가 24시간 내 확인합니다.
           </p>
@@ -168,9 +168,9 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
                 className="text-[0.7rem] px-2 py-1 transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: reportReason === r ? "#3B5A6B" : "transparent",
-                  color: reportReason === r ? "#FBF8F1" : "#202833",
-                  border: "1px solid #3B5A6B",
+                  backgroundColor: reportReason === r ? "#0B5563" : "transparent",
+                  color: reportReason === r ? "#F0EEE9" : "#4A3B33",
+                  border: "1px solid #0B5563",
                 }}
               >
                 {r}
@@ -185,8 +185,8 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
               className="text-xs px-3 py-1.5"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                backgroundColor: reportReason ? "#D54545" : "#D8D3C9",
-                color: "#FBF8F1",
+                backgroundColor: reportReason ? "#D54545" : "#D4CFC1",
+                color: "#F0EEE9",
                 cursor: isPending ? "wait" : "pointer",
               }}
             >
@@ -198,8 +198,8 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
               className="text-xs px-3 py-1.5"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#5F584F",
-                border: "1px solid #D8D3C9",
+                color: "#6B5C50",
+                border: "1px solid #D4CFC1",
                 background: "none",
               }}
             >
@@ -212,7 +212,7 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
       {toast && (
         <p
           className="mt-3 text-[0.7rem]"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
         >
           {toast}
         </p>

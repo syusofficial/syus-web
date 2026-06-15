@@ -32,7 +32,7 @@ type Props = {
 const FONT_FAMILY = "'Spoqa Han Sans Neo', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif";
 
 const BODY = {
-  backgroundColor: "#FBF8F1",
+  backgroundColor: "#F0EEE9",
   fontFamily: FONT_FAMILY,
   margin: 0,
   padding: "32px 0",
@@ -50,7 +50,7 @@ const GREETING = {
   fontFamily: FONT_FAMILY,
   fontSize: "18px",
   lineHeight: "1.8",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   fontWeight: 600,
   margin: "0 0 24px",
 } as const;
@@ -59,14 +59,14 @@ const PARAGRAPH = {
   fontFamily: FONT_FAMILY,
   fontSize: "15px",
   lineHeight: "1.9",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   margin: "0 0 16px",
 } as const;
 
 const CARD_WRAP = {
   margin: "20px 0",
   padding: "20px",
-  backgroundColor: "#FBF8F1",
+  backgroundColor: "#F0EEE9",
   border: "1px solid #EDE6D5",
 } as const;
 
@@ -84,7 +84,7 @@ const CARD_TITLE = {
   fontSize: "16px",
   fontWeight: 500,
   lineHeight: "1.5",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   margin: "0 0 10px",
 } as const;
 
@@ -92,7 +92,7 @@ const CARD_META = {
   fontFamily: FONT_FAMILY,
   fontSize: "13px",
   lineHeight: "1.7",
-  color: "#5F584F",
+  color: "#6B5C50",
   margin: "0 0 4px",
 } as const;
 
@@ -103,7 +103,7 @@ const CTA_WRAP = {
 
 const CTA_BUTTON = {
   backgroundColor: "#D6E58F",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   fontFamily: FONT_FAMILY,
   fontSize: "14px",
   fontWeight: 600,
@@ -123,7 +123,7 @@ const SIGNATURE = {
 const SIGNOFF = {
   ...PARAGRAPH,
   marginTop: "8px",
-  color: "#5F584F",
+  color: "#6B5C50",
 } as const;
 
 const LINK_STYLE = {
@@ -173,7 +173,7 @@ export function ShowReminderEmail({ name, shows }: Props) {
               <Section key={s.id} style={CARD_WRAP}>
                 <Text style={CARD_LABEL}>{labelText}</Text>
                 <Text style={CARD_TITLE}>
-                  <Link href={showHref} style={{ ...LINK_STYLE, color: "#1A1A1A" }}>
+                  <Link href={showHref} style={{ ...LINK_STYLE, color: "#4A3B33" }}>
                     {s.title}
                   </Link>
                 </Text>

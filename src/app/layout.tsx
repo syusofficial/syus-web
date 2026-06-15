@@ -123,8 +123,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   // 다크 모드 auto — 시스템 테마에 따라 브라우저 상단바 색이 갈린다.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FBF8F1" },
-    { media: "(prefers-color-scheme: dark)", color: "#1B2842" },
+    { media: "(prefers-color-scheme: light)", color: "#F0EEE9" },
+    { media: "(prefers-color-scheme: dark)", color: "#1F1814" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -147,7 +147,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
         <link rel="dns-prefetch" href="https://spoqa.github.io" />
       </head>
-      <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: "#FBF8F1", color: "#202833" }}>
+      <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: "#F0EEE9", color: "#4A3B33" }}>
         <LoadingScreen />
         <NavMega />
         <main className="flex-1">{children}</main>

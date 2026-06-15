@@ -58,7 +58,7 @@ export default function LoadingScreen() {
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        backgroundColor: "#FBF8F1",
+        backgroundColor: "#F0EEE9",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

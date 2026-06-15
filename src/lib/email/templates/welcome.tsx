@@ -5,11 +5,11 @@
  * 임의 수정 금지 — 카피 변경은 마케팅팀 요청 후 재배포.
  *
  * 디자인 토큰 (color_lock 룰 반영)
- * - 본문 배경(외곽): #FBF8F1 (크림)
+ * - 본문 배경(외곽): #F0EEE9 (크림)
  * - 카드 배경: #FFFFFF
  * - 제목·강조: #274E9B (코발트)
- * - 본문 텍스트: #1A1A1A
- * - 부가 텍스트: #5F584F
+ * - 본문 텍스트: #4A3B33
+ * - 부가 텍스트: #6B5C50
  * - CTA 버튼: #D6E58F (페일라임) — 메일 1통당 1개만
  */
 import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "@react-email/components";
@@ -22,7 +22,7 @@ type Props = {
 const FONT_FAMILY = "'Spoqa Han Sans Neo', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif";
 
 const BODY = {
-  backgroundColor: "#FBF8F1",
+  backgroundColor: "#F0EEE9",
   fontFamily: FONT_FAMILY,
   margin: 0,
   padding: "32px 0",
@@ -40,7 +40,7 @@ const GREETING = {
   fontFamily: FONT_FAMILY,
   fontSize: "16px",
   lineHeight: "1.8",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   margin: "0 0 24px",
 } as const;
 
@@ -48,7 +48,7 @@ const PARAGRAPH = {
   fontFamily: FONT_FAMILY,
   fontSize: "15px",
   lineHeight: "1.9",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   margin: "0 0 16px",
 } as const;
 
@@ -65,7 +65,7 @@ const LIST_ITEM = {
   fontFamily: FONT_FAMILY,
   fontSize: "14px",
   lineHeight: "1.8",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   margin: "0 0 14px",
   paddingLeft: "0",
 } as const;
@@ -74,7 +74,7 @@ const LIST_DESC = {
   fontFamily: FONT_FAMILY,
   fontSize: "13px",
   lineHeight: "1.7",
-  color: "#5F584F",
+  color: "#6B5C50",
   margin: "4px 0 0",
 } as const;
 
@@ -90,7 +90,7 @@ const CTA_WRAP = {
 
 const CTA_BUTTON = {
   backgroundColor: "#D6E58F",
-  color: "#1A1A1A",
+  color: "#4A3B33",
   fontFamily: FONT_FAMILY,
   fontSize: "14px",
   fontWeight: 600,
@@ -110,7 +110,7 @@ const SIGNATURE = {
 const SIGNOFF = {
   ...PARAGRAPH,
   marginTop: "8px",
-  color: "#5F584F",
+  color: "#6B5C50",
 } as const;
 
 export function WelcomeEmail({ name }: Props) {

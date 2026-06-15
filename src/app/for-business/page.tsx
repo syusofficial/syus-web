@@ -22,7 +22,7 @@ export default function ForBusinessPage() {
   ]);
 
   return (
-    <div className="pt-24 md:pt-36 min-h-screen" style={{ backgroundColor: "#FBF8F1" }}>
+    <div className="pt-24 md:pt-36 min-h-screen" style={{ backgroundColor: "#F0EEE9" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
@@ -31,12 +31,12 @@ export default function ForBusinessPage() {
       {/* ── Hero ── 그라데이션+그레인 (사장님 요청 시각 효과) */}
       <section
         className="px-6 md:px-12 lg:px-20 pt-16 md:pt-20 pb-24 md:pb-32 relative overflow-hidden grad-grain grad-mineral-radial"
-        style={{ color: "#FBF8F1" }}
+        style={{ color: "#F0EEE9" }}
       >
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.4em] uppercase mb-10"
-            style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
           >
             For Business
           </p>
@@ -44,7 +44,7 @@ export default function ForBusinessPage() {
             className="text-[2.6rem] sm:text-[3.4rem] md:text-[4.4rem] leading-[1.1] font-black tracking-tighter mb-10"
             style={{
               fontFamily: "var(--font-noto-serif-kr)",
-              color: "#FBF8F1",
+              color: "#F0EEE9",
               wordBreak: "keep-all",
               textWrap: "balance",
             }}
@@ -53,13 +53,13 @@ export default function ForBusinessPage() {
             <br />
             조용히 닿는
             <br />
-            <span style={{ color: "#C8D96F" }}>광고</span>를 제안합니다.
+            <span style={{ color: "#C99FB1" }}>광고</span>를 제안합니다.
           </h1>
           <p
             className="text-lg md:text-xl leading-relaxed max-w-2xl"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              color: "#FBF8F1",
+              color: "#F0EEE9",
               opacity: 0.9,
               wordBreak: "keep-all",
             }}
@@ -75,8 +75,8 @@ export default function ForBusinessPage() {
               className="px-7 py-3.5 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                backgroundColor: "#C8D96F",
-                color: "#202833",
+                backgroundColor: "#5C2A42",
+                color: "#F0EEE9",
                 fontWeight: 600,
               }}
             >
@@ -87,7 +87,7 @@ export default function ForBusinessPage() {
               className="px-7 py-3.5 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#FBF8F1",
+                color: "#F0EEE9",
                 border: "1px solid rgba(248, 249, 252, 0.5)",
               }}
             >
@@ -103,13 +103,13 @@ export default function ForBusinessPage() {
           <SectionLabel no="01" label="Audience" />
           <h2
             className="text-3xl md:text-4xl font-bold mb-8 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
           >
             무대 옆에 머무는 사람들에게 닿습니다.
           </h2>
           <p
             className="text-base md:text-lg leading-relaxed mb-10 max-w-3xl"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
           >
             무대올림의 사용자는 단순한 트래픽이 아닙니다.
             공연을 직접 올리는 학생 공연자, 그리고 그 공연을 보러 가는 가까운 관객들.
@@ -137,12 +137,12 @@ export default function ForBusinessPage() {
       </section>
 
       {/* ── 2. 왜 무대올림인가 ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28" style={{ backgroundColor: "#F0EBE0" }}>
+      <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28" style={{ backgroundColor: "#E6E1D6" }}>
         <div className="max-w-5xl mx-auto">
           <SectionLabel no="02" label="Why" />
           <h2
             className="text-3xl md:text-4xl font-bold mb-10 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
           >
             소음 없는 미디어,
             <br className="md:hidden" />
@@ -174,7 +174,7 @@ export default function ForBusinessPage() {
           <SectionLabel no="03" label="Placements" />
           <h2
             className="text-3xl md:text-4xl font-bold mb-10 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
           >
             게재 가능한 위치 6종.
           </h2>
@@ -188,7 +188,7 @@ export default function ForBusinessPage() {
           </div>
           <p
             className="text-xs mt-6 leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
           >
             ※ 상세 광고 상품·단가표는 1:1 견적 문의 시 미디어킷(PDF)으로 발송드립니다.
           </p>
@@ -196,12 +196,12 @@ export default function ForBusinessPage() {
       </section>
 
       {/* ── 4. 진행 절차 ── */}
-      <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28" style={{ backgroundColor: "#202833", color: "#FBF8F1" }}>
+      <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28" style={{ backgroundColor: "#4A3B33", color: "#F0EEE9" }}>
         <div className="max-w-5xl mx-auto">
           <SectionLabel no="04" label="Process" dark />
           <h2
             className="text-3xl md:text-4xl font-bold mb-10 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#C8D96F", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#5C2A42", wordBreak: "keep-all" }}
           >
             문의에서 게재까지 4단계.
           </h2>
@@ -218,26 +218,26 @@ export default function ForBusinessPage() {
       <section
         className="px-6 md:px-12 lg:px-20 py-24 md:py-32 text-center"
         style={{
-          background: "linear-gradient(180deg, #3B5A6B 0%, #202833 100%)",
-          color: "#FBF8F1",
+          background: "linear-gradient(180deg, #0B5563 0%, #4A3B33 100%)",
+          color: "#F0EEE9",
         }}
       >
         <div className="max-w-3xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"
-            style={{ fontFamily: "var(--font-inter)", color: "#C8D96F", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5C2A42", fontWeight: 600 }}
           >
             Contact
           </p>
           <h2
             className="text-3xl md:text-5xl font-bold mb-6 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F0EEE9", wordBreak: "keep-all" }}
           >
             먼저, 가볍게 이야기를 나눠보세요.
           </h2>
           <p
             className="text-base md:text-lg leading-relaxed mb-10 max-w-xl mx-auto"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", opacity: 0.85, wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", opacity: 0.85, wordBreak: "keep-all" }}
           >
             예산이 정해지지 않으셨어도 괜찮습니다.
             <br />
@@ -249,8 +249,8 @@ export default function ForBusinessPage() {
               className="px-8 py-4 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                backgroundColor: "#C8D96F",
-                color: "#202833",
+                backgroundColor: "#5C2A42",
+                color: "#F0EEE9",
                 fontWeight: 600,
               }}
             >
@@ -261,7 +261,7 @@ export default function ForBusinessPage() {
               className="px-8 py-4 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#FBF8F1",
+                color: "#F0EEE9",
                 border: "1px solid rgba(248, 249, 252, 0.5)",
               }}
             >
@@ -270,7 +270,7 @@ export default function ForBusinessPage() {
           </div>
           <p
             className="text-xs mt-10 leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", opacity: 0.78 }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", opacity: 0.78 }}
           >
             운영: 사유유사 · 대표 이혁호 · 사업자등록번호 168-05-03666
             <br />
@@ -293,7 +293,7 @@ function SectionLabel({ no, label, dark }: { no: string; label: string; dark?: b
         className="text-xs tracking-[0.3em]"
         style={{
           fontFamily: "var(--font-inter)",
-          color: dark ? "rgba(248, 249, 252, 0.55)" : "#5F584F",
+          color: dark ? "rgba(248, 249, 252, 0.55)" : "#6B5C50",
         }}
       >
         {no}
@@ -302,7 +302,7 @@ function SectionLabel({ no, label, dark }: { no: string; label: string; dark?: b
         className="text-xs tracking-[0.3em] uppercase"
         style={{
           fontFamily: "var(--font-inter)",
-          color: dark ? "#C8D96F" : "#3B5A6B",
+          color: dark ? "#5C2A42" : "#0B5563",
           fontWeight: 600,
         }}
       >
@@ -314,16 +314,16 @@ function SectionLabel({ no, label, dark }: { no: string; label: string; dark?: b
 
 function AudienceCard({ title, desc }: { title: string; desc: string }) {
   return (
-    <div className="p-6" style={{ backgroundColor: "#FBF8F1", border: "1px solid #D8D3C9" }}>
+    <div className="p-6" style={{ backgroundColor: "#F0EEE9", border: "1px solid #D4CFC1" }}>
       <p
         className="text-base font-bold mb-2"
-        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
       >
         {title}
       </p>
       <p
         className="text-sm leading-relaxed"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A", wordBreak: "keep-all" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
       >
         {desc}
       </p>
@@ -333,22 +333,22 @@ function AudienceCard({ title, desc }: { title: string; desc: string }) {
 
 function ReasonCard({ n, t, d }: { n: string; t: string; d: string }) {
   return (
-    <div className="p-6" style={{ backgroundColor: "#FBF8F1", border: "1px solid #3B5A6B" }}>
+    <div className="p-6" style={{ backgroundColor: "#F0EEE9", border: "1px solid #0B5563" }}>
       <p
         className="text-xs tracking-[0.25em] mb-3"
-        style={{ fontFamily: "var(--font-inter)", color: "#5F584F" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
       >
         {n}
       </p>
       <p
         className="text-lg font-bold mb-3"
-        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3B5A6B" }}
+        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
       >
         {t}
       </p>
       <p
         className="text-sm leading-relaxed"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#1A1A1A", wordBreak: "keep-all" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
       >
         {d}
       </p>
@@ -358,23 +358,23 @@ function ReasonCard({ n, t, d }: { n: string; t: string; d: string }) {
 
 function Placement({ code, name, desc }: { code: string; name: string; desc: string }) {
   return (
-    <div className="flex items-start gap-4 p-5" style={{ border: "1px solid #D8D3C9" }}>
+    <div className="flex items-start gap-4 p-5" style={{ border: "1px solid #D4CFC1" }}>
       <span
         className="w-10 h-10 flex items-center justify-center text-base font-bold shrink-0"
-        style={{ fontFamily: "var(--font-inter)", backgroundColor: "#3B5A6B", color: "#FBF8F1" }}
+        style={{ fontFamily: "var(--font-inter)", backgroundColor: "#0B5563", color: "#F0EEE9" }}
       >
         {code}
       </span>
       <div className="flex-1">
         <p
           className="text-sm font-semibold mb-1"
-          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#1A1A1A" }}
+          style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}
         >
           {name}
         </p>
         <p
           className="text-xs leading-relaxed"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F584F", wordBreak: "keep-all" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", wordBreak: "keep-all" }}
         >
           {desc}
         </p>
@@ -388,19 +388,19 @@ function Step({ n, t, d }: { n: string; t: string; d: string }) {
     <div className="p-5" style={{ backgroundColor: "rgba(248, 249, 252, 0.06)", border: "1px solid rgba(248, 249, 252, 0.15)" }}>
       <p
         className="text-2xl font-bold mb-3"
-        style={{ fontFamily: "var(--font-inter)", color: "#C8D96F" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#5C2A42" }}
       >
         {n}
       </p>
       <p
         className="text-sm font-semibold mb-2"
-        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#FBF8F1" }}
+        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#F0EEE9" }}
       >
         {t}
       </p>
       <p
         className="text-xs leading-relaxed"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#FBF8F1", opacity: 0.82, wordBreak: "keep-all" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", opacity: 0.82, wordBreak: "keep-all" }}
       >
         {d}
       </p>
