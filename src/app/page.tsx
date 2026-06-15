@@ -1,8 +1,9 @@
 import Link from "next/link";
 import ShowCard, { type RatingSummary } from "@/components/ShowCard";
-// 2026-06-16 G-1안: 보조 TOP 5 가로 흐름 제거 → 컴포넌트 import 해제, StreamItem 타입만 유지
-import { type StreamItem } from "@/components/HeroPosterStream";
-import HeroUnveilScroll from "@/components/HeroUnveilScroll";
+// 2026-06-16 사장님 재설계: HeroUnveilScroll(둥둥 떠다니는 대각선 포스터) 폐기 — 로딩 렉/카피 묻힘 문제.
+// → 새 히어로는 nav 밑에 HeroPosterStream(물결처럼 이어지는 가로 흐름)을 크게 띄우고, 그 아래 H1·부제·CTA.
+// HeroUnveilScroll.tsx 파일 자체는 보존(미래 재사용/복원 여지). page.tsx에서만 호출 해제.
+import HeroPosterStream, { type StreamItem } from "@/components/HeroPosterStream";
 import { createClient } from "@/lib/supabase/server";
 import { InstitutionSidebar, PartnerAdSidebar } from "@/components/PartnerSidebars";
 import { isEnded, todayKey, showEndKey } from "@/lib/showFilters";
@@ -112,14 +113,118 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
       />
-      {/* ── Hero (unveil.fr 스타일 세로 스크롤 + 대각선 포스터) ──
-        * 2026-06-15 시안: 스크롤 진행에 따라 텍스트는 위로, 포스터는 시차로 흘러간다.
-        * 2026-06-16 옵션 2 G-1안 (사장님 결정): 보조 "TOP 5 다시 보기" 영역 제거.
-        *   메인 첫 화면이 두 곳(HeroUnveilScroll + HeroPosterStream 가로 흐름)으로 갈리며
-        *   TOP 5가 중복 노출되던 문제를 정리. HeroPosterStream 컴포넌트 자체는 보존
-        *   (다른 페이지에서 재사용 가능). page.tsx에서만 호출 해제.
+      {/* ── Hero (2026-06-16 재설계) ──
+        * 사장님 결정: 둥둥 떠다니는 대각선 포스터(HeroUnveilScroll) 폐기.
+        *   - 이유 1: 옵션 2 최적화에도 로딩 렉 잔존 (5장 포스터 동시 로드 + sticky 160vh)
+        *   - 이유 2: 거대한 그래픽이 H1·CTA를 묻어 첫 화면 정보 위계 약함
+        * 새 구조 (위에서 아래):
+        *   (A) nav 밑에 HeroPosterStream(물결처럼 가로로 흐르는 포스터) — 크게
+        *   (B) 그 아래 H1 "오늘도 우리들의 막이 오릅니다" + 부제 + CTA 2개
+        * 첫 viewport 안에 (A)+(B)가 자연스럽게 들어가도록 패딩 조절.
+        * 빈 상태(공연 0개): (A)는 안내 카드 1줄로 대체, (B)는 그대로 노출.
         */}
-      <HeroUnveilScroll items={streamItems} />
+      <section
+        className="relative"
+        style={{ backgroundColor: "#F0EEE9" /* Cloud Dancer */ }}
+      >
+        {/* (A) 포스터 흐름 — nav 밑에 크게 */}
+        <div className="pt-24 md:pt-32 pb-8 md:pb-12">
+          <div className="px-6 md:px-12 lg:px-20 mb-4">
+            <p
+              className="text-[0.7rem] tracking-[0.35em] uppercase"
+              style={{
+                fontFamily: "var(--font-inter)",
+                color: "#0B5563",
+                fontWeight: 600,
+              }}
+            >
+              Top 5 · 지금 가장 주목받는 무대
+            </p>
+          </div>
+          {streamItems.length > 0 ? (
+            <HeroPosterStream items={streamItems} />
+          ) : (
+            <div className="px-6 md:px-12 lg:px-20">
+              <div
+                className="py-10 text-center"
+                style={{
+                  border: "1px solid #D4CFC1",
+                  backgroundColor: "rgba(255,255,255,0.5)",
+                }}
+              >
+                <p
+                  className="text-sm"
+                  style={{
+                    fontFamily: "var(--font-noto-serif-kr)",
+                    color: "#0B5563",
+                    wordBreak: "keep-all",
+                  }}
+                >
+                  곧, 어느 대학의 첫 막이 오릅니다.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* (B) 텍스트 + CTA */}
+        <div className="px-6 md:px-12 lg:px-20 pt-6 md:pt-10 pb-20 md:pb-28">
+          <div className="max-w-[1800px] mx-auto">
+            <h1
+              className="font-bold mb-7"
+              style={{
+                fontFamily: "var(--font-noto-serif-kr)",
+                fontSize: "clamp(2.6rem, 6vw, 5.2rem)",
+                color: "#0B5563" /* Transformative Teal */,
+                letterSpacing: "-0.04em",
+                lineHeight: "1.08",
+                wordBreak: "keep-all",
+                textWrap: "balance",
+              }}
+            >
+              오늘도 우리들의 막이 오릅니다
+            </h1>
+            <p
+              className="leading-relaxed mb-9 max-w-2xl"
+              style={{
+                fontFamily: "var(--font-noto-sans-kr)",
+                fontSize: "clamp(1rem, 1.6vw, 1.25rem)",
+                color: "#4A3B33" /* Silhouette */,
+                wordBreak: "keep-all",
+                fontWeight: 300,
+              }}
+            >
+              대학 무대예술의 오늘을 한데 모아두고 기록하고 알립니다
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/shows"
+                className="inline-block px-7 py-4 text-sm tracking-wider"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  backgroundColor: "#5C2A42" /* Divine Damson */,
+                  color: "#F0EEE9",
+                  fontWeight: 600,
+                }}
+              >
+                공연 둘러보기 →
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="inline-block px-7 py-4 text-sm tracking-wider"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  border: "1px solid #4A3B33",
+                  color: "#4A3B33",
+                  fontWeight: 500,
+                }}
+              >
+                무대 올리기
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ── 정체성 띠 ── */}
       <section
