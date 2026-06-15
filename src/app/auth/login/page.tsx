@@ -79,50 +79,56 @@ function LoginPageInner() {
 
     setLoading(true);
 
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error || !data.user) {
-      const newCount = attemptCount + 1;
-      setAttemptCount(newCount);
+      if (error || !data.user) {
+        const newCount = attemptCount + 1;
+        setAttemptCount(newCount);
 
-      // 5회 실패 시 60초 잠금
-      if (newCount >= 5) {
-        const until = Date.now() + 60_000;
-        setLockedUntil(until);
-        setError("로그인 시도가 5회 실패하여 60초간 잠금됩니다.");
-      } else {
-        const remaining = 5 - newCount;
-        setError(`이메일 또는 비밀번호가 올바르지 않습니다. (남은 시도: ${remaining}회)`);
+        // 5회 실패 시 60초 잠금
+        if (newCount >= 5) {
+          const until = Date.now() + 60_000;
+          setLockedUntil(until);
+          setError("로그인 시도가 5회 실패하여 60초간 잠금됩니다.");
+        } else {
+          const remaining = 5 - newCount;
+          setError(`이메일 또는 비밀번호가 올바르지 않습니다. (남은 시도: ${remaining}회)`);
+        }
+        return;
       }
+
+      // 로그인 성공 → 카운터 초기화
+      setAttemptCount(0);
+      setLockedUntil(null);
+
+      // 아이디 저장 옵션 처리
+      if (rememberId) {
+        localStorage.setItem(SAVED_EMAIL_KEY, email);
+      } else {
+        localStorage.removeItem(SAVED_EMAIL_KEY);
+      }
+
+      // 역할 확인 후 리다이렉트 — maybeSingle()로 행 없어도 throw 안 함
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .maybeSingle();
+
+      if (profile?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+      router.refresh();
+    } catch (err) {
+      console.error("[login] unexpected error", err);
+      setError("로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // 로그인 성공 → 카운터 초기화
-    setAttemptCount(0);
-    setLockedUntil(null);
-
-    // 아이디 저장 옵션 처리
-    if (rememberId) {
-      localStorage.setItem(SAVED_EMAIL_KEY, email);
-    } else {
-      localStorage.removeItem(SAVED_EMAIL_KEY);
-    }
-
-    // 역할 확인 후 리다이렉트
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .single();
-
-    if (profile?.role === "admin") {
-      router.push("/admin");
-    } else {
-      router.push("/");
-    }
-    router.refresh();
   };
 
   const inputStyle: React.CSSProperties = {
