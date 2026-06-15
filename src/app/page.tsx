@@ -57,7 +57,6 @@ export default async function HomePage() {
     performer_name: s.performer_name ?? null,
     schedule_start: s.schedule_start ?? null,
     venue: s.venue ?? null,
-    genre: s.genre ?? null, // 8장르 도트(미네랄 채도 변형) — 2026-06-15 Phase 1
   }));
 
   // 운영자 픽
