@@ -302,7 +302,14 @@ export default function NavMega() {
     loadUserAndRole();
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => loadUserAndRole());
+    } = supabase.auth.onAuthStateChange((event) => {
+      // 2026-06-16 무한 루프 차단: TOKEN_REFRESHED·INITIAL_SESSION·USER_UPDATED 등은 무시.
+      // 이전엔 모든 이벤트마다 loadUserAndRole 호출 → getUser() 안에서 또 TOKEN_REFRESHED
+      // 발화 → 다시 호출 → AUTH 795건/시간 폭주 → Supabase IP rate limit 잠금 사고.
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+        loadUserAndRole();
+      }
+    });
     return () => subscription.unsubscribe();
   }, [loadUserAndRole]);
 
