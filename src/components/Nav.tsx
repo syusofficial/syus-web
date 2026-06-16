@@ -284,8 +284,13 @@ export default function Nav() {
     const supabase = createClient();
     loadUserAndRole();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      loadUserAndRole();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      // 2026-06-16 무한 루프 차단 (NavMega와 동일 패턴):
+      // TOKEN_REFRESHED·INITIAL_SESSION·USER_UPDATED 무시. SIGNED_IN/OUT만 처리.
+      // 미적용 시 AUTH 폭주 → Supabase IP rate limit 잠금 사고 재발 위험.
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+        loadUserAndRole();
+      }
     });
 
     return () => subscription.unsubscribe();
