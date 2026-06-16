@@ -329,7 +329,9 @@ export default function PerformerPage() {
         .single();
 
       if (updateError) {
-        setError("공연 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+        console.error("[performer/update] error:", updateError);
+        console.error("[performer/update] payload:", payload);
+        setError(`공연 수정 중 오류: ${updateError.message}${updateError.details ? ` — ${updateError.details}` : ""}${updateError.hint ? ` (${updateError.hint})` : ""}`);
         setLoading(false);
         return;
       }
@@ -343,7 +345,9 @@ export default function PerformerPage() {
         .single();
 
       if (insertError) {
-        setError("공연 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+        console.error("[performer/insert] error:", insertError);
+        console.error("[performer/insert] payload:", payload);
+        setError(`공연 등록 중 오류: ${insertError.message}${insertError.details ? ` — ${insertError.details}` : ""}${insertError.hint ? ` (${insertError.hint})` : ""}`);
         setLoading(false);
         return;
       }
