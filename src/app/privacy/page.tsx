@@ -303,6 +303,7 @@ export default function PrivacyPage() {
             <ol className="list-decimal pl-5 space-y-1 mt-2">
               <li>관리적 조치 — 내부 관리 계획 수립, 접근 권한 분리(RLS), 최소 권한 원칙 적용</li>
               <li>기술적 조치 — 비밀번호 단방향 암호화(bcrypt), 모든 통신 구간 HTTPS/TLS 암호화, 데이터베이스 접근 통제, Content Security Policy 등 보안 헤더</li>
+              <li>자동 세션 만료 — 회원 보안을 위해 마지막 활동으로부터 3시간 또는 로그인 후 12시간 경과 시 세션이 자동 종료됩니다.</li>
               <li>물리적 조치 — 클라우드 인프라(Supabase·Vercel)의 데이터센터 보안 정책 준수</li>
             </ol>
           </section>

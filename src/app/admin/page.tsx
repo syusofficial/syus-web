@@ -154,20 +154,26 @@ export default function AdminPage() {
   const updateShowStatus = async (id: string, status: "approved" | "rejected") => {
     const supabase = createClient();
     const { error } = await supabase.from("shows").update({ status }).eq("id", id);
-    if (!error) {
-      setShows((prev) => prev.map((s) => s.id === id ? { ...s, status } : s));
-      setReviewShow((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
+    if (error) {
+      console.error("[admin/updateShowStatus]", error);
+      alert(`공연 상태 변경 중 오류가 발생했습니다.\n${error.message}`);
+      return;
     }
+    setShows((prev) => prev.map((s) => s.id === id ? { ...s, status } : s));
+    setReviewShow((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
   };
 
   /** 운영자 픽 토글 — 메인 페이지 노출 여부 */
   const toggleFeatured = async (id: string, featured: boolean) => {
     const supabase = createClient();
     const { error } = await supabase.from("shows").update({ featured }).eq("id", id);
-    if (!error) {
-      setShows((prev) => prev.map((s) => s.id === id ? { ...s, featured } : s));
-      setReviewShow((prev) => (prev && prev.id === id ? { ...prev, featured } : prev));
+    if (error) {
+      console.error("[admin/toggleFeatured]", error);
+      alert(`운영자 픽 변경 중 오류가 발생했습니다.\n${error.message}`);
+      return;
     }
+    setShows((prev) => prev.map((s) => s.id === id ? { ...s, featured } : s));
+    setReviewShow((prev) => (prev && prev.id === id ? { ...prev, featured } : prev));
   };
 
   /** 관리자 강제 탈퇴 — Storage 포스터 + auth.users + CASCADE 데이터 삭제 */
@@ -286,17 +292,23 @@ export default function AdminPage() {
   const updateMemberRole = async (id: string, role: "member" | "performer" | "admin") => {
     const supabase = createClient();
     const { error } = await supabase.from("profiles").update({ role }).eq("id", id);
-    if (!error) {
-      setMembers((prev) => prev.map((m) => m.id === id ? { ...m, role } : m));
+    if (error) {
+      console.error("[admin/updateMemberRole]", error);
+      alert(`회원 역할 변경 중 오류가 발생했습니다.\n${error.message}`);
+      return;
     }
+    setMembers((prev) => prev.map((m) => m.id === id ? { ...m, role } : m));
   };
 
   const resolveContact = async (id: string) => {
     const supabase = createClient();
     const { error } = await supabase.from("contacts").update({ status: "resolved" }).eq("id", id);
-    if (!error) {
-      setContacts((prev) => prev.map((c) => c.id === id ? { ...c, status: "resolved" } : c));
+    if (error) {
+      console.error("[admin/resolveContact]", error);
+      alert(`문의 처리 중 오류가 발생했습니다.\n${error.message}`);
+      return;
     }
+    setContacts((prev) => prev.map((c) => c.id === id ? { ...c, status: "resolved" } : c));
   };
 
   /** 공연 영구 삭제 — Storage 포스터 + DB row 제거 */

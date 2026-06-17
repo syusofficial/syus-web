@@ -60,13 +60,13 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
         name="body"
         value={body}
         onChange={(e) => setBody(e.target.value)}
-        maxLength={1000}
+        maxLength={200}
         minLength={10}
         rows={4}
         placeholder={
           initialBody
             ? "후기를 수정해주세요."
-            : "관람하신 공연의 인상을 남겨주세요. (10~1000자, 비방·욕설·차별 표현은 자동 차단됩니다)"
+            : "관람하신 공연의 인상을 남겨주세요. (10~200자, 비방·욕설·차별 표현은 자동 차단됩니다)"
         }
         disabled={isPending}
         className="w-full p-3 text-sm leading-relaxed transition-colors"
@@ -84,7 +84,7 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
           className="text-[0.7rem]"
           style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
         >
-          {body.length} / 1000자 · 한 공연당 한 번 작성, 다시 제출하면 갱신됩니다.
+          {body.length} / 200자 · 한 공연당 한 번 작성, 다시 제출하면 갱신됩니다.
         </p>
         <button
           type="submit"

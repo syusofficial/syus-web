@@ -101,8 +101,12 @@ export default async function ShowsPage({
     query = query.eq("show_category", category);
   }
   if (school) {
-    // 부분 일치로 검색 — "한양대학교 연극영화학과"처럼 학과까지 적힌 기존 데이터도 매칭
-    query = query.ilike("school_department", `%${school}%`);
+    // 2026-06-17 sanitize 적용 — q와 동일 패턴. 사용자 입력 ilike injection 방지.
+    const safeSchool = sanitizeSearchTerm(school);
+    if (safeSchool) {
+      // 부분 일치로 검색 — "한양대학교 연극영화학과"처럼 학과까지 적힌 기존 데이터도 매칭
+      query = query.ilike("school_department", `%${safeSchool}%`);
+    }
   }
   if (q && q.trim()) {
     const search = sanitizeSearchTerm(q);

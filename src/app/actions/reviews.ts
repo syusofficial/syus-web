@@ -20,7 +20,7 @@ export async function submitReview(formData: FormData): Promise<SubmitReviewStat
 
   if (!showId) return { ok: false, message: "공연 정보가 없습니다." };
   if (body.length < 10) return { ok: false, message: "최소 10자 이상 작성해주세요." };
-  if (body.length > 1000) return { ok: false, message: "최대 1000자까지 작성 가능합니다." };
+  if (body.length > 200) return { ok: false, message: "최대 200자까지 작성 가능합니다." };
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
