@@ -37,6 +37,12 @@ export function EmailFooter() {
       <Text style={META_TEXT}>사유유사 SYUS · 대표 이혁호</Text>
       <Text style={META_TEXT}>사업자등록번호 168-05-03666</Text>
       <Text style={META_TEXT}>
+        경기도 남양주시 진접읍 해밀예당1로 220, 본동 7층 07호 E-35호(엠타워)
+      </Text>
+      <Text style={META_TEXT}>
+        문의: <Link href="mailto:syusflux@gmail.com" style={LINK_STYLE}>syusflux@gmail.com</Link>
+      </Text>
+      <Text style={META_TEXT}>
         <Link href="https://syus.co.kr" style={LINK_STYLE}>syus.co.kr</Link>
         {" · "}
         <Link href="https://instagram.com/syus_official" style={LINK_STYLE}>instagram.com/syus_official</Link>
@@ -45,7 +51,8 @@ export function EmailFooter() {
         이 메일에 그대로 답장하시면 운영자에게 곧장 전달됩니다.
       </Text>
       <Text style={REPLY_NOTE}>
-        수신을 원치 않으시면 회원 설정에서 알림을 꺼 두실 수 있습니다.
+        알림을 원치 않으시면{" "}
+        <Link href="https://syus.co.kr/mypage" style={LINK_STYLE}>회원 설정 → 알림</Link>에서 변경 가능합니다.
       </Text>
     </Section>
   );

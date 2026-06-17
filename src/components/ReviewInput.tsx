@@ -54,7 +54,7 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3" data-clarity-mask="True">
       <input type="hidden" name="show_id" value={showId} />
       <textarea
         name="body"

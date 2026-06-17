@@ -156,7 +156,7 @@ function LoginPageInner() {
           <SocialDivider label="또는 이메일로 로그인" />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5" data-clarity-mask="True">
           <div>
             <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
               이메일

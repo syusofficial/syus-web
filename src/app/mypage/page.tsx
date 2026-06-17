@@ -283,7 +283,7 @@ export default function MyPage() {
                   )}
                 </div>
                 {showPwForm && (
-                  <form onSubmit={handlePasswordChange} className="space-y-3">
+                  <form onSubmit={handlePasswordChange} className="space-y-3" data-clarity-mask="True">
                     <PasswordInput value={newPw} onChange={setNewPw} required minLength={8} />
                     <PasswordInput value={confirmPw} onChange={setConfirmPw} required minLength={8} />
                     {pwMessage && (

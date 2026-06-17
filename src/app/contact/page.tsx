@@ -176,7 +176,7 @@ export default function ContactPage() {
           </Link>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8" data-clarity-mask="True">
           {/* 카테고리 선택 */}
           <div>
             <label className="block text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
