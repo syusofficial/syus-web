@@ -1,6 +1,6 @@
 /**
  * 좌측 사이드바 — 연관 기관 (클릭 시 해당 기관 공식 홈페이지로)
- * 무대예술(연극·뮤지컬·무용·발레·국악·음악·전통연희) · 문화정책 관련 공신력 있는 기관들.
+ * 무대예술(연극·뮤지컬·무용·국악·음악·전통연희) · 문화정책 관련 공신력 있는 기관들.
  */
 export const INSTITUTIONS: { name: string; url: string; desc: string }[] = [
   { name: "문화체육관광부",         url: "https://www.mcst.go.kr",    desc: "정부 부처" },

@@ -118,7 +118,7 @@ export default function ForBusinessPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <AudienceCard
               title="대학 공연자"
-              desc="연극·뮤지컬·무용·발레·국악·음악·전통연희 등 한국 대학의 무대예술 학생 공연자. 18~26세 중심."
+              desc="연극·뮤지컬·무용·국악·음악·전통연희 등 한국 대학의 무대예술 학생 공연자. 18~26세 중심."
             />
             <AudienceCard
               title="공연 관객"

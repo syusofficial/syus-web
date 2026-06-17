@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
-import { REGIONS_EXCLUDE_ALL, GENRES, SHOW_CATEGORIES } from "@/lib/constants";
+import { REGIONS_EXCLUDE_ALL, GENRES, SHOW_CATEGORIES, GENRE_DETAILS, hasGenreDetails } from "@/lib/constants";
 import { isValidUrl, normalizeUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
 import type { Show } from "@/types";
 
@@ -27,7 +27,7 @@ const emptyForm = {
   title: "", subtitle: "", description: "",
   venue: "", venue_address: "", schedule_start: "", schedule_end: "",
   cast_members: "", directions: "", ticket_url: "", reservation_url: "",
-  genre_custom: "", school_department: "", show_time: "", running_time: "",
+  genre_custom: "", genre_detail: "", school_department: "", show_time: "", running_time: "",
   age_rating: "", map_kakao_url: "", map_naver_url: "",
   performer_name: "",
 };
@@ -161,6 +161,7 @@ export default function PerformerPage() {
       ticket_url: show.ticket_url ?? "",
       reservation_url: show.reservation_url ?? "",
       genre_custom: show.genre_custom ?? "",
+      genre_detail: show.genre_detail ?? "",
       school_department: show.school_department ?? "",
       show_time: show.show_time ?? "",
       running_time: show.running_time ?? "",
@@ -216,6 +217,11 @@ export default function PerformerPage() {
     if (!genre) { setError("공연 장르를 선택해주세요."); return; }
     if (genre === "기타" && !form.genre_custom.trim()) {
       setError("기타 장르명을 입력해주세요.");
+      return;
+    }
+    // 2026-06-17: 무용·음악 선택 시 상세 분류 필수
+    if (hasGenreDetails(genre) && !form.genre_detail.trim()) {
+      setError(`${genre}의 상세 분류를 선택해주세요.`);
       return;
     }
     if (!showCategory) { setError("공연 구분을 선택해주세요."); return; }
@@ -309,6 +315,7 @@ export default function PerformerPage() {
       performer_name: performerNameForShow,
       genre,
       genre_custom: genre === "기타" ? form.genre_custom : null,
+      genre_detail: hasGenreDetails(genre) ? form.genre_detail : null,
       show_category: showCategory,
       region,
       school_department: form.school_department || null,
@@ -548,7 +555,11 @@ export default function PerformerPage() {
                       <button
                         key={g}
                         type="button"
-                        onClick={() => setGenre(g)}
+                        onClick={() => {
+                          setGenre(g);
+                          // 2026-06-17: 장르 변경 시 상세 분류·기타 입력 리셋 — 잔존값 오염 방지
+                          setForm((prev) => ({ ...prev, genre_detail: "", genre_custom: "" }));
+                        }}
                         className="px-5 py-2.5 text-sm transition-colors"
                         style={{
                           fontFamily: "var(--font-noto-sans-kr)",
@@ -562,6 +573,37 @@ export default function PerformerPage() {
                     );
                   })}
                 </div>
+
+                {/* 무용·음악 sub-genre — 2026-06-17 신설 */}
+                {hasGenreDetails(genre) && (
+                  <div className="mt-3">
+                    <p className="text-xs mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                      {genre} 상세 분류 <span style={{ color: "#A63D2F" }}>*</span>
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {GENRE_DETAILS[genre].map((d) => {
+                        const dActive = form.genre_detail === d;
+                        return (
+                          <button
+                            key={d}
+                            type="button"
+                            onClick={() => setForm({ ...form, genre_detail: d })}
+                            className="px-4 py-2 text-sm transition-colors"
+                            style={{
+                              fontFamily: "var(--font-noto-sans-kr)",
+                              backgroundColor: dActive ? "#5C2A42" : "#F0EEE9",
+                              color: dActive ? "#F0EEE9" : "#4A3B33",
+                              border: `1px solid ${dActive ? "#5C2A42" : "#D4CFC1"}`,
+                            }}
+                          >
+                            {d}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {genre === "기타" && (
                   <input
                     type="text"
@@ -859,7 +901,11 @@ export default function PerformerPage() {
                     </p>
                     <p className="text-xs truncate mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
                       {[
-                        show.genre === "기타" ? show.genre_custom : show.genre,
+                        show.genre === "기타"
+                          ? show.genre_custom
+                          : show.genre_detail
+                            ? `${show.genre} · ${show.genre_detail}`
+                            : show.genre,
                         show.region,
                         show.venue,
                         show.schedule_start,

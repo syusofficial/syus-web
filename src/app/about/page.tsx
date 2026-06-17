@@ -96,7 +96,7 @@ export default function AboutPage() {
               className="text-sm tracking-[0.15em]"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", opacity: 0.75 }}
             >
-              연극 · 뮤지컬 · 무용 · 발레
+              연극 · 뮤지컬 · 무용 · 국악
             </span>
             <span
               className="text-sm tracking-[0.15em]"
