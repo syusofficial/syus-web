@@ -155,12 +155,41 @@ export default function SignupPage() {
           <SocialDivider label="또는 이메일로 가입" />
         </div>
 
-        <div className="mb-8 p-4 space-y-2" style={{ backgroundColor: "#E6E1D6" }}>
-          {["공연 찜하기 · 관심 공연 저장", "공연자 신청 · 내 공연 등록 자격", "새 공연 알림 · 업데이트 수신"].map((text) => (
-            <p key={text} className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
-              ✓ {text}
+        {/* ── 가입 안내: 일반 회원 + 공연자 회원 혜택 분리 안내 ── */}
+        <div className="mb-8 space-y-3">
+          <div className="p-4 space-y-2" style={{ backgroundColor: "#E6E1D6" }}>
+            <p
+              className="text-[0.7rem] tracking-[0.2em] uppercase mb-1"
+              style={{ fontFamily: "var(--font-inter)", color: "#0B5563", fontWeight: 600 }}
+            >
+              일반 회원으로 누릴 수 있는 것
             </p>
-          ))}
+            {[
+              "공연 찜하기 · 관심 공연 저장",
+              "공연 좋아요 · 응원 기록",
+              "한 줄 후기 작성 (10~200자, 한 공연당 1회)",
+              "새 공연 알림 · D-3 / D-1 메일 안내",
+            ].map((text) => (
+              <p key={text} className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
+                ✓ {text}
+              </p>
+            ))}
+          </div>
+          <div className="p-4 space-y-1.5" style={{ backgroundColor: "#F0EEE9", border: "1px solid #D4CFC1" }}>
+            <p
+              className="text-[0.7rem] tracking-[0.2em] uppercase mb-1"
+              style={{ fontFamily: "var(--font-inter)", color: "#5C2A42", fontWeight: 600 }}
+            >
+              공연자 회원으로 더해지는 것
+            </p>
+            <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
+              ✓ 내 공연 직접 등록 · 수정 · 회차 관리
+            </p>
+            <p className="text-[0.7rem] leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+              가입 후 마이페이지에서 공연자 신청 → 운영자 확인 후 자격이 부여됩니다.
+              학과·동아리·극단·졸업 워크샵 모두 가능합니다.
+            </p>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5" data-clarity-mask="True">

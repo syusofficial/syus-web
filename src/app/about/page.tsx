@@ -330,6 +330,101 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── 관객에게 ── 일반 회원으로 누릴 수 있는 것 (찜·좋아요·후기·예약) */}
+      <section
+        className="px-6 md:px-12 lg:px-20 py-24"
+        style={{ backgroundColor: "#F0EEE9" }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <p
+            className="text-xs tracking-[0.3em] uppercase mb-3"
+            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+          >
+            For Audiences
+          </p>
+          <h2
+            className="text-3xl md:text-4xl font-bold mb-4 leading-tight"
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
+          >
+            관객으로,
+            <br className="md:hidden" />
+            함께하는 법.
+          </h2>
+          <p
+            className="text-base md:text-lg leading-relaxed mb-12 max-w-3xl"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+          >
+            회원으로 가입하시면 마음에 든 무대를 모아 두고, 짧은 감상을 남기고,
+            다음 회차가 열릴 때 알림을 받을 수 있습니다.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                tag: "찜",
+                title: "관심 공연 저장",
+                body: "마음에 든 무대를 찜해 두고, 마이페이지에서 한눈에 다시 봅니다.",
+              },
+              {
+                tag: "좋아요",
+                title: "응원 한 번",
+                body: "한 번의 좋아요로 공연자에게 관객의 온기가 전달됩니다.",
+              },
+              {
+                tag: "한 줄 후기",
+                title: "관람의 흔적",
+                body: "10~200자, 한 공연당 한 번. 다음 관객의 망설임을 덜어줍니다.",
+              },
+              {
+                tag: "예약",
+                title: "좌석 확보",
+                body: "대학 무대는 대부분 관람료가 없습니다. 결제 없이 좌석만 잡으면 됩니다.",
+              },
+            ].map((b) => (
+              <div
+                key={b.tag}
+                className="p-5"
+                style={{ backgroundColor: "#E6E1D6", borderTop: "3px solid #0B5563" }}
+              >
+                <p
+                  className="text-[0.65rem] tracking-[0.25em] uppercase mb-3"
+                  style={{ fontFamily: "var(--font-inter)", color: "#0B5563", fontWeight: 600 }}
+                >
+                  {b.tag}
+                </p>
+                <h3
+                  className="text-base font-bold mb-2"
+                  style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}
+                >
+                  {b.title}
+                </h3>
+                <p
+                  className="text-xs leading-relaxed"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", wordBreak: "keep-all" }}
+                >
+                  {b.body}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <Link
+              href="/auth/signup"
+              className="inline-block px-8 py-4 text-sm tracking-wider transition-colors"
+              style={{
+                fontFamily: "var(--font-noto-sans-kr)",
+                backgroundColor: "#0B5563",
+                color: "#F0EEE9",
+                fontWeight: 600,
+              }}
+            >
+              회원으로 가입하기 →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── 공연자에게 ── 학생 공연자 입장에서 본 무대올림 (사장님 보완 요청) */}
       <section
         className="px-6 md:px-12 lg:px-20 py-24"

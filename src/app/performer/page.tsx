@@ -679,14 +679,17 @@ export default function PerformerPage() {
 
               {/* 기본 정보 */}
               <div className="pt-6" style={{ borderTop: "1px solid #D4CFC1" }}>
-                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
+                <h3 className="text-sm font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
                   기본 정보
                 </h3>
+                <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                  학교/학과는 <strong style={{ color: "#0B5563" }}>‘○○대학교 ○○학과(과/학부)’</strong> 형식으로 적어주시면 지역 관객이 더 쉽게 찾습니다.
+                </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {[
                     { label: "공연명 *", key: "title", required: true, span: "sm:col-span-2" },
                     { label: "영문 제목 (선택)", key: "subtitle", required: false },
-                    { label: "학교명 (선택)", key: "school_department", required: false, placeholder: "예: 한양대학교, 동국대학교 (학과명 제외)" },
+                    { label: "학교/학과 (선택)", key: "school_department", required: false, placeholder: "예: 한양대학교 연극영화학과 / 동국대학교 연극학부" },
                     { label: "공연 기간 시작 *", key: "schedule_start", required: true, placeholder: "예: 2026.05.10" },
                     { label: "공연 기간 종료 *", key: "schedule_end", required: true, placeholder: "예: 2026.05.25" },
                     { label: "공연 시간 (선택)", key: "show_time", required: false, placeholder: "평일 19:30 / 주말 15:00" },

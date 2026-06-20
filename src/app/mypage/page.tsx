@@ -202,6 +202,44 @@ export default function MyPage() {
         {/* Tab: 내 정보 */}
         {tab === "info" && (
           <div className="space-y-6">
+            {/* ── 회원으로 누릴 수 있는 것 — 일반 회원 혜택 안내 ── */}
+            <div className="p-6" style={{ backgroundColor: "#F0EEE9", border: "1px solid #D4CFC1" }}>
+              <p
+                className="text-[0.7rem] tracking-[0.25em] uppercase mb-3"
+                style={{ fontFamily: "var(--font-inter)", color: "#0B5563", fontWeight: 600 }}
+              >
+                회원으로 누릴 수 있는 것
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                {[
+                  { label: "공연 찜하기", desc: "관심 공연을 모아 두고 다시 보기" },
+                  { label: "공연 좋아요", desc: "응원을 남기고 알림 받기" },
+                  { label: "한 줄 후기", desc: "관람 인상을 짧게 (10~200자)" },
+                  { label: "새 공연 알림", desc: "D-3 · D-1 메일로 챙겨드림" },
+                ].map((b) => (
+                  <div key={b.label} className="flex items-baseline gap-2">
+                    <span style={{ color: "#0B5563", fontWeight: 600 }}>✓</span>
+                    <div>
+                      <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", fontWeight: 600 }}>
+                        {b.label}
+                      </p>
+                      <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                        {b.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {profile?.role !== "performer" && profile?.role !== "admin" && (
+                <div className="mt-5 pt-4" style={{ borderTop: "1px solid #D4CFC1" }}>
+                  <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
+                    <strong style={{ color: "#5C2A42" }}>학과·동아리·극단</strong>이라면, 아래 <strong>공연자 신청</strong> 탭에서 공연자 자격을 신청할 수 있습니다.
+                    승인 후에는 내 공연을 직접 등록·수정할 수 있어요.
+                  </p>
+                </div>
+              )}
+            </div>
+
             <div className="p-6 space-y-4" style={{ backgroundColor: "#E6E1D6" }}>
               {/* 이름 (수정 가능) */}
               <div className="grid grid-cols-[100px_1fr] gap-4 items-center">
