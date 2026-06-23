@@ -90,7 +90,7 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "무대올림 — 오늘, 어느 대학의 막이 오른다. 운영: 사유유사 SYUS.",
+        alt: "무대올림 — 흩어진 무대를, 같은 흐름 위에. 운영: 사유유사 SYUS.",
       },
     ],
   },
