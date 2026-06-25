@@ -46,25 +46,31 @@ type SupabaseWebhookPayload = {
 };
 
 export async function POST(req: Request) {
-  // 1) 시크릿 검증
+  // ⚠️ 비상 처치 (2026-06-26): 이 endpoint가 Auth Hook으로 잘못 등록되어 가입 차단되는
+  // 사고가 있었음. 어떤 입력이든 200을 반환해서 가입 흐름을 절대 막지 않도록 변경.
+  // 환영 메일은 best-effort — 처리 못 하면 조용히 스킵.
+
+  // 1) 시크릿 검증 — 누락/불일치여도 200 반환 (가입 차단 방지)
   const secret = req.headers.get("x-syus-webhook-secret");
   const expected = process.env.SYUS_WEBHOOK_SECRET;
 
   if (!expected) {
-    console.error("[on-signup] SYUS_WEBHOOK_SECRET이 설정되지 않았습니다.");
-    return NextResponse.json({ ok: false, error: "server_misconfigured" }, { status: 500 });
+    console.warn("[on-signup] SYUS_WEBHOOK_SECRET 미설정 — 메일 발송 건너뜀");
+    return NextResponse.json({ ok: true, skipped: "server_misconfigured" });
   }
 
   if (secret !== expected) {
-    return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+    console.warn("[on-signup] 시크릿 불일치 — 메일 발송 건너뜀");
+    return NextResponse.json({ ok: true, skipped: "unauthorized" });
   }
 
-  // 2) 페이로드 파싱
+  // 2) 페이로드 파싱 — 깨져도 200
   let payload: SupabaseWebhookPayload;
   try {
     payload = (await req.json()) as SupabaseWebhookPayload;
   } catch {
-    return NextResponse.json({ ok: false, error: "invalid_json" }, { status: 400 });
+    console.warn("[on-signup] invalid JSON — 메일 발송 건너뜀");
+    return NextResponse.json({ ok: true, skipped: "invalid_json" });
   }
 
   const { record, old_record, type } = payload;
@@ -112,17 +118,22 @@ export async function POST(req: Request) {
     console.warn("[on-signup] profiles 조회 경고:", err);
   }
 
-  // 6) 메일 발송
-  const result = await sendMail({
-    to: record.email,
-    subject: "사유유사 무대올림에 오신 것을 환영합니다",
-    react: WelcomeEmail({ name }),
-  });
+  // 6) 메일 발송 — 실패해도 200 반환 (가입 흐름은 절대 막지 않음)
+  let result: { ok: boolean; id?: string; error?: unknown };
+  try {
+    result = await sendMail({
+      to: record.email,
+      subject: "사유유사 무대올림에 오신 것을 환영합니다",
+      react: WelcomeEmail({ name }),
+    });
+  } catch (err) {
+    console.error("[on-signup] sendMail 예외:", err);
+    return NextResponse.json({ ok: true, skipped: "send_exception" });
+  }
 
   if (!result.ok) {
-    // 발송 실패는 200으로 응답하지 않음 → Supabase가 재시도하도록 5xx 반환
     console.error("[on-signup] 발송 실패:", result.error);
-    return NextResponse.json({ ok: false, error: result.error }, { status: 502 });
+    return NextResponse.json({ ok: true, skipped: "send_failed" });
   }
 
   // 7) 멱등성 기록
