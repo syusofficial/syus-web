@@ -31,10 +31,11 @@ export const dynamic = "force-dynamic";
 const inMemorySent = new Set<string>();
 
 type SupabaseWebhookPayload = {
-  type: "INSERT" | "UPDATE" | "DELETE";
-  table: string;
-  schema: string;
-  record: {
+  // Database Webhook 형식 (UPDATE on auth.users)
+  type?: "INSERT" | "UPDATE" | "DELETE";
+  table?: string;
+  schema?: string;
+  record?: {
     id: string;
     email?: string | null;
     email_confirmed_at?: string | null;
@@ -43,7 +44,33 @@ type SupabaseWebhookPayload = {
   old_record?: {
     email_confirmed_at?: string | null;
   } | null;
+  // Supabase Auth Hook (Send Email) 형식 — 다른 페이로드 모양 대응
+  user?: {
+    id?: string;
+    email?: string | null;
+    user_metadata?: { name?: string | null } | null;
+  };
+  email_data?: unknown;
 };
+
+// 어떤 HTTP 메서드든 200 반환 (Supabase webhook validation·preflight 대응)
+export async function GET() {
+  return NextResponse.json({ ok: true, info: "on-signup hook endpoint" });
+}
+export async function HEAD() {
+  return new NextResponse(null, { status: 200 });
+}
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Allow": "GET, HEAD, POST, OPTIONS",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, x-syus-webhook-secret",
+    },
+  });
+}
 
 export async function POST(req: Request) {
   // ⚠️ 비상 처치 (2026-06-26): 이 endpoint가 Auth Hook으로 잘못 등록되어 가입 차단되는
@@ -73,7 +100,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, skipped: "invalid_json" });
   }
 
-  const { record, old_record, type } = payload;
+  // Auth Hook 페이로드(user)와 Database Webhook 페이로드(record) 양쪽 대응
+  const record = payload.record ?? (payload.user
+    ? {
+        id: payload.user.id ?? "",
+        email: payload.user.email ?? null,
+        email_confirmed_at: null,
+        raw_user_meta_data: payload.user.user_metadata
+          ? { name: payload.user.user_metadata.name ?? null }
+          : null,
+      }
+    : null);
+  const old_record = payload.old_record ?? null;
+  const type = payload.type;
+
   if (!record?.id || !record.email) {
     return NextResponse.json({ ok: true, skipped: "no_user" });
   }
