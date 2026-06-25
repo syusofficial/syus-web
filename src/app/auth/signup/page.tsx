@@ -96,12 +96,25 @@ export default function SignupPage() {
     if (error) {
       // DB 레벨 14세 게이트(check constraint)가 막은 경우 안내문 통일
       const msg = error.message ?? "";
+      const code = (error as { code?: string }).code ?? "";
+      const status = (error as { status?: number }).status ?? 0;
+
+      // 진단을 위해 콘솔에 모든 정보 노출
+      console.error("[SIGNUP ERROR]", { message: msg, code, status, error });
+
       if (/profiles_birth_date_age_check/i.test(msg)) {
         setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
+      } else if (msg === "User already registered") {
+        setError("이미 가입된 이메일입니다.");
+      } else if (/signups? (are )?disabled/i.test(msg)) {
+        setError("일시적으로 이메일 가입이 중단되어 있습니다. 운영자(syusflux@gmail.com)에게 문의해주세요.");
+      } else if (/rate.?limit|too many/i.test(msg) || status === 429) {
+        setError("잠시 후 다시 시도해주세요. 너무 많은 요청이 들어왔습니다. (429)");
+      } else if (/database error/i.test(msg) || /saving new user/i.test(msg)) {
+        setError("일시적인 가입 처리 오류입니다. 잠시 후 다시 시도해주세요. 계속되면 운영자(syusflux@gmail.com)에게 알려주세요.");
       } else {
-        setError(msg === "User already registered"
-          ? "이미 가입된 이메일입니다."
-          : "회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
+        // 진단을 위해 실제 메시지를 화면에 노출 (운영자가 사용자 캡처 받아 즉시 진단)
+        setError(`회원가입 중 오류가 발생했습니다. (${msg || code || `status:${status}`}) — 계속되면 운영자(syusflux@gmail.com)에게 위 메시지를 그대로 알려주세요.`);
       }
       setLoading(false);
       return;
