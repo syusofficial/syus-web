@@ -60,6 +60,12 @@ export async function POST() {
   // auth.users 삭제 → CASCADE로 profiles, shows, likes 자동 삭제
   const { error: deleteError } = await admin.auth.admin.deleteUser(user.id);
   if (deleteError) {
+    // 원인을 서버 로그에 남겨 향후 진단 가능하게 (응답엔 일반 메시지 유지)
+    console.error("[account/delete] deleteUser 실패", {
+      userId: user.id,
+      code: (deleteError as { code?: string }).code,
+      message: deleteError.message,
+    });
     return NextResponse.json({ error: "탈퇴 처리 중 오류가 발생했습니다." }, { status: 500 });
   }
 

@@ -94,6 +94,12 @@ export async function POST(req: Request) {
   // 7) auth.users 삭제 → CASCADE 적용
   const { error: deleteError } = await admin.auth.admin.deleteUser(targetUserId);
   if (deleteError) {
+    // 원인을 서버 로그에 남겨 향후 진단 가능하게 (응답엔 일반 메시지 유지)
+    console.error("[admin/delete-user] deleteUser 실패", {
+      targetUserId,
+      code: (deleteError as { code?: string }).code,
+      message: deleteError.message,
+    });
     return NextResponse.json({ error: "탈퇴 처리 중 오류가 발생했습니다." }, { status: 500 });
   }
 
