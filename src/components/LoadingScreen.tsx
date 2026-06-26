@@ -15,7 +15,18 @@ function useLoadingPhase() {
     const t3 = setTimeout(() => setPhase(3), 1500);  // 구체 등장
     const t4 = setTimeout(() => setFading(true), 2200); // 페이드아웃 시작
     const t5 = setTimeout(() => setDone(true), 2800);   // DOM에서 제거
-    return () => [t1, t2, t3, t4, t5].forEach(clearTimeout);
+
+    // ── 안전장치(failsafe) — 2026-06-26 제작팀 긴급 진단 ──
+    // 이 로딩 화면은 position:fixed + z-index:9999로 "전체 화면"을 덮는다.
+    // 위 setTimeout 체인 중 하나라도(탭 백그라운드 throttling, 브라우저 일시정지 등)
+    // 지연·누락되면 오버레이가 사라지지 않아 사이트 전체 클릭이 막히는 사고가 났다.
+    // 어떤 상황에서도 이 절대 한도(4초)가 지나면 무조건 화면에서 제거한다.
+    const failsafe = setTimeout(() => {
+      setFading(true);
+      setDone(true);
+    }, 4000);
+
+    return () => [t1, t2, t3, t4, t5, failsafe].forEach(clearTimeout);
   }, []);
 
   return { phase, fading, done };
@@ -66,7 +77,11 @@ export default function LoadingScreen() {
         gap: 20,
         opacity: fading ? 0 : 1,
         transition: fading ? "opacity 0.6s ease" : undefined,
-        pointerEvents: fading ? "none" : "auto",
+        // ── 클릭 차단 방지(근본 안전장치) — 2026-06-26 ──
+        // 로딩 화면은 순수 시각 장식이다. 떠 있는 동안에도 그 아래 콘텐츠의
+        // 클릭/탭을 절대 흡수하지 않도록 항상 pointerEvents:none.
+        // (이전 "auto"는 오버레이가 안 사라질 때 사이트 전체 클릭을 먹어버렸다.)
+        pointerEvents: "none",
       }}
     >
       {/* 로고 SVG — Nav.tsx SyusLogoSvg와 동일한 좌표 */}

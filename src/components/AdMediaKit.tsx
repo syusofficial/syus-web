@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import type { Show, Profile } from "@/types";
 import { extractSchoolName, isEnded, todayKey } from "@/lib/showFilters";
 
@@ -36,8 +36,16 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
     };
   }, [shows, members]);
 
-  const today = new Date();
-  const dateStr = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(today.getDate()).padStart(2, "0")}`;
+  // ── hydration mismatch 방지 — 2026-06-26 제작팀 진단 ──
+  // 렌더 본문에서 new Date()를 직접 쓰면 서버 렌더 시각 ≠ 클라이언트 렌더 시각이라
+  // hydration 경고가 난다. 마운트(클라이언트)에서만 날짜를 채운다. 초기엔 빈 문자열.
+  const [dateStr, setDateStr] = useState("");
+  useEffect(() => {
+    const today = new Date();
+    setDateStr(
+      `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(today.getDate()).padStart(2, "0")}`
+    );
+  }, []);
 
   const handlePrint = () => window.print();
 
