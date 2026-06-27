@@ -290,14 +290,25 @@ export default function AdminPage() {
   };
 
   const updateMemberRole = async (id: string, role: "member" | "performer" | "admin") => {
-    const supabase = createClient();
-    const { error } = await supabase.from("profiles").update({ role }).eq("id", id);
-    if (error) {
-      console.error("[admin/updateMemberRole]", error);
-      alert(`회원 역할 변경 중 오류가 발생했습니다.\n${error.message}`);
-      return;
+    // profiles RLS 강화로 브라우저(anon)에서는 타인 row update 불가
+    // → server API + service role로 처리 (admin 검증 후 RLS 우회)
+    try {
+      const res = await fetch("/api/admin/update-role", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetUserId: id, newRole: role }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({} as { error?: string }));
+        console.error("[admin/updateMemberRole]", { status: res.status, data });
+        alert(`회원 역할 변경 중 오류가 발생했습니다.\n${data.error ?? res.statusText}`);
+        return;
+      }
+      setMembers((prev) => prev.map((m) => m.id === id ? { ...m, role } : m));
+    } catch (err) {
+      console.error("[admin/updateMemberRole]", err);
+      alert("회원 역할 변경 중 네트워크 오류가 발생했습니다.");
     }
-    setMembers((prev) => prev.map((m) => m.id === id ? { ...m, role } : m));
   };
 
   const resolveContact = async (id: string) => {
