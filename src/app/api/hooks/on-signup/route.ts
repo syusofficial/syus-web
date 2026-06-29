@@ -115,6 +115,10 @@ export async function POST(req: Request) {
   const type = payload.type;
 
   if (!record?.id || !record.email) {
+    console.log("[on-signup] skip: no_user", {
+      hasRecord: Boolean(payload.record),
+      hasUser: Boolean(payload.user),
+    });
     return NextResponse.json({ ok: true, skipped: "no_user" });
   }
 
@@ -128,6 +132,15 @@ export async function POST(req: Request) {
     isConfirmedNow && (type === "INSERT" || (type === "UPDATE" && !wasConfirmedBefore));
 
   if (!isNewConfirmation) {
+    // 진단: 여기서 멈추면 환영메일이 안 나간다. type=undefined·isConfirmedNow=false +
+    // hasUser=true 면 이 endpoint가 "Auth Hook" 자리에 있다는 신호(→ Database Webhook으로 이전 필요).
+    console.log("[on-signup] skip: not_new_confirmation", {
+      type,
+      isConfirmedNow,
+      wasConfirmedBefore,
+      hasRecord: Boolean(payload.record),
+      hasUser: Boolean(payload.user),
+    });
     return NextResponse.json({ ok: true, skipped: "not_new_confirmation" });
   }
 
@@ -188,5 +201,6 @@ export async function POST(req: Request) {
     console.warn("[on-signup] welcome_email_sent_at 기록 경고:", err);
   }
 
+  console.log("[on-signup] 환영메일 발송 성공", { id: result.id });
   return NextResponse.json({ ok: true, id: result.id });
 }
