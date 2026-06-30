@@ -1,31 +1,42 @@
 import Link from "next/link";
+import Image from "next/image";
 
 /**
- * 게이트웨이 (루트 /) — 2026-06-30 3층 구조 재편.
+ * 게이트웨이 (루트 /) — 2026-06-30 3층 구조. (2026-06-30 2차: 5:5 비율 + 레이어 층 + 로고 적용)
  * 사유유사 SYUS의 두 문이 동시에 보이는 갈림길.
- *   - 왼쪽: 무대올림 (넓게·밝게 / Cloud Dancer·Teal) — 면적으로 압도, 자동적으로 흘러듦
- *   - 오른쪽: 시우스 (좁고 깊게·어둡게 / Silhouette + SYUS 붓터치색) — 강도로 끌어당김
- *   - 상단 중앙: 사유유사 로고(두 문을 덮는 지붕/우산) — 뼈대 단계는 텍스트 placeholder
- * 50:50 금지(비대칭 1.45:1). 모바일은 세로 스택(무대올림 위·크게, 시우스 아래·작게).
+ *   - 왼쪽: 무대올림 (밝게 / Cloud Dancer·Teal) — 무대 막·조명 레이어
+ *   - 오른쪽: 시우스 (어둡게 / Silhouette + SYUS) — SYUS 워드마크 잔상 레이어
+ *   - 상단 중앙: 사유유사 로고 배지(두 문을 덮는 지붕)
+ * 사장님 지시(2026-06-30): 비율 5:5 대칭, 양측에 레이어 층을 쌓아 깊이.
  *
- * 안전 설계(과거 버그 회피):
- *   - 서버 컴포넌트 + CSS group-hover만 사용(클라이언트 JS·전역 상태 0).
- *   - 로고 오버레이는 pointer-events-none(클릭이 패널로 통과 — 전역 클릭 마비 패턴 차단).
- *   - hover는 transform·opacity만(transition-all 금지), prefers-reduced-motion 존중.
- * metadata는 루트 layout.tsx(사유유사)가 제공하므로 이 파일엔 두지 않는다.
+ * 안전 설계(과거 버그 회피): 서버 컴포넌트 + CSS group-hover만(클라이언트 JS 0).
+ *   모든 레이어 pointer-events:none → 클릭은 패널(Link)로 통과. transform·opacity만, reduced-motion 존중.
+ * metadata는 루트 layout.tsx(사유유사)가 제공.
  */
 export default function GatewayPage() {
   return (
-    <div className="syus-gateway relative flex flex-col lg:flex-row">
-      {/* 상단 중앙 — 사유유사(지붕/우산). pointer-events-none로 클릭은 아래 패널로 통과 */}
+    <div className="syus-gateway">
+      {/* 지붕 — 사유유사 (두 문을 덮는 배지). pointer-events-none로 클릭 통과 */}
       <div className="gw-roof">
-        <span className="gw-roof-mark">思惟流沙</span>
-        <span className="gw-roof-name">사유유사 SYUS</span>
-        <span className="gw-roof-tagline">깊이 머물고, 가볍게 흘려보냅니다</span>
+        <div className="gw-roof-badge">
+          <Image
+            src="/sayuyusa-logo.png"
+            alt="사유유사 SYUS"
+            width={104}
+            height={42}
+            className="gw-roof-logo"
+            priority
+          />
+          <span className="gw-roof-name">사유유사 SYUS</span>
+        </div>
+        <span className="gw-roof-tagline">思惟流沙 · 깊이 머물고, 가볍게 흘려보냅니다</span>
       </div>
 
-      {/* ── 왼쪽: 무대올림 (넓게·밝게) ── */}
+      {/* ── 왼쪽: 무대올림 (5, 밝게) ── */}
       <Link href="/muol" className="gw-door gw-door--muol group" aria-label="무대올림으로 들어가기">
+        <span className="gw-layer gw-muol-l1" aria-hidden="true" />
+        <span className="gw-layer gw-muol-l2" aria-hidden="true" />
+        <span className="gw-layer gw-muol-l3" aria-hidden="true" />
         <span className="gw-overlay gw-overlay--muol" aria-hidden="true" />
         <div className="gw-door-inner">
           <p className="gw-label gw-label--muol">STAGE · 무대올림</p>
@@ -44,16 +55,17 @@ export default function GatewayPage() {
         </div>
       </Link>
 
-      {/* ── 오른쪽: 시우스 (좁고 깊게·어둡게) ── */}
+      {/* ── 오른쪽: 시우스 (5, 어둡게) ── */}
       <Link href="/syus" className="gw-door gw-door--syus group" aria-label="시우스로 들어가기">
-        <span className="gw-overlay gw-overlay--syus" aria-hidden="true" />
-        {/* SYUS 붓터치 4색 — 어둠 속 미세한 결 */}
+        <span className="gw-layer gw-syus-mark" aria-hidden="true" />
+        <span className="gw-layer gw-syus-glow" aria-hidden="true" />
         <span className="gw-strokes" aria-hidden="true">
           <span style={{ background: "#4A98AA" }} />
           <span style={{ background: "#7BA86F" }} />
           <span style={{ background: "#D54545" }} />
           <span style={{ background: "#E0A93B" }} />
         </span>
+        <span className="gw-overlay gw-overlay--syus" aria-hidden="true" />
         <div className="gw-door-inner">
           <p className="gw-label gw-label--syus">SYUS · 시우스</p>
           <h2 className="gw-headline gw-headline--syus">
@@ -75,7 +87,10 @@ export default function GatewayPage() {
         .syus-gateway {
           min-height: 100svh;
           width: 100%;
+          display: flex;
+          flex-direction: column;
         }
+
         /* ── 지붕(사유유사) ── */
         .gw-roof {
           position: absolute;
@@ -84,31 +99,36 @@ export default function GatewayPage() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 4px;
-          padding-top: clamp(20px, 4vh, 44px);
-          pointer-events: none; /* 클릭이 아래 패널로 통과 — 전역 클릭 마비 방지 */
+          gap: 10px;
+          padding-top: clamp(18px, 3.5vh, 40px);
+          pointer-events: none;
           text-align: center;
-          mix-blend-mode: difference; /* 밝은쪽/어두운쪽 경계 위에서 모두 읽히도록 */
-          color: #F0EEE9;
         }
-        .gw-roof-mark {
-          font-family: var(--font-noto-serif-kr);
-          font-size: clamp(1.1rem, 2.4vw, 1.6rem);
-          letter-spacing: 0.3em;
-          font-weight: 500;
+        .gw-roof-badge {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 9px 22px;
+          background: rgba(240, 238, 233, 0.92);
+          border-radius: 100px;
+          box-shadow: 0 6px 20px rgba(36, 28, 24, 0.14);
+          backdrop-filter: blur(3px);
         }
+        .gw-roof-logo { height: 38px; width: auto; display: block; }
         .gw-roof-name {
-          font-family: var(--font-inter);
-          font-size: 0.7rem;
-          letter-spacing: 0.42em;
-          font-weight: 600;
-          text-transform: uppercase;
+          font-family: var(--font-noto-serif-kr);
+          font-size: 0.92rem;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          color: #4A3B33;
+          white-space: nowrap;
         }
         .gw-roof-tagline {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.72rem;
           letter-spacing: 0.04em;
-          opacity: 0.85;
+          color: rgba(240, 238, 233, 0.92);
+          text-shadow: 0 1px 6px rgba(36, 28, 24, 0.55);
         }
 
         /* ── 문(패널) 공통 ── */
@@ -118,51 +138,65 @@ export default function GatewayPage() {
           align-items: center;
           overflow: hidden;
           text-decoration: none;
-          padding: clamp(40px, 7vw, 96px);
+          padding: clamp(36px, 6vw, 88px);
           isolation: isolate;
         }
         .gw-door-inner {
           position: relative;
-          z-index: 2;
+          z-index: 5;
           max-width: 30rem;
-          margin-top: 6vh; /* 지붕과 겹치지 않게 */
+          margin-top: 7vh;
         }
-        .gw-overlay {
+        .gw-layer, .gw-overlay {
           position: absolute;
           inset: 0;
-          z-index: 1;
-          opacity: 0;
-          transition: opacity 0.4s ease;
           pointer-events: none;
         }
+        .gw-layer { z-index: 1; }
+        .gw-overlay { z-index: 4; opacity: 0; transition: opacity 0.4s ease; }
 
-        /* 무대올림 — 밝게, 넓게(1.45) */
+        /* 무대올림 — 밝게, 레이어(조명·막주름·바닥) */
         .gw-door--muol {
           background-color: #F0EEE9;
-          min-height: 56svh;
+          min-height: 50svh;
         }
-        .gw-overlay--muol { background: radial-gradient(ellipse at 30% 40%, rgba(11,85,99,0.10), transparent 70%); }
+        .gw-muol-l1 { background: linear-gradient(135deg, rgba(11,85,99,0.10) 0%, transparent 46%, rgba(44,115,132,0.07) 100%); }
+        .gw-muol-l2 { background: repeating-linear-gradient(90deg, transparent 0 38px, rgba(74,59,51,0.035) 38px 40px); }
+        .gw-muol-l3 { background: linear-gradient(180deg, transparent 58%, rgba(74,59,51,0.12) 100%); }
+        .gw-overlay--muol { background: radial-gradient(ellipse at 32% 42%, rgba(11,85,99,0.12), transparent 68%); }
         .gw-door--muol:hover .gw-overlay--muol,
         .gw-door--muol:focus-visible .gw-overlay--muol { opacity: 1; }
 
-        /* 시우스 — 어둡게, 좁게(1) */
+        /* 시우스 — 어둡게, 레이어(SYUS 잔상·빛·붓터치) */
         .gw-door--syus {
           background-color: #241C18;
-          min-height: 44svh;
+          min-height: 50svh;
           border-top: 1px solid #3C2F28;
         }
-        .gw-overlay--syus { background: radial-gradient(ellipse at 70% 50%, rgba(74,152,170,0.16), transparent 70%); }
+        .gw-syus-mark {
+          background: url('/syus-wordmark.png') no-repeat center 42%;
+          background-size: 132% auto;
+          opacity: 0.10;
+          filter: blur(1.5px);
+          transition: opacity 0.5s ease, transform 0.5s ease;
+          transform: scale(1);
+        }
+        .gw-syus-glow { background: radial-gradient(ellipse at 64% 44%, rgba(74,152,170,0.18), transparent 62%); }
+        .gw-overlay--syus { background: radial-gradient(ellipse at 64% 50%, rgba(123,168,111,0.12), transparent 66%); }
         .gw-door--syus:hover .gw-overlay--syus,
         .gw-door--syus:focus-visible .gw-overlay--syus { opacity: 1; }
+        .gw-door--syus:hover .gw-syus-mark,
+        .gw-door--syus:focus-visible .gw-syus-mark { opacity: 0.17; transform: scale(1.03); }
 
         @media (min-width: 1024px) {
+          .syus-gateway { flex-direction: row; }
           .gw-door { min-height: 100svh; }
-          .gw-door--muol { flex: 1.45; }
+          .gw-door--muol { flex: 1; }              /* 5 : 5 대칭 */
           .gw-door--syus { flex: 1; border-top: 0; border-left: 1px solid #3C2F28; }
           .gw-door-inner { margin-left: auto; margin-right: auto; }
         }
 
-        /* ── 라벨 / 헤드라인 / 설명 / CTA ── */
+        /* ── 라벨/헤드라인/설명/CTA ── */
         .gw-label {
           font-family: var(--font-inter);
           font-size: 0.72rem;
@@ -176,7 +210,7 @@ export default function GatewayPage() {
 
         .gw-headline {
           font-family: var(--font-noto-serif-kr);
-          font-size: clamp(2.2rem, 5vw, 3.6rem);
+          font-size: clamp(2.1rem, 4.6vw, 3.4rem);
           line-height: 1.12;
           font-weight: 700;
           letter-spacing: -0.02em;
@@ -211,10 +245,7 @@ export default function GatewayPage() {
         }
         .gw-cta--muol { color: #5C2A42; }
         .gw-cta--syus { color: #F0EEE9; }
-        .gw-arrow {
-          display: inline-block;
-          transition: transform 0.25s ease;
-        }
+        .gw-arrow { display: inline-block; transition: transform 0.25s ease; }
         .gw-door:hover .gw-arrow,
         .gw-door:focus-visible .gw-arrow { transform: translateX(5px); }
 
@@ -223,12 +254,12 @@ export default function GatewayPage() {
           position: absolute;
           right: clamp(24px, 5vw, 72px);
           top: 0; bottom: 0;
-          z-index: 1;
+          z-index: 2;
           display: flex;
           flex-direction: column;
           justify-content: center;
           gap: 14px;
-          opacity: 0.55;
+          opacity: 0.5;
           pointer-events: none;
         }
         .gw-strokes > span {
@@ -238,14 +269,14 @@ export default function GatewayPage() {
           border-radius: 2px;
           transition: opacity 0.4s ease;
         }
-        .gw-door--syus:hover .gw-strokes { opacity: 0.9; }
+        .gw-door--syus:hover .gw-strokes { opacity: 0.85; }
         @media (max-width: 1023px) {
           .gw-strokes { right: 20px; gap: 9px; }
           .gw-strokes > span { height: 34px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .gw-overlay, .gw-arrow, .gw-strokes > span { transition: none; }
+          .gw-overlay, .gw-arrow, .gw-strokes > span, .gw-syus-mark { transition: none; }
         }
       `}</style>
     </div>

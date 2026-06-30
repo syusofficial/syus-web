@@ -410,6 +410,7 @@ export default function NavMega() {
 
           {/* 우측 3메뉴 */}
           <div className="navmega-right">
+            <Link href="/syus" className="navmega-syus">시우스 ↗</Link>
             {user ? (
               <>
                 {role === "admin" && (
@@ -548,6 +549,9 @@ export default function NavMega() {
 
             {/* 계정 섹션 */}
             <div className="navmega-mobile-account">
+              <Link href="/syus" onClick={() => setMobileOpen(false)} className="navmega-mobile-syus">
+                시우스 ↗
+              </Link>
               {user ? (
                 <>
                   {role === "admin" && (
@@ -708,6 +712,32 @@ export default function NavMega() {
           transition: background-color 0.15s ease;
         }
         .navmega-cta:hover { background-color: #073D48; }
+
+        /* 무대올림 → 시우스 다리 (시우스 상징 = 어두운 극장 톤 알약) */
+        .navmega-syus {
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.82rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          color: #241C18;
+          text-decoration: none;
+          padding: 7px 16px;
+          border: 1px solid #4A3B33;
+          border-radius: 100px;
+          white-space: nowrap;
+          transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        .navmega-syus:hover { background-color: #241C18; color: #F0EEE9; }
+        .navmega-mobile-syus {
+          display: inline-block;
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.92rem;
+          font-weight: 600;
+          color: #241C18;
+          text-decoration: none;
+          padding: 6px 0;
+          letter-spacing: 0.12em;
+        }
 
         /* ── 메가 패널 ── */
         .mega-panel {
