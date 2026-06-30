@@ -148,7 +148,7 @@ export default async function UniversitiesPage() {
               아직 표시할 학과가 없습니다. 첫 공연이 올라가면 이 자리에 학과가 새겨집니다.
             </p>
             <Link
-              href="/performer/apply"
+              href="/muol/performer/apply"
               className="inline-block mt-6 px-6 py-3 text-sm transition-opacity hover:opacity-80"
               style={{
                 backgroundColor: "var(--color-accent-yellow, #5C2A42)",
@@ -180,7 +180,7 @@ export default async function UniversitiesPage() {
 
                 <ul className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {list.map((entry) => {
-                    const href = `/shows?school=${encodeURIComponent(entry.name)}`;
+                    const href = `/muol/shows?school=${encodeURIComponent(entry.name)}`;
                     const latestYmd = formatYmd(entry.latestStart);
                     return (
                       <li key={`${entry.region}-${entry.name}`}>
@@ -246,7 +246,7 @@ export default async function UniversitiesPage() {
           </p>
           <p>
             아직 보이지 않는 학과의 학생·운영자께서는{" "}
-            <Link href="/performer/apply" style={{ color: "var(--color-blue, #0B5563)", textDecoration: "underline" }}>
+            <Link href="/muol/performer/apply" style={{ color: "var(--color-blue, #0B5563)", textDecoration: "underline" }}>
               공연자 신청
             </Link>
             을 해주시면, 첫 공연 승인과 함께 자리가 새겨집니다.

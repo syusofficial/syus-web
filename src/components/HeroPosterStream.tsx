@@ -49,7 +49,7 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           return (
             <Link
               key={`${item.id}-${idx}`}
-              href={`/shows/${item.id}`}
+              href={`/muol/shows/${item.id}`}
               className="hero-stream-card group"
             >
               <div

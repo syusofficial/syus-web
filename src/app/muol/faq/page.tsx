@@ -276,7 +276,7 @@ export default function FAQPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <Link
-                href="/contact"
+                href="/muol/contact"
                 className="inline-block px-6 py-2.5 text-xs tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
@@ -399,7 +399,7 @@ export default function FAQPage() {
             1:1 문의를 통해 직접 연락 주세요. 1~2일 이내에 답변드립니다.
           </p>
           <Link
-            href="/contact"
+            href="/muol/contact"
             className="inline-block px-8 py-3 text-sm tracking-wider transition-opacity"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",

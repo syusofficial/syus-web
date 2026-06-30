@@ -516,7 +516,7 @@ export default function AboutPage() {
 
           <div className="mt-10 text-center">
             <Link
-              href="/performer"
+              href="/muol/performer"
               className="inline-block px-8 py-4 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
@@ -681,7 +681,7 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
-              href="/shows"
+              href="/muol/shows"
               className="px-8 py-3 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
@@ -704,7 +704,7 @@ export default function AboutPage() {
               무대 올리기
             </Link>
             <Link
-              href="/contact"
+              href="/muol/contact"
               className="px-8 py-3 text-sm tracking-wider transition-colors"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "rgba(248,249,252,0.7)" }}
             >

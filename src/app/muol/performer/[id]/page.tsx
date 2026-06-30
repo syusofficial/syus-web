@@ -102,7 +102,7 @@ export default async function PerformerProfilePage({
       <div className="max-w-7xl mx-auto">
         {/* 뒤로가기 */}
         <Link
-          href="/shows"
+          href="/muol/shows"
           className="inline-block mb-8 text-xs tracking-[0.2em] uppercase transition-colors"
           style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
         >

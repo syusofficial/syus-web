@@ -194,7 +194,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
   const breadcrumbData = show.status === "approved"
     ? buildBreadcrumbList([
         { name: "홈", path: "/" },
-        { name: "공연", path: "/shows" },
+        { name: "공연", path: "/muol/shows" },
         { name: show.title },
       ])
     : null;
@@ -238,7 +238,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
       {/* Back */}
       <div className="px-6 md:px-12 lg:px-20 py-8 max-w-7xl mx-auto">
         <Link
-          href={show.status === "approved" ? "/shows" : "/performer"}
+          href={show.status === "approved" ? "/muol/shows" : "/muol/performer"}
           className="text-xs tracking-[0.2em] uppercase transition-colors"
           style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
         >
@@ -287,7 +287,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   by{" "}
                   {show.organizer_id ? (
                     <Link
-                      href={`/performer/${show.organizer_id}`}
+                      href={`/muol/performer/${show.organizer_id}`}
                       className="hover:underline transition-colors"
                       style={{ color: "#0B5563" }}
                     >
@@ -343,7 +343,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                       return (
                         <>
                           <Link
-                            href={`/shows?school=${encodeURIComponent(schoolName)}`}
+                            href={`/muol/shows?school=${encodeURIComponent(schoolName)}`}
                             className="hover:underline"
                             style={{ color: "#0B5563" }}
                           >
@@ -555,7 +555,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   </span>
                 )}
                 <Link
-                  href="/contact"
+                  href="/muol/contact"
                   className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
                   style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #D4CFC1", color: "#4A3B33" }}
                 >

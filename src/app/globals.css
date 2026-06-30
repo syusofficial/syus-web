@@ -53,6 +53,24 @@
   --font-display: var(--font-cormorant);
   --font-body: var(--font-inter); /* layout.tsx에서 Geist로 매핑됨 */
   --font-pretendard: "Spoqa Han Sans Neo", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* ──────────────────────────────────────────────────
+   * 시우스(SYUS) 커뮤니티 — 2026-06-30 3층 구조 신설
+   * 위 무대올림 4색 토큰은 그대로 두고, 시우스 전용 토큰만 아래에 추가한다(정본 보존).
+   * SYUS 로고 붓터치색(블루 베이스 + 그린·레드·옐로)에서 6무대 노드색을 파생.
+   * 시우스는 '어두운 극장' 톤 — 라이트/다크 무관하게 동일(항상 어둠 위 색이 빛난다).
+   * ────────────────────────────────────────────────── */
+  --color-syus-ink: #241C18;               /* 시우스 어두운 극장 배경(게이트웨이 시우스 패널과 통일) */
+  --color-syus-ink-soft: #2E2620;          /* 노드·카드 배경 */
+  --color-syus-line: #3C2F28;              /* 시우스 라인·구분 */
+  --color-syus-cream: #F0EEE9;             /* 시우스 본문(어둠 위) */
+  --color-syus-cream-dim: rgba(240,238,233,0.66); /* 시우스 보조 텍스트 */
+  --color-syus-stage-proscenium: #5B8FD0;  /* 프로시니엄 — 주인장 견해글 (정면·격식) */
+  --color-syus-stage-thrust: #6FB57E;      /* 돌출무대 — 연기 고민 QnA (친밀) */
+  --color-syus-stage-arena: #E0A93B;       /* 원형무대 — 자유 커뮤니티 (둘러앉음) */
+  --color-syus-stage-blackbox: #A593C9;    /* 블랙박스 — 관람의 잔상 (빈 검은 상자) */
+  --color-syus-stage-flex: #3FA9BB;        /* 변형무대 — 창작 독백 (유동·변형) */
+  --color-syus-stage-corridor: #D17A6B;    /* 사잇무대 — 책 서재 (관문·문지방) */
 }
 
 html {

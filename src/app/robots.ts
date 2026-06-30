@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/api/", "/auth/callback", "/auth/onboarding", "/mypage", "/performer"],
+        disallow: ["/admin", "/api/", "/auth/callback", "/auth/onboarding", "/mypage", "/muol/performer"],
       },
     ],
     sitemap: "https://syus.co.kr/sitemap.xml",

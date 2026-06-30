@@ -18,7 +18,7 @@ export default function ShowCard({
   return (
     <div className="group block">
       <div className="relative">
-        <Link href={`/shows/${show.id}`}>
+        <Link href={`/muol/shows/${show.id}`}>
           <div
             className="aspect-[3/4] overflow-hidden mb-4 relative"
             style={{ backgroundColor: "#E6E1D6" }}
@@ -66,7 +66,7 @@ export default function ShowCard({
         )}
       </div>
 
-      <Link href={`/shows/${show.id}`} className="block">
+      <Link href={`/muol/shows/${show.id}`} className="block">
         <div className="space-y-1.5">
           <div className="flex items-start justify-between gap-2">
             <h3

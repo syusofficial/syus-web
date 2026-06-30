@@ -389,7 +389,7 @@ export default function MyPage() {
 
             {(profile.role === "performer" || profile.role === "admin") && (
               <Link
-                href="/performer"
+                href="/muol/performer"
                 className="inline-block px-8 py-3 text-sm tracking-wider transition-colors"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#0B5563", color: "#F0EEE9" }}
               >
@@ -565,7 +565,7 @@ export default function MyPage() {
                     공연자 페이지에서 공연을 등록할 수 있습니다.
                   </p>
                 </div>
-                <Link href="/performer" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3A5E42" }}>
+                <Link href="/muol/performer" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#3A5E42" }}>
                   바로가기 →
                 </Link>
               </div>

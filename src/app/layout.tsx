@@ -40,46 +40,36 @@ const geist = Geist({
 });
 
 const SITE_URL = "https://syus.co.kr";
-const SITE_NAME = "무대올림";
-const SITE_TAGLINE = "운영: 사유유사 SYUS";
+const SITE_NAME = "사유유사 SYUS";
+const SITE_TAGLINE = "무대올림과 시우스";
 const SITE_DESCRIPTION =
-  "오늘, 어느 대학의 막이 오른다. 무대올림은 대학 무대예술 공연을 올리고 지역 관객이 관람료 없이 좌석을 예약하는 플랫폼입니다. 공연팀 게재료 없음. 연극·뮤지컬·무용·국악·음악·전통연희.";
+  "사유유사 SYUS의 두 문. 무대올림 — 대학 무대예술 공연을 올리고 관람료 없이 좌석을 예약합니다. 시우스 — 연기를 깊게 기록하고 나누는 커뮤니티.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} · ${SITE_TAGLINE}`,
-    template: "%s · 무대올림",
+    default: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    template: "%s · 사유유사 SYUS",
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "공연팀 게재료 없는 공연 등록",
-    "대학 공연 정보",
-    "학교별 공연 검색",
-    "공연 아카이브",
-    "무대올림",
-    "대학 공연",
-    "무대예술",
-    "관람료 없는 공연",
-    "대학 연극",
-    "대학 뮤지컬",
-    "대학 무용",
-    "대학 국악",
-    "대학 음악",
-    "전통연희",
-    "대학로",
-    "지역 공연",
-    "구글폼 예약",
-    "학교 공연",
     "사유유사",
     "SYUS",
+    "무대올림",
+    "시우스",
+    "대학 공연",
+    "무대예술",
+    "연기 커뮤니티",
+    "대학 무대예술",
+    "관람료 없는 공연",
+    "연기",
   ],
-  authors: [{ name: "무대올림 (운영: 사유유사 SYUS)" }],
+  authors: [{ name: "사유유사 SYUS" }],
   creator: "사유유사 SYUS",
   publisher: "사유유사 SYUS",
   formatDetection: { email: false, address: false, telephone: false },
   openGraph: {
-    title: `${SITE_NAME} · ${SITE_TAGLINE}`,
+    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     siteName: SITE_NAME,
@@ -90,13 +80,13 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "무대올림 — 흩어진 무대를, 같은 흐름 위에. 운영: 사유유사 SYUS.",
+        alt: "사유유사 SYUS — 무대올림과 시우스, 두 개의 문.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} · ${SITE_TAGLINE}`,
+    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
     images: ["/og-default.png"],
   },

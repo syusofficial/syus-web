@@ -266,7 +266,7 @@ export default function PrivacyPage() {
               권리 행사는 이메일(
               <a href="mailto:syusflux@gmail.com" style={{ color: "#0B5563" }}>syusflux@gmail.com</a>
               ), 1:1 문의(
-              <Link href="/contact" style={{ color: "#0B5563" }}>/contact</Link>
+              <Link href="/muol/contact" style={{ color: "#0B5563" }}>/contact</Link>
               ) 또는 마이페이지(
               <Link href="/mypage" style={{ color: "#0B5563" }}>/mypage</Link>
               )를 통해 하실 수 있으며, 회사는 지체 없이(영업일 기준 10일 이내) 조치합니다.

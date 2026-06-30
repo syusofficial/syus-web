@@ -160,7 +160,7 @@ export default async function ArchivePage({
             </p>
           </div>
           <Link
-            href="/shows"
+            href="/muol/shows"
             className="px-4 py-2 text-xs tracking-wide transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",

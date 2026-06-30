@@ -48,7 +48,7 @@ export default function NotFound() {
             홈으로 돌아가기
           </Link>
           <Link
-            href="/contact"
+            href="/muol/contact"
             className="px-8 py-3 text-sm tracking-wider transition-colors"
             style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #D4CFC1", color: "#4A3B33" }}
           >

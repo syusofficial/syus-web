@@ -292,7 +292,7 @@ export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
             {selectedShows.map((show) => (
               <li key={show.id}>
                 <Link
-                  href={`/shows/${show.id}`}
+                  href={`/muol/shows/${show.id}`}
                   className="block p-5 transition-colors"
                   style={{ backgroundColor: "#E6E1D6" }}
                   onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D4CFC1"; }}

@@ -19,7 +19,7 @@ export default async function ShowsCalendarPage() {
 
   const breadcrumbData = buildBreadcrumbList([
     { name: "홈", path: "/" },
-    { name: "공연", path: "/shows" },
+    { name: "공연", path: "/muol/shows" },
     { name: "캘린더" },
   ]);
 
@@ -56,7 +56,7 @@ export default async function ShowsCalendarPage() {
             </p>
           </div>
           <Link
-            href="/shows"
+            href="/muol/shows"
             className="px-4 py-2 text-xs tracking-wide transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",

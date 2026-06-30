@@ -62,9 +62,9 @@ const CHAPTERS: Chapter[] = [
         heading: "둘러보기",
         tagline: "지역·시기·장르로 좁혀 찾는다",
         items: [
-          { label: "전체 공연", href: "/shows", desc: "현재 올라온 모든 무대" },
-          { label: "공연 캘린더", href: "/shows/calendar", desc: "월별 일정으로 보기" },
-          { label: "기록 (아카이브)", href: "/archive", desc: "끝난 무대를 모아 남긴다" },
+          { label: "전체 공연", href: "/muol/shows", desc: "현재 올라온 모든 무대" },
+          { label: "공연 캘린더", href: "/muol/shows/calendar", desc: "월별 일정으로 보기" },
+          { label: "기록 (아카이브)", href: "/muol/archive", desc: "끝난 무대를 모아 남긴다" },
         ],
       },
       {
@@ -72,14 +72,14 @@ const CHAPTERS: Chapter[] = [
         tagline: "무대예술 8개로 펼쳐본다",
         items: GENRES.map((g) => ({
           label: g,
-          href: `/shows?genre=${encodeURIComponent(g)}`,
+          href: `/muol/shows?genre=${encodeURIComponent(g)}`,
         })),
       },
     ],
     feature: {
       heading: "학과 디렉토리",
       body: "전국 무대예술 학과를 학교·지역별로 모았습니다. 활성 학과부터 펼쳐 보세요.",
-      cta: { label: "학과 디렉토리 열기", href: "/universities" },
+      cta: { label: "학과 디렉토리 열기", href: "/muol/universities" },
     },
   },
 
@@ -92,8 +92,8 @@ const CHAPTERS: Chapter[] = [
         heading: "이 동네 무대",
         tagline: "광역시 · 도 단위로 좁혀본다",
         items: [
-          { label: "전체 지역 보기", href: "/shows", desc: "모든 지역의 무대를 한 번에" },
-          { label: "지금 가까운 무대", href: "/shows?sort=upcoming", desc: "곧 시작하는 공연" },
+          { label: "전체 지역 보기", href: "/muol/shows", desc: "모든 지역의 무대를 한 번에" },
+          { label: "지금 가까운 무대", href: "/muol/shows?sort=upcoming", desc: "곧 시작하는 공연" },
         ],
       },
     ],
@@ -101,7 +101,7 @@ const CHAPTERS: Chapter[] = [
       heading: "광역시 · 도 (16)",
       items: REGIONS_EXCLUDE_ALL.map((r) => ({
         label: r,
-        href: `/shows?region=${encodeURIComponent(r)}`,
+        href: `/muol/shows?region=${encodeURIComponent(r)}`,
       })),
     },
   },
@@ -115,15 +115,15 @@ const CHAPTERS: Chapter[] = [
         heading: "무대올림 이야기",
         tagline: "왜, 어떻게 무대를 모으는가",
         items: [
-          { label: "무대올림이란", href: "/about", desc: "정체성과 운영 원칙" },
-          { label: "공연자 안내", href: "/performer", desc: "무대를 올리는 분께" },
+          { label: "무대올림이란", href: "/muol/about", desc: "정체성과 운영 원칙" },
+          { label: "공연자 안내", href: "/muol/performer", desc: "무대를 올리는 분께" },
         ],
       },
       {
         heading: "협력 · 약속",
         tagline: "함께 일할 분과의 거리감",
         items: [
-          { label: "B2B 협력", href: "/for-business", desc: "기관 · 인쇄 · 광고주" },
+          { label: "B2B 협력", href: "/muol/for-business", desc: "기관 · 인쇄 · 광고주" },
           { label: "이용약관", href: "/terms" },
           { label: "개인정보처리방침", href: "/privacy" },
         ],
@@ -132,7 +132,7 @@ const CHAPTERS: Chapter[] = [
     feature: {
       heading: "공연팀 게재료 없음",
       body: "공연자·학과로부터 등록·게재 수수료를 받지 않습니다. 광고·구독·제휴로 운영됩니다.",
-      cta: { label: "운영 방식 자세히", href: "/about" },
+      cta: { label: "운영 방식 자세히", href: "/muol/about" },
     },
   },
 
@@ -145,14 +145,14 @@ const CHAPTERS: Chapter[] = [
         heading: "자주 묻는 질문",
         tagline: "응대 전 한 번 더 살펴봅니다",
         items: [
-          { label: "FAQ 전체 보기", href: "/faq", desc: "공연 등록·예약·계정" },
+          { label: "FAQ 전체 보기", href: "/muol/faq", desc: "공연 등록·예약·계정" },
         ],
       },
       {
         heading: "닿는 길",
         tagline: "한 분이 직접 받습니다",
         items: [
-          { label: "1:1 문의", href: "/contact", desc: "운영자가 직접 회신" },
+          { label: "1:1 문의", href: "/muol/contact", desc: "운영자가 직접 회신" },
         ],
       },
     ],
@@ -347,11 +347,15 @@ export default function NavMega() {
     const supabase = createClient();
     await supabase.auth.signOut();
     setMobileOpen(false);
-    router.push("/");
+    router.push("/muol");
     router.refresh();
   };
 
   const openCurrent = CHAPTERS.find((c) => c.key === openChapter);
+
+  // 게이트웨이(/)·시우스(/syus*)에서는 무대올림 NavMega를 숨긴다(각자 전용 헤더/풀스크린).
+  // 모든 hook 호출 뒤에서 조건부 반환 — hook 순서 보존(React 규칙).
+  if (pathname === "/" || pathname.startsWith("/syus")) return null;
 
   return (
     <nav className="navmega-root" ref={navRef} aria-label="주요 메뉴">
@@ -399,7 +403,7 @@ export default function NavMega() {
           </div>
 
           {/* 중앙 로고 */}
-          <Link href="/" className="navmega-logo" aria-label="무대올림 홈">
+          <Link href="/muol" className="navmega-logo" aria-label="무대올림 홈">
             <SyusLogoSvg width={120} height={48} />
             <span className="navmega-logo-text">무대올림</span>
           </Link>
@@ -454,7 +458,7 @@ export default function NavMega() {
       <div className="navmega-mobile">
         <div className="navmega-mobile-row">
           <div className="navmega-mobile-spacer" />
-          <Link href="/" className="navmega-logo" aria-label="무대올림 홈">
+          <Link href="/muol" className="navmega-logo" aria-label="무대올림 홈">
             <SyusLogoSvg width={88} height={34} />
             <span className="navmega-logo-text navmega-logo-text-sm">무대올림</span>
           </Link>

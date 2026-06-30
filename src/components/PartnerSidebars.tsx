@@ -150,7 +150,7 @@ export function PartnerAdSidebar() {
           style={{ borderTop: "1px solid #D4CFC1" }}
         >
           <Link
-            href="/contact"
+            href="/muol/contact"
             className="block text-center py-2.5 text-xs transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",

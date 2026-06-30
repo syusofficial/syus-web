@@ -202,7 +202,7 @@ export default async function ShowsPage({
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
-              href="/shows/calendar"
+              href="/muol/shows/calendar"
               className="px-4 py-2 text-xs tracking-wide transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
@@ -213,7 +213,7 @@ export default async function ShowsPage({
               캘린더로 보기
             </Link>
             <Link
-              href="/archive"
+              href="/muol/archive"
               className="px-4 py-2 text-xs tracking-wide transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
@@ -381,7 +381,7 @@ export default async function ShowsPage({
               {q ? "다른 검색어로 다시 시도해보세요." : "지나간 공연은 ‘지난 공연’에서 만나보실 수 있습니다."}
             </p>
             <Link
-              href="/archive"
+              href="/muol/archive"
               className="inline-block px-4 py-2 text-xs tracking-wide"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",

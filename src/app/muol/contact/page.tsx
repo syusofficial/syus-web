@@ -162,7 +162,7 @@ export default function ContactPage() {
             </p>
           </div>
           <Link
-            href="/faq"
+            href="/muol/faq"
             className="px-4 py-2 text-xs tracking-wider transition-colors shrink-0"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",

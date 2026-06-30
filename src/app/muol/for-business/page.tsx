@@ -83,7 +83,7 @@ export default function ForBusinessPage() {
               1:1 견적 문의 →
             </a>
             <Link
-              href="/about"
+              href="/muol/about"
               className="px-7 py-3.5 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
@@ -260,7 +260,7 @@ export default function ForBusinessPage() {
               1:1 견적 문의 →
             </a>
             <Link
-              href="/contact"
+              href="/muol/contact"
               className="px-8 py-4 text-sm tracking-wider transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",

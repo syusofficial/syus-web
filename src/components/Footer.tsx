@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { LAUNCH_PARTNERS } from "@/lib/partners";
 import type { User } from "@supabase/supabase-js";
 
 export default function Footer() {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -21,6 +22,10 @@ export default function Footer() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // 게이트웨이(/)에서는 Footer를 숨긴다. 무대올림·시우스·공통 페이지에서는 노출(사유유사 공통 푸터).
+  // 모든 hook 호출 뒤에서 조건부 반환 — hook 순서 보존(React 규칙).
+  if (pathname === "/") return null;
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -75,13 +80,13 @@ export default function Footer() {
             </p>
             <div className="flex flex-col gap-3">
               {[
-                { href: "/about", label: "사유유사 소개" },
-                { href: "/shows", label: "공연 목록" },
-                { href: "/archive", label: "지난 공연" },
-                { href: "/faq", label: "자주 묻는 질문" },
-                { href: "/contact", label: "1:1 문의" },
-                { href: "/performer", label: "공연자 등록" },
-                { href: "/for-business", label: "광고주 안내" },
+                { href: "/muol/about", label: "사유유사 소개" },
+                { href: "/muol/shows", label: "공연 목록" },
+                { href: "/muol/archive", label: "지난 공연" },
+                { href: "/muol/faq", label: "자주 묻는 질문" },
+                { href: "/muol/contact", label: "1:1 문의" },
+                { href: "/muol/performer", label: "공연자 등록" },
+                { href: "/muol/for-business", label: "광고주 안내" },
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -273,7 +278,7 @@ export default function Footer() {
             개인정보처리방침
           </Link>
           <Link
-            href="/faq"
+            href="/muol/faq"
             className="text-xs transition-colors"
             style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
@@ -282,7 +287,7 @@ export default function Footer() {
             자주 묻는 질문
           </Link>
           <Link
-            href="/contact"
+            href="/muol/contact"
             className="text-xs transition-colors"
             style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}

@@ -935,7 +935,7 @@ export default function PerformerPage() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <StatusBadge status={show.status} />
                     <Link
-                      href={`/shows/${show.id}`}
+                      href={`/muol/shows/${show.id}`}
                       className="text-xs px-2 py-1"
                       style={{ fontFamily: "var(--font-inter)", color: "#0B5563" }}
                     >

@@ -11,7 +11,7 @@ export default function ShowsSearchBar({ basePath }: { basePath?: string } = {})
 
   // basePath 명시 안 하면 현재 경로 사용 (canlendar 등에서 검색하면 그 경로로 머무르되,
   // 일반적으로 /shows 또는 /archive에서만 사용됨)
-  const targetPath = basePath ?? (pathname.startsWith("/archive") ? "/archive" : "/shows");
+  const targetPath = basePath ?? (pathname.startsWith("/muol/archive") ? "/muol/archive" : "/muol/shows");
 
   useEffect(() => {
     setQuery(searchParams.get("q") ?? "");

@@ -28,6 +28,22 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // 2026-06-30 3층 구조 재편: 무대올림이 루트(/)에서 /muol/* 아래로 이동.
+  // 기존 외부 링크·검색 유입(102개 학과 아웃리치 등)이 끊기지 않도록 영구 리다이렉트(308).
+  // ⚠ 루트 "/"는 게이트웨이가 되므로 절대 source에 넣지 않는다(리다이렉트 루프 방지).
+  // :path* 는 부모 경로까지 매치(/shows, /shows/calendar, /shows/<id> 모두 커버), 쿼리스트링은 자동 보존.
+  async redirects() {
+    return [
+      { source: "/shows/:path*", destination: "/muol/shows/:path*", permanent: true },
+      { source: "/performer/:path*", destination: "/muol/performer/:path*", permanent: true },
+      { source: "/archive", destination: "/muol/archive", permanent: true },
+      { source: "/universities", destination: "/muol/universities", permanent: true },
+      { source: "/about", destination: "/muol/about", permanent: true },
+      { source: "/contact", destination: "/muol/contact", permanent: true },
+      { source: "/for-business", destination: "/muol/for-business", permanent: true },
+      { source: "/faq", destination: "/muol/faq", permanent: true },
+    ];
+  },
   images: {
     remotePatterns: [
       {

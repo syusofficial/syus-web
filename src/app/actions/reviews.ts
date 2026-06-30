@@ -73,7 +73,7 @@ export async function submitReview(formData: FormData): Promise<SubmitReviewStat
     return { ok: false, message: "저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요." };
   }
 
-  revalidatePath(`/shows/${showId}`);
+  revalidatePath(`/muol/shows/${showId}`);
 
   return {
     ok: true,
@@ -101,7 +101,7 @@ export async function deleteMyReview(reviewId: string, showId: string): Promise<
     return { ok: false, message: "삭제 중 오류가 발생했습니다." };
   }
 
-  revalidatePath(`/shows/${showId}`);
+  revalidatePath(`/muol/shows/${showId}`);
   return { ok: true, message: "후기가 삭제되었습니다." };
 }
 
@@ -126,7 +126,7 @@ export async function reportReview(
     return { ok: false, message: "신고 접수 중 오류가 발생했습니다." };
   }
 
-  revalidatePath(`/shows/${showId}`);
+  revalidatePath(`/muol/shows/${showId}`);
   return { ok: true, message: "신고가 접수되었습니다. 운영자가 24시간 내 확인합니다." };
 }
 
