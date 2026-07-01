@@ -28,7 +28,7 @@ export default async function OGImage() {
             넓게 둘러보다
           </div>
           <div style={{ fontSize: 24, color: "#4A3B33", marginTop: 22, display: "flex" }}>
-            대학 무대예술, 관람료 없이
+            대학 무대예술의 오늘
           </div>
         </div>
 

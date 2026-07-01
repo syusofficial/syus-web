@@ -43,7 +43,7 @@ const SITE_URL = "https://syus.co.kr";
 const SITE_NAME = "사유유사 SYUS";
 const SITE_TAGLINE = "무대올림과 시우스";
 const SITE_DESCRIPTION =
-  "사유유사 SYUS의 두 문. 무대올림 — 대학 무대예술 공연을 올리고 관람료 없이 좌석을 예약합니다. 시우스 — 연기를 깊게 기록하고 나누는 커뮤니티.";
+  "사유유사 SYUS의 두 문. 무대올림 — 대학 무대예술 공연을 올리고 지역 관객과 무대를 잇습니다. 시우스 — 연기를 깊게 기록하고 나누는 커뮤니티.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -61,7 +61,6 @@ export const metadata: Metadata = {
     "무대예술",
     "연기 커뮤니티",
     "대학 무대예술",
-    "관람료 없는 공연",
     "연기",
   ],
   authors: [{ name: "사유유사 SYUS" }],

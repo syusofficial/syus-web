@@ -100,7 +100,7 @@ export default async function HomePage() {
     url: "https://syus.co.kr",
     logo: "https://syus.co.kr/og-default.png",
     description:
-      "대학 무대예술 공연을 올리고 지역 관객이 관람료 없이 좌석을 예약하는 플랫폼. 공연팀에게 등록·게재 수수료를 받지 않습니다.",
+      "대학 무대예술 공연을 올리고 지역 관객이 좌석을 예약하는 플랫폼. 공연팀에게 등록·게재 수수료를 받지 않습니다.",
   };
 
   return (

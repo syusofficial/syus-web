@@ -24,7 +24,7 @@ export default function SyusAboutPage() {
           letterSpacing: "0.34em",
           textTransform: "uppercase",
           fontWeight: 600,
-          color: "#6BB0C0",
+          color: "#0B5563",
           marginBottom: "24px",
         }}
       >
@@ -38,7 +38,7 @@ export default function SyusAboutPage() {
           lineHeight: 1.18,
           fontWeight: 700,
           letterSpacing: "-0.02em",
-          color: "var(--color-syus-cream)",
+          color: "#241C18",
           wordBreak: "keep-all",
           marginBottom: "20px",
         }}
@@ -53,7 +53,7 @@ export default function SyusAboutPage() {
           fontFamily: "var(--font-noto-sans-kr)",
           fontSize: "1rem",
           letterSpacing: "0.06em",
-          color: "#6BB0C0",
+          color: "#0B5563",
           marginBottom: "44px",
         }}
       >
@@ -74,13 +74,13 @@ export default function SyusAboutPage() {
           b: "시우스의 다채로움은 시간과 결의 풍부함이지, 자극의 다양함이 아닙니다. 소란스럽지 않게, 닿아야 할 사람에게 닿습니다.",
         },
       ].map((s) => (
-        <section key={s.h} style={{ marginBottom: "40px", paddingTop: "28px", borderTop: "1px solid var(--color-syus-line)" }}>
+        <section key={s.h} style={{ marginBottom: "40px", paddingTop: "28px", borderTop: "1px solid #E0DBD0" }}>
           <h2
             style={{
               fontFamily: "var(--font-noto-serif-kr)",
               fontSize: "clamp(1.2rem, 2.4vw, 1.5rem)",
               fontWeight: 700,
-              color: "var(--color-syus-cream)",
+              color: "#241C18",
               wordBreak: "keep-all",
               marginBottom: "12px",
             }}
@@ -93,7 +93,7 @@ export default function SyusAboutPage() {
               fontSize: "1rem",
               lineHeight: 1.8,
               fontWeight: 300,
-              color: "var(--color-syus-cream-dim)",
+              color: "#6B5C50",
               wordBreak: "keep-all",
             }}
           >
@@ -110,9 +110,9 @@ export default function SyusAboutPage() {
             fontSize: "0.9rem",
             fontWeight: 600,
             letterSpacing: "0.06em",
-            color: "var(--color-syus-cream)",
+            color: "#241C18",
             textDecoration: "none",
-            borderBottom: "1px solid var(--color-syus-cream)",
+            borderBottom: "1px solid #241C18",
             paddingBottom: "4px",
           }}
         >
@@ -125,9 +125,9 @@ export default function SyusAboutPage() {
             fontSize: "0.9rem",
             fontWeight: 500,
             letterSpacing: "0.06em",
-            color: "var(--color-syus-cream-dim)",
+            color: "#6B5C50",
             textDecoration: "none",
-            borderBottom: "1px solid var(--color-syus-line)",
+            borderBottom: "1px solid #E0DBD0",
             paddingBottom: "4px",
           }}
         >

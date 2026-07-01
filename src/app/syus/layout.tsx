@@ -33,8 +33,8 @@ export default function SyusLayout({
   return (
     <div
       style={{
-        backgroundColor: "var(--color-syus-ink)",
-        color: "var(--color-syus-cream)",
+        backgroundColor: "#F4F2ED",
+        color: "#241C18",
         minHeight: "100svh",
       }}
     >
@@ -44,7 +44,7 @@ export default function SyusLayout({
           alignItems: "center",
           justifyContent: "space-between",
           padding: "18px clamp(20px, 5vw, 56px)",
-          borderBottom: "1px solid var(--color-syus-line)",
+          borderBottom: "1px solid #E0DBD0",
         }}
       >
         <Link
@@ -55,13 +55,13 @@ export default function SyusLayout({
             alignItems: "baseline",
             gap: "8px",
             textDecoration: "none",
-            color: "var(--color-syus-cream)",
+            color: "#241C18",
           }}
         >
           <span style={{ fontFamily: "var(--font-noto-serif-kr)", fontSize: "1.15rem", fontWeight: 700, letterSpacing: "0.02em" }}>
             시우스
           </span>
-          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.7rem", letterSpacing: "0.32em", fontWeight: 600, color: "#6BB0C0" }}>
+          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.7rem", letterSpacing: "0.32em", fontWeight: 600, color: "#0B5563" }}>
             SYUS
           </span>
         </Link>
@@ -69,20 +69,20 @@ export default function SyusLayout({
         <nav style={{ display: "flex", alignItems: "center", gap: "clamp(16px, 4vw, 32px)" }}>
           <Link
             href="/syus/about"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "var(--color-syus-cream-dim)" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#6B5C50" }}
           >
             소개
           </Link>
           <Link
             href="/muol"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "var(--color-syus-cream-dim)" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#6B5C50" }}
           >
             무대올림
           </Link>
           <Link
             href="/"
             aria-label="사유유사 갈림길로"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "var(--color-syus-cream-dim)" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#6B5C50" }}
           >
             사유유사
           </Link>
