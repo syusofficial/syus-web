@@ -4,13 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 /**
- * 시우스 마인드맵 (/syus) — 3층 구조. (2026-07-01 3차: 화이트톤 + 실선 연결 + 기하 노드 + 선행오픈 3섹션, 체크박스 제거)
- * 사장님 지시:
- *   - 시우스 밝은 화이트톤 + SYUS 색 유지
- *   - 중앙 핵 ↔ 6섹션을 마인드맵처럼 실선으로 연결(SVG)
- *   - 실선 끝에 무대 형태(기하 글리프) + 열림/준비 상태 (체크박스 표식은 제거)
- *   - 3섹션 선행오픈(가이드북 결정5: 견해글·QnA·책 서재) → 클릭 시 소개 페이지 이동
- *   - 나머지 3섹션은 '준비 중' 모달
+ * 시우스 마인드맵 (/syus) — 3층 구조. (2026-07-01 4차: 히어로 재구성 — 큰 기하 도형 + 브러시 SYUS 중앙)
+ * 사장님 지시(희망도안 반영):
+ *   - 중앙 = 브러시 SYUS 워드마크(클릭 → /syus/about 소개글) + "시우스란 →"
+ *   - 6무대를 '삐뚤빼뚤'이 아닌 대칭·직각의 깔끔한 외곽선 도형으로 크게(레퍼런스 도안 그대로)
+ *   - 중앙 ↔ 6도형 실선 연결(SVG), 선행오픈 3섹션은 소개 페이지 이동 / 나머지 3은 준비중 모달
+ *   - 도형은 시우스 브랜드색으로, 라벨(섹션명·상태)은 사용성 위해 작게 유지
  * 안전: 모달은 active일 때만 DOM(조건부), backdrop/ESC/X 닫힘, scroll lock cleanup으로 복원.
  */
 
@@ -36,49 +35,47 @@ const STAGES: Stage[] = [
   { key: "corridor", slug: "corridor", name: "사잇 무대", section: "책 서재", line: "관문이자 문지방, 사이의 통로", prep: "연기와 무대 곁에 둘 책을 천천히 모으는 자리입니다.", color: "var(--color-syus-stage-corridor)", shape: "corridor", open: true },
 ];
 
+// 대칭·직각의 깔끔한 외곽선 도형(희망도안). viewBox 24 기준, 선 굵기는 CSS.
 function StageGlyph({ shape }: { shape: string }) {
   const c = {
-    width: 40,
-    height: 40,
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: 1.4,
+    strokeWidth: 1.25,
     strokeLinejoin: "round" as const,
     strokeLinecap: "round" as const,
   };
   switch (shape) {
-    case "proscenium":
-      return (<svg {...c}><path d="M3 19V5h18v14" /><path d="M3 19h18" strokeDasharray="2 2" opacity="0.5" /></svg>);
-    case "thrust":
-      return (<svg {...c}><path d="M3 5h18v9h-6v5H9v-5H3z" /></svg>);
-    case "arena":
-      return (<svg {...c}><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="2.5" /></svg>);
-    case "blackbox":
-      return (<svg {...c}><rect x="4" y="4" width="16" height="16" strokeDasharray="3 2.5" /></svg>);
-    case "flex":
-      return (<svg {...c}><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z" /></svg>);
-    case "corridor":
-      return (<svg {...c}><rect x="8" y="3" width="8" height="18" /><path d="M12 3v18" opacity="0.5" /></svg>);
+    case "proscenium": // 프로시니엄 — 세로 사각(위·양옆 실선, 아래는 열린 점선)
+      return (<svg {...c}><path d="M6 20V4h12v16" /><path d="M6 20h12" strokeDasharray="2.4 2.2" opacity="0.6" /></svg>);
+    case "thrust": // 돌출 무대 — 넓은 상단 + 가운데 아래로 돌출(⊤)
+      return (<svg {...c}><path d="M3 6h18v8h-6v5H9v-5H3z" /></svg>);
+    case "arena": // 원형 무대 — 이중 동심원
+      return (<svg {...c}><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4" /></svg>);
+    case "blackbox": // 블랙박스 — 점선 정사각
+      return (<svg {...c}><rect x="4.5" y="4.5" width="15" height="15" strokeDasharray="3 2.6" /></svg>);
+    case "flex": // 변형 무대 — 정육각(뾰족한 위·아래)
+      return (<svg {...c}><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z" /></svg>);
+    case "corridor": // 사잇 무대 — 세로 사각 + 가운데 세로 칸막이
+      return (<svg {...c}><rect x="7" y="3.5" width="10" height="17" /><path d="M12 3.5v17" /></svg>);
     default:
       return null;
   }
 }
 
-// 노드 안쪽(글리프·체크박스·라벨) — 열림/준비 공통
+// 노드 안쪽(도형 + 라벨) — 열림/준비 공통
 function NodeBody({ s }: { s: Stage }) {
   return (
     <>
-      <span className="syus-node-top">
-        <span className="syus-node-glyph" style={{ color: s.color }}>
-          <StageGlyph shape={s.shape} />
-        </span>
+      <span className="syus-node-glyph" style={{ color: s.color }} aria-hidden="true">
+        <StageGlyph shape={s.shape} />
       </span>
-      <span className="syus-node-name">{s.name}</span>
-      <span className="syus-node-section" style={{ color: s.color }}>{s.section}</span>
-      <span className="syus-node-line">{s.line}</span>
-      <span className={`syus-node-state ${s.open ? "is-open" : ""}`}>
-        {s.open ? "열림 · 둘러보기" : "곧 열립니다"}
+      <span className="syus-node-label">
+        <span className="syus-node-section" style={{ color: s.color }}>{s.section}</span>
+        <span className="syus-node-name">{s.name}</span>
+        <span className={`syus-node-state ${s.open ? "is-open" : ""}`}>
+          {s.open ? "열림 · 둘러보기" : "곧 열립니다"}
+        </span>
       </span>
     </>
   );
@@ -120,9 +117,10 @@ export default function SyusMindmapPage() {
           ))}
         </svg>
 
-        <Link href="/syus/about" className="syus-core" aria-label="시우스란 — 정체성 보기">
-          <span className="syus-core-mark">SYUS</span>
-          <span className="syus-core-sub">시우스란</span>
+        <Link href="/syus/about" className="syus-core" aria-label="시우스란 — SYUS 소개 보기">
+          <span className="syus-core-mark" aria-hidden="true" />
+          <span className="syus-core-alt">SYUS</span>
+          <span className="syus-core-sub">시우스란 →</span>
         </Link>
 
         <div className="syus-nodes">
@@ -216,55 +214,55 @@ export default function SyusMindmapPage() {
           word-break: keep-all;
         }
 
-        /* ── 맵: 모바일 = 세로 스택 ── */
+        /* ── 맵: 모바일 = 세로 스택(도형 + 라벨) ── */
         .syus-map {
           position: relative;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 18px;
+          gap: 16px;
         }
         .syus-lines { display: none; }
 
+        /* 중앙 코어 — 브러시 SYUS + 시우스란(클릭 → 소개글) */
         .syus-core {
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 4px;
-          width: 132px;
-          height: 132px;
-          border-radius: 50%;
-          background: #FFFFFF;
-          border: 1.5px solid #0B5563;
-          box-shadow: 0 4px 16px rgba(36,28,24,0.08);
+          gap: 6px;
+          padding: 12px 18px;
+          background: transparent;
           text-decoration: none;
-          transition: transform 0.25s ease, box-shadow 0.25s ease;
+          transition: transform 0.25s ease;
         }
-        .syus-core:hover, .syus-core:focus-visible {
-          transform: scale(1.04);
-          box-shadow: 0 8px 24px rgba(11,85,99,0.18);
-        }
+        .syus-core:hover, .syus-core:focus-visible { transform: scale(1.04); }
         .syus-core-mark {
-          font-family: var(--font-inter);
-          font-size: 1.15rem;
-          font-weight: 700;
-          letter-spacing: 0.22em;
-          color: #0B5563;
+          display: block;
+          width: clamp(150px, 44vw, 200px);
+          height: clamp(62px, 18vw, 82px);
+          background: url('/wm-syus.jpg') no-repeat center center;
+          background-size: contain;
+          mix-blend-mode: multiply; /* 흰 배경 → 크림 위에서 사라지고 붓터치만 남음 */
+        }
+        .syus-core-alt { /* 이미지 로드 실패 대비 텍스트(시각적으론 mark가 덮음) */
+          position: absolute;
+          width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);
         }
         .syus-core-sub {
           font-family: var(--font-noto-sans-kr);
-          font-size: 0.72rem;
-          letter-spacing: 0.1em;
-          color: #6B5C50;
+          font-size: 0.82rem;
+          letter-spacing: 0.08em;
+          font-weight: 600;
+          color: #0B5563;
         }
 
         .syus-nodes {
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 12px;
           width: 100%;
-          max-width: 30rem;
+          max-width: 28rem;
         }
         .syus-node {
           appearance: none;
@@ -272,9 +270,9 @@ export default function SyusMindmapPage() {
           cursor: pointer;
           width: 100%;
           display: flex;
-          flex-direction: column;
-          gap: 4px;
-          padding: 20px 22px;
+          align-items: center;
+          gap: 18px;
+          padding: 16px 20px;
           background: #FFFFFF;
           border: 1px solid #E4DFD4;
           border-left: 3px solid var(--node);
@@ -287,47 +285,47 @@ export default function SyusMindmapPage() {
           border-color: var(--node);
           box-shadow: 0 8px 20px rgba(36,28,24,0.10);
         }
-        .syus-node.is-open { background: #FFFFFF; }
-        .syus-node:not(.is-open) { opacity: 0.82; }
+        .syus-node:not(.is-open) { opacity: 0.85; }
 
-        .syus-node-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-        .syus-node-glyph { color: var(--node); }
-        .syus-node-name {
-          font-family: var(--font-noto-serif-kr);
-          font-size: 1.15rem;
-          font-weight: 700;
-          color: #241C18;
+        .syus-node-glyph {
+          flex: 0 0 auto;
+          color: var(--node);
+          width: 52px;
+          height: 52px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
         }
+        .syus-node-glyph svg { width: 100%; height: 100%; }
+        .syus-node-label { display: flex; flex-direction: column; gap: 3px; }
         .syus-node-section {
           font-family: var(--font-noto-sans-kr);
-          font-size: 0.82rem;
-          font-weight: 600;
-          letter-spacing: 0.03em;
+          font-size: 0.95rem;
+          font-weight: 700;
+          letter-spacing: 0.01em;
         }
-        .syus-node-line {
+        .syus-node-name {
           font-family: var(--font-noto-sans-kr);
-          font-size: 0.82rem;
+          font-size: 0.78rem;
           font-weight: 300;
           color: #6B5C50;
-          word-break: keep-all;
-          margin-top: 2px;
         }
         .syus-node-state {
           font-family: var(--font-inter);
-          font-size: 0.62rem;
-          letter-spacing: 0.18em;
+          font-size: 0.6rem;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
           color: #A79E90;
-          margin-top: 8px;
+          margin-top: 3px;
         }
         .syus-node-state.is-open { color: #0B5563; font-weight: 600; }
 
-        /* ── 데스크탑 = 방사형 + 실선 ── */
+        /* ── 데스크탑 = 방사형 + 실선 + 큰 도형 ── */
         @media (min-width: 1024px) {
           .syus-map {
             display: block;
-            min-height: 820px;
-            max-width: 1040px;
+            min-height: 860px;
+            max-width: 1080px;
             margin: 0 auto;
           }
           .syus-lines {
@@ -349,7 +347,6 @@ export default function SyusMindmapPage() {
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
-            width: 150px; height: 150px;
           }
           .syus-core:hover, .syus-core:focus-visible {
             transform: translate(-50%, -50%) scale(1.04);
@@ -363,12 +360,24 @@ export default function SyusMindmapPage() {
           }
           .syus-node {
             position: absolute;
-            width: 244px;
+            width: 210px;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 14px;
+            padding: 22px 20px;
             transform: translate(-50%, -50%);
+            background: transparent;   /* 히어로 = 도형 중심, 카드 제거 */
+            border: 0;
+            box-shadow: none;
           }
           .syus-node:hover, .syus-node:focus-visible {
-            transform: translate(-50%, -50%) translateY(-3px);
+            transform: translate(-50%, -50%) translateY(-4px);
+            box-shadow: none;
           }
+          .syus-node-glyph { width: 84px; height: 84px; }
+          .syus-node-label { align-items: center; text-align: center; gap: 4px; }
+          .syus-node-state { margin-top: 5px; }
           .syus-node:nth-child(1) { left: 50%; top: 8%; }
           .syus-node:nth-child(2) { left: 86%; top: 31%; }
           .syus-node:nth-child(3) { left: 86%; top: 73%; }
@@ -407,7 +416,8 @@ export default function SyusMindmapPage() {
           color: #A79E90; font-size: 1.6rem; line-height: 1; cursor: pointer;
         }
         .syus-modal-x:hover { color: #241C18; }
-        .syus-modal-glyph { display: inline-block; margin-bottom: 16px; }
+        .syus-modal-glyph { display: inline-flex; width: 56px; height: 56px; margin-bottom: 16px; }
+        .syus-modal-glyph svg { width: 100%; height: 100%; }
         .syus-modal-section {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.85rem; font-weight: 600; letter-spacing: 0.06em;

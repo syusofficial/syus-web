@@ -175,7 +175,7 @@ export default function GatewayPage() {
         }
         .gw-syus-watermark {
           background: url('/wm-syus.jpg') no-repeat center center;
-          background-size: min(90%, 700px) auto;
+          background-size: min(96%, 860px) auto;
           opacity: 0.12;
           transition: opacity 0.5s ease, transform 0.5s ease;
         }
