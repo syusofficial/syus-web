@@ -48,8 +48,9 @@ export default function SyusMyPage() {
     await Promise.all(MY_SOURCES.map(async (s) => {
       try {
         const { data } = await supabase.from(s.t).select(s.sel).eq("user_id", id).order("created_at", { ascending: false });
-        (data ?? []).forEach((r: Record<string, unknown>) => {
-          mine.push({ key: `${s.t}:${r.id}`, title: (r[s.titleKey] as string) || s.label, href: s.href(r.id as string), label: s.label, created_at: r.created_at as string });
+        const rows = ((data ?? []) as unknown) as Record<string, unknown>[];
+        rows.forEach((r) => {
+          mine.push({ key: `${s.t}:${r.id as string}`, title: (r[s.titleKey] as string) || s.label, href: s.href(r.id as string), label: s.label, created_at: r.created_at as string });
         });
       } catch { /* 테이블 미생성 등 무시 */ }
     }));
@@ -59,15 +60,16 @@ export default function SyusMyPage() {
     // 찜한 글 — 좋아요 목록 → 타입별 제목 조회
     try {
       const { data: likes } = await supabase.from("syus_likes").select("target_type, target_id, created_at").eq("user_id", id).order("created_at", { ascending: false });
-      const rows = (likes ?? []) as { target_type: string; target_id: string; created_at: string }[];
+      const rows = ((likes ?? []) as unknown) as { target_type: string; target_id: string; created_at: string }[];
       const byType: Record<string, string[]> = {};
       rows.forEach((l) => { if (LIKE_MAP[l.target_type]) { (byType[l.target_type] ??= []).push(l.target_id); } });
       const titleMap: Record<string, { title: string; href: string; label: string }> = {};
       await Promise.all(Object.entries(byType).map(async ([type, ids]) => {
         const m = LIKE_MAP[type];
         const { data } = await supabase.from(m.t).select(m.sel).in("id", ids);
-        (data ?? []).forEach((r: Record<string, unknown>) => {
-          titleMap[`${type}:${r.id}`] = { title: (r[m.titleKey] as string) || m.label, href: m.href(r.id as string), label: m.label };
+        const rows2 = ((data ?? []) as unknown) as Record<string, unknown>[];
+        rows2.forEach((r) => {
+          titleMap[`${type}:${r.id as string}`] = { title: (r[m.titleKey] as string) || m.label, href: m.href(r.id as string), label: m.label };
         });
       }));
       const likedItems: Item[] = [];

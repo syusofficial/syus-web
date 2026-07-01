@@ -59,7 +59,10 @@ export default function BookDetail() {
         </div>
         <h1 className="syc-detail-title">{book.title}</h1>
         <p className="syc-detail-meta">{book.author ? `${book.author} · ` : ""}등록 {author} · {fmt(book.created_at)}</p>
-        {book.cover_url && <img src={book.cover_url} alt={book.title} className="syc-media" style={{ maxWidth: "260px" }} />}
+        {book.cover_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={book.cover_url} alt={book.title} className="syc-media" style={{ maxWidth: "260px" }} />
+        )}
         {book.note && <p className="syc-detail-body">{book.note}</p>}
         <div className="syc-detail-foot">
           <SyusLikeButton targetType="book" targetId={book.id} />

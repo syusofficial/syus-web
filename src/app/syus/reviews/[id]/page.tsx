@@ -59,7 +59,10 @@ export default function ReviewDetail() {
         </div>
         <h1 className="syc-detail-title">{rv.work_title}</h1>
         <p className="syc-detail-meta">{author} · {fmt(rv.created_at)}</p>
-        {rv.image_url && <img src={rv.image_url} alt={rv.work_title} className="syc-media" />}
+        {rv.image_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={rv.image_url} alt={rv.work_title} className="syc-media" />
+        )}
         {rv.image_source && <span className="syc-source">출처 · {rv.image_source}</span>}
         <p className="syc-detail-body">{rv.body}</p>
         {rv.tags?.length > 0 && (
