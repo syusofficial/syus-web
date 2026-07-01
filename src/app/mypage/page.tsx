@@ -173,6 +173,13 @@ export default function MyPage() {
           <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
             {profile.email ?? "이메일 미제공 (소셜 가입)"} · {roleLabel}
           </p>
+          <Link
+            href="/syus/mypage"
+            className="inline-block mt-4 text-sm"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", fontWeight: 600, borderBottom: "1px solid #0B5563", paddingBottom: "2px" }}
+          >
+            시우스 마이페이지 →
+          </Link>
         </div>
 
         {/* Tabs */}

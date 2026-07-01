@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import SyusWriteCta from "@/components/SyusWriteCta";
 
 /**
  * 시우스 무대 섹션 상세페이지 (/syus/[stage]) — 2026-07-01 커뮤니티 상세 구성 초안.
@@ -331,9 +332,7 @@ export default async function StagePage({
           읽는 건 누구나, 쓰는 건 로그인한 뒤에. <br />
           시우스는 함께 채워가는 연기 커뮤니티입니다.
         </p>
-        <Link href={`/auth/login?next=/syus/${stage}`} className="syd-cta-btn" style={{ background: info.color }}>
-          로그인하고 {info.cta} →
-        </Link>
+        <SyusWriteCta stage={stage} label={info.cta} color={info.color} />
         <p className="syd-guide">{info.guideline}</p>
         <p className="syd-soon">아직 문을 여는 중입니다. 위 예시는 이 자리에 곧 쌓일 글의 결을 보여드리는 시드입니다.</p>
       </section>
@@ -441,6 +440,9 @@ export default async function StagePage({
         .syd-cta-text { font-family: var(--font-noto-serif-kr); font-size: 1.1rem; line-height: 1.6; color: #241C18; margin-bottom: 20px; word-break: keep-all; }
         .syd-cta-btn { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em; color: #F4F2ED; text-decoration: none; padding: 13px 30px; }
         .syd-cta-btn:hover { opacity: 0.92; }
+        .syd-cta-in { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .syd-cta-badge { font-family: var(--font-inter); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: #F4F2ED; padding: 4px 12px; }
+        .syd-cta-note { font-family: var(--font-noto-sans-kr); font-size: 0.92rem; line-height: 1.6; color: #4A3B33; word-break: keep-all; margin: 0; }
         .syd-guide { font-family: var(--font-noto-sans-kr); font-size: 0.82rem; line-height: 1.65; font-weight: 300; color: #8A7D6E; margin-top: 22px; word-break: keep-all; }
         .syd-soon { font-family: var(--font-noto-sans-kr); font-size: 0.8rem; color: #A79E90; margin-top: 10px; word-break: keep-all; }
 
