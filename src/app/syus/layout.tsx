@@ -81,7 +81,7 @@ export default function SyusLayout({
             alignItems: "center",
           }}
         >
-          <Image src="/sayuyusa-logo.png" alt="사유유사 SYUS" width={104} height={42} style={{ height: "26px", width: "auto", display: "block" }} priority />
+          <Image src="/sayuyusa-logo.png" alt="사유유사 SYUS" width={158} height={64} style={{ height: "34px", width: "auto", display: "block", filter: "brightness(0.55) contrast(1.08) saturate(1.1)" }} priority />
         </Link>
 
         <nav style={{ display: "flex", alignItems: "center", gap: "clamp(16px, 4vw, 32px)" }}>

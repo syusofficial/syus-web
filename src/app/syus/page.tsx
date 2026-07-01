@@ -29,9 +29,9 @@ type Stage = {
 const STAGES: Stage[] = [
   { key: "proscenium", slug: "proscenium", name: "프로시니엄 무대", section: "주인장 견해글", line: "정면으로 마주하는, 정제된 시선", prep: "운영자가 연기를 들여다본 글이 한 편씩 쌓이는 자리입니다.", color: "var(--color-syus-stage-proscenium)", shape: "proscenium", open: true },
   { key: "thrust", slug: "thrust", name: "돌출 무대", section: "연기 고민 QnA", line: "객석으로 걸어 나오는, 가까운 대화", prep: "연기 고민을 묻고, 함께 답을 더듬는 자리입니다.", color: "var(--color-syus-stage-thrust)", shape: "thrust", open: true },
-  { key: "arena", slug: "arena", name: "원형 무대", section: "자유 커뮤니티", line: "사방이 객석인, 둘러앉은 광장", prep: "연습·잡담·모집이 자유롭게 오가는 광장입니다.", color: "var(--color-syus-stage-arena)", shape: "arena", open: false },
-  { key: "blackbox", slug: "blackbox", name: "블랙박스", section: "관람의 잔상", line: "무엇이든 될 수 있는 빈 검은 상자", prep: "공연·영화·드라마를 본 뒤 남은 잔상을 적는 자리입니다.", color: "var(--color-syus-stage-blackbox)", shape: "blackbox", open: false },
-  { key: "flex", slug: "flex", name: "변형 무대", section: "창작 독백 아카이브", line: "형태가 바뀌는, 다목적 무대", prep: "원하는 결의 독백을 새로 지어 건네받는 자리입니다.", color: "var(--color-syus-stage-flex)", shape: "flex", open: false },
+  { key: "arena", slug: "arena", name: "원형 무대", section: "자유 커뮤니티", line: "사방이 객석인, 둘러앉은 광장", prep: "연습·잡담·모집이 자유롭게 오가는 광장입니다.", color: "var(--color-syus-stage-arena)", shape: "arena", open: true },
+  { key: "blackbox", slug: "blackbox", name: "블랙박스", section: "관람의 잔상", line: "무엇이든 될 수 있는 빈 검은 상자", prep: "공연·영화·드라마를 본 뒤 남은 잔상을 적는 자리입니다.", color: "var(--color-syus-stage-blackbox)", shape: "blackbox", open: true },
+  { key: "flex", slug: "flex", name: "변형 무대", section: "창작 독백 아카이브", line: "형태가 바뀌는, 다목적 무대", prep: "원하는 결의 독백을 새로 지어 건네받는 자리입니다.", color: "var(--color-syus-stage-flex)", shape: "flex", open: true },
   { key: "corridor", slug: "corridor", name: "사잇 무대", section: "책 서재", line: "관문이자 문지방, 사이의 통로", prep: "연기와 무대 곁에 둘 책을 천천히 모으는 자리입니다.", color: "var(--color-syus-stage-corridor)", shape: "corridor", open: true },
 ];
 
@@ -267,7 +267,9 @@ export default function SyusMindmapPage() {
           gap: 12px;
           width: 100%;
           max-width: 28rem;
+          pointer-events: none; /* inset:0 컨테이너가 중앙 코어 클릭을 가로채지 않게 */
         }
+        .syus-node { pointer-events: auto; }
         .syus-node {
           appearance: none;
           text-align: left;
