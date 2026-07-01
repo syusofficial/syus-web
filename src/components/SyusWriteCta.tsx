@@ -5,11 +5,11 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 /**
- * 시우스 상세페이지의 쓰기 CTA — 세션을 읽어 로그인 상태에서는 로그인 화면으로 튕기지 않는다.
- * (기존엔 로그인했어도 /auth/login 으로 보내 '로그아웃된 것처럼' 보이던 버그.)
- * - 비로그인: "로그인하고 {label}" → /auth/login?next=/syus/{stage}
- * - 로그인:  실제 글쓰기(DB·스토리지)는 다음 단계라, 지금은 로그인 상태임을 알리고 '내 시우스'로 안내.
- *            (DB 연결 후 이 자리에 실제 작성 폼 라우트를 연결)
+ * 시우스 상세/허브의 쓰기 CTA — 세션을 읽어 로그인 상태에서 로그인 화면으로 튕기지 않는다.
+ * - 비로그인: "로그인하고 {label}" → /auth/login?next=(writeHref 또는 섹션)
+ * - 로그인 + writeHref: 바로 작성 페이지로
+ * - 로그인 + writeHref 없음: 로그인됨 안내 + 내 시우스로 (아직 작성 미연결 섹션)
+ * 공용 .syc-* 클래스 사용(전역 globals.css).
  */
 export default function SyusWriteCta({
   stage,
@@ -20,7 +20,7 @@ export default function SyusWriteCta({
   stage: string;
   label: string;
   color: string;
-  writeHref?: string; // 실제 작성 페이지가 준비된 섹션(예: QnA)은 이 경로로 연결
+  writeHref?: string;
 }) {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
@@ -40,31 +40,27 @@ export default function SyusWriteCta({
   }, []);
 
   if (loggedIn) {
-    // 실제 작성 페이지가 있는 섹션 → 바로 작성으로
     if (writeHref) {
       return (
-        <Link href={writeHref} className="syd-cta-btn" style={{ background: color }}>
+        <Link href={writeHref} className="syc-btn" style={{ background: color }}>
           {label} →
         </Link>
       );
     }
-    // 아직 DB 미연결 섹션 → 로그인 화면으로 튕기지 않고 안내
     return (
-      <div className="syd-cta-in">
-        <span className="syd-cta-badge" style={{ background: color }}>로그인됨</span>
-        <p className="syd-cta-note">
-          {label}는 곧 열립니다. 글쓰기·사진 첨부 기능을 준비하고 있어요.
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <span className="syc-badge syc-badge--static" style={{ color, marginBottom: 0 }}>로그인됨</span>
+        <p className="syc-note" style={{ margin: 0, fontSize: "0.92rem", color: "#4A3B33" }}>
+          {label}는 곧 열립니다. 기능을 준비하고 있어요.
         </p>
-        <Link href="/syus/mypage" className="syd-cta-btn" style={{ background: color }}>
-          내 시우스로 →
-        </Link>
+        <Link href="/syus/mypage" className="syc-btn" style={{ background: color, alignSelf: "start" }}>내 시우스로 →</Link>
       </div>
     );
   }
 
   const loginNext = writeHref ?? `/syus/${stage}`;
   return (
-    <Link href={`/auth/login?next=${encodeURIComponent(loginNext)}`} className="syd-cta-btn" style={{ background: color }}>
+    <Link href={`/auth/login?next=${encodeURIComponent(loginNext)}`} className="syc-btn" style={{ background: color }}>
       로그인하고 {label} →
     </Link>
   );

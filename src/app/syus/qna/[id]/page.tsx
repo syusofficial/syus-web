@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
@@ -21,6 +21,7 @@ function fmt(iso: string): string {
 
 export default function QnaDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const id = String(params.id);
 
   const [loading, setLoading] = useState(true);
@@ -117,6 +118,15 @@ export default function QnaDetailPage() {
     setBusy(false);
   };
 
+  const deleteQuestion = async () => {
+    if (!question || userId !== question.user_id || busy) return;
+    if (!window.confirm("이 질문을 삭제할까요? 답변도 함께 사라집니다.")) return;
+    setBusy(true);
+    const supabase = createClient();
+    await supabase.from("syus_questions").delete().eq("id", id).eq("user_id", userId);
+    router.push("/syus/thrust");
+  };
+
   const acceptAnswer = async (answerId: string) => {
     if (!question || userId !== question.user_id || busy) return;
     setBusy(true);
@@ -154,9 +164,12 @@ export default function QnaDetailPage() {
           <div className="qd-tags">
             {question.tags?.map((t) => <span key={t} className="qd-tag">#{t}</span>)}
           </div>
-          <button type="button" className={`qd-like ${likedByMe ? "is-on" : ""}`} onClick={toggleLike} disabled={busy}>
-            {likedByMe ? "♥" : "♡"} 찜 {likeCount}
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            {isOwner && <button type="button" className="qd-accept-btn" onClick={deleteQuestion} disabled={busy}>질문 삭제</button>}
+            <button type="button" className={`qd-like ${likedByMe ? "is-on" : ""}`} onClick={toggleLike} disabled={busy}>
+              {likedByMe ? "♥" : "♡"} 찜 {likeCount}
+            </button>
+          </div>
         </div>
       </article>
 

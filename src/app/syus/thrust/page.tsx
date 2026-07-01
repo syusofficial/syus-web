@@ -58,7 +58,7 @@ export default async function ThrustQnaHub() {
     <main className="syq-wrap">
       <Link href="/syus" className="syq-back">← 여섯 무대로</Link>
 
-      <span className="syq-badge" style={{ background: COLOR }}>지금 열림 · 연기 커뮤니티</span>
+      <span className="syc-badge" style={{ color: COLOR }}>지금 열림 · 연기 커뮤니티</span>
       <h1 className="syq-title">연기 고민 QnA</h1>
       <p className="syq-tagline" style={{ color: COLOR }}>돌출 무대 · 객석 속으로 뻗어, 가장 가까이 주고받는 대화</p>
       <p className="syq-lead">
