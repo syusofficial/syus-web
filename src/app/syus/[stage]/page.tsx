@@ -151,7 +151,10 @@ const STAGES: Record<string, Stage> = {
 };
 
 export function generateStaticParams() {
-  return Object.keys(STAGES).map((stage) => ({ stage }));
+  // thrust(연기 고민 QnA)는 전용 페이지(/syus/thrust)가 대체하므로 제외.
+  return Object.keys(STAGES)
+    .filter((stage) => stage !== "thrust")
+    .map((stage) => ({ stage }));
 }
 
 export async function generateMetadata({

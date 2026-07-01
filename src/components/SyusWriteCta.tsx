@@ -15,10 +15,12 @@ export default function SyusWriteCta({
   stage,
   label,
   color,
+  writeHref,
 }: {
   stage: string;
   label: string;
   color: string;
+  writeHref?: string; // 실제 작성 페이지가 준비된 섹션(예: QnA)은 이 경로로 연결
 }) {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
@@ -38,6 +40,15 @@ export default function SyusWriteCta({
   }, []);
 
   if (loggedIn) {
+    // 실제 작성 페이지가 있는 섹션 → 바로 작성으로
+    if (writeHref) {
+      return (
+        <Link href={writeHref} className="syd-cta-btn" style={{ background: color }}>
+          {label} →
+        </Link>
+      );
+    }
+    // 아직 DB 미연결 섹션 → 로그인 화면으로 튕기지 않고 안내
     return (
       <div className="syd-cta-in">
         <span className="syd-cta-badge" style={{ background: color }}>로그인됨</span>
@@ -51,8 +62,9 @@ export default function SyusWriteCta({
     );
   }
 
+  const loginNext = writeHref ?? `/syus/${stage}`;
   return (
-    <Link href={`/auth/login?next=/syus/${stage}`} className="syd-cta-btn" style={{ background: color }}>
+    <Link href={`/auth/login?next=${encodeURIComponent(loginNext)}`} className="syd-cta-btn" style={{ background: color }}>
       로그인하고 {label} →
     </Link>
   );
