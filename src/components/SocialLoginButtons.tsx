@@ -5,16 +5,19 @@ import { createClient } from "@/lib/supabase/client";
 
 type Provider = "google" | "kakao";
 
-export default function SocialLoginButtons({ mode = "login" }: { mode?: "login" | "signup" }) {
+export default function SocialLoginButtons({ mode = "login", next }: { mode?: "login" | "signup"; next?: string }) {
   const [loading, setLoading] = useState<Provider | null>(null);
 
   const handleSocial = async (provider: Provider) => {
     setLoading(provider);
     const supabase = createClient();
+    // 로그인 후 복귀 목적지를 콜백으로 전달(내부 경로만). /auth/callback 이 next로 최종 리다이렉트.
+    const safeNext = next && next.startsWith("/") && !next.startsWith("//") ? next : null;
+    const callbackUrl = `${window.location.origin}/auth/callback${safeNext ? `?next=${encodeURIComponent(safeNext)}` : ""}`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl,
       },
     });
     if (error) {

@@ -30,6 +30,11 @@ function LoginPageInner() {
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [countdown, setCountdown] = useState(0);
 
+  // 로그인 후 복귀 목적지(?next=/syus 등). 오픈 리다이렉트 방지: 내부 경로만 허용.
+  const nextParam = searchParams.get("next");
+  const safeNext =
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
+
   // 자동 로그아웃 메시지 (?reason=absolute|idle|signup)
   useEffect(() => {
     const reason = searchParams.get("reason");
@@ -120,7 +125,7 @@ function LoginPageInner() {
       if (profile?.role === "admin") {
         router.push("/admin");
       } else {
-        router.push("/");
+        router.push(safeNext);
       }
       router.refresh();
     } catch (err) {
@@ -152,7 +157,7 @@ function LoginPageInner() {
 
         {/* 소셜 로그인 — 페이지 상단 배치 (현대 웹 표준) */}
         <div className="mb-6 space-y-3">
-          <SocialLoginButtons mode="login" />
+          <SocialLoginButtons mode="login" next={safeNext} />
           <SocialDivider label="또는 이메일로 로그인" />
         </div>
 

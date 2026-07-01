@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import SyusAuthLink from "@/components/SyusAuthLink";
 
 /**
  * 시우스(SYUS) 세그먼트 레이아웃 — 2026-06-30 3층 구조.
@@ -85,12 +86,9 @@ export default function SyusLayout({
         </Link>
 
         <nav style={{ display: "flex", alignItems: "center", gap: "clamp(16px, 4vw, 32px)" }}>
-          <Link
-            href="/auth/login"
+          <SyusAuthLink
             style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#0B5563", fontWeight: 600 }}
-          >
-            로그인
-          </Link>
+          />
           <Link
             href="/muol"
             style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#6B5C50" }}

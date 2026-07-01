@@ -331,7 +331,7 @@ export default async function StagePage({
           읽는 건 누구나, 쓰는 건 로그인한 뒤에. <br />
           시우스는 함께 채워가는 연기 커뮤니티입니다.
         </p>
-        <Link href="/auth/login" className="syd-cta-btn" style={{ background: info.color }}>
+        <Link href={`/auth/login?next=/syus/${stage}`} className="syd-cta-btn" style={{ background: info.color }}>
           로그인하고 {info.cta} →
         </Link>
         <p className="syd-guide">{info.guideline}</p>
