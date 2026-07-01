@@ -153,7 +153,7 @@ export default function GatewayPage() {
         }
         .gw-muol-watermark {
           background: url('/wm-muol.png') no-repeat center 46%;
-          background-size: min(80%, 560px) auto;
+          background-size: min(82%, 600px) auto;
           opacity: 0.09;
           filter: brightness(0) invert(1); /* 심볼을 밝은 선으로 반전 → 진한 배경 위 은은 */
           transition: opacity 0.5s ease;
@@ -175,7 +175,7 @@ export default function GatewayPage() {
         }
         .gw-syus-watermark {
           background: url('/wm-syus.jpg') no-repeat center center;
-          background-size: min(74%, 520px) auto;
+          background-size: min(90%, 700px) auto;
           opacity: 0.12;
           transition: opacity 0.5s ease, transform 0.5s ease;
         }
