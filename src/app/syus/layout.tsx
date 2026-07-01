@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
 /**
  * 시우스(SYUS) 세그먼트 레이아웃 — 2026-06-30 3층 구조.
@@ -40,6 +41,7 @@ export default function SyusLayout({
     >
       <header
         style={{
+          position: "relative",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -66,12 +68,28 @@ export default function SyusLayout({
           </span>
         </Link>
 
+        {/* 중앙 — 사유유사 브랜드 로고(갈림길로) */}
+        <Link
+          href="/"
+          aria-label="사유유사 갈림길로"
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            display: "inline-flex",
+            alignItems: "center",
+          }}
+        >
+          <Image src="/sayuyusa-logo.png" alt="사유유사 SYUS" width={104} height={42} style={{ height: "26px", width: "auto", display: "block" }} priority />
+        </Link>
+
         <nav style={{ display: "flex", alignItems: "center", gap: "clamp(16px, 4vw, 32px)" }}>
           <Link
-            href="/syus/about"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#6B5C50" }}
+            href="/auth/login"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#0B5563", fontWeight: 600 }}
           >
-            소개
+            로그인
           </Link>
           <Link
             href="/muol"

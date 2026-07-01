@@ -108,12 +108,17 @@ export default function SyusMindmapPage() {
       </div>
 
       <div className="syus-map">
-        {/* 핵 ↔ 노드 실선 (데스크탑) */}
+        {/* 핵 ↔ 노드 실선 (데스크탑) — 중앙 SYUS·도형에 닿지 않게 양끝을 물려 자름 */}
         <svg className="syus-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {[
-            [50, 8], [86, 31], [86, 73], [50, 92], [14, 73], [14, 31],
-          ].map(([x, y], i) => (
-            <line key={i} x1="50" y1="50" x2={x} y2={y} />
+            [50.0, 40.0, 50.0, 19.0],
+            [58.8, 45.3, 76.3, 36.1],
+            [58.4, 55.4, 76.7, 67.1],
+            [50.0, 60.0, 50.0, 81.0],
+            [41.6, 55.4, 23.3, 67.1],
+            [41.2, 45.3, 23.7, 36.1],
+          ].map(([x1, y1, x2, y2], i) => (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} />
           ))}
         </svg>
 
@@ -241,9 +246,8 @@ export default function SyusMindmapPage() {
           display: block;
           width: clamp(150px, 44vw, 200px);
           height: clamp(62px, 18vw, 82px);
-          background: url('/wm-syus.jpg') no-repeat center center;
+          background: url('/wm-syus-mark.png') no-repeat center center; /* 흰 배경 누끼 제거된 투명 PNG */
           background-size: contain;
-          mix-blend-mode: multiply; /* 흰 배경 → 크림 위에서 사라지고 붓터치만 남음 */
         }
         .syus-core-alt { /* 이미지 로드 실패 대비 텍스트(시각적으론 mark가 덮음) */
           position: absolute;
