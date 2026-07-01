@@ -8,7 +8,7 @@ import Image from "next/image";
  *   - 시우스   = 밝은 화이트톤 + SYUS 붓터치색 유지, 뒷배경에 Afterimage 사진 워터마크
  *   - 지붕 배지 밑 흰색 슬로건이 안 보이던 문제 → 슬로건 제거(배지에 로고+이름만)
  *   - "관람료 없이" 등 관객 대상 단언 문구 제외(학과가 관람료를 받을 여지)
- * 워터마크: /wm-muol.png, /wm-syus.png (사장님이 public에 넣으면 자동 노출, 없으면 조용히 미표시).
+ * 워터마크: /wm-muol.png(심볼 PNG), /wm-syus.jpg(사진 JPG) — public에 배치 완료, 자동 노출.
  *
  * 안전: 서버 컴포넌트 + CSS group-hover만(클라이언트 JS 0), 레이어 pointer-events:none. reduced-motion 존중.
  * metadata는 루트 layout.tsx(사유유사)가 제공.
@@ -174,7 +174,7 @@ export default function GatewayPage() {
           border-top: 1px solid #E0DBD0;
         }
         .gw-syus-watermark {
-          background: url('/wm-syus.png') no-repeat center center;
+          background: url('/wm-syus.jpg') no-repeat center center;
           background-size: cover;
           opacity: 0.12;
           transition: opacity 0.5s ease, transform 0.5s ease;

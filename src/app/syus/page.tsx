@@ -4,11 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 /**
- * 시우스 마인드맵 (/syus) — 3층 구조. (2026-06-30 2차: 화이트톤 + 실선 연결 + 체크박스형 기하 노드 + 선행오픈 3섹션)
+ * 시우스 마인드맵 (/syus) — 3층 구조. (2026-07-01 3차: 화이트톤 + 실선 연결 + 기하 노드 + 선행오픈 3섹션, 체크박스 제거)
  * 사장님 지시:
  *   - 시우스 밝은 화이트톤 + SYUS 색 유지
  *   - 중앙 핵 ↔ 6섹션을 마인드맵처럼 실선으로 연결(SVG)
- *   - 6무대를 '체크박스'처럼 — 실선 끝에 무대 형태(기하) + 열림/준비 상태
+ *   - 실선 끝에 무대 형태(기하 글리프) + 열림/준비 상태 (체크박스 표식은 제거)
  *   - 3섹션 선행오픈(가이드북 결정5: 견해글·QnA·책 서재) → 클릭 시 소개 페이지 이동
  *   - 나머지 3섹션은 '준비 중' 모달
  * 안전: 모달은 active일 때만 DOM(조건부), backdrop/ESC/X 닫힘, scroll lock cleanup으로 복원.
@@ -70,9 +70,6 @@ function NodeBody({ s }: { s: Stage }) {
   return (
     <>
       <span className="syus-node-top">
-        <span className={`syus-check ${s.open ? "is-on" : ""}`} aria-hidden="true">
-          {s.open ? "☑" : "☐"}
-        </span>
         <span className="syus-node-glyph" style={{ color: s.color }}>
           <StageGlyph shape={s.shape} />
         </span>
@@ -294,12 +291,6 @@ export default function SyusMindmapPage() {
         .syus-node:not(.is-open) { opacity: 0.82; }
 
         .syus-node-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-        .syus-check {
-          font-size: 1.05rem;
-          line-height: 1;
-          color: #B9B1A2;
-        }
-        .syus-check.is-on { color: var(--node); }
         .syus-node-glyph { color: var(--node); }
         .syus-node-name {
           font-family: var(--font-noto-serif-kr);
