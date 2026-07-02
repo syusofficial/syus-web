@@ -21,8 +21,22 @@ const SEED_MONO = {
 
 export default async function FlexHub() {
   let items: Row[] = [];
+  let isAdmin = false;
+  let pendingCount = 0;
   try {
     const supabase = await createClient();
+    const { data: me } = await supabase.auth.getUser();
+    if (me.user) {
+      const { data: prof } = await supabase.from("profiles").select("role").eq("id", me.user.id).maybeSingle();
+      isAdmin = prof?.role === "admin";
+      if (isAdmin) {
+        const { count } = await supabase
+          .from("syus_monologues")
+          .select("id", { count: "exact", head: true })
+          .in("status", ["reviewing", "pending"]);
+        pendingCount = count ?? 0;
+      }
+    }
     const { data } = await supabase
       .from("syus_monologues")
       .select("id, char_type, emotion, tone, generated_text, created_at")
@@ -44,6 +58,7 @@ export default async function FlexHub() {
       <div className="syc-cta-row syc-rule">
         <SyusWriteCta stage="flex" label="독백 요청하기" color="var(--color-syus-stage-flex)" writeHref="/syus/monologues/request" />
         <Link href="/syus/mypage" className="syc-btn-ghost">내 요청 보기</Link>
+        {isAdmin && <Link href="/syus/monologues/review" className="syc-btn-ghost">독백 검수{pendingCount > 0 ? ` · ${pendingCount}` : ""}</Link>}
       </div>
 
       <div className="syc-block">

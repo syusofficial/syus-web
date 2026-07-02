@@ -40,6 +40,21 @@ export default function MonologueRequest() {
       })
       .select("id").single();
     if (e2 || !data) { setError("요청을 접수하지 못했습니다. 잠시 후 다시 시도해주세요."); setSaving(false); return; }
+    // 접수 후 생성 파이프라인 호출(검수 대기로 전환). 실패해도 요청은 pending으로 남아 상세에서 상태 확인 가능.
+    try {
+      const resp = await fetch("/api/syus/monologue/generate", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id: data.id }),
+      });
+      // 사용량 초과(429)만 폼에서 정직하게 안내하고 머무른다. 그 외 실패는 상세로 이동(pending으로 보임).
+      if (resp.status === 429) {
+        const j = await resp.json().catch(() => ({}));
+        setError(j.error || "하루 요청 한도를 넘었어요. 내일 다시 청해 주세요.");
+        setSaving(false);
+        return;
+      }
+    } catch { /* 네트워크 실패 시에도 상세로 이동 — pending 상태로 보임 */ }
     router.push(`/syus/monologues/${data.id}`);
   };
 
@@ -84,7 +99,7 @@ export default function MonologueRequest() {
         {error && <p className="syc-error">{error}</p>}
         <p className="syc-note">※ 실시간 생성이 아니라 요청 접수 → 생성 → 운영자 검수 → 전달 순서입니다. 접수 후 마이페이지·상세에서 상태를 볼 수 있어요.</p>
         <div className="syc-actions">
-          <button type="submit" className="syc-btn" disabled={saving}>{saving ? "접수 중…" : "요청 접수"}</button>
+          <button type="submit" className="syc-btn" disabled={saving}>{saving ? "독백을 짓는 중… (최대 1분)" : "요청 접수"}</button>
           <Link href="/syus/flex" className="syc-cancel">취소</Link>
         </div>
       </form>
