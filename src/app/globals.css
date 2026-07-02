@@ -321,8 +321,9 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 }
 
 /* ──────────────────────────────────────────────────
- * 시우스 캔버스 배경 — 흰 도화지에 SYUS 6색 페인트 워시 (무대올림 크림톤과 분리)
- * 고정 레이어(스크롤 무관), 본문 뒤. 텍스트 가독 위해 저채도·저투명.
+ * 시우스 캔버스 배경 — 흰 도화지에 SYUS 로고색 붓칠(파랑·초록·노랑·빨강 + 사유유사 갈색 옅게).
+ * 첨부 레퍼런스 재해석 = public/syus-brush-bg.svg (붓결 필터 + 중앙 회피 배치).
+ * 고정 레이어(스크롤 무관), 본문 뒤. 마인드맵 위에서는 워터마크처럼 흐리게 — 글자·도형 가독 우선.
  * ────────────────────────────────────────────────── */
 .syus-canvas {
   position: fixed;
@@ -330,15 +331,17 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
   z-index: 0;
   pointer-events: none;
   background-color: #FCFBF9;
-  background-image:
-    radial-gradient(42% 34% at 6% 8%,   rgba(91,143,208,0.14),  transparent 72%),  /* 프로시니엄 블루 */
-    radial-gradient(38% 30% at 96% 14%, rgba(111,181,126,0.13), transparent 72%),  /* 돌출 그린 */
-    radial-gradient(34% 30% at 90% 70%, rgba(224,169,59,0.12),  transparent 72%),  /* 원형 앰버 */
-    radial-gradient(40% 34% at 4% 84%,  rgba(165,147,201,0.14), transparent 72%),  /* 블랙박스 퍼플 */
-    radial-gradient(30% 26% at 66% 92%, rgba(63,169,187,0.12),  transparent 72%),  /* 변형 틸 */
-    radial-gradient(30% 26% at 34% 40%, rgba(209,122,107,0.09), transparent 74%);  /* 사잇 테라코타 */
+  --syus-brush-opacity: 0.3;
 }
-/* 흰 캔버스 위 종이 결(아주 옅게) */
+/* 붓칠 레이어(워터마크) — 중앙(코어·라벨 영역)은 SVG 생성 단계에서 이미 성기게 비움 */
+.syus-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('/syus-brush-bg.svg') center center / cover no-repeat;
+  opacity: var(--syus-brush-opacity);
+}
+/* 흰 캔버스 위 종이 결(아주 옅게) — 붓칠 위에 얹힘 */
 .syus-canvas::after {
   content: "";
   position: absolute;
