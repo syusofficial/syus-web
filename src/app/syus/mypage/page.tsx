@@ -33,6 +33,16 @@ const LIKE_MAP: Record<string, { t: string; sel: string; titleKey: string; label
   monologue: { t: "syus_monologues", sel: "id, char_type", titleKey: "char_type", label: "창작 독백", href: (id) => `/syus/monologues/${id}` },
 };
 
+// 마이페이지 섹션 그룹(6무대 순서·색)
+const SECTIONS = [
+  { label: "주인장 견해글", color: "var(--color-syus-stage-proscenium)" },
+  { label: "연기 고민 QnA", color: "var(--color-syus-stage-thrust)" },
+  { label: "자유 커뮤니티", color: "var(--color-syus-stage-arena)" },
+  { label: "관람의 잔상", color: "var(--color-syus-stage-blackbox)" },
+  { label: "창작 독백", color: "var(--color-syus-stage-flex)" },
+  { label: "책 서재", color: "var(--color-syus-stage-corridor)" },
+];
+
 export default function SyusMyPage() {
   const [ready, setReady] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
@@ -129,16 +139,34 @@ export default function SyusMyPage() {
           <Link href="/syus" className="syc-empty-link">여섯 무대 둘러보기 →</Link>
         </div>
       ) : (
-        <ul className="syc-list">
-          {list.map((it) => (
-            <li key={it.key + it.created_at}>
-              <Link href={it.href} className="syc-item">
-                <span className="syc-item-title">{it.title}</span>
-                <span className="syc-item-meta" style={{ marginLeft: 0 }}>{it.label} · {fmt(it.created_at)}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="symy-groups">
+          {SECTIONS.map((sec) => {
+            const group = list.filter((it) => it.label === sec.label);
+            return (
+              <section key={sec.label} className="symy-group">
+                <div className="symy-group-h" style={{ ["--c" as string]: sec.color } as React.CSSProperties}>
+                  <span className="symy-dot" />
+                  <span className="symy-group-name">{sec.label}</span>
+                  <span className="symy-group-count">{group.length}</span>
+                </div>
+                {group.length > 0 ? (
+                  <ul className="syc-list">
+                    {group.map((it) => (
+                      <li key={it.key + it.created_at}>
+                        <Link href={it.href} className="syc-item">
+                          <span className="syc-item-title">{it.title}</span>
+                          <span className="syc-item-meta" style={{ marginLeft: 0 }}>{fmt(it.created_at)}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="symy-none">{tab === "posts" ? "아직 남긴 글이 없어요." : "아직 찜한 글이 없어요."}</p>
+                )}
+              </section>
+            );
+          })}
+        </div>
       )}
       <p className="syc-note">※ 각 글은 눌러 들어가면 그 자리에서 수정·삭제할 수 있어요.</p>
 
@@ -151,6 +179,12 @@ export default function SyusMyPage() {
       <style>{`
         .symy-tab { appearance: none; background: none; border: 0; cursor: pointer; font-family: var(--font-noto-sans-kr); font-size: 0.95rem; font-weight: 600; color: #A79E90; padding: 12px 6px; margin-bottom: -1px; border-bottom: 2px solid transparent; }
         .symy-tab[data-on="true"] { color: #241C18; border-bottom-color: #0B5563; }
+        .symy-groups { display: grid; gap: 30px; }
+        .symy-group-h { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+        .symy-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c, #0B5563); }
+        .symy-group-name { font-family: var(--font-noto-serif-kr); font-size: 1.08rem; font-weight: 700; color: #241C18; }
+        .symy-group-count { font-family: var(--font-inter); font-size: 0.78rem; font-weight: 600; color: var(--c, #0B5563); }
+        .symy-none { font-family: var(--font-noto-sans-kr); font-size: 0.85rem; color: #B9B1A2; padding: 4px 2px; }
       `}</style>
     </main>
   );
