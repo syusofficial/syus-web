@@ -262,10 +262,10 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 /* 붓칠 스와치 버튼 — 직사각 틀 대신 손으로 칠한 붓 조각. 색은 var(--c). 텍스트는 크림. */
 .syc-btn {
   position: relative; isolation: isolate;
-  display: inline-flex; align-items: center; gap: 8px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   font-family: var(--font-noto-sans-kr); font-size: 0.92rem; font-weight: 700; letter-spacing: 0.02em;
   color: #F4F2ED; background: transparent; text-decoration: none; border: 0;
-  padding: 14px 30px; cursor: pointer; transition: transform 0.2s ease;
+  padding: 14px 30px; cursor: pointer; transition: transform 0.2s ease; text-align: center;
 }
 .syc-btn::before {
   content: ""; position: absolute; inset: -3px -8px; z-index: -1;

@@ -39,7 +39,11 @@ export default function BookNew() {
 
     let cover_url: string | null = null;
     if (cover) {
-      const ext = (cover.name.split(".").pop() || "jpg").toLowerCase();
+      if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(cover.type)) {
+        setError("표지는 JPG·PNG·WEBP·GIF 이미지만 올릴 수 있어요."); setSaving(false); return;
+      }
+      if (cover.size > 5 * 1024 * 1024) { setError("표지는 5MB 이하만 올릴 수 있어요."); setSaving(false); return; }
+      const ext = cover.type === "image/jpeg" ? "jpg" : cover.type.split("/")[1]; // 확장자는 MIME에서 도출(파일명 위조 차단)
       const path = `${uid}/${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await supabase.storage.from("syus-media").upload(path, cover, { upsert: false });
       if (upErr) { setError("표지 업로드에 실패했습니다. 이미지 없이 등록하거나 다시 시도해주세요."); setSaving(false); return; }

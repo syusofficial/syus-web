@@ -42,7 +42,11 @@ export default function ReviewNew() {
 
     let image_url: string | null = null;
     if (image) {
-      const ext = (image.name.split(".").pop() || "jpg").toLowerCase();
+      if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(image.type)) {
+        setError("이미지는 JPG·PNG·WEBP·GIF만 올릴 수 있어요."); setSaving(false); return;
+      }
+      if (image.size > 5 * 1024 * 1024) { setError("이미지는 5MB 이하만 올릴 수 있어요."); setSaving(false); return; }
+      const ext = image.type === "image/jpeg" ? "jpg" : image.type.split("/")[1]; // 확장자는 MIME에서 도출(파일명 위조 차단)
       const path = `${uid}/${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await supabase.storage.from("syus-media").upload(path, image, { upsert: false });
       if (upErr) { setError("이미지 업로드에 실패했습니다. 이미지 없이 남기거나 다시 시도해주세요."); setSaving(false); return; }

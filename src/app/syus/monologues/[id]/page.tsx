@@ -41,6 +41,8 @@ export default function MonologueDetail() {
 
   const isOwner = uid === m.user_id;
   const reqLine = [m.char_type, m.emotion, m.tone, m.purpose].filter(Boolean).join(" · ");
+  // 검수 게이트: 운영자 승인(delivered) 또는 공개 처리된 뒤에만 본문 노출. reviewing/pending/rejected는 상태만.
+  const revealed = !!m.generated_text && (m.status === "delivered" || m.is_public);
 
   return (
     <main className="syc-wrap" style={{ ["--c" as string]: "var(--color-syus-stage-flex)" } as React.CSSProperties}>
@@ -49,7 +51,7 @@ export default function MonologueDetail() {
         <span className="syc-card-meta">{reqLine || "창작 독백"}</span>
         <p className="syc-detail-meta">요청 {fmt(m.created_at)}{isOwner ? ` · ${STATUS_LABEL[m.status] ?? m.status}` : ""}</p>
 
-        {m.generated_text ? (
+        {revealed ? (
           <>
             <span className="syc-badge syc-badge--static" style={{ color: "var(--color-syus-stage-flex)", marginBottom: 12 }}>AI 창작 원본 · 검수본</span>
             <p className="syc-detail-body" style={{ fontSize: "1.05rem", lineHeight: 1.9 }}>{m.generated_text}</p>
@@ -65,7 +67,7 @@ export default function MonologueDetail() {
           </div>
         )}
 
-        {m.generated_text && (
+        {revealed && (
           <div className="syc-detail-foot" style={{ marginTop: 18 }}>
             <SyusLikeButton targetType="monologue" targetId={m.id} />
           </div>

@@ -33,7 +33,8 @@ function LoginPageInner() {
   // 로그인 후 복귀 목적지(?next=/syus 등). 오픈 리다이렉트 방지: 내부 경로만 허용.
   const nextParam = searchParams.get("next");
   const safeNext =
-    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") && !nextParam.startsWith("/\\")
+      ? nextParam : "/";
 
   // 자동 로그아웃 메시지 (?reason=absolute|idle|signup)
   useEffect(() => {

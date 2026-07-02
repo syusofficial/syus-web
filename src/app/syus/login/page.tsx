@@ -43,7 +43,8 @@ function SyusLoginInner() {
   // 로그인 후 복귀 목적지(기본 /syus). 오픈 리다이렉트 방지: 내부 경로만 허용.
   const nextParam = searchParams.get("next");
   const safeNext =
-    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/syus";
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") && !nextParam.startsWith("/\\")
+      ? nextParam : "/syus";
 
   useEffect(() => {
     const reason = searchParams.get("reason");
