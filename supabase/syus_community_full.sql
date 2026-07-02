@@ -343,7 +343,7 @@ create policy "syus_b delete own" on public.syus_books for delete using (auth.ui
 
 -- ============================================================
 -- 8. 저장소(Storage) — 관람 후기 사진 · 책 표지
---    버킷 'syus-media' (공개 읽기). 업로드는 로그인 사용자가 본인 폴더({uid}/...)에만.
+--    버킷 'syus-media' (공개 URL 읽기 · 목록 SELECT 정책 없음). 업로드는 로그인 사용자가 본인 폴더({uid}/...)에만.
 -- ============================================================
 insert into storage.buckets (id, name, public)
 values ('syus-media', 'syus-media', true)
@@ -354,9 +354,10 @@ drop policy if exists "syus media upload own" on storage.objects;
 drop policy if exists "syus media update own" on storage.objects;
 drop policy if exists "syus media delete own" on storage.objects;
 
-create policy "syus media read"
-  on storage.objects for select
-  using (bucket_id = 'syus-media');
+-- 읽기(SELECT) 정책 없음(의도적): syus-media는 공개 버킷이라 이미지는 공개 URL로 바로
+--   표시되고(정책 무관), 앱은 목록조회(.list())를 하지 않는다. 광범위 SELECT를 두면
+--   버킷 전체 파일 열거(경로에 사용자 UUID 포함)가 가능 → 두지 않음(2026-07-02 Storage 보안 경고).
+--   위의 drop 이 이전에 만든 "syus media read" 를 제거하므로 재실행 시 자동 정리됨.
 
 create policy "syus media upload own"
   on storage.objects for insert to authenticated
