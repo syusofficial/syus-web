@@ -15,7 +15,8 @@ import { createClient } from "@/lib/supabase/client";
  */
 
 type Report = { id: string; user_id: string; target_type: string; target_id: string; reason: string; status: string; created_at: string };
-type Ask = { id: string; user_id: string; body: string; created_at: string };
+// 통합 질문 인박스 항목 — 견해글 질문받기(essay) + 연기 고민 QnA(question)
+type QItem = { id: string; source: "essay" | "question"; label: string; color: string; text: string; user_id: string; created_at: string; href?: string };
 
 const TEAL = "#0B5563";
 
@@ -46,7 +47,7 @@ export default function SyusAdminPage() {
   const router = useRouter();
   const [state, setState] = useState<"loading" | "denied" | "ready">("loading");
   const [reports, setReports] = useState<Report[]>([]);
-  const [asks, setAsks] = useState<Ask[]>([]);
+  const [questions, setQuestions] = useState<QItem[]>([]);
   const [names, setNames] = useState<Record<string, string>>({});
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [monoPending, setMonoPending] = useState(0);
@@ -64,11 +65,18 @@ export default function SyusAdminPage() {
     const reportList = ((rep ?? []) as unknown) as Report[];
     setReports(reportList);
 
-    const { data: ask } = await supabase.from("syus_essay_asks").select("id, user_id, body, created_at").eq("answered", false).order("created_at", { ascending: false }).limit(40);
-    const askList = ((ask ?? []) as unknown) as Ask[];
-    setAsks(askList);
+    // 통합 질문 인박스: 견해글 질문받기 + 연기 고민 QnA
+    const { data: ask } = await supabase.from("syus_essay_asks").select("id, user_id, body, created_at").order("created_at", { ascending: false }).limit(50);
+    const { data: qna } = await supabase.from("syus_questions").select("id, user_id, title, created_at").order("created_at", { ascending: false }).limit(50);
+    const askRows = ((ask ?? []) as unknown) as { id: string; user_id: string; body: string; created_at: string }[];
+    const qnaRows = ((qna ?? []) as unknown) as { id: string; user_id: string; title: string; created_at: string }[];
+    const qItems: QItem[] = [
+      ...askRows.map((a) => ({ id: a.id, source: "essay" as const, label: "주인장 견해글", color: "var(--color-syus-stage-proscenium)", text: a.body, user_id: a.user_id, created_at: a.created_at })),
+      ...qnaRows.map((q) => ({ id: q.id, source: "question" as const, label: "연기 고민 QnA", color: "var(--color-syus-stage-thrust)", text: q.title, user_id: q.user_id, created_at: q.created_at, href: `/syus/qna/${q.id}` })),
+    ].sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
+    setQuestions(qItems);
 
-    const ids = Array.from(new Set([...reportList.map((r) => r.user_id), ...askList.map((a) => a.user_id)]));
+    const ids = Array.from(new Set([...reportList.map((r) => r.user_id), ...qItems.map((q) => q.user_id)]));
     if (ids.length) {
       const { data: profs } = await supabase.from("profiles").select("id, name").in("id", ids);
       const map: Record<string, string> = {};
@@ -109,6 +117,17 @@ export default function SyusAdminPage() {
     // 같은 대상에 걸린 신고 일괄 처리
     await supabase.from("syus_reports").update({ status: "resolved" }).eq("target_id", r.target_id);
     setReports((p) => p.filter((x) => x.target_id !== r.target_id)); setBusy(null);
+  };
+
+  const deleteQuestion = async (q: QItem) => {
+    if (busy) return;
+    if (!window.confirm(`이 질문(${q.label})을 삭제할까요? 되돌릴 수 없습니다.`)) return;
+    setBusy(`${q.source}:${q.id}`); setMsg("");
+    const supabase = createClient();
+    const table = q.source === "essay" ? "syus_essay_asks" : "syus_questions";
+    const { error } = await supabase.from(table).delete().eq("id", q.id);
+    if (error) { setMsg("질문 삭제에 실패했어요(권한 또는 이미 삭제됨)."); setBusy(null); return; }
+    setQuestions((p) => p.filter((x) => !(x.id === q.id && x.source === q.source))); setBusy(null);
   };
 
   if (state === "loading") return <main className="syc-wrap" style={{ ["--c" as string]: TEAL } as React.CSSProperties}><p className="syc-loading">불러오는 중…</p></main>;
@@ -169,17 +188,24 @@ export default function SyusAdminPage() {
         )}
       </div>
 
-      {/* 질문받기 인박스 */}
+      {/* 질문 인박스 — 섹션 출처 표시 + 삭제 */}
       <div className="syc-block">
-        <h2 className="syc-h2">남겨진 질문 · {asks.length}</h2>
-        {asks.length === 0 ? (
-          <div className="syc-empty"><p className="syc-empty-h">아직 남겨진 질문이 없어요.</p></div>
+        <h2 className="syc-h2">질문 · {questions.length}</h2>
+        {questions.length === 0 ? (
+          <div className="syc-empty"><p className="syc-empty-h">아직 들어온 질문이 없어요.</p></div>
         ) : (
           <ul className="syc-list">
-            {asks.map((a) => (
-              <li key={a.id} className="syc-comment">
-                <p className="syc-comment-body">{a.body}</p>
-                <span className="syc-comment-meta">{names[a.user_id] ?? "익명"} · {fmt(a.created_at)}</span>
+            {questions.map((q) => (
+              <li key={`${q.source}:${q.id}`} className="syc-comment">
+                <span className="sya-qsrc" style={{ color: q.color }}>{q.label}</span>
+                <p className="syc-comment-body" style={{ margin: "6px 0 10px" }}>{q.text}</p>
+                <div className="syc-comment-foot">
+                  <span className="syc-comment-meta">{names[q.user_id] ?? "익명"} · {fmt(q.created_at)}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    {q.href && <Link href={q.href} className="syc-comment-meta" style={{ color: "#0B5563" }} target="_blank">보기 ↗</Link>}
+                    <button type="button" className="syc-comment-del" disabled={busy === `${q.source}:${q.id}`} onClick={() => deleteQuestion(q)}>삭제</button>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>
@@ -197,6 +223,7 @@ export default function SyusAdminPage() {
         .sya-stat { display: flex; flex-direction: column; gap: 3px; background: #FFFFFF; border: 1px solid #E4DFD4; border-left: 3px solid var(--c, #0B5563); padding: 12px 14px; }
         .sya-stat-n { font-family: var(--font-noto-serif-kr); font-size: 1.4rem; font-weight: 700; color: #241C18; }
         .sya-stat-l { font-family: var(--font-noto-sans-kr); font-size: 0.78rem; color: #6B5C50; }
+        .sya-qsrc { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; }
       `}</style>
     </main>
   );
