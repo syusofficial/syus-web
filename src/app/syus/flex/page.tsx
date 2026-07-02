@@ -14,6 +14,11 @@ export const metadata: Metadata = {
 
 type Row = { id: string; char_type: string | null; emotion: string | null; tone: string | null; generated_text: string | null; created_at: string };
 
+const SEED_MONO = {
+  line: "20대 후반 · 체념과 미련 사이 · 오디션용",
+  body: "불 꺼진 객석을 보면 아직도 심장이 뛰어. 웃기지. 아무도 없는데. …나는 이 자리가 나를 안 불러줄까 봐 오래 무서웠어. 그런데 오늘 알았어. 무대가 나를 부르는 게 아니라, 내가 계속 여기로 걸어 들어온 거였구나. 그러니까 이건 포기가 아니라… 한 번 더, 제대로 인사하는 거야.",
+};
+
 export default async function FlexHub() {
   let items: Row[] = [];
   try {
@@ -53,10 +58,17 @@ export default async function FlexHub() {
             ))}
           </div>
         ) : (
-          <div className="syc-empty">
-            <p className="syc-empty-h">아직 공개된 독백이 없어요.</p>
-            <p className="syc-empty-b">첫 독백을 요청하면, 검수를 거쳐 이 서고의 문이 열립니다.</p>
-          </div>
+          <>
+            <div className="syc-empty">
+              <p className="syc-empty-h">아직 공개된 독백이 없어요.</p>
+              <p className="syc-empty-b">첫 독백을 요청하면, 검수를 거쳐 이 서고의 문이 열립니다.</p>
+            </div>
+            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#6B5C50" }}>이렇게 지어져 쌓일 거예요</h3>
+            <article className="syc-card" style={{ opacity: 0.82 }}>
+              <span className="syc-card-meta">{SEED_MONO.line} · 예시</span>
+              <p className="syc-card-body" style={{ lineHeight: 1.9 }}>{SEED_MONO.body}</p>
+            </article>
+          </>
         )}
         <p className="syc-note">※ 모든 독백은 AI가 지은 창작 원본입니다. 운영자 검수 뒤 전달되며(컨시어지 방식), 연습·오디션에 자유롭게 쓸 수 있어요.</p>
       </div>

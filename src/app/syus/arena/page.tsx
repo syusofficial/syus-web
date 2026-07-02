@@ -15,6 +15,12 @@ export const metadata: Metadata = {
 
 type Row = { id: string; category: string; title: string; body: string; created_at: string };
 
+const SEED_POSTS = [
+  { cat: "모집", title: "이번 주말 대본 리딩 같이 하실 분 (2명)", body: "졸업 작품 준비 중인데, 리딩 호흡을 맞춰볼 동료를 찾습니다. 부담 없이 오세요." },
+  { cat: "잡담", title: "막이 내린 밤은 왜 이렇게 허전할까요", body: "분장을 지우는 그 순간의 기분, 다들 어떻게 보내시나요." },
+  { cat: "소식", title: "지역 소극장 무료 워크숍 정보 공유", body: "다음 달 발성·움직임 워크숍이 열린대요. 관심 있으면 같이 신청해요." },
+];
+
 function fmt(iso: string) { const d = new Date(iso); return isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`; }
 
 export default async function ArenaHub({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
@@ -64,10 +70,22 @@ export default async function ArenaHub({ searchParams }: { searchParams: Promise
             ))}
           </ul>
         ) : (
-          <div className="syc-empty">
-            <p className="syc-empty-h">아직 글이 없어요{cat ? ` (${cat})` : ""}.</p>
-            <p className="syc-empty-b">가장 먼저 이야기를 꺼내 두면, 둘러앉은 자리가 채워집니다.</p>
-          </div>
+          <>
+            <div className="syc-empty">
+              <p className="syc-empty-h">아직 글이 없어요{cat ? ` (${cat})` : ""}.</p>
+              <p className="syc-empty-b">가장 먼저 이야기를 꺼내 두면, 둘러앉은 자리가 채워집니다.</p>
+            </div>
+            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#6B5C50" }}>이런 이야기들이 오갈 거예요</h3>
+            <ul className="syc-list">
+              {SEED_POSTS.map((p) => (
+                <li key={p.title} className="syc-item" style={{ opacity: 0.72, cursor: "default" }}>
+                  <span className="syc-item-title">{p.title}</span>
+                  <span className="syc-item-body">{p.body}</span>
+                  <span className="syc-item-foot"><span className="syc-tag">{p.cat}</span><span className="syc-item-meta">예시</span></span>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </div>
 

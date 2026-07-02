@@ -18,6 +18,12 @@ function Stars({ n }: { n: number }) {
   return <span className="syc-stars">{"★".repeat(n)}<span className="off">{"★".repeat(5 - n)}</span></span>;
 }
 
+const SEED_BOOKS = [
+  { title: "배우 수업", author: "콘스탄틴 스타니슬랍스키", topic: "이론", stars: 5, note: "‘만약에’ 하나로 장면이 어떻게 살아나는지. 처음 한 권으로 자주 권해지는 고전." },
+  { title: "빈 공간", author: "피터 브룩", topic: "연출", stars: 5, note: "아무것도 없는 공간이 어떻게 무대가 되는가. 블랙박스를 사랑하게 되는 책." },
+  { title: "배우와 표적", author: "디클런 도넬란", topic: "신체", stars: 4, note: "‘느끼려 하지 말고 보라’. 긴장으로 굳은 몸에 길을 터주는 문장들." },
+];
+
 export default async function CorridorHub() {
   let books: Row[] = [];
   try {
@@ -55,10 +61,23 @@ export default async function CorridorHub() {
             ))}
           </div>
         ) : (
-          <div className="syc-empty">
-            <p className="syc-empty-h">아직 서가가 비어 있어요.</p>
-            <p className="syc-empty-b">곁에 두고 싶은 첫 책을 올려, 서가의 문을 열어 주세요.</p>
-          </div>
+          <>
+            <div className="syc-empty">
+              <p className="syc-empty-h">아직 서가가 비어 있어요.</p>
+              <p className="syc-empty-b">곁에 두고 싶은 첫 책을 올려, 서가의 문을 열어 주세요.</p>
+            </div>
+            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#6B5C50" }}>이런 책들이 놓일 거예요</h3>
+            <div className="syc-cards">
+              {SEED_BOOKS.map((b) => (
+                <article key={b.title} className="syc-card" style={{ opacity: 0.74 }}>
+                  <div className="syc-card-row"><span className="syc-tag">{b.topic}</span><Stars n={b.stars} /></div>
+                  <h3 className="syc-card-title">{b.title}</h3>
+                  <span className="syc-card-meta" style={{ color: "#6B5C50" }}>{b.author}</span>
+                  <p className="syc-card-body">{b.note}</p>
+                </article>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
