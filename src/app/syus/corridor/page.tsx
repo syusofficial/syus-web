@@ -35,7 +35,6 @@ export default async function CorridorHub() {
   return (
     <main className="syc-wrap" style={{ ["--c" as string]: COLOR } as React.CSSProperties}>
       <Link href="/syus" className="syc-back">← 여섯 무대로</Link>
-      <span className="syc-badge">연기 커뮤니티</span>
       <h1 className="syc-title">책 서재</h1>
       <p className="syc-tagline">사잇 무대 · 관문이자 문지방, 지식으로 들어가는 아치</p>
       <p className="syc-lead">연기와 무대 곁에 둘 책을 함께 모읍니다. 한 사람의 추천이 다른 사람의 다음 한 권이 되는, 천천히 자라는 서가입니다.</p>

@@ -32,7 +32,6 @@ export default async function ProsceniumHub() {
   return (
     <main className="syc-wrap" style={{ ["--c" as string]: COLOR } as React.CSSProperties}>
       <Link href="/syus" className="syc-back">← 여섯 무대로</Link>
-      <span className="syc-badge">연기 커뮤니티</span>
       <h1 className="syc-title">주인장 견해글</h1>
       <p className="syc-tagline">프로시니엄 무대 · 액자 너머, 정면으로 마주하는 정제된 시선</p>
       <p className="syc-lead">운영자가 연기를 오래 들여다본 글을 한 편씩 액자에 걸듯 내겁니다. ‘연기의 냉장고’ — 차곡차곡 재워둔 관찰입니다.</p>

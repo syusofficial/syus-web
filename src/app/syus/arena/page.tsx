@@ -37,7 +37,6 @@ export default async function ArenaHub({ searchParams }: { searchParams: Promise
   return (
     <main className="syc-wrap" style={{ ["--c" as string]: COLOR } as React.CSSProperties}>
       <Link href="/syus" className="syc-back">← 여섯 무대로</Link>
-      <span className="syc-badge">연기 커뮤니티</span>
       <h1 className="syc-title">자유 커뮤니티</h1>
       <p className="syc-tagline">원형 무대 · 사방이 객석인, 중심 없이 둘러앉은 광장</p>
       <p className="syc-lead">연기에 관한 이야기라면 무엇이든 자유롭게 오갑니다. 잡담도, 소식도, 함께할 사람을 찾는 일도 여기서.</p>

@@ -139,7 +139,7 @@ function SyusLoginInner() {
           {info && <p className="syus-auth-info">{info}</p>}
           {error && <p className="syc-error">{error}</p>}
 
-          <button type="submit" className="syc-btn" disabled={loading || !!lockedUntil} style={{ background: TEAL, marginTop: 4 }}>
+          <button type="submit" className="syc-btn" disabled={loading || !!lockedUntil} style={{ marginTop: 4 }}>
             {lockedUntil ? `${countdown}초 후 재시도 가능` : loading ? "로그인 중…" : "로그인"}
           </button>
         </form>

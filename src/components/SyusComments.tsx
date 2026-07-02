@@ -93,7 +93,7 @@ export default function SyusComments({ targetType, targetId }: { targetType: str
           maxLength={2000}
           placeholder={uid ? "생각을 덧대 주세요." : "로그인 후 댓글을 남길 수 있어요."}
         />
-        <button type="submit" className="syc-btn" style={{ justifySelf: "start", background: "#0B5563" }} disabled={busy || body.trim().length < 1}>
+        <button type="submit" className="syc-btn" style={{ justifySelf: "start" }} disabled={busy || body.trim().length < 1}>
           {uid ? "댓글 남기기" : "로그인하고 댓글"}
         </button>
       </form>

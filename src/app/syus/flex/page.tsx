@@ -50,7 +50,6 @@ export default async function FlexHub() {
   return (
     <main className="syc-wrap" style={{ ["--c" as string]: COLOR } as React.CSSProperties}>
       <Link href="/syus" className="syc-back">← 여섯 무대로</Link>
-      <span className="syc-badge">연기 커뮤니티</span>
       <h1 className="syc-title">창작 독백 아카이브</h1>
       <p className="syc-tagline">변형 무대 · 형태가 계속 바뀌는, 끝없이 새로 지어지는 무대</p>
       <p className="syc-lead">원하는 결의 독백을 요청하면, AI가 기존 작품을 베끼지 않은 창작 독백을 지어 전달합니다. 운영자 검수를 거쳐 건네지고, 동의하면 서고에 쌓여 다른 사람도 둘러봅니다.</p>

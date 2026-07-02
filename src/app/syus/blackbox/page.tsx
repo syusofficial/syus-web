@@ -32,7 +32,6 @@ export default async function BlackboxHub() {
   return (
     <main className="syc-wrap" style={{ ["--c" as string]: COLOR } as React.CSSProperties}>
       <Link href="/syus" className="syc-back">← 여섯 무대로</Link>
-      <span className="syc-badge">연기 커뮤니티</span>
       <h1 className="syc-title">관람의 잔상</h1>
       <p className="syc-tagline">블랙박스 · 암전 뒤에 남는 인상, 무엇이든 될 수 있는 빈 상자</p>
       <p className="syc-lead">공연·영화·드라마를 보고 남은 잔상을 서로 나눕니다. 같은 작품의 다른 잔상이 포개질 때, 혼자 본 것보다 오래 남습니다.</p>

@@ -42,7 +42,7 @@ export default function SyusWriteCta({
   if (loggedIn) {
     if (writeHref) {
       return (
-        <Link href={writeHref} className="syc-btn" style={{ background: color }}>
+        <Link href={writeHref} className="syc-btn">
           {label} →
         </Link>
       );
@@ -53,14 +53,14 @@ export default function SyusWriteCta({
         <p className="syc-note" style={{ margin: 0, fontSize: "0.92rem", color: "#4A3B33" }}>
           {label}는 곧 열립니다. 기능을 준비하고 있어요.
         </p>
-        <Link href="/syus/mypage" className="syc-btn" style={{ background: color, alignSelf: "start" }}>내 시우스로 →</Link>
+        <Link href="/syus/mypage" className="syc-btn" style={{ alignSelf: "start" }}>내 시우스로 →</Link>
       </div>
     );
   }
 
   const loginNext = writeHref ?? `/syus/${stage}`;
   return (
-    <Link href={`/syus/login?next=${encodeURIComponent(loginNext)}`} className="syc-btn" style={{ background: color }}>
+    <Link href={`/syus/login?next=${encodeURIComponent(loginNext)}`} className="syc-btn">
       로그인하고 {label} →
     </Link>
   );

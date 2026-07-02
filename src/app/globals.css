@@ -194,8 +194,8 @@ body {
  * ────────────────────────────────────────────────── */
 .syc-wrap { max-width: 46rem; margin: 0 auto; padding: clamp(40px, 8vh, 88px) clamp(24px, 6vw, 48px) 120px; }
 .syc-wrap--wide { max-width: 60rem; }
-.syc-back { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.82rem; letter-spacing: 0.08em; color: #6B5C50; text-decoration: none; margin-bottom: 38px; }
-.syc-back:hover { color: #241C18; }
+.syc-back { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 1.02rem; font-weight: 700; letter-spacing: 0.01em; color: #241C18; text-decoration: none; margin-bottom: 30px; transition: color 0.18s ease; }
+.syc-back:hover { color: var(--c, #0B5563); }
 
 /* 감각적 배지 — 색 글씨 + 맥동 점 (currentColor 사용 → 인라인 color로 섹션색 지정) */
 .syc-badge {
@@ -259,10 +259,43 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 .syc-empty-link { font-family: var(--font-noto-sans-kr); font-size: 0.88rem; font-weight: 600; color: #241C18; text-decoration: none; border-bottom: 1px solid #241C18; padding-bottom: 3px; }
 
 /* 버튼 */
-.syc-btn { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em; color: #F4F2ED; background: var(--c, #0B5563); text-decoration: none; border: 0; padding: 13px 28px; cursor: pointer; }
-.syc-btn:hover { opacity: 0.92; }
-.syc-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-.syc-btn-ghost { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.9rem; font-weight: 600; color: var(--c, #0B5563); background: none; border: 1px solid var(--c, #0B5563); padding: 12px 26px; text-decoration: none; cursor: pointer; }
+/* 붓칠 스와치 버튼 — 직사각 틀 대신 손으로 칠한 붓 조각. 색은 var(--c). 텍스트는 크림. */
+.syc-btn {
+  position: relative; isolation: isolate;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-noto-sans-kr); font-size: 0.92rem; font-weight: 700; letter-spacing: 0.02em;
+  color: #F4F2ED; background: transparent; text-decoration: none; border: 0;
+  padding: 14px 30px; cursor: pointer; transition: transform 0.2s ease;
+}
+.syc-btn::before {
+  content: ""; position: absolute; inset: -3px -8px; z-index: -1;
+  background: var(--c, #0B5563);
+  -webkit-mask: url('/syus-swatch.svg') center / 100% 100% no-repeat;
+          mask: url('/syus-swatch.svg') center / 100% 100% no-repeat;
+  transition: transform 0.22s ease, filter 0.22s ease;
+}
+.syc-btn:hover { transform: translateY(-1px); }
+.syc-btn:hover::before { transform: rotate(-0.8deg) scale(1.03); filter: saturate(1.08) brightness(1.04); }
+.syc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.syc-btn:disabled:hover { transform: none; }
+.syc-btn:disabled:hover::before { transform: none; filter: none; }
+
+/* 붓 밑줄 링크 — 보조 CTA. 틀 없이 섹션색 글씨 + 손그림 붓 밑줄. */
+.syc-btn-ghost {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-noto-sans-kr); font-size: 0.9rem; font-weight: 700;
+  color: var(--c, #0B5563); background: none; border: 0;
+  padding: 6px 3px 12px; text-decoration: none; cursor: pointer;
+}
+.syc-btn-ghost::after {
+  content: ""; position: absolute; left: 1px; right: 1px; bottom: 2px; height: 9px;
+  background: var(--c, #0B5563);
+  -webkit-mask: url('/syus-underline.svg') center / 100% 100% no-repeat;
+          mask: url('/syus-underline.svg') center / 100% 100% no-repeat;
+  opacity: 0.5; transform-origin: center; transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.syc-btn-ghost:hover::after { opacity: 0.85; transform: scaleY(1.25); }
 .syc-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 
 /* 폼 */
