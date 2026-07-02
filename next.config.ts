@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const SUPABASE_HOST = "mmosvdjautcliafinahd.supabase.co";
 
@@ -9,7 +10,7 @@ const ContentSecurityPolicy = `
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://spoqa.github.io;
   font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://spoqa.github.io data:;
   img-src 'self' data: blob: https://${SUPABASE_HOST} https://placehold.co https://images.unsplash.com https://www.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms;
-  connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST} https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://cdn.jsdelivr.net;
+  connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST} https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://cdn.jsdelivr.net https://*.ingest.us.sentry.io;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
@@ -67,4 +68,15 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry 래핑: 소스맵 업로드 + 빌드타임 계측.
+// org·project 는 공개값이라 코드에 두어도 안전. 소스맵 업로드 토큰만 환경변수(SENTRY_AUTH_TOKEN)로.
+export default withSentryConfig(nextConfig, {
+  org: "syus",
+  project: "syus-web",
+  // CI 환경이 아니면 빌드 로그를 조용히.
+  silent: !process.env.CI,
+  // 클라이언트 번들 소스맵을 넓게 업로드해 스택트레이스 정확도를 높인다.
+  widenClientFileUpload: true,
+  // 소스맵 업로드 인증 토큰(Vercel 환경변수). 없으면 업로드만 건너뛰고 빌드는 통과.
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+});
