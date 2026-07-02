@@ -410,3 +410,41 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
   background-size: 4px 4px;
 }
 .syus-shell { position: relative; z-index: 1; }
+
+/* 시우스 미니 헤더 — 반응형(모바일 nav 붕괴 방지) */
+.syus-hdr {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px clamp(20px, 5vw, 56px);
+  border-bottom: 1px solid #E7E1D6;
+  background-color: rgba(252, 251, 249, 0.82);
+  backdrop-filter: blur(6px);
+}
+.syus-hdr-brand { display: inline-flex; align-items: baseline; gap: 8px; text-decoration: none; color: #241C18; flex-shrink: 0; }
+.syus-hdr-brand-ko { font-family: var(--font-noto-serif-kr); font-size: 1.15rem; font-weight: 700; letter-spacing: 0.02em; }
+.syus-hdr-brand-en { font-family: var(--font-inter); font-size: 0.7rem; letter-spacing: 0.32em; font-weight: 600; color: #0B5563; }
+.syus-hdr-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: inline-flex; align-items: center; }
+.syus-hdr-logo-img { height: 34px; width: auto; display: block; filter: brightness(0.55) contrast(1.08) saturate(1.1); }
+.syus-hdr-nav { display: flex; align-items: center; gap: clamp(14px, 4vw, 32px); flex-shrink: 0; }
+.syus-hdr-nav a {
+  font-family: var(--font-noto-sans-kr);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  color: #6B5C50;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+.syus-hdr-nav a:hover { color: #241C18; }
+
+@media (max-width: 640px) {
+  .syus-hdr { padding: 12px 16px; gap: 8px; }
+  .syus-hdr-logo { display: none; }        /* 중앙 로고 숨김 — 좌우 요소 겹침 방지 */
+  .syus-hdr-brand-en { display: none; }
+  .syus-hdr-brand-ko { font-size: 1rem; }
+  .syus-hdr-nav { gap: 13px; }
+  .syus-hdr-nav a { font-size: 0.74rem; letter-spacing: 0.02em; }
+}

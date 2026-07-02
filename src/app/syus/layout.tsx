@@ -8,7 +8,7 @@ import SyusFooter from "@/components/SyusFooter";
 /**
  * 시우스(SYUS) 세그먼트 레이아웃 — 2026-06-30 3층 구조.
  * 루트 NavMega는 /syus에서 숨겨지므로(컴포넌트 내부 조건부) 시우스는 자체 미니 헤더를 갖는다.
- * 어두운 '극장' 톤(--color-syus-ink)으로 무대올림(밝음)과 대비. Footer는 루트 layout이 공통 제공.
+ * 헤더는 .syus-hdr(전역 globals.css)로 반응형 — 모바일에서 중앙 로고 숨김·간격 축소(nav 붕괴 방지).
  */
 
 const SITE_URL = "https://syus.co.kr";
@@ -38,79 +38,30 @@ export default function SyusLayout({
     <div style={{ color: "#241C18", minHeight: "100svh", position: "relative" }}>
       <div className="syus-canvas" aria-hidden="true" />
       <div className="syus-shell">
-      <header
-        style={{
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "18px clamp(20px, 5vw, 56px)",
-          borderBottom: "1px solid #E7E1D6",
-          backgroundColor: "rgba(252, 251, 249, 0.82)",
-          backdropFilter: "blur(6px)",
-        }}
-      >
-        <Link
-          href="/syus"
-          aria-label="시우스 홈"
-          style={{
-            display: "inline-flex",
-            alignItems: "baseline",
-            gap: "8px",
-            textDecoration: "none",
-            color: "#241C18",
-          }}
-        >
-          <span style={{ fontFamily: "var(--font-noto-serif-kr)", fontSize: "1.15rem", fontWeight: 700, letterSpacing: "0.02em" }}>
-            시우스
-          </span>
-          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.7rem", letterSpacing: "0.32em", fontWeight: 600, color: "#0B5563" }}>
-            SYUS
-          </span>
-        </Link>
-
-        {/* 중앙 — 사유유사 브랜드 로고(갈림길로) */}
-        <Link
-          href="/"
-          aria-label="사유유사 갈림길로"
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-            display: "inline-flex",
-            alignItems: "center",
-          }}
-        >
-          <Image src="/sayuyusa-logo.png" alt="사유유사 SYUS" width={158} height={64} style={{ height: "34px", width: "auto", display: "block", filter: "brightness(0.55) contrast(1.08) saturate(1.1)" }} priority />
-        </Link>
-
-        <nav style={{ display: "flex", alignItems: "center", gap: "clamp(16px, 4vw, 32px)" }}>
-          <SyusAdminLink
-            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#5C2A42", fontWeight: 700 }}
-          />
-          <SyusAuthLink
-            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#0B5563", fontWeight: 600 }}
-          />
-          <Link
-            href="/muol"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#6B5C50" }}
-          >
-            무대올림
+        <header className="syus-hdr">
+          {/* 좌 — 시우스 워드마크 */}
+          <Link href="/syus" className="syus-hdr-brand" aria-label="시우스 홈">
+            <span className="syus-hdr-brand-ko">시우스</span>
+            <span className="syus-hdr-brand-en">SYUS</span>
           </Link>
-          <Link
-            href="/"
-            aria-label="사유유사 갈림길로"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#6B5C50" }}
-          >
-            사유유사
+
+          {/* 중앙 — 사유유사 브랜드 로고(갈림길로). 모바일에서는 숨김 */}
+          <Link href="/" className="syus-hdr-logo" aria-label="사유유사 갈림길로">
+            <Image src="/sayuyusa-logo.png" alt="사유유사 SYUS" width={158} height={64} className="syus-hdr-logo-img" priority />
           </Link>
-        </nav>
-      </header>
 
-      {children}
+          {/* 우 — 내비 */}
+          <nav className="syus-hdr-nav">
+            <SyusAdminLink style={{ color: "#5C2A42", fontWeight: 700 }} />
+            <SyusAuthLink style={{ color: "#0B5563", fontWeight: 600 }} />
+            <Link href="/muol">무대올림</Link>
+            <Link href="/" aria-label="사유유사 갈림길로">사유유사</Link>
+          </nav>
+        </header>
 
-      <SyusFooter />
+        {children}
+
+        <SyusFooter />
       </div>
     </div>
   );
