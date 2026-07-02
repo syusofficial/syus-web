@@ -5,10 +5,10 @@ import Link from "next/link";
 
 /**
  * 로그인 안내 팝업 (전 섹션 공용).
- * 비로그인 사용자가 글쓰기/질문 등 CTA를 누르면 로그인 화면으로 튕기는 대신
- * 이 팝업으로 간결·친절하게 안내한다. "로그인하러 가기" → /syus/login?next=(원래 자리).
+ * 비로그인 사용자가 글쓰기/질문/댓글/좋아요/신고 등 CTA를 누르면 로그인 화면으로 튕기는
+ * 대신 이 팝업으로 간결·친절하게 안내한다. "로그인하러 가기" → /syus/login?next=(원래 자리).
  * - backdrop/ESC/X 로 닫힘, 열려 있는 동안 body 스크롤 잠금(정리 포함).
- * - --c 로 섹션색 강조(테두리 상단·버튼).
+ * - color 를 주면 그 색으로 강조. 안 주면 부모(.syc-wrap 등)의 --c 를 상속(섹션색 자동).
  */
 export default function SyusLoginPrompt({
   open,
@@ -19,7 +19,7 @@ export default function SyusLoginPrompt({
   open: boolean;
   onClose: () => void;
   next: string;
-  color: string;
+  color?: string;
 }) {
   const close = useCallback(() => onClose(), [onClose]);
 
@@ -49,7 +49,7 @@ export default function SyusLoginPrompt({
         aria-modal="true"
         aria-label="로그인 안내"
         onClick={(e) => e.stopPropagation()}
-        style={{ ["--c" as string]: color } as React.CSSProperties}
+        style={color ? ({ ["--c" as string]: color } as React.CSSProperties) : undefined}
       >
         <button type="button" className="syc-modal-x" onClick={close} aria-label="닫기">×</button>
         <h2 className="syc-modal-title">잠깐, 로그인이 필요해요</h2>

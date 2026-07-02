@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import SyusAuthLink from "@/components/SyusAuthLink";
+import SyusAdminLink from "@/components/SyusAdminLink";
 import SyusFooter from "@/components/SyusFooter";
 
 /**
@@ -85,6 +86,9 @@ export default function SyusLayout({
         </Link>
 
         <nav style={{ display: "flex", alignItems: "center", gap: "clamp(16px, 4vw, 32px)" }}>
+          <SyusAdminLink
+            style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#5C2A42", fontWeight: 700 }}
+          />
           <SyusAuthLink
             style={{ fontFamily: "var(--font-noto-sans-kr)", fontSize: "0.82rem", letterSpacing: "0.1em", textDecoration: "none", color: "#0B5563", fontWeight: 600 }}
           />

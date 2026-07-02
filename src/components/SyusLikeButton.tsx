@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import SyusLoginPrompt from "@/components/SyusLoginPrompt";
 
 /**
  * 시우스 공용 좋아요(찜) 버튼. syus_likes(target_type,target_id) 토글.
- * 비로그인 클릭 → 현재 경로로 복귀하는 로그인으로 유도.
+ * 비로그인 클릭 → 로그인 안내 팝업(SyusLoginPrompt).
  */
 export default function SyusLikeButton({ targetType, targetId }: { targetType: string; targetId: string }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function SyusLikeButton({ targetType, targetId }: { targetType: s
   const [on, setOn] = useState(false);
   const [uid, setUid] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [ask, setAsk] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -44,7 +46,7 @@ export default function SyusLikeButton({ targetType, targetId }: { targetType: s
   }, [targetType, targetId]);
 
   const toggle = async () => {
-    if (!uid) { window.location.href = `/syus/login?next=${encodeURIComponent(pathname)}`; return; }
+    if (!uid) { setAsk(true); return; }
     if (busy) return;
     setBusy(true);
     const supabase = createClient();
@@ -59,8 +61,11 @@ export default function SyusLikeButton({ targetType, targetId }: { targetType: s
   };
 
   return (
-    <button type="button" className={`syc-like ${on ? "is-on" : ""}`} onClick={toggle} disabled={busy}>
-      {on ? "♥" : "♡"} 찜 {count}
-    </button>
+    <>
+      <button type="button" className={`syc-like ${on ? "is-on" : ""}`} onClick={toggle} disabled={busy}>
+        {on ? "♥" : "♡"} 찜 {count}
+      </button>
+      <SyusLoginPrompt open={ask} onClose={() => setAsk(false)} next={pathname || "/syus"} />
+    </>
   );
 }

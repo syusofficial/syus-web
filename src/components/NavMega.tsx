@@ -368,6 +368,7 @@ export default function NavMega() {
             onMouseLeave={scheduleClose}
             onMouseEnter={cancelClose}
           >
+            <Link href="/muol" className="navmega-wordmark" aria-label="무대올림 홈">무대올림</Link>
             {CHAPTERS.map((ch) => {
               const isOpen = openChapter === ch.key;
               return (
@@ -402,10 +403,9 @@ export default function NavMega() {
             })}
           </div>
 
-          {/* 중앙 로고 */}
-          <Link href="/muol" className="navmega-logo" aria-label="무대올림 홈">
+          {/* 중앙 — 사유유사 브랜드 로고(갈림길로) */}
+          <Link href="/" className="navmega-logo" aria-label="사유유사 갈림길로">
             <SyusLogoSvg width={120} height={48} />
-            <span className="navmega-logo-text">무대올림</span>
           </Link>
 
           {/* 우측 3메뉴 */}
@@ -458,10 +458,9 @@ export default function NavMega() {
       {/* ── 모바일 ── */}
       <div className="navmega-mobile">
         <div className="navmega-mobile-row">
-          <div className="navmega-mobile-spacer" />
-          <Link href="/muol" className="navmega-logo" aria-label="무대올림 홈">
+          <Link href="/muol" className="navmega-wordmark navmega-wordmark-sm" aria-label="무대올림 홈">무대올림</Link>
+          <Link href="/" className="navmega-logo" aria-label="사유유사 갈림길로">
             <SyusLogoSvg width={88} height={34} />
-            <span className="navmega-logo-text navmega-logo-text-sm">무대올림</span>
           </Link>
           <button
             type="button"
@@ -674,6 +673,21 @@ export default function NavMega() {
         }
         .navmega-logo-text-sm { font-size: 0.7rem; }
 
+        .navmega-wordmark {
+          margin-right: auto;
+          align-self: center;
+          font-family: var(--font-noto-serif-kr);
+          font-size: 1.05rem;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          color: #241C18;
+          text-decoration: none;
+          white-space: nowrap;
+          transition: color 0.15s ease;
+        }
+        .navmega-wordmark:hover { color: #0B5563; }
+        .navmega-wordmark-sm { font-size: 1rem; margin-right: 0; }
+
         .navmega-right {
           display: flex;
           /* 2026-06-15 2차 수정: 우측 메뉴 간격 32 → 56px */
@@ -883,11 +897,13 @@ export default function NavMega() {
 
         /* ── 모바일 ── */
         .navmega-mobile-row {
+          position: relative;
           display: flex;
           align-items: center;
           justify-content: space-between;
           padding: 12px 20px;
         }
+        .navmega-mobile-row .navmega-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
         .navmega-mobile-spacer { width: 32px; }
         .navmega-hamburger {
           appearance: none;

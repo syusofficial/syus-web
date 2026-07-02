@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import SyusReportButton from "@/components/SyusReportButton";
+import SyusLoginPrompt from "@/components/SyusLoginPrompt";
 
 /**
  * 연기 고민 QnA — 질문 상세 (/syus/qna/[id]).
@@ -35,6 +36,7 @@ export default function QnaDetailPage() {
   const [likedByMe, setLikedByMe] = useState(false);
   const [answerBody, setAnswerBody] = useState("");
   const [busy, setBusy] = useState(false);
+  const [ask, setAsk] = useState(false);
 
   const load = useCallback(async () => {
     const supabase = createClient();
@@ -94,7 +96,7 @@ export default function QnaDetailPage() {
   useEffect(() => { load(); }, [load]);
 
   const toggleLike = async () => {
-    if (!userId) { window.location.href = `/syus/login?next=/syus/qna/${id}`; return; }
+    if (!userId) { setAsk(true); return; }
     if (busy) return;
     setBusy(true);
     const supabase = createClient();
@@ -110,7 +112,7 @@ export default function QnaDetailPage() {
 
   const submitAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId) { window.location.href = `/syus/login?next=/syus/qna/${id}`; return; }
+    if (!userId) { setAsk(true); return; }
     if (answerBody.trim().length < 1 || busy) return;
     setBusy(true);
     const supabase = createClient();
@@ -207,13 +209,14 @@ export default function QnaDetailPage() {
           onChange={(e) => setAnswerBody(e.target.value)}
           rows={5}
           maxLength={4000}
-          placeholder={userId ? "따뜻한 동료의 말투로, 경험을 나눠주세요." : "로그인 후 답변을 남길 수 있어요."}
+          placeholder="따뜻한 동료의 말투로, 경험을 나눠주세요."
         />
-        <button type="submit" className="qd-submit" disabled={busy || answerBody.trim().length < 1}>
-          {userId ? "답변 올리기" : "로그인하고 답변하기"}
+        <button type="submit" className="qd-submit" disabled={userId ? busy || answerBody.trim().length < 1 : false}>
+          {busy ? "올리는 중…" : "답변 올리기"}
         </button>
       </form>
 
+      <SyusLoginPrompt open={ask} onClose={() => setAsk(false)} next={`/syus/qna/${id}`} color="var(--color-syus-stage-thrust)" />
       <Style />
     </main>
   );

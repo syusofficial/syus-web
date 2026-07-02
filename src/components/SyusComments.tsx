@@ -3,9 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import SyusLoginPrompt from "@/components/SyusLoginPrompt";
 
 /**
  * 시우스 공용 댓글. syus_comments(target_type,target_id). 읽기 공개 / 쓰기 로그인·본인 삭제.
+ * 비로그인 제출 → 로그인 안내 팝업(SyusLoginPrompt).
  */
 type Comment = { id: string; user_id: string; body: string; created_at: string };
 
@@ -22,6 +24,7 @@ export default function SyusComments({ targetType, targetId }: { targetType: str
   const [uid, setUid] = useState<string | null>(null);
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
+  const [ask, setAsk] = useState(false);
 
   const load = useCallback(async () => {
     const supabase = createClient();
@@ -48,7 +51,7 @@ export default function SyusComments({ targetType, targetId }: { targetType: str
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!uid) { window.location.href = `/syus/login?next=${encodeURIComponent(pathname)}`; return; }
+    if (!uid) { setAsk(true); return; }
     if (body.trim().length < 1 || busy) return;
     setBusy(true);
     const supabase = createClient();
@@ -91,12 +94,13 @@ export default function SyusComments({ targetType, targetId }: { targetType: str
           onChange={(e) => setBody(e.target.value)}
           rows={3}
           maxLength={2000}
-          placeholder={uid ? "생각을 덧대 주세요." : "로그인 후 댓글을 남길 수 있어요."}
+          placeholder="생각을 덧대 주세요."
         />
-        <button type="submit" className="syc-btn" style={{ justifySelf: "start" }} disabled={busy || body.trim().length < 1}>
-          {uid ? "댓글 남기기" : "로그인하고 댓글"}
+        <button type="submit" className="syc-btn" style={{ justifySelf: "start" }} disabled={uid ? busy || body.trim().length < 1 : false}>
+          {busy ? "남기는 중…" : "댓글 남기기"}
         </button>
       </form>
+      <SyusLoginPrompt open={ask} onClose={() => setAsk(false)} next={pathname || "/syus"} />
     </div>
   );
 }
