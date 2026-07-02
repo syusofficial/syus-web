@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import SyusLoginPrompt from "@/components/SyusLoginPrompt";
 
 /**
  * 시우스 상세/허브의 쓰기 CTA — 세션을 읽어 로그인 상태에서 로그인 화면으로 튕기지 않는다.
- * - 비로그인: "로그인하고 {label}" → /syus/login?next=(writeHref 또는 섹션)
+ * - 비로그인: 버튼은 그대로("{label}") 클릭 가능. 누르면 로그인 안내 팝업(SyusLoginPrompt).
  * - 로그인 + writeHref: 바로 작성 페이지로
  * - 로그인 + writeHref 없음: 로그인됨 안내 + 내 시우스로 (아직 작성 미연결 섹션)
  * 공용 .syc-* 클래스 사용(전역 globals.css).
@@ -23,6 +24,7 @@ export default function SyusWriteCta({
   writeHref?: string;
 }) {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+  const [ask, setAsk] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -39,14 +41,19 @@ export default function SyusWriteCta({
     };
   }, []);
 
+  const loginNext = writeHref ?? `/syus/${stage}`;
+
+  // 로그인 + 작성 페이지 있음 → 바로 작성
+  if (loggedIn && writeHref) {
+    return (
+      <Link href={writeHref} className="syc-btn">
+        {label} →
+      </Link>
+    );
+  }
+
+  // 로그인 + 작성 페이지 아직 없음(준비 중 섹션)
   if (loggedIn) {
-    if (writeHref) {
-      return (
-        <Link href={writeHref} className="syc-btn">
-          {label} →
-        </Link>
-      );
-    }
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <span className="syc-badge syc-badge--static" style={{ color, marginBottom: 0 }}>로그인됨</span>
@@ -58,10 +65,13 @@ export default function SyusWriteCta({
     );
   }
 
-  const loginNext = writeHref ?? `/syus/${stage}`;
+  // 비로그인 → 버튼 클릭 가능, 누르면 로그인 안내 팝업
   return (
-    <Link href={`/syus/login?next=${encodeURIComponent(loginNext)}`} className="syc-btn">
-      로그인하고 {label} →
-    </Link>
+    <>
+      <button type="button" className="syc-btn" onClick={() => setAsk(true)}>
+        {label} →
+      </button>
+      <SyusLoginPrompt open={ask} onClose={() => setAsk(false)} next={loginNext} color={color} />
+    </>
   );
 }

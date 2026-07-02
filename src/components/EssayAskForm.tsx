@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import SyusLoginPrompt from "@/components/SyusLoginPrompt";
 
 /** 견해글 '질문 받기' 입력함. syus_essay_asks. 로그인 필수. */
 export default function EssayAskForm() {
@@ -11,6 +12,7 @@ export default function EssayAskForm() {
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  const [ask, setAsk] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -19,7 +21,7 @@ export default function EssayAskForm() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!uid) { window.location.href = `/syus/login?next=${encodeURIComponent(pathname)}`; return; }
+    if (!uid) { setAsk(true); return; }
     if (body.trim().length < 1 || busy) return;
     setBusy(true);
     const supabase = createClient();
@@ -33,18 +35,31 @@ export default function EssayAskForm() {
   }
 
   return (
-    <form onSubmit={submit} className="syc-form">
-      <textarea
-        className="syc-textarea"
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        rows={3}
-        maxLength={2000}
-        placeholder={uid ? "연기에 대해 궁금한 것을 남겨두면, 운영자가 골라 글로 답합니다." : "로그인 후 질문을 남길 수 있어요."}
+    <>
+      <form onSubmit={submit} className="syc-form">
+        <textarea
+          className="syc-textarea"
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          rows={3}
+          maxLength={2000}
+          placeholder="연기에 대해 궁금한 것을 남겨두면, 운영자가 골라 글로 답합니다."
+        />
+        <button
+          type="submit"
+          className="syc-btn"
+          style={{ justifySelf: "start" }}
+          disabled={uid ? busy || body.trim().length < 1 : false}
+        >
+          {busy ? "전하는 중…" : "질문 남기기"}
+        </button>
+      </form>
+      <SyusLoginPrompt
+        open={ask}
+        onClose={() => setAsk(false)}
+        next={pathname || "/syus/proscenium"}
+        color="var(--color-syus-stage-proscenium)"
       />
-      <button type="submit" className="syc-btn" style={{ justifySelf: "start" }} disabled={busy || body.trim().length < 1}>
-        {uid ? "질문 남기기" : "로그인하고 질문"}
-      </button>
-    </form>
+    </>
   );
 }

@@ -298,6 +298,31 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 .syc-btn-ghost:hover::after { opacity: 0.85; transform: scaleY(1.25); }
 .syc-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 
+/* 로그인 안내 팝업 — 비로그인 CTA 클릭 시(전 섹션 공용). --c = 섹션색. */
+.syc-modal-backdrop {
+  position: fixed; inset: 0; z-index: 120;
+  background: rgba(36, 28, 24, 0.42);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; animation: sycFade 0.16s ease;
+}
+.syc-modal {
+  position: relative; width: 100%; max-width: 23rem;
+  background: #FFFFFF; border: 1px solid #E4DFD4; border-top: 3px solid var(--c, #0B5563);
+  box-shadow: 0 20px 48px rgba(36, 28, 24, 0.22);
+  padding: 32px 26px 24px; text-align: center;
+}
+.syc-modal-x {
+  position: absolute; top: 10px; right: 14px; appearance: none; background: none; border: 0;
+  color: #A79E90; font-size: 1.5rem; line-height: 1; cursor: pointer;
+}
+.syc-modal-x:hover { color: #241C18; }
+.syc-modal-title { font-family: var(--font-noto-serif-kr); font-size: 1.28rem; font-weight: 700; color: #241C18; margin-bottom: 10px; word-break: keep-all; }
+.syc-modal-desc { font-family: var(--font-noto-sans-kr); font-size: 0.94rem; line-height: 1.75; font-weight: 300; color: #6B5C50; word-break: keep-all; margin-bottom: 22px; }
+.syc-modal-actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.syc-modal-later { appearance: none; background: none; border: 0; cursor: pointer; font-family: var(--font-noto-sans-kr); font-size: 0.84rem; color: #A79E90; padding: 8px; }
+.syc-modal-later:hover { color: #6B5C50; }
+@keyframes sycFade { from { opacity: 0; } to { opacity: 1; } }
+
 /* 폼 */
 .syc-form { display: grid; gap: 20px; }
 .syc-label { display: grid; gap: 8px; font-family: var(--font-noto-sans-kr); font-size: 0.85rem; font-weight: 700; color: #241C18; }
