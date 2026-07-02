@@ -94,7 +94,7 @@ export default function QnaDetailPage() {
   useEffect(() => { load(); }, [load]);
 
   const toggleLike = async () => {
-    if (!userId) { window.location.href = `/auth/login?next=/syus/qna/${id}`; return; }
+    if (!userId) { window.location.href = `/syus/login?next=/syus/qna/${id}`; return; }
     if (busy) return;
     setBusy(true);
     const supabase = createClient();
@@ -110,7 +110,7 @@ export default function QnaDetailPage() {
 
   const submitAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId) { window.location.href = `/auth/login?next=/syus/qna/${id}`; return; }
+    if (!userId) { window.location.href = `/syus/login?next=/syus/qna/${id}`; return; }
     if (answerBody.trim().length < 1 || busy) return;
     setBusy(true);
     const supabase = createClient();

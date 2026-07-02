@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
  * 시우스 헤더의 계정 링크 — 통합 로그인 세션을 읽어 상태를 반영한다.
  * (기존 시우스 헤더는 세션을 읽지 않고 항상 "로그인"만 표시해, 무대올림에서 로그인해도
  *  시우스에선 비로그인처럼 보이던 문제를 해결.)
- * - 비로그인: "로그인" → /auth/login?next=/syus (로그인 후 시우스로 복귀)
+ * - 비로그인: "로그인" → /syus/login?next=/syus (로그인 후 시우스로 복귀)
  * - 로그인:  "마이페이지" → /syus/mypage (시우스 독립 마이페이지)
  * 세션 쿠키는 무대올림과 같은 도메인이라 공유되므로, 여기선 표시만 동기화한다.
  */
@@ -42,7 +42,7 @@ export default function SyusAuthLink({ style }: { style?: React.CSSProperties })
   }
 
   return (
-    <Link href="/auth/login?next=/syus" style={style}>
+    <Link href="/syus/login?next=/syus" style={style}>
       로그인
     </Link>
   );

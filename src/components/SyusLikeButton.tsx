@@ -44,7 +44,7 @@ export default function SyusLikeButton({ targetType, targetId }: { targetType: s
   }, [targetType, targetId]);
 
   const toggle = async () => {
-    if (!uid) { window.location.href = `/auth/login?next=${encodeURIComponent(pathname)}`; return; }
+    if (!uid) { window.location.href = `/syus/login?next=${encodeURIComponent(pathname)}`; return; }
     if (busy) return;
     setBusy(true);
     const supabase = createClient();

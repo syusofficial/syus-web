@@ -20,7 +20,7 @@ export default function EssayNew() {
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user) { router.replace("/auth/login?next=/syus/essays/new"); return; }
+      if (!data.user) { router.replace("/syus/login?next=/syus/essays/new"); return; }
       const { data: prof } = await supabase.from("profiles").select("role").eq("id", data.user.id).maybeSingle();
       if (prof?.role !== "admin") { setState("denied"); return; }
       setUid(data.user.id); setState("ok");

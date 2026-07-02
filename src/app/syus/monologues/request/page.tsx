@@ -18,7 +18,7 @@ export default function MonologueRequest() {
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
-      if (!data.user) { router.replace("/auth/login?next=/syus/monologues/request"); return; }
+      if (!data.user) { router.replace("/syus/login?next=/syus/monologues/request"); return; }
       setUid(data.user.id); setReady(true);
     });
   }, [router]);

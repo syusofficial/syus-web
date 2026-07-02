@@ -19,7 +19,7 @@ export default function EssayAskForm() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!uid) { window.location.href = `/auth/login?next=${encodeURIComponent(pathname)}`; return; }
+    if (!uid) { window.location.href = `/syus/login?next=${encodeURIComponent(pathname)}`; return; }
     if (body.trim().length < 1 || busy) return;
     setBusy(true);
     const supabase = createClient();

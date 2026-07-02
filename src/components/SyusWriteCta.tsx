@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 
 /**
  * 시우스 상세/허브의 쓰기 CTA — 세션을 읽어 로그인 상태에서 로그인 화면으로 튕기지 않는다.
- * - 비로그인: "로그인하고 {label}" → /auth/login?next=(writeHref 또는 섹션)
+ * - 비로그인: "로그인하고 {label}" → /syus/login?next=(writeHref 또는 섹션)
  * - 로그인 + writeHref: 바로 작성 페이지로
  * - 로그인 + writeHref 없음: 로그인됨 안내 + 내 시우스로 (아직 작성 미연결 섹션)
  * 공용 .syc-* 클래스 사용(전역 globals.css).
@@ -60,7 +60,7 @@ export default function SyusWriteCta({
 
   const loginNext = writeHref ?? `/syus/${stage}`;
   return (
-    <Link href={`/auth/login?next=${encodeURIComponent(loginNext)}`} className="syc-btn" style={{ background: color }}>
+    <Link href={`/syus/login?next=${encodeURIComponent(loginNext)}`} className="syc-btn" style={{ background: color }}>
       로그인하고 {label} →
     </Link>
   );

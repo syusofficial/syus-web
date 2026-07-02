@@ -22,7 +22,7 @@ export default function QnaAskPage() {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
-        router.replace("/auth/login?next=/syus/qna/ask");
+        router.replace("/syus/login?next=/syus/qna/ask");
         return;
       }
       setUserId(data.user.id);

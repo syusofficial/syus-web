@@ -112,7 +112,7 @@ export default function SyusMyPage() {
       <main className="syc-wrap" style={{ textAlign: "center", ["--c" as string]: "#0B5563" } as React.CSSProperties}>
         <h1 className="syc-title">시우스 마이페이지</h1>
         <p className="syc-lead" style={{ fontSize: "1rem" }}>로그인하면 내가 쓴 글과 찜해둔 글을 이곳에서 모아볼 수 있어요.</p>
-        <Link href="/auth/login?next=/syus/mypage" className="syc-btn" style={{ background: "#0B5563" }}>로그인하기 →</Link>
+        <Link href="/syus/login?next=/syus/mypage" className="syc-btn" style={{ background: "#0B5563" }}>로그인하기 →</Link>
       </main>
     );
   }

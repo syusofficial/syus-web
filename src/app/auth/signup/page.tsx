@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
@@ -28,7 +28,20 @@ function isAtLeast14(birthDate: string): boolean {
 }
 
 export default function SignupPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignupInner />
+    </Suspense>
+  );
+}
+
+function SignupInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // 가입 후 복귀 목적지(기본 무대올림 "/"). 시우스에서 온 경우 next=/syus… → 시우스로 복귀·시우스 로그인으로.
+  const nextParam = searchParams.get("next");
+  const safeNext = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
+  const backToLogin = safeNext.startsWith("/syus") ? "/syus/login" : "/auth/login";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -135,11 +148,11 @@ export default function SignupPage() {
 
     // 이메일 컨펌이 OFF여도 안전을 위해 세션이 있는지 확인
     if (data.session) {
-      router.push("/");
+      router.push(safeNext);
       router.refresh();
     } else {
-      // 컨펌이 ON 상태로 남아있는 경우 — 로그인 페이지로
-      router.push("/auth/login?signup=success");
+      // 컨펌이 ON 상태로 남아있는 경우 — 로그인 페이지로(온 곳에 맞춰 시우스/무대올림)
+      router.push(`${backToLogin}?signup=success`);
     }
   };
 
@@ -164,7 +177,7 @@ export default function SignupPage() {
 
         {/* 소셜 가입 */}
         <div className="mb-6 space-y-3">
-          <SocialLoginButtons mode="signup" />
+          <SocialLoginButtons mode="signup" next={safeNext} />
           <SocialDivider label="또는 이메일로 가입" />
         </div>
 
@@ -341,7 +354,7 @@ export default function SignupPage() {
 
         <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
           이미 계정이 있으신가요?{" "}
-          <Link href="/auth/login" style={{ color: "#0B5563" }}>
+          <Link href={backToLogin} style={{ color: "#0B5563" }}>
             로그인
           </Link>
         </p>

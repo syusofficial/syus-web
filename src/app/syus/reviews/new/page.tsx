@@ -25,7 +25,7 @@ export default function ReviewNew() {
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
-      if (!data.user) { router.replace("/auth/login?next=/syus/reviews/new"); return; }
+      if (!data.user) { router.replace("/syus/login?next=/syus/reviews/new"); return; }
       setUid(data.user.id); setReady(true);
     });
   }, [router]);

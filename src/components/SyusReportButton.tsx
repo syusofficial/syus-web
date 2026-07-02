@@ -18,7 +18,7 @@ export default function SyusReportButton({ targetType, targetId }: { targetType:
     const supabase = createClient();
     const { data: me } = await supabase.auth.getUser();
     if (!me.user) {
-      window.location.href = `/auth/login?next=${encodeURIComponent(pathname)}`;
+      window.location.href = `/syus/login?next=${encodeURIComponent(pathname)}`;
       return;
     }
     const reason = window.prompt("신고 사유를 적어 주세요. (예: 부적절한 내용 / 저작권 / 스팸 / 명예훼손)");
