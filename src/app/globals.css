@@ -194,7 +194,7 @@ body {
  * ────────────────────────────────────────────────── */
 .syc-wrap { max-width: 46rem; margin: 0 auto; padding: clamp(40px, 8vh, 88px) clamp(24px, 6vw, 48px) 120px; }
 .syc-wrap--wide { max-width: 60rem; }
-.syc-back { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.82rem; letter-spacing: 0.08em; color: #6B5C50; text-decoration: none; margin-bottom: 30px; }
+.syc-back { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.82rem; letter-spacing: 0.08em; color: #6B5C50; text-decoration: none; margin-bottom: 38px; }
 .syc-back:hover { color: #241C18; }
 
 /* 감각적 배지 — 색 글씨 + 맥동 점 (currentColor 사용 → 인라인 color로 섹션색 지정) */
@@ -206,17 +206,11 @@ body {
   margin-bottom: 18px;
 }
 .syc-badge::before {
-  content: ""; width: 7px; height: 7px; border-radius: 50%;
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
   background: currentColor;
-  box-shadow: 0 0 0 0 currentColor;
-  animation: sycPulse 2.4s ease-out infinite;
+  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 14%, transparent);
 }
-.syc-badge--static::before { animation: none; }
-@keyframes sycPulse {
-  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); }
-  70%  { box-shadow: 0 0 0 7px color-mix(in srgb, currentColor 0%, transparent); }
-  100% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 0%, transparent); }
-}
+.syc-badge--static::before { box-shadow: none; }
 
 .syc-title { font-family: var(--font-noto-serif-kr); font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.02em; color: #241C18; margin-bottom: 10px; word-break: keep-all; }
 .syc-tagline { font-family: var(--font-noto-sans-kr); font-size: 0.95rem; font-weight: 600; color: var(--c, #0B5563); margin-bottom: 24px; word-break: keep-all; }
@@ -319,6 +313,35 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 
 @media (max-width: 560px) { .syc-row2 { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) {
-  .syc-badge::before { animation: none; }
   .syc-item, a.syc-card { transition: none; }
 }
+
+/* ──────────────────────────────────────────────────
+ * 시우스 캔버스 배경 — 흰 도화지에 SYUS 6색 페인트 워시 (무대올림 크림톤과 분리)
+ * 고정 레이어(스크롤 무관), 본문 뒤. 텍스트 가독 위해 저채도·저투명.
+ * ────────────────────────────────────────────────── */
+.syus-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #FCFBF9;
+  background-image:
+    radial-gradient(42% 34% at 6% 8%,   rgba(91,143,208,0.14),  transparent 72%),  /* 프로시니엄 블루 */
+    radial-gradient(38% 30% at 96% 14%, rgba(111,181,126,0.13), transparent 72%),  /* 돌출 그린 */
+    radial-gradient(34% 30% at 90% 70%, rgba(224,169,59,0.12),  transparent 72%),  /* 원형 앰버 */
+    radial-gradient(40% 34% at 4% 84%,  rgba(165,147,201,0.14), transparent 72%),  /* 블랙박스 퍼플 */
+    radial-gradient(30% 26% at 66% 92%, rgba(63,169,187,0.12),  transparent 72%),  /* 변형 틸 */
+    radial-gradient(30% 26% at 34% 40%, rgba(209,122,107,0.09), transparent 74%);  /* 사잇 테라코타 */
+}
+/* 흰 캔버스 위 종이 결(아주 옅게) */
+.syus-canvas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: radial-gradient(rgba(120,110,100,0.04) 0.6px, transparent 0.6px);
+  background-size: 4px 4px;
+}
+.syus-shell { position: relative; z-index: 1; }

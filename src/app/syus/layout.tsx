@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import SyusAuthLink from "@/components/SyusAuthLink";
+import SyusFooter from "@/components/SyusFooter";
 
 /**
  * 시우스(SYUS) 세그먼트 레이아웃 — 2026-06-30 3층 구조.
@@ -33,13 +34,9 @@ export default function SyusLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div
-      style={{
-        backgroundColor: "#F4F2ED",
-        color: "#241C18",
-        minHeight: "100svh",
-      }}
-    >
+    <div style={{ color: "#241C18", minHeight: "100svh", position: "relative" }}>
+      <div className="syus-canvas" aria-hidden="true" />
+      <div className="syus-shell">
       <header
         style={{
           position: "relative",
@@ -47,7 +44,9 @@ export default function SyusLayout({
           alignItems: "center",
           justifyContent: "space-between",
           padding: "18px clamp(20px, 5vw, 56px)",
-          borderBottom: "1px solid #E0DBD0",
+          borderBottom: "1px solid #E7E1D6",
+          backgroundColor: "rgba(252, 251, 249, 0.82)",
+          backdropFilter: "blur(6px)",
         }}
       >
         <Link
@@ -106,6 +105,9 @@ export default function SyusLayout({
       </header>
 
       {children}
+
+      <SyusFooter />
+      </div>
     </div>
   );
 }

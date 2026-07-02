@@ -23,9 +23,10 @@ export default function Footer() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // 게이트웨이(/)에서는 Footer를 숨긴다. 무대올림·시우스·공통 페이지에서는 노출(사유유사 공통 푸터).
+  // 게이트웨이(/)와 시우스(/syus*)에서는 이 무대올림 푸터를 숨긴다.
+  //  - 시우스는 전용 밝은 푸터(SyusFooter)를 자체 레이아웃에서 노출.
   // 모든 hook 호출 뒤에서 조건부 반환 — hook 순서 보존(React 규칙).
-  if (pathname === "/") return null;
+  if (pathname === "/" || pathname?.startsWith("/syus")) return null;
 
   const handleLogout = async () => {
     const supabase = createClient();
