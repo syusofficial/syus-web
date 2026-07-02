@@ -105,6 +105,11 @@ export default function SyusMindmapPage() {
         <p className="syus-intro-label">여섯 개의 무대</p>
         <h1 className="syus-intro-title">연기가 머무는 자리들</h1>
         <p className="syus-intro-desc">무대의 형태마다 다양한 결의 연기를 담아내었습니다.</p>
+        <p className="syus-intro-hand">
+          연기는 사람의 손이 가장 많이 닿는 예술입니다.<br />
+          쓰고, 모여 연습하고, 무대를 짓고, 마주 앉아 바라보는 —<br />
+          그 손길들이 흰 도화지 위에 색으로 남습니다.
+        </p>
       </div>
 
       <div className="syus-map">
@@ -217,6 +222,16 @@ export default function SyusMindmapPage() {
           font-weight: 300;
           color: #6B5C50;
           word-break: keep-all;
+        }
+        .syus-intro-hand {
+          margin-top: 22px;
+          font-family: var(--font-noto-serif-kr);
+          font-size: clamp(0.92rem, 1.6vw, 1.05rem);
+          line-height: 1.9;
+          font-weight: 400;
+          color: #4A3B33;
+          word-break: keep-all;
+          font-style: italic;
         }
 
         /* ── 맵: 모바일 = 세로 스택(도형 + 라벨) ── */
