@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import SyusReportButton from "@/components/SyusReportButton";
 
 /**
  * 연기 고민 QnA — 질문 상세 (/syus/qna/[id]).
@@ -165,6 +166,7 @@ export default function QnaDetailPage() {
             {question.tags?.map((t) => <span key={t} className="qd-tag">#{t}</span>)}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <SyusReportButton targetType="question" targetId={question.id} />
             {isOwner && <button type="button" className="qd-accept-btn" onClick={deleteQuestion} disabled={busy}>질문 삭제</button>}
             <button type="button" className={`qd-like ${likedByMe ? "is-on" : ""}`} onClick={toggleLike} disabled={busy}>
               {likedByMe ? "♥" : "♡"} 찜 {likeCount}

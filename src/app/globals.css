@@ -303,6 +303,10 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 .syc-source { display: block; font-family: var(--font-noto-sans-kr); font-size: 0.78rem; color: #A79E90; margin-bottom: 16px; }
 
 .syc-note { font-family: var(--font-noto-sans-kr); font-size: 0.8rem; color: #A79E90; margin-top: 14px; word-break: keep-all; }
+.syc-report { appearance: none; cursor: pointer; font-family: var(--font-noto-sans-kr); font-size: 0.78rem; color: #B9B1A2; background: none; border: 0; padding: 4px 2px; }
+.syc-report:hover { color: #C0392B; }
+.syc-report:disabled { opacity: 0.5; cursor: default; }
+.syc-report-done { font-family: var(--font-noto-sans-kr); font-size: 0.78rem; color: #A79E90; }
 .syc-loading { font-family: var(--font-noto-sans-kr); color: #6B5C50; }
 
 /* 다리 */

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import SyusLikeButton from "@/components/SyusLikeButton";
 import SyusComments from "@/components/SyusComments";
+import SyusReportButton from "@/components/SyusReportButton";
 
 type Book = { id: string; user_id: string; title: string; author: string | null; topic: string | null; rating: number | null; note: string | null; cover_url: string | null; created_at: string };
 
@@ -66,7 +67,10 @@ export default function BookDetail() {
         {book.note && <p className="syc-detail-body">{book.note}</p>}
         <div className="syc-detail-foot">
           <SyusLikeButton targetType="book" targetId={book.id} />
-          {uid === book.user_id && <button type="button" className="syc-comment-del" onClick={del} disabled={busy}>후기 삭제</button>}
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <SyusReportButton targetType="book" targetId={book.id} />
+            {uid === book.user_id && <button type="button" className="syc-comment-del" onClick={del} disabled={busy}>후기 삭제</button>}
+          </div>
         </div>
       </article>
       <SyusComments targetType="book" targetId={book.id} />

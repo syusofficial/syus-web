@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import SyusLikeButton from "@/components/SyusLikeButton";
 import SyusComments from "@/components/SyusComments";
+import SyusReportButton from "@/components/SyusReportButton";
 
 type Review = { id: string; user_id: string; work_title: string; work_type: string; rating: number; body: string; tags: string[]; image_url: string | null; image_source: string | null; created_at: string };
 
@@ -72,7 +73,10 @@ export default function ReviewDetail() {
         )}
         <div className="syc-detail-foot">
           <SyusLikeButton targetType="review" targetId={rv.id} />
-          {uid === rv.user_id && <button type="button" className="syc-comment-del" onClick={del} disabled={busy}>후기 삭제</button>}
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <SyusReportButton targetType="review" targetId={rv.id} />
+            {uid === rv.user_id && <button type="button" className="syc-comment-del" onClick={del} disabled={busy}>후기 삭제</button>}
+          </div>
         </div>
       </article>
       <SyusComments targetType="review" targetId={rv.id} />

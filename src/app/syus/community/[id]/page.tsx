@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import SyusLikeButton from "@/components/SyusLikeButton";
 import SyusComments from "@/components/SyusComments";
+import SyusReportButton from "@/components/SyusReportButton";
 
 type Post = { id: string; user_id: string; category: string; title: string; body: string; created_at: string };
 
@@ -58,7 +59,10 @@ export default function CommunityDetail() {
         <p className="syc-detail-body">{post.body}</p>
         <div className="syc-detail-foot">
           <SyusLikeButton targetType="post" targetId={post.id} />
-          {uid === post.user_id && <button type="button" className="syc-comment-del" onClick={del} disabled={busy}>글 삭제</button>}
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <SyusReportButton targetType="post" targetId={post.id} />
+            {uid === post.user_id && <button type="button" className="syc-comment-del" onClick={del} disabled={busy}>글 삭제</button>}
+          </div>
         </div>
       </article>
       <SyusComments targetType="post" targetId={post.id} />
