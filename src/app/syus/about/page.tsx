@@ -47,7 +47,7 @@ const RIGHT: SectionIntro[] = [
   {
     slug: "proscenium", stage: "프로시니엄 무대", section: "주인장 견해글", color: "var(--color-syus-stage-proscenium)",
     space: "액자 너머로 정면을 보여주는, 가장 격식 있는 무대.",
-    holds: "운영자가 연기를 오래 들여다본 글을 한 편씩 액자에 걸듯 내겁니다. ‘연기의 냉장고’ — 차곡차곡 재워둔 관찰.",
+    holds: "운영자가 연기를 오래 들여다본 글을 한 편씩 액자에 걸듯 내겁니다. ‘연기와 냉장고’ — 차곡차곡 재워둔 관찰.",
   },
   {
     slug: "thrust", stage: "돌출 무대", section: "연기 고민 QnA", color: "var(--color-syus-stage-thrust)",

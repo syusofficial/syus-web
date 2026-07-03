@@ -10,10 +10,14 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 // ─── 변경 고지 배너 (7일 노출) ───────────────────────────────
-// 시행일(2026-06-15) ~ 시행 +7일(2026-06-22) 동안만 노출.
+// 시행일(2026-08-02) ~ 시행 +7일(2026-08-09) 동안만 노출.
 // 종료일이 지나면 서버 컴포넌트 SSR 시점에 자동으로 사라짐.
-const BANNER_START = "2026-06-15";
-const BANNER_END = "2026-06-22";
+// ⚠️ 2026-08-02는 잠정 시행일입니다. 위탁사 추가(Anthropic)가 제12조상 "중대한 영향" 변경에
+// 해당하는지, 30일 전 고지·개별 이메일 통지가 필요한지는 변호사 확인이 필요합니다
+// (근거: output/legal/2026-07-02_privacy_policy_syus_addendum_draft.md 제6조 항목).
+// 실제 발행 시점에 맞춰 사장님이 이 날짜를 재조정해야 합니다.
+const BANNER_START = "2026-08-02";
+const BANNER_END = "2026-08-09";
 
 function shouldShowBanner(now: Date): boolean {
   const today = now.toISOString().slice(0, 10); // YYYY-MM-DD (UTC 기준, 7일 윈도라 시차 영향 미미)
@@ -29,7 +33,7 @@ export default function PrivacyPage() {
       style={{ backgroundColor: "#F0EEE9" }}
     >
       <div className="max-w-3xl mx-auto">
-        {/* 변경 고지 배너 — 2026-06-15 ~ 2026-06-22 */}
+        {/* 변경 고지 배너 — 2026-08-02 ~ 2026-08-09 */}
         {showBanner && (
           <div
             className="mb-8 p-4 md:p-5"
@@ -48,9 +52,9 @@ export default function PrivacyPage() {
               className="text-sm leading-relaxed"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
             >
-              <strong>2026-06-15 개인정보처리방침이 v2.1로 개정되었습니다.</strong>
+              <strong>2026-08-02 개인정보처리방침이 v2.2로 개정되었습니다.</strong>
               <br />
-              주요 변경: 만 14세 미만 가입 거부 명시 · 위탁사(Microsoft Clarity·OpenAI·Resend) 추가 · 마케팅 수신 동의 2경로 즉시 철회 안내.
+              주요 변경: 시우스 커뮤니티(견해글·QnA·자유 게시판·관람 후기·창작 독백·책 서재) 서비스 제공 목적·수집 항목·보유 기간 추가 · 창작 독백 생성을 위한 위탁사 Anthropic PBC(미국) 추가.
             </p>
           </div>
         )}
@@ -70,7 +74,7 @@ export default function PrivacyPage() {
             개인정보처리방침
           </h1>
           <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
-            시행일: 2026-06-15 (v2.1) · 이전 시행일: 2026-04-25
+            시행일: 2026-08-02 (v2.2) · 이전 시행일: 2026-06-15
           </p>
         </div>
 
@@ -95,6 +99,7 @@ export default function PrivacyPage() {
               <li>서비스 제공 — 공연 정보 열람, 공연 등록, 후기 작성, 1:1 문의 응대</li>
               <li>서비스 개선 — 이용 통계 분석, 콘텐츠 품질 점검, 오류 진단</li>
               <li>마케팅 활용(선택) — 신규 콘텐츠·공연 소식 안내(동의 회원에 한정)</li>
+              <li>커뮤니티 서비스 제공(시우스) — 견해글·연기 고민 QnA·자유 게시판·관람 후기·책 서재 게시물의 작성·열람, 신고 접수·처리, 창작 독백 요청·생성·전달</li>
             </ol>
           </section>
 
@@ -157,6 +162,29 @@ export default function PrivacyPage() {
                   <li>IP 주소, 접속 로그, 브라우저·디바이스 정보, 쿠키, 로컬스토리지(서비스 이용 편의용 키)</li>
                 </ul>
               </div>
+              <div>
+                <p className="font-semibold mb-1">7. 시우스 커뮤니티 게시물 작성 시 수집 항목</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>게시물 제목·본문·분류(견해글 질문, QnA 질문·답변, 자유 게시판, 관람 후기, 책 후기, 댓글)</li>
+                  <li>관람 후기 첨부 이미지 및 이미지 출처(첨부 시 필수)</li>
+                  <li>작성자 회원 식별자, 작성 일시</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">8. 신고 접수 시 수집 항목</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>신고자 회원 식별자, 신고 대상, 신고 사유(자유 기재), 접수 일시</li>
+                  <li>신고 내용은 운영자만 열람하며 외부에 공개되지 않습니다.</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">9. 창작 독백 요청 시 수집 항목</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>인물 유형, 감정·상황, 길이, 톤·장르, 용도(연습용/오디션용), 성별·연령대(선택)</li>
+                  <li>서고 공개 동의 여부, 생성된 독백 본문, 요청·처리 일시</li>
+                  <li>위 요청 정보는 독백 생성을 위해 AI 위탁업체(Anthropic PBC)에 전송됩니다. 자세한 내용은 제6조를 참고하세요.</li>
+                </ul>
+              </div>
             </div>
           </section>
 
@@ -184,6 +212,9 @@ export default function PrivacyPage() {
                     ["접속 로그·IP", "3개월", "「통신비밀보호법」 제15조의2"],
                     ["페이지뷰 통계", "90일", "서비스 개선 목적 종료"],
                     ["마케팅 수신 동의 회원 정보", "동의 철회 시 또는 회원 탈퇴 시까지", "—"],
+                    ["시우스 게시물(견해글 질문·QnA·자유글·관람후기·책후기·댓글)", "본인 직접 삭제 또는 회원 탈퇴 시까지", "서비스 제공 목적 종료"],
+                    ["신고 접수 기록", "처리 완료 후 1년", "분쟁·소명 자료"],
+                    ["창작 독백 요청·생성 데이터", "회원 탈퇴 시까지(반려·미공개 요청은 처리 후 1년 뒤 별도 정리 검토)", "서비스 제공 목적 종료"],
                   ].map((row) => (
                     <tr key={row[0]} style={{ borderBottom: "1px solid #E6E1D6" }}>
                       {row.map((c, i) => <td key={i} className="py-2 pr-4 align-top">{c}</td>)}
@@ -236,6 +267,7 @@ export default function PrivacyPage() {
                     ["Kakao Corp.", "로그인 인증(OAuth)", "대한민국", "로그인 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
                     ["OpenAI, L.L.C.", "후기 자동 검열(Moderation API)", "미국", "후기 작성 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
                     ["Resend, Inc.", "이메일 발송(가입 안내·답변 통지)", "미국", "이메일 발송 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
+                    ["Anthropic PBC", "창작 독백 생성(AI 모델 API, Claude)", "미국", "독백 요청 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
                   ].map((row) => (
                     <tr key={row[0]} style={{ borderBottom: "1px solid #E6E1D6" }}>
                       {row.map((c, i) => <td key={i} className="py-2 pr-4 align-top">{c}</td>)}
@@ -245,7 +277,7 @@ export default function PrivacyPage() {
               </table>
             </div>
             <p className="mt-3">
-              이용자는 국외 이전에 동의하지 않을 권리가 있으며, 거부 시 일부 서비스(회원 가입·로그인·문의 접수·후기 작성·이메일 통지) 이용이 제한될 수 있습니다.
+              이용자는 국외 이전에 동의하지 않을 권리가 있으며, 거부 시 일부 서비스(회원 가입·로그인·문의 접수·후기 작성·창작 독백 요청·이메일 통지) 이용이 제한될 수 있습니다.
             </p>
           </section>
 
@@ -370,7 +402,7 @@ export default function PrivacyPage() {
           </section>
 
           <p className="pt-2 text-xs" style={{ color: "#6B5C50" }}>
-            본 처리방침은 2026-06-15부터 시행됩니다.
+            본 처리방침은 2026-08-02부터 시행됩니다. (이전 시행일: 2026-06-15)
           </p>
 
           <div className="pt-8 text-center" style={{ borderTop: "1px solid #D4CFC1" }}>

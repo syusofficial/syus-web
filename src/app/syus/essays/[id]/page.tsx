@@ -32,7 +32,7 @@ export default function EssayDetail() {
     <main className="syc-wrap" style={{ ["--c" as string]: "var(--color-syus-stage-proscenium)" } as React.CSSProperties}>
       <Link href="/syus/proscenium" className="syc-back">← 주인장 견해글</Link>
       <article className="syc-detail">
-        {essay.series_no != null && <span className="syc-card-meta">연기의 냉장고 · {String(essay.series_no).padStart(2, "0")}</span>}
+        {essay.series_no != null && <span className="syc-card-meta">연기와 냉장고 · {String(essay.series_no).padStart(2, "0")}</span>}
         <h1 className="syc-detail-title">{essay.title}</h1>
         <p className="syc-detail-meta">주인장 · {fmt(essay.created_at)}</p>
         <p className="syc-detail-body" style={{ fontSize: "1.02rem", lineHeight: 1.95 }}>{essay.body}</p>

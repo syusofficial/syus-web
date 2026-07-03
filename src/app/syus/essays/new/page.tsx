@@ -62,7 +62,7 @@ export default function EssayNew() {
           <input className="syc-input" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={160} required />
         </label>
         <div className="syc-row2">
-          <label className="syc-label">시리즈 번호 <span className="syc-hint">선택 · 연기의 냉장고 N</span>
+          <label className="syc-label">시리즈 번호 <span className="syc-hint">선택 · 연기와 냉장고 N</span>
             <input className="syc-input" value={seriesNo} onChange={(e) => setSeriesNo(e.target.value)} inputMode="numeric" placeholder="1" />
           </label>
           <label className="syc-label">발췌 <span className="syc-hint">선택 · 목록에 보일 한 줄</span>
