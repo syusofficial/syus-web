@@ -33,6 +33,29 @@ export type Show = {
   // 운영·통계 필드
   featured?: boolean;          // 운영자 픽 (메인 페이지 노출)
   view_count?: number;         // 누적 조회수
+
+  // 자체 예매(좌석 신청) 필드 - 2026-07-06 신설
+  capacity?: number | null;              // 좌석 정원(선택). null이면 무제한
+  use_inhouse_reservation?: boolean;     // 무대올림 자체 예약 시스템 사용 여부(기본 true)
+};
+
+export type ReservationStatus = "confirmed" | "waitlisted" | "cancelled";
+
+export type Reservation = {
+  id: string;
+  show_id: string;
+  user_id?: string | null;
+  guest_name?: string | null;
+  guest_contact?: string | null;
+  party_size: number;
+  status: ReservationStatus;
+  reservation_code: string;
+  created_at: string;
+  updated_at?: string;
+  /** 조인 시 (관리자·게스트 조회 화면용) */
+  show_title?: string;
+  schedule_start?: string;
+  schedule_end?: string;
 };
 
 export type Profile = {
