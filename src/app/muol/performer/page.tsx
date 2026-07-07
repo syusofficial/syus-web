@@ -216,6 +216,20 @@ export default function PerformerPage() {
     }
   };
 
+  /** 예약 마감/재개 — 공연팀이 직접 매진 처리 (정원 자동 마감과 별개) */
+  const toggleReservationClosed = async (show: Show) => {
+    const next = !show.reservation_closed;
+    if (next && !window.confirm(`"${show.title}" 공연의 예약을 마감(매진 처리)하시겠습니까?\n\n관객은 더 이상 좌석을 신청할 수 없게 됩니다.`)) return;
+
+    const supabase = createClient();
+    const { error } = await supabase.from("shows").update({ reservation_closed: next }).eq("id", show.id);
+    if (error) {
+      alert("처리 중 오류가 발생했습니다.");
+      return;
+    }
+    setMyShows((prev) => prev.map((s) => (s.id === show.id ? { ...s, reservation_closed: next } : s)));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -1004,13 +1018,26 @@ export default function PerformerPage() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <StatusBadge status={show.status} />
                     {show.status === "approved" && show.use_inhouse_reservation !== false && (
-                      <Link
-                        href={`/muol/performer/reservations/${show.id}`}
-                        className="text-xs px-3 py-1 transition-colors"
-                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5C2A42", border: "1px solid #5C2A42" }}
-                      >
-                        예약 현황
-                      </Link>
+                      <>
+                        <Link
+                          href={`/muol/performer/reservations/${show.id}`}
+                          className="text-xs px-3 py-1 transition-colors"
+                          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5C2A42", border: "1px solid #5C2A42" }}
+                        >
+                          예약 현황
+                        </Link>
+                        <button
+                          onClick={() => toggleReservationClosed(show)}
+                          className="text-xs px-3 py-1 transition-colors"
+                          style={
+                            show.reservation_closed
+                              ? { fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", backgroundColor: "#6B5C50" }
+                              : { fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F", border: "1px solid #A63D2F" }
+                          }
+                        >
+                          {show.reservation_closed ? "예약 다시 열기" : "예약 마감"}
+                        </button>
+                      </>
                     )}
                     <Link
                       href={`/muol/shows/${show.id}`}

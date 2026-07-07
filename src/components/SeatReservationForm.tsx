@@ -1,25 +1,70 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import { submitReservation } from "@/app/actions/reservations";
+import { createClient } from "@/lib/supabase/client";
 
 type Props = {
   showId: string;
   defaultName?: string;
+  initialCapacity?: number | null;
+  initialConfirmedTotal?: number;
+  initialReservationClosed?: boolean;
 };
+
+const POLL_INTERVAL_MS = 20000;
 
 /**
  * 자체 예매(좌석 신청) 폼 — 상세페이지 CTA 아코디언 확장형(디자인팀 목업 방향).
  * 로그인 여부와 무관하게 이름·연락처·인원수 3개만 받는다(게스트 허용).
  * 제출 성공 시 신청번호를 그 자리에서 보여준다(신규 화면 이동 없음).
+ *
+ * 매진·마감 표시: syus_reservations는 RLS상 비로그인 방문자가 직접 못 읽으므로(개인정보
+ * 보호), 개별 신청자 정보 없이 "확정 합계"만 주는 security definer RPC
+ * (get_show_reservation_summary)를 20초 간격으로 폴링해 근실시간으로 반영한다.
+ * 진짜 postgres_changes 구독은 RLS에 막혀 익명 사용자에겐 이벤트가 안 오므로 쓰지 않는다.
  */
-export default function SeatReservationForm({ showId, defaultName }: Props) {
+export default function SeatReservationForm({
+  showId,
+  defaultName,
+  initialCapacity = null,
+  initialConfirmedTotal = 0,
+  initialReservationClosed = false,
+}: Props) {
   const [open, setOpen] = useState(false);
+  const [showWaitlistForm, setShowWaitlistForm] = useState(false);
   const [name, setName] = useState(defaultName ?? "");
   const [contact, setContact] = useState("");
   const [partySize, setPartySize] = useState(1);
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null);
+
+  const [capacity, setCapacity] = useState<number | null>(initialCapacity);
+  const [confirmedTotal, setConfirmedTotal] = useState(initialConfirmedTotal);
+  const [reservationClosed, setReservationClosed] = useState(initialReservationClosed);
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    const supabase = createClient();
+
+    const refresh = async () => {
+      const { data } = await supabase.rpc("get_show_reservation_summary", { p_show_id: showId });
+      if (!mounted.current || !data) return;
+      const summary = data as { confirmed_total: number; capacity: number | null; reservation_closed: boolean };
+      setConfirmedTotal(summary.confirmed_total);
+      setCapacity(summary.capacity);
+      setReservationClosed(summary.reservation_closed);
+    };
+
+    const interval = setInterval(refresh, POLL_INTERVAL_MS);
+    return () => {
+      mounted.current = false;
+      clearInterval(interval);
+    };
+  }, [showId]);
+
+  const isFull = capacity != null && confirmedTotal >= capacity;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,6 +91,40 @@ export default function SeatReservationForm({ showId, defaultName }: Props) {
     );
   }
 
+  // 공연팀이 직접 마감 — 대기 신청도 받지 않음
+  if (reservationClosed) {
+    return (
+      <div
+        className="px-8 py-4 text-sm tracking-wider text-center"
+        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#D4CFC1", color: "#6B5C50" }}
+      >
+        예약이 마감되었습니다
+      </div>
+    );
+  }
+
+  // 정원 도달(자동) — 대기 신청 링크는 남겨둔다
+  if (isFull && !showWaitlistForm && !open) {
+    return (
+      <div className="flex flex-col gap-2 items-start">
+        <div
+          className="px-8 py-4 text-sm tracking-wider text-center"
+          style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6B5C50", color: "#F0EEE9", fontWeight: 600 }}
+        >
+          매진되었습니다
+        </div>
+        <button
+          type="button"
+          onClick={() => { setShowWaitlistForm(true); setOpen(true); }}
+          className="text-xs underline"
+          style={{ color: "#6B5C50" }}
+        >
+          그래도 대기 신청하기
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
       {!open ? (
@@ -66,7 +145,9 @@ export default function SeatReservationForm({ showId, defaultName }: Props) {
           <input type="hidden" name="show_id" value={showId} />
 
           <p className="text-xs leading-relaxed" style={{ color: "#6B5C50" }}>
-            신청은 좌석을 희망하신다는 접수이며, 실제 입장은 공연팀·학교 현장 안내를 따릅니다.
+            {showWaitlistForm
+              ? "정원이 찼습니다. 대기자로 접수되며, 자리가 나면 안내해 드립니다."
+              : "신청은 좌석을 희망하신다는 접수이며, 실제 입장은 공연팀·학교 현장 안내를 따릅니다."}
           </p>
 
           <div>
@@ -137,11 +218,11 @@ export default function SeatReservationForm({ showId, defaultName }: Props) {
                 cursor: isPending ? "wait" : "pointer",
               }}
             >
-              {isPending ? "신청 중…" : "신청 완료"}
+              {isPending ? "신청 중…" : showWaitlistForm ? "대기 신청" : "신청 완료"}
             </button>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => { setOpen(false); setShowWaitlistForm(false); }}
               disabled={isPending}
               className="text-xs underline"
               style={{ color: "#6B5C50" }}

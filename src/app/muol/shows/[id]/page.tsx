@@ -47,6 +47,13 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     if (!isOwner && !isAdmin) notFound();
   }
 
+  // 좌석 신청 확정 합계·정원·마감여부 — 매진 표시 판단용 (개별 신청자 정보는 노출 안 함)
+  let reservationSummary: { confirmed_total: number; capacity: number | null; reservation_closed: boolean } | null = null;
+  if (show.status === "approved" && show.use_inhouse_reservation !== false) {
+    const { data: summaryData } = await supabase.rpc("get_show_reservation_summary", { p_show_id: id });
+    reservationSummary = summaryData as typeof reservationSummary;
+  }
+
   // 별점 데이터 — 평균·개수·본인 점수
   const { data: ratingsData } = await supabase
     .from("ratings")
@@ -522,7 +529,13 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {/* CTA */}
             {show.status === "approved" && show.use_inhouse_reservation !== false && (
               <div className="pt-2 flex flex-col sm:flex-row gap-3 items-start">
-                <SeatReservationForm showId={show.id} defaultName={user?.user_metadata?.name as string | undefined} />
+                <SeatReservationForm
+                  showId={show.id}
+                  defaultName={user?.user_metadata?.name as string | undefined}
+                  initialCapacity={reservationSummary?.capacity ?? show.capacity ?? null}
+                  initialConfirmedTotal={reservationSummary?.confirmed_total ?? 0}
+                  initialReservationClosed={reservationSummary?.reservation_closed ?? show.reservation_closed ?? false}
+                />
                 <Link
                   href="/muol/contact"
                   className="px-8 py-4 text-sm tracking-wider text-center transition-colors"

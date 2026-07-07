@@ -37,6 +37,7 @@ export type Show = {
   // 자체 예매(좌석 신청) 필드 - 2026-07-06 신설
   capacity?: number | null;              // 좌석 정원(선택). null이면 무제한
   use_inhouse_reservation?: boolean;     // 무대올림 자체 예약 시스템 사용 여부(기본 true)
+  reservation_closed?: boolean;          // 공연팀이 직접 예약 마감(매진) 처리했는지 - 2026-07-07 신설
 };
 
 export type ReservationStatus = "confirmed" | "waitlisted" | "cancelled";
