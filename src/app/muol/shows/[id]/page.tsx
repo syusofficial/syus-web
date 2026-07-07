@@ -185,8 +185,8 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
       "@type": "Offer",
       url: show.reservation_url ?? show.ticket_url,
       availability: "https://schema.org/InStock",
-      // 무료 좌석 예약(reservation_url) 우선 시 가격 0 명시 — Google Rich Result에 'Free' 표시
-      ...(show.reservation_url ? { price: 0, priceCurrency: "KRW" } : {}),
+      // 관람료는 학교/공연팀 방침에 따라 달라질 수 있어 가격을 단정하지 않는다(법적 리스크 방지).
+      // 예약 링크가 있다는 것만 명시하고, 실제 무료 여부는 공연 상세 안내를 따른다.
     } : undefined,
     inLanguage: "ko",
   } : null;

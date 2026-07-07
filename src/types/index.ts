@@ -10,8 +10,8 @@ export type Show = {
   schedule_end?: string;
   cast_members?: string[];
   directions?: string;
-  ticket_url?: string;          // (레거시) 상업 예매처 URL (인터파크·티켓링크 등)
-  reservation_url?: string;     // 무료 좌석 예약 URL (구글폼·네이버폼 등) - 무대올림 정체성
+  ticket_url?: string;          // (레거시) 상업 예매처 URL (인터파크·티켓링크 등) - 신규 등록 유도 중단
+  reservation_url?: string;     // 예매·좌석 신청 링크 (공연팀 자체 폼: 구글폼·네이버폼 등) - 무대올림 정체성
   status: "pending" | "approved" | "rejected";
   created_at: string;
   organizer_id?: string;

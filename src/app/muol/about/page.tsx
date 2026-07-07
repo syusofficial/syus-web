@@ -378,7 +378,7 @@ export default function AboutPage() {
               {
                 tag: "예약",
                 title: "좌석 확보",
-                body: "무대올림에서는 결제 없이 좌석만 미리 잡아두면 됩니다.",
+                body: "간편한 클릭으로 좌석을 미리 잡아둡니다. 무대올림은 공연팀에게 게재 수수료를 받지 않습니다.",
               },
             ].map((b) => (
               <div
