@@ -12,9 +12,10 @@ import {
   approvePerformerApplication as approvePerformerAction,
   rejectPerformerApplication as rejectPerformerAction,
 } from "@/app/actions/performer";
-import type { Show, Profile, Contact, Review } from "@/types";
+import { cancelReservationAction } from "@/app/actions/reservations";
+import type { Show, Profile, Contact, Review, Reservation } from "@/types";
 
-type Tab = "stats" | "media-kit" | "shows" | "applications" | "members" | "contacts" | "reviews";
+type Tab = "stats" | "media-kit" | "shows" | "applications" | "members" | "contacts" | "reviews" | "reservations";
 
 type AdminReviewRow = Review & {
   profiles?: { name: string | null } | null;
@@ -67,6 +68,8 @@ export default function AdminPage() {
   const [dataLoading, setDataLoading] = useState(true);
   const [reviewShow, setReviewShow] = useState<Show | null>(null);
   const [adminReviews, setAdminReviews] = useState<AdminReviewRow[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [cancellingReservationId, setCancellingReservationId] = useState<string | null>(null);
   const [reviewFilter, setReviewFilter] = useState<"hidden" | "public" | "all">("hidden");
 
   const fetchAll = useCallback(async () => {
@@ -94,6 +97,11 @@ export default function AdminPage() {
         .gte("created_at", ninetyDaysAgo.toISOString())
         .order("created_at", { ascending: false })
         .limit(50000),
+      supabase
+        .from("syus_reservations")
+        .select("*, shows(title, schedule_start, schedule_end)")
+        .order("created_at", { ascending: false })
+        .limit(500),
     ]);
 
     // 각 쿼리 결과 안전 추출 — rejected 또는 PostgrestError 시 빈 배열로 fallback
@@ -112,8 +120,28 @@ export default function AdminPage() {
     setLikes(safe<{ show_id: string }>(3));
     setAdminReviews(safe<AdminReviewRow>(4));
     setPageViews(safe<{ path: string; referrer: string | null; session_id: string | null; is_admin: boolean; created_at: string }>(5));
+    setReservations(
+      safe<Reservation & { shows?: { title?: string; schedule_start?: string; schedule_end?: string } | null }>(6).map((r) => ({
+        ...r,
+        show_title: r.shows?.title,
+        schedule_start: r.shows?.schedule_start,
+        schedule_end: r.shows?.schedule_end,
+      }))
+    );
     setDataLoading(false);
   }, []);
+
+  const cancelReservationAsAdmin = async (reservation: Reservation) => {
+    if (!window.confirm(`"${reservation.guest_name ?? "신청자"}"님의 좌석 신청을 취소하시겠습니까?`)) return;
+    setCancellingReservationId(reservation.id);
+    const res = await cancelReservationAction(reservation.reservation_code, reservation.guest_contact ?? "");
+    if (res.ok) {
+      setReservations((prev) => prev.map((r) => (r.id === reservation.id ? { ...r, status: "cancelled" } : r)));
+    } else {
+      alert(res.message);
+    }
+    setCancellingReservationId(null);
+  };
 
   // 모달 ESC 닫기 + body 스크롤 잠금
   useEffect(() => {
@@ -458,6 +486,7 @@ export default function AdminPage() {
             { key: "members",      label: "회원 관리" },
             { key: "contacts",     label: `문의 확인${pendingContacts ? ` (${pendingContacts})` : ""}` },
             { key: "reviews",      label: `후기 검토${adminReviews.filter((r) => r.status === "hidden").length ? ` (${adminReviews.filter((r) => r.status === "hidden").length})` : ""}` },
+            { key: "reservations", label: `예약 관리${reservations.filter((r) => r.status !== "cancelled").length ? ` (${reservations.filter((r) => r.status !== "cancelled").length})` : ""}` },
           ] as const).map((t) => (
             <button
               key={t.key}
@@ -942,6 +971,67 @@ export default function AdminPage() {
                 onFilter={setReviewFilter}
                 onRefresh={fetchAll}
               />
+            )}
+
+            {/* ── 예약 관리 탭 ── */}
+            {tab === "reservations" && (
+              <div className="overflow-x-auto">
+                {reservations.length === 0 ? (
+                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                    아직 접수된 좌석 신청이 없습니다.
+                  </p>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
+                        {["공연명", "신청자", "연락처", "인원", "신청번호", "상태", "관리"].map((h) => (
+                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {reservations.map((r) => {
+                        const statusMap: Record<string, { label: string; bg: string; color: string }> = {
+                          confirmed: { label: "확정", bg: "#D4EDD4", color: "#3A5E42" },
+                          waitlisted: { label: "대기", bg: "#E6E1D6", color: "#0B5563" },
+                          cancelled: { label: "취소됨", bg: "#EDD4D4", color: "#6B5C50" },
+                        };
+                        const s = statusMap[r.status] ?? statusMap.confirmed;
+                        return (
+                          <tr key={r.id} style={{ borderBottom: "1px solid #E6E1D6" }}>
+                            <td className="py-3 px-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}>
+                              {r.show_title ?? "(공연 정보 없음)"}
+                            </td>
+                            <td className="py-3 px-3" style={{ color: "#4A3B33" }}>{r.guest_name ?? "-"}</td>
+                            <td className="py-3 px-3" style={{ color: "#6B5C50" }}>{r.guest_contact ?? "-"}</td>
+                            <td className="py-3 px-3" style={{ color: "#4A3B33" }}>{r.party_size}명</td>
+                            <td className="py-3 px-3 text-xs" style={{ color: "#6B5C50" }}>{r.reservation_code}</td>
+                            <td className="py-3 px-3">
+                              <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color }}>
+                                {s.label}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3">
+                              {r.status !== "cancelled" && (
+                                <button
+                                  onClick={() => cancelReservationAsAdmin(r)}
+                                  disabled={cancellingReservationId === r.id}
+                                  className="text-xs underline"
+                                  style={{ color: "#D54545" }}
+                                >
+                                  취소
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
+              </div>
             )}
           </>
         )}
