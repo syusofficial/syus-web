@@ -9,6 +9,7 @@ import RatingInput from "@/components/RatingInput";
 import ReviewInput from "@/components/ReviewInput";
 import ReviewList from "@/components/ReviewList";
 import ShowCard from "@/components/ShowCard";
+import SeatReservationForm from "@/components/SeatReservationForm";
 import { isEnded, extractSchoolName, todayKey } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
@@ -519,7 +520,30 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* CTA */}
-            {show.status === "approved" && (
+            {show.status === "approved" && show.use_inhouse_reservation !== false && (
+              <div className="pt-2 flex flex-col sm:flex-row gap-3 items-start">
+                <SeatReservationForm showId={show.id} />
+                <Link
+                  href="/muol/contact"
+                  className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #D4CFC1", color: "#4A3B33" }}
+                >
+                  문의하기
+                </Link>
+              </div>
+            )}
+            {show.status === "approved" && show.use_inhouse_reservation !== false && (
+              <p
+                className="text-xs leading-relaxed pt-2"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", wordBreak: "keep-all" }}
+              >
+                ⓘ 신청은 좌석을 희망하신다는 접수이며, 실제 입장이 100% 보장되는 것은 아닙니다.
+                입력하신 이름·연락처는 이 공연의 좌석 신청 확인 목적으로만 쓰입니다.
+              </p>
+            )}
+
+            {/* 자체 예약 미사용 공연 — 기존 외부 링크 방식 (전환기 호환) */}
+            {show.status === "approved" && show.use_inhouse_reservation === false && (
               <div className="pt-2 flex flex-col sm:flex-row gap-3">
                 {show.reservation_url ? (
                   <a
@@ -565,7 +589,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* 외부 예약 폼 PII 고지 (법무·CS 권고) */}
-            {show.status === "approved" && show.reservation_url && (
+            {show.status === "approved" && show.use_inhouse_reservation === false && show.reservation_url && (
               <p
                 className="text-xs leading-relaxed pt-2"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", wordBreak: "keep-all" }}
