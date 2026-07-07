@@ -22,6 +22,7 @@ const REASON_MESSAGES: Record<string, string> = {
   invalid_party_size: "인원수는 1~10명 사이로 입력해주세요.",
   guest_info_required: "이름과 연락처를 입력해주세요.",
   show_not_found: "공연 정보를 찾을 수 없습니다.",
+  reservation_closed: "공연팀이 예약을 마감했습니다.",
 };
 
 export async function submitReservation(formData: FormData): Promise<SubmitReservationState> {
