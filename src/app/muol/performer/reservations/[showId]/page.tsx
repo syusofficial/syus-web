@@ -71,6 +71,20 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
     };
   }, [authState, showId, load]);
 
+  const handleToggleClosed = async () => {
+    if (!show) return;
+    const next = !show.reservation_closed;
+    if (next && !window.confirm("예약을 마감(매진 처리)하시겠습니까?\n\n관객은 더 이상 좌석을 신청할 수 없게 됩니다.")) return;
+
+    const supabase = createClient();
+    const { error } = await supabase.from("shows").update({ reservation_closed: next }).eq("id", show.id);
+    if (error) {
+      alert("처리 중 오류가 발생했습니다.");
+      return;
+    }
+    setShow({ ...show, reservation_closed: next });
+  };
+
   const handleExportCsv = () => {
     const header = ["이름", "연락처", "인원수", "상태", "신청번호", "신청일시"];
     const lines = rows.map((r) => [
@@ -126,13 +140,18 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
       <h1 className="text-xl font-bold mt-3 mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
         {show?.title ?? "공연"} — 예약 현황
       </h1>
-      <p className="text-xs mb-6" style={{ color: "#6B5C50" }}>
+      <p className="text-xs mb-1" style={{ color: "#6B5C50" }}>
         확정 {confirmedTotal}명{show?.capacity ? ` / 정원 ${show.capacity}명` : " (정원 무제한)"}
         {waitlistedTotal > 0 && ` · 대기 ${waitlistedTotal}명`}
         {" · 새 신청은 실시간으로 반영됩니다"}
       </p>
+      {show?.reservation_closed && (
+        <p className="text-xs mb-6" style={{ color: "#A63D2F", fontWeight: 600 }}>
+          🔒 예약이 수동으로 마감된 상태입니다 — 관객이 신규 신청을 할 수 없습니다.
+        </p>
+      )}
 
-      <div className="flex gap-2 mb-6 print:hidden">
+      <div className="flex gap-2 mb-6 print:hidden flex-wrap">
         <button
           onClick={handleExportCsv}
           disabled={rows.length === 0}
@@ -148,6 +167,17 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
           style={{ border: "1px solid #D4CFC1", color: "#4A3B33" }}
         >
           인쇄
+        </button>
+        <button
+          onClick={handleToggleClosed}
+          className="px-4 py-2 text-xs tracking-wider"
+          style={
+            show?.reservation_closed
+              ? { backgroundColor: "#6B5C50", color: "#F0EEE9" }
+              : { border: "1px solid #A63D2F", color: "#A63D2F" }
+          }
+        >
+          {show?.reservation_closed ? "예약 다시 열기" : "예약 마감하기"}
         </button>
       </div>
 
