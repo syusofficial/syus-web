@@ -522,7 +522,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             {/* CTA */}
             {show.status === "approved" && show.use_inhouse_reservation !== false && (
               <div className="pt-2 flex flex-col sm:flex-row gap-3 items-start">
-                <SeatReservationForm showId={show.id} />
+                <SeatReservationForm showId={show.id} defaultName={user?.user_metadata?.name as string | undefined} />
                 <Link
                   href="/muol/contact"
                   className="px-8 py-4 text-sm tracking-wider text-center transition-colors"

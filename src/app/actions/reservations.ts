@@ -91,7 +91,11 @@ export async function submitReservation(formData: FormData): Promise<SubmitReser
   };
 }
 
-/** 게스트 셀프 취소 — 신청번호 + 연락처가 일치할 때만. 로그인 사용자는 본인 세션으로 처리. */
+/**
+ * 게스트 셀프 취소 — 신청번호 + 연락처가 일치할 때만. 로그인 사용자는 본인 세션으로 처리.
+ * 확정 신청이 취소돼 정원에 자리가 나면 DB(cancel_reservation)가 대기자를 자동 승격시키고,
+ * 승격된 사람 목록을 반환한다 — 여기서 그들에게 확정 메일을 이어서 발송한다(best-effort).
+ */
 export async function cancelReservationAction(
   code: string,
   contact: string
@@ -104,7 +108,13 @@ export async function cancelReservationAction(
     return { ok: false, message: "취소 처리 중 오류가 발생했습니다." };
   }
 
-  const result = data as { ok: boolean; reason?: string };
+  const result = data as {
+    ok: boolean;
+    reason?: string;
+    promoted?: { code: string; contact: string | null; name: string | null; party_size: number }[];
+    show_id?: string;
+    show_title?: string;
+  };
   if (!result.ok) {
     const reasonMap: Record<string, string> = {
       not_found: "신청 내역을 찾을 수 없습니다.",
@@ -112,6 +122,23 @@ export async function cancelReservationAction(
       already_cancelled: "이미 취소된 신청입니다.",
     };
     return { ok: false, message: reasonMap[result.reason ?? ""] ?? "취소할 수 없습니다." };
+  }
+
+  if (result.show_id) revalidatePath(`/muol/shows/${result.show_id}`);
+
+  // 확정 신청 취소로 자리가 나 대기자가 자동 승격됐다면(DB가 처리), 승격자에게 확정 메일 발송
+  const promoted = result.promoted ?? [];
+  const showTitle = result.show_title ?? "공연";
+  for (const p of promoted) {
+    if (!p.contact || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.contact)) continue;
+    const sendResult = await sendMail({
+      to: p.contact,
+      subject: "대기하시던 좌석이 확정되었습니다",
+      react: ReservationConfirmedEmail({ name: p.name, showTitle, code: p.code, partySize: p.party_size }),
+    });
+    if (!sendResult.ok) {
+      console.warn("[cancelReservationAction] 대기 승격 확정 메일 발송 실패:", sendResult.error);
+    }
   }
 
   return { ok: true, message: "신청이 취소되었습니다." };
