@@ -5,18 +5,21 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getRecentIds } from "@/lib/recentViews";
+import { cancelReservationAction } from "@/app/actions/reservations";
 import PageLoader from "@/components/PageLoader";
 import ShowCard from "@/components/ShowCard";
 import PasswordInput from "@/components/PasswordInput";
-import type { Profile, Show } from "@/types";
+import type { Profile, Show, Reservation } from "@/types";
 
-type Tab = "info" | "likes" | "recent" | "performer";
+type Tab = "info" | "likes" | "recent" | "performer" | "reservations";
 
 export default function MyPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [likedShows, setLikedShows] = useState<Show[]>([]);
   const [recentShows, setRecentShows] = useState<Show[]>([]);
+  const [myReservations, setMyReservations] = useState<Reservation[]>([]);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("info");
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
@@ -77,6 +80,25 @@ export default function MyPage() {
           .filter(Boolean) as Show[];
         setRecentShows(ordered);
       }
+
+      // 내 좌석 신청 내역
+      const { data: reservationRows } = await supabase
+        .from("syus_reservations")
+        .select("*, shows(title, schedule_start, schedule_end)")
+        .eq("user_id", data.user.id)
+        .order("created_at", { ascending: false });
+
+      setMyReservations(
+        (reservationRows ?? []).map((row) => {
+          const joinedShow = row.shows as unknown as { title?: string; schedule_start?: string; schedule_end?: string } | null;
+          return {
+            ...row,
+            show_title: joinedShow?.title,
+            schedule_start: joinedShow?.schedule_start,
+            schedule_end: joinedShow?.schedule_end,
+          } as Reservation;
+        })
+      );
 
       setLoading(false);
     });
@@ -147,6 +169,20 @@ export default function MyPage() {
     setApplying(false);
   };
 
+  const handleCancelReservation = async (reservation: Reservation) => {
+    if (!window.confirm("이 좌석 신청을 취소하시겠습니까?")) return;
+    setCancellingId(reservation.id);
+    const res = await cancelReservationAction(reservation.reservation_code, "");
+    if (res.ok) {
+      setMyReservations((prev) =>
+        prev.map((r) => (r.id === reservation.id ? { ...r, status: "cancelled" } : r))
+      );
+    } else {
+      alert(res.message);
+    }
+    setCancellingId(null);
+  };
+
   if (loading) {
     return (
       <div className="pt-24 md:pt-36 min-h-screen" style={{ backgroundColor: "#F0EEE9" }}>
@@ -188,6 +224,7 @@ export default function MyPage() {
             { key: "info",      label: "내 정보" },
             { key: "likes",     label: `찜한 공연${likedShows.length ? ` (${likedShows.length})` : ""}` },
             { key: "recent",    label: `최근 본 공연${recentShows.length ? ` (${recentShows.length})` : ""}` },
+            { key: "reservations", label: `내 예약${myReservations.length ? ` (${myReservations.length})` : ""}` },
             { key: "performer", label: "공연자 신청" },
           ].map((t) => (
             <button
@@ -478,6 +515,60 @@ export default function MyPage() {
                   {recentShows.map((show) => <ShowCard key={show.id} show={show} />)}
                 </div>
               </>
+            )}
+          </>
+        )}
+
+        {/* Tab: 내 예약 */}
+        {tab === "reservations" && (
+          <>
+            {myReservations.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                  아직 신청한 좌석이 없습니다.
+                </p>
+                <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
+                  공연 보러 가기 →
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {myReservations.map((r) => {
+                  const statusMap: Record<string, { label: string; bg: string; color: string }> = {
+                    confirmed: { label: "확정", bg: "#D4EDD4", color: "#3A5E42" },
+                    waitlisted: { label: "대기", bg: "#E6E1D6", color: "#0B5563" },
+                    cancelled: { label: "취소됨", bg: "#EDD4D4", color: "#6B5C50" },
+                  };
+                  const s = statusMap[r.status] ?? statusMap.confirmed;
+                  return (
+                    <div key={r.id} className="p-5 flex items-center justify-between" style={{ backgroundColor: "#F0EEE9", border: "1px solid #D4CFC1" }}>
+                      <div>
+                        <p className="text-sm font-semibold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}>
+                          {r.show_title ?? "공연 정보 없음"}
+                        </p>
+                        <p className="text-xs mt-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                          인원 {r.party_size}명 · 신청번호 {r.reservation_code}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color }}>
+                          {s.label}
+                        </span>
+                        {r.status !== "cancelled" && (
+                          <button
+                            onClick={() => handleCancelReservation(r)}
+                            disabled={cancellingId === r.id}
+                            className="text-xs underline"
+                            style={{ color: "#D54545" }}
+                          >
+                            취소
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </>
         )}
