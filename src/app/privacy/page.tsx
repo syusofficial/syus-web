@@ -185,6 +185,14 @@ export default function PrivacyPage() {
                   <li>위 요청 정보는 독백 생성을 위해 AI 위탁업체(Anthropic PBC)에 전송됩니다. 자세한 내용은 제6조를 참고하세요.</li>
                 </ul>
               </div>
+              <div>
+                <p className="font-semibold mb-1">10. 공연 좌석 신청(예약) 시 수집 항목</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>필수: 이름, 연락처(전화번호 또는 이메일), 신청 인원수</li>
+                  <li>회원 로그인 상태로 신청한 경우 회원 식별자가 함께 저장되어 마이페이지에서 신청 내역을 확인할 수 있습니다.</li>
+                  <li>좌석 신청은 희망 접수이며, 실제 입장이 보장되는 것은 아닙니다. 신청 정보는 좌석 신청 확인·취소 목적으로만 이용되며, 공연팀·제3자에게 별도 제공되지 않습니다.</li>
+                </ul>
+              </div>
             </div>
           </section>
 
@@ -215,6 +223,7 @@ export default function PrivacyPage() {
                     ["시우스 게시물(견해글 질문·QnA·자유글·관람후기·책후기·댓글)", "본인 직접 삭제 또는 회원 탈퇴 시까지", "서비스 제공 목적 종료"],
                     ["신고 접수 기록", "처리 완료 후 1년", "분쟁·소명 자료"],
                     ["창작 독백 요청·생성 데이터", "회원 탈퇴 시까지(반려·미공개 요청은 처리 후 1년 뒤 별도 정리 검토)", "서비스 제공 목적 종료"],
+                    ["공연 좌석 신청(예약) 정보", "해당 공연 종료 후 1개월", "서비스 제공 목적 종료·분쟁 대비 최소 보관"],
                   ].map((row) => (
                     <tr key={row[0]} style={{ borderBottom: "1px solid #E6E1D6" }}>
                       {row.map((c, i) => <td key={i} className="py-2 pr-4 align-top">{c}</td>)}
