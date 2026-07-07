@@ -695,8 +695,7 @@ export default function PerformerPage() {
                     { label: "공연 시간 (선택)", key: "show_time", required: false, placeholder: "평일 19:30 / 주말 15:00" },
                     { label: "러닝 타임 (선택)", key: "running_time", required: false, placeholder: "100분" },
                     { label: "관람 연령 (선택)", key: "age_rating", required: false, placeholder: "7세 이상" },
-                    { label: "좌석 예약 링크 (선택)", key: "reservation_url", required: false, placeholder: "좌석 확보용. 구글폼·네이버폼 등 (예: forms.gle/...)" },
-                    { label: "티켓 예매 링크 (선택)", key: "ticket_url", required: false, placeholder: "상업 예매처용. 없으면 비워두세요" },
+                    { label: "예매·좌석 신청 링크 (선택)", key: "reservation_url", required: false, placeholder: "공연팀 자체 폼만 받습니다(구글폼·네이버폼 등). 상업 예매처 링크는 받지 않습니다" },
                   ].map((field) => (
                     <div key={field.key} className={field.span ?? ""}>
                       <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
