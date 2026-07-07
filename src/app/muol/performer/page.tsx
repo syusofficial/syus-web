@@ -44,6 +44,8 @@ export default function PerformerPage() {
   const [genre, setGenre] = useState<string>("");
   const [showCategory, setShowCategory] = useState<string>("");
   const [region, setRegion] = useState<string>("");
+  const [useInhouseReservation, setUseInhouseReservation] = useState<boolean>(true);
+  const [capacity, setCapacity] = useState<string>("");
   const [defaultPerformerName, setDefaultPerformerName] = useState<string>("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [hasDraft, setHasDraft] = useState(false);
@@ -137,6 +139,8 @@ export default function PerformerPage() {
     setForm(emptyForm);
     setGenre("");
     setShowCategory("");
+    setUseInhouseReservation(true);
+    setCapacity("");
     setRegion("");
     setPosterFile(null);
     setPosterPreview(null);
@@ -173,6 +177,8 @@ export default function PerformerPage() {
     setGenre(show.genre ?? "");
     setShowCategory(show.show_category ?? "");
     setRegion(show.region ?? "");
+    setUseInhouseReservation(show.use_inhouse_reservation ?? true);
+    setCapacity(show.capacity != null ? String(show.capacity) : "");
     setExistingPosterUrl(show.poster_url ?? null);
     setPosterFile(null);
     setPosterPreview(null);
@@ -251,6 +257,17 @@ export default function PerformerPage() {
       return;
     }
 
+    // 정원 검증 — 입력했다면 1 이상의 정수만 (비워두면 무제한)
+    let parsedCapacity: number | null = null;
+    if (capacity.trim()) {
+      const n = Number(capacity.trim());
+      if (!Number.isInteger(n) || n < 1) {
+        setError("정원은 1 이상의 숫자로 입력해주세요. 제한이 없다면 비워두세요.");
+        return;
+      }
+      parsedCapacity = n;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
@@ -324,6 +341,8 @@ export default function PerformerPage() {
       age_rating: form.age_rating || null,
       map_kakao_url: mapKakaoUrl || null,
       map_naver_url: mapNaverUrl || null,
+      use_inhouse_reservation: useInhouseReservation,
+      capacity: parsedCapacity,
     };
 
     if (editingId) {
@@ -695,7 +714,6 @@ export default function PerformerPage() {
                     { label: "공연 시간 (선택)", key: "show_time", required: false, placeholder: "평일 19:30 / 주말 15:00" },
                     { label: "러닝 타임 (선택)", key: "running_time", required: false, placeholder: "100분" },
                     { label: "관람 연령 (선택)", key: "age_rating", required: false, placeholder: "7세 이상" },
-                    { label: "예매·좌석 신청 링크 (선택)", key: "reservation_url", required: false, placeholder: "공연팀 자체 폼만 받습니다(구글폼·네이버폼 등). 상업 예매처 링크는 받지 않습니다" },
                   ].map((field) => (
                     <div key={field.key} className={field.span ?? ""}>
                       <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
@@ -715,6 +733,58 @@ export default function PerformerPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              {/* 예약 설정 */}
+              <div className="pt-6" style={{ borderTop: "1px solid #D4CFC1" }}>
+                <h3 className="text-sm font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
+                  예약 설정
+                </h3>
+                <label className="flex items-center gap-2 mb-4 cursor-pointer" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
+                  <input
+                    type="checkbox"
+                    checked={useInhouseReservation}
+                    onChange={(e) => setUseInhouseReservation(e.target.checked)}
+                  />
+                  <span className="text-sm" style={{ color: "#4A3B33" }}>
+                    무대올림 자체 예약 받기 (권장) — 관객이 사이트 안에서 바로 좌석을 신청합니다
+                  </span>
+                </label>
+
+                {useInhouseReservation ? (
+                  <div className="max-w-xs">
+                    <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
+                      정원 (선택)
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={capacity}
+                      onChange={(e) => setCapacity(e.target.value)}
+                      placeholder="비워두면 무제한"
+                      className="w-full px-4 py-3 text-sm outline-none"
+                      style={inputStyle}
+                      onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
+                      onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
+                      예매·좌석 신청 링크 (선택)
+                    </label>
+                    <input
+                      type="text"
+                      value={form.reservation_url}
+                      onChange={(e) => setForm({ ...form, reservation_url: e.target.value })}
+                      placeholder="공연팀 자체 폼만 받습니다(구글폼·네이버폼 등). 상업 예매처 링크는 받지 않습니다"
+                      className="w-full px-4 py-3 text-sm outline-none"
+                      style={inputStyle}
+                      onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
+                      onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* 장소 */}
