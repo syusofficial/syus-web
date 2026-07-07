@@ -1003,6 +1003,15 @@ export default function PerformerPage() {
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <StatusBadge status={show.status} />
+                    {show.status === "approved" && show.use_inhouse_reservation !== false && (
+                      <Link
+                        href={`/muol/performer/reservations/${show.id}`}
+                        className="text-xs px-3 py-1 transition-colors"
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5C2A42", border: "1px solid #5C2A42" }}
+                      >
+                        예약 현황
+                      </Link>
+                    )}
                     <Link
                       href={`/muol/shows/${show.id}`}
                       className="text-xs px-2 py-1"
