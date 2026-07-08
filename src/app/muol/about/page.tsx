@@ -636,6 +636,15 @@ export default function AboutPage() {
               무대올림입니다.
             </p>
             <p
+              className="text-base leading-[1.9] mb-4"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+            >
+              연기 서적에서 자주 만난 단어 ‘사유’를 뒤집어 ‘유사’라 다시 부른, 대칭의 이름입니다.
+              대상을 두루 생각하는 일을 뜻하는 사유(思惟)와, 바람과 물에 흘러내리는 모래를 뜻하는
+              유사(流沙)를 나란히 놓아 — 두루 생각한 것을 무대 위에서 가볍게 흘려보낸다는 정체성을
+              담았습니다.
+            </p>
+            <p
               className="text-sm leading-relaxed italic"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
