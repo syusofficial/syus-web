@@ -35,7 +35,18 @@ export default function EssayDetail() {
         {essay.series_no != null && <span className="syc-card-meta">연기와 냉장고 · {String(essay.series_no).padStart(2, "0")}</span>}
         <h1 className="syc-detail-title">{essay.title}</h1>
         <p className="syc-detail-meta">주인장 · {fmt(essay.created_at)}</p>
-        <p className="syc-detail-body" style={{ fontSize: "1.02rem", lineHeight: 1.95 }}>{essay.body}</p>
+        <div className="syc-detail-body" style={{ fontSize: "1.02rem", lineHeight: 1.95 }}>
+          {essay.body.split("\n\n").map((para, i) => {
+            const trimmed = para.trim();
+            const isNote = /^\d{4}\.\d{2}\.\d{2}/.test(trimmed) || trimmed.startsWith("(이 질문은");
+            const isGlossary = trimmed.startsWith("※");
+            return (
+              <p key={i} className={isNote ? "syc-detail-note" : isGlossary ? "syc-detail-glossary" : undefined}>
+                {para}
+              </p>
+            );
+          })}
+        </div>
         <div className="syc-detail-foot">
           <SyusLikeButton targetType="essay" targetId={essay.id} />
         </div>

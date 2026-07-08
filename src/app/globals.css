@@ -355,7 +355,11 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 .syc-detail { background: #FFFFFF; border: 1px solid #E4DFD4; border-top: 3px solid var(--c, #0B5563); padding: 26px 26px 22px; margin-bottom: 36px; }
 .syc-detail-title { font-family: var(--font-noto-serif-kr); font-size: clamp(1.5rem, 3.4vw, 2rem); font-weight: 700; color: #241C18; margin-bottom: 8px; word-break: keep-all; }
 .syc-detail-meta { font-family: var(--font-noto-sans-kr); font-size: 0.8rem; color: #A79E90; margin-bottom: 18px; }
-.syc-detail-body { font-family: var(--font-noto-sans-kr); font-size: 1rem; line-height: 1.85; font-weight: 300; color: #4A3B33; word-break: keep-all; white-space: pre-wrap; margin-bottom: 20px; }
+.syc-detail-body { font-family: var(--font-noto-sans-kr); font-size: 1rem; line-height: 1.85; font-weight: 300; color: #4A3B33; word-break: keep-all; margin-bottom: 20px; }
+.syc-detail-body p { margin: 0 0 20px; white-space: pre-wrap; }
+.syc-detail-body p:last-child { margin-bottom: 0; }
+.syc-detail-note { font-size: 0.85rem; color: #A79E90; font-style: italic; }
+.syc-detail-glossary { margin-top: 4px; padding-top: 18px; border-top: 1px solid #E4DFD4; font-size: 0.85rem; color: #A79E90; }
 .syc-detail-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
 .syc-media { width: 100%; height: auto; margin: 4px 0 18px; border: 1px solid #E4DFD4; }
 .syc-source { display: block; font-family: var(--font-noto-sans-kr); font-size: 0.78rem; color: #A79E90; margin-bottom: 16px; }
