@@ -80,7 +80,7 @@ const CTA_BUTTON = {
 const SIGNOFF = {
   ...PARAGRAPH,
   marginTop: "32px",
-  color: "#6B5C50",
+  color: "#5A4A3E",
 } as const;
 
 const SIGNATURE = {

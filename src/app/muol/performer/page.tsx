@@ -15,7 +15,7 @@ const StatusBadge = ({ status }: { status: string }) => {
     approved: { label: "게시 중",   bg: "#D4EDD4", color: "#3A5E42" },
     rejected: { label: "반려됨",    bg: "#EDD4D4", color: "#A63D2F" },
   };
-  const s = map[status] ?? { label: status, bg: "#E6E1D6", color: "#6B5C50" };
+  const s = map[status] ?? { label: status, bg: "#E6E1D6", color: "#5A4A3E" };
   return (
     <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color, fontFamily: "var(--font-inter)" }}>
       {s.label}
@@ -409,7 +409,7 @@ export default function PerformerPage() {
   };
   const labelStyle: React.CSSProperties = {
     fontFamily: "var(--font-inter)",
-    color: "#6B5C50",
+    color: "#5A4A3E",
   };
 
   // 권한 없음 화면
@@ -425,13 +425,13 @@ export default function PerformerPage() {
     return (
       <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F0EEE9" }}>
         <div className="text-center max-w-sm space-y-5">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             403
           </p>
           <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
             공연자 권한이 필요합니다
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             공연을 등록하려면 마이페이지에서 공연자 신청을 먼저 진행해주세요.
             관리자 검토 후 권한이 부여됩니다.
           </p>
@@ -517,7 +517,7 @@ export default function PerformerPage() {
                     type="button"
                     onClick={discardDraft}
                     className="px-3 py-1.5 text-xs"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "transparent", color: "#6B5C50", border: "1px solid #D4CFC1" }}
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "transparent", color: "#5A4A3E", border: "1px solid #D4CFC1" }}
                   >
                     버리고 새로 시작
                   </button>
@@ -547,7 +547,7 @@ export default function PerformerPage() {
                     {posterFile ? "파일 변경" : (existingPosterUrl ? "포스터 교체" : "파일 선택")}
                   </button>
                   {posterFile && (
-                    <span className="text-xs pt-3" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+                    <span className="text-xs pt-3" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                       {posterFile.name}
                     </span>
                   )}
@@ -571,7 +571,7 @@ export default function PerformerPage() {
                   onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                   onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                 />
-                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                   공연마다 다른 명의로 등록할 수 있습니다. 회원가입 시 입력한 본인 이름이 기본값이며, 단체·극단·학과명 등으로 자유롭게 변경 가능합니다.
                 </p>
               </div>
@@ -610,7 +610,7 @@ export default function PerformerPage() {
                 {/* 무용·음악 sub-genre — 2026-06-17 신설 */}
                 {hasGenreDetails(genre) && (
                   <div className="mt-3">
-                    <p className="text-xs mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                    <p className="text-xs mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                       {genre} 상세 분류 <span style={{ color: "#A63D2F" }}>*</span>
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -677,7 +677,7 @@ export default function PerformerPage() {
                     );
                   })}
                 </div>
-                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                <p className="mt-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                   교내 공연 (학교 정기·졸업 공연), 외부 공연 (학교 외부 무대), 워크샵 (수업·연습 단계 공연) 중 선택해주세요.
                 </p>
               </div>
@@ -715,7 +715,7 @@ export default function PerformerPage() {
                 <h3 className="text-sm font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
                   기본 정보
                 </h3>
-                <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                   학교/학과는 <strong style={{ color: "#0B5563" }}>‘○○대학교 ○○학과(과/학부)’</strong> 형식으로 적어주시면 지역 관객이 더 쉽게 찾습니다.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -835,9 +835,9 @@ export default function PerformerPage() {
                 <div className="mt-6 pt-5" style={{ borderTop: "1px dashed #D4CFC1" }}>
                   <div className="mb-3">
                     <p className="text-xs tracking-wider uppercase mb-1" style={labelStyle}>
-                      지도 링크 <span style={{ textTransform: "none", color: "#6B5C50" }}>(선택)</span>
+                      지도 링크 <span style={{ textTransform: "none", color: "#5A4A3E" }}>(선택)</span>
                     </p>
-                    <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                    <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                       관객이 공연장을 쉽게 찾을 수 있도록 지도 링크 첨부를 권장드립니다.
                       카카오맵 또는 네이버지도 중 <strong style={{ color: "#0B5563" }}>하나만 입력하셔도 됩니다.</strong>
                       <br />
@@ -927,7 +927,7 @@ export default function PerformerPage() {
                 </p>
               )}
 
-              <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+              <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                 ※ {editingId ? "수정한 공연은 다시 관리자 검토 후 게시됩니다." : "등록 후 관리자 검토를 거쳐 게시됩니다."} (1~3일 소요)
               </p>
 
@@ -938,7 +938,7 @@ export default function PerformerPage() {
                   className="flex-1 py-4 text-base tracking-wider transition-colors"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: loading ? "#6B5C50" : "#0B5563",
+                    backgroundColor: loading ? "#5A4A3E" : "#0B5563",
                     color: "#F0EEE9",
                     cursor: loading ? "not-allowed" : "pointer",
                   }}
@@ -973,7 +973,7 @@ export default function PerformerPage() {
           </h2>
           {myShows.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+              <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                 등록한 공연이 없습니다.
               </p>
             </div>
@@ -985,7 +985,7 @@ export default function PerformerPage() {
                     <p className="font-semibold mb-1 truncate" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}>
                       {show.title}
                     </p>
-                    <p className="text-xs truncate mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+                    <p className="text-xs truncate mb-1" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                       {[
                         show.genre === "기타"
                           ? show.genre_custom
@@ -1001,7 +1001,7 @@ export default function PerformerPage() {
                     {show.status === "approved" && (
                       <p className="text-xs flex items-center gap-3" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
                         <span>
-                          <span style={{ color: "#6B5C50" }}>조회수</span>{" "}
+                          <span style={{ color: "#5A4A3E" }}>조회수</span>{" "}
                           <strong style={{ fontFamily: "var(--font-inter)" }}>{show.view_count ?? 0}</strong>
                         </span>
                         {show.featured && (
@@ -1031,7 +1031,7 @@ export default function PerformerPage() {
                           className="text-xs px-3 py-1 transition-colors"
                           style={
                             show.reservation_closed
-                              ? { fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", backgroundColor: "#6B5C50" }
+                              ? { fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", backgroundColor: "#5A4A3E" }
                               : { fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F", border: "1px solid #A63D2F" }
                           }
                         >

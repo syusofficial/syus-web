@@ -113,13 +113,13 @@ export default function LivePresenceCard() {
       <div className="flex items-baseline justify-between flex-wrap gap-3 mb-4">
         <p
           className="text-xs tracking-[0.3em] uppercase"
-          style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
         >
           지금 보고 있는 사람
         </p>
         <label
           className="flex items-center gap-2 text-xs cursor-pointer select-none"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
         >
           <input
             type="checkbox"
@@ -140,7 +140,7 @@ export default function LivePresenceCard() {
           <span
             className="inline-block w-2 h-2 rounded-full"
             style={{
-              backgroundColor: connected ? "#C9E265" : "#6B5C50",
+              backgroundColor: connected ? "#C9E265" : "#5A4A3E",
               boxShadow: connected ? "0 0 0 4px rgba(201,226,101,0.18)" : "none",
               animation: connected ? "syus-pulse 1.6s ease-in-out infinite" : "none",
             }}

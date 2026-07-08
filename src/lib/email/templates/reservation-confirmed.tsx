@@ -30,9 +30,9 @@ const CODE_BOX = {
   margin: "24px 0",
   fontFamily: FONT_FAMILY,
 } as const;
-const CODE_LABEL = { fontSize: "12px", color: "#6B5C50", margin: "0 0 6px", letterSpacing: "0.04em" } as const;
+const CODE_LABEL = { fontSize: "12px", color: "#5A4A3E", margin: "0 0 6px", letterSpacing: "0.04em" } as const;
 const CODE_TEXT = { fontSize: "22px", fontWeight: 700, color: "#0B5563", margin: 0, letterSpacing: "0.02em" } as const;
-const SIGNOFF = { ...PARAGRAPH, marginTop: "32px", color: "#6B5C50" } as const;
+const SIGNOFF = { ...PARAGRAPH, marginTop: "32px", color: "#5A4A3E" } as const;
 
 export function ReservationConfirmedEmail({ name, showTitle, code, partySize }: Props) {
   const trimmedName = name?.trim();

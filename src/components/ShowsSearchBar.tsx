@@ -62,7 +62,7 @@ export default function ShowsSearchBar({ basePath }: { basePath?: string } = {})
             type="button"
             onClick={handleClear}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
-            style={{ color: "#6B5C50" }}
+            style={{ color: "#5A4A3E" }}
             aria-label="검색어 지우기"
           >
             ✕

@@ -86,13 +86,13 @@ export default function ContactPage() {
     return (
       <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F0EEE9" }}>
         <div className="text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-6" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-6" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             접수 완료
           </p>
           <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
             감사합니다.
           </h2>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             문의가 접수되었습니다.
             <br />
             빠른 시일 내에 답변 드리겠습니다.
@@ -107,13 +107,13 @@ export default function ContactPage() {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             1:1 Contact
           </p>
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
             1:1 문의
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             아래에서 문의 유형을 선택하시고 내용을 남겨주세요.
           </p>
         </div>
@@ -128,7 +128,7 @@ export default function ContactPage() {
         >
           <p
             className="text-xs tracking-wider uppercase mb-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             회신 안내
           </p>
@@ -150,7 +150,7 @@ export default function ContactPage() {
           <div className="flex-1 min-w-0">
             <p
               className="text-xs tracking-wider uppercase mb-1"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
             >
               먼저 확인해보세요
             </p>
@@ -179,7 +179,7 @@ export default function ContactPage() {
         <form onSubmit={handleSubmit} className="space-y-8" data-clarity-mask="True">
           {/* 카테고리 선택 */}
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               문의 유형 *
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -207,7 +207,7 @@ export default function ContactPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                 이름 *
               </label>
               <input
@@ -222,7 +222,7 @@ export default function ContactPage() {
               />
             </div>
             <div>
-              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+              <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                 연락처
               </label>
               <input
@@ -238,7 +238,7 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               이메일 *
             </label>
             <input
@@ -254,7 +254,7 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               문의 내용 *
             </label>
             <textarea
@@ -276,7 +276,7 @@ export default function ContactPage() {
                 className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors mt-0.5"
                 style={{
                   backgroundColor: privacyAgreed ? "#0B5563" : "transparent",
-                  border: `1.5px solid ${privacyAgreed ? "#0B5563" : "#6B5C50"}`,
+                  border: `1.5px solid ${privacyAgreed ? "#0B5563" : "#5A4A3E"}`,
                 }}
               >
                 {privacyAgreed && (
@@ -313,7 +313,7 @@ export default function ContactPage() {
             className="px-10 py-3 text-sm tracking-wider transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading || !privacyAgreed ? "#6B5C50" : "#0B5563",
+              backgroundColor: loading || !privacyAgreed ? "#5A4A3E" : "#0B5563",
               color: "#F0EEE9",
               cursor: loading || !privacyAgreed ? "not-allowed" : "pointer",
             }}
@@ -325,7 +325,7 @@ export default function ContactPage() {
         </form>
 
         <div className="mt-16 pt-8 space-y-4" style={{ borderTop: "1px solid #D4CFC1" }}>
-          <p className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             Other Channels
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -336,7 +336,7 @@ export default function ContactPage() {
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D4CFC1")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E6E1D6")}
             >
-              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                 Email
               </p>
               <p className="text-sm break-all" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
@@ -352,7 +352,7 @@ export default function ContactPage() {
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D4CFC1")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E6E1D6")}
             >
-              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                 KakaoTalk
               </p>
               <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
@@ -368,7 +368,7 @@ export default function ContactPage() {
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D4CFC1")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E6E1D6")}
             >
-              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+              <p className="text-xs tracking-wider uppercase mb-1" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                 Instagram
               </p>
               <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
@@ -376,7 +376,7 @@ export default function ContactPage() {
               </p>
             </a>
           </div>
-          <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             카카오톡 채널과 인스타그램 DM도 1~2일 이내에 답변드리겠습니다.
           </p>
         </div>

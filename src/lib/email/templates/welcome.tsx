@@ -9,7 +9,7 @@
  * - 카드 배경: #FFFFFF
  * - 제목·강조: #274E9B (코발트)
  * - 본문 텍스트: #4A3B33
- * - 부가 텍스트: #6B5C50
+ * - 부가 텍스트: #5A4A3E
  * - CTA 버튼: #D6E58F (페일라임) — 메일 1통당 1개만
  */
 import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "@react-email/components";
@@ -74,7 +74,7 @@ const LIST_DESC = {
   fontFamily: FONT_FAMILY,
   fontSize: "13px",
   lineHeight: "1.7",
-  color: "#6B5C50",
+  color: "#5A4A3E",
   margin: "4px 0 0",
 } as const;
 
@@ -110,7 +110,7 @@ const SIGNATURE = {
 const SIGNOFF = {
   ...PARAGRAPH,
   marginTop: "8px",
-  color: "#6B5C50",
+  color: "#5A4A3E",
 } as const;
 
 export function WelcomeEmail({ name }: Props) {

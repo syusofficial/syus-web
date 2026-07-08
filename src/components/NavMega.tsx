@@ -9,7 +9,7 @@
  *  - hover 시 한 챕터에서 여러 페이지를 한눈에 — 메가 메뉴 슬라이드 다운
  *
  * 잠금:
- *  - Mineral Stage 팔레트(#0B5563 메인 / #F0EEE9 배경 / #5C2A42 CTA / #4A3B33 본문 / #6B5C50 보조)
+ *  - Mineral Stage 팔레트(#0B5563 메인 / #F0EEE9 배경 / #5C2A42 CTA / #4A3B33 본문 / #5A4A3E 보조)
  *  - 금지어(비영리·비상업적·(주)·주식회사·대표이사·공익 플랫폼·무료 서비스) 포함하지 않음
  *  - 폰트 토큰(--font-noto-sans-kr / --font-noto-serif-kr / --font-inter) 그대로
  *  - 모바일: 메가 메뉴 X, 햄버거 드로어 + 아코디언 챕터
@@ -814,7 +814,7 @@ export default function NavMega() {
         .mega-col-tagline {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.75rem;
-          color: #6B5C50;
+          color: #5A4A3E;
           margin-bottom: 14px;
           line-height: 1.5;
         }
@@ -841,7 +841,7 @@ export default function NavMega() {
           margin-top: 3px;
           font-family: var(--font-noto-sans-kr);
           font-size: 0.72rem;
-          color: #6B5C50;
+          color: #5A4A3E;
           letter-spacing: 0.02em;
         }
 
@@ -960,7 +960,7 @@ export default function NavMega() {
           color: #4A3B33;
           cursor: pointer;
         }
-        .navmega-mobile-chevron { color: #6B5C50; font-size: 0.7rem; }
+        .navmega-mobile-chevron { color: #5A4A3E; font-size: 0.7rem; }
         .navmega-mobile-chapter-body {
           padding-bottom: 16px;
         }

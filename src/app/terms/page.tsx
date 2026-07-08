@@ -258,7 +258,7 @@ export default function TermsPage() {
         <div className="mb-12">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             Terms of Service
           </p>
@@ -268,7 +268,7 @@ export default function TermsPage() {
           >
             이용약관
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             시행일: 2026년 4월 25일
           </p>
         </div>

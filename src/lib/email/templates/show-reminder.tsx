@@ -92,7 +92,7 @@ const CARD_META = {
   fontFamily: FONT_FAMILY,
   fontSize: "13px",
   lineHeight: "1.7",
-  color: "#6B5C50",
+  color: "#5A4A3E",
   margin: "0 0 4px",
 } as const;
 
@@ -123,7 +123,7 @@ const SIGNATURE = {
 const SIGNOFF = {
   ...PARAGRAPH,
   marginTop: "8px",
-  color: "#6B5C50",
+  color: "#5A4A3E",
 } as const;
 
 const LINK_STYLE = {

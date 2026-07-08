@@ -77,7 +77,7 @@ export default async function FlexHub() {
               <p className="syc-empty-h">아직 공개된 독백이 없어요.</p>
               <p className="syc-empty-b">첫 독백을 요청하면, 검수를 거쳐 이 서고의 문이 열립니다.</p>
             </div>
-            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#6B5C50" }}>이렇게 지어져 쌓일 거예요</h3>
+            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#5A4A3E" }}>이렇게 지어져 쌓일 거예요</h3>
             <article className="syc-card" style={{ opacity: 0.82 }}>
               <span className="syc-card-meta">{SEED_MONO.line} · 예시</span>
               <p className="syc-card-body" style={{ lineHeight: 1.9 }}>{SEED_MONO.body}</p>

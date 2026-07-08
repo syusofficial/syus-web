@@ -167,7 +167,7 @@ function SignupInner() {
     <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6 py-12" style={{ backgroundColor: "#F0EEE9" }}>
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             Account
           </p>
           <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
@@ -211,7 +211,7 @@ function SignupInner() {
             <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
               ✓ 내 공연 직접 등록 · 수정 · 회차 관리
             </p>
-            <p className="text-[0.7rem] leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+            <p className="text-[0.7rem] leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
               가입 후 마이페이지에서 공연자 신청 → 운영자 확인 후 자격이 부여됩니다.
               학과·동아리·극단·졸업 워크샵 모두 가능합니다.
             </p>
@@ -220,7 +220,7 @@ function SignupInner() {
 
         <form onSubmit={handleSubmit} className="space-y-5" data-clarity-mask="True">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               이름
             </label>
             <input
@@ -236,7 +236,7 @@ function SignupInner() {
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               이메일
             </label>
             <input
@@ -252,16 +252,16 @@ function SignupInner() {
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               비밀번호
             </label>
             <PasswordInput value={password} onChange={setPassword} required minLength={8} />
-            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>8자 이상</p>
+            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>8자 이상</p>
           </div>
 
           {/* 생년월일 — PIPA v2.1 만 14세 이상 확인 용도 */}
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               생년월일
             </label>
             <input
@@ -275,7 +275,7 @@ function SignupInner() {
               onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
-            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               만 14세 이상만 가입할 수 있습니다.
             </p>
           </div>
@@ -341,7 +341,7 @@ function SignupInner() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading || !requiredChecked ? "#6B5C50" : "#0B5563",
+              backgroundColor: loading || !requiredChecked ? "#5A4A3E" : "#0B5563",
               color: "#F0EEE9",
               cursor: loading || !requiredChecked ? "not-allowed" : "pointer",
             }}
@@ -352,7 +352,7 @@ function SignupInner() {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+        <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
           이미 계정이 있으신가요?{" "}
           <Link href={backToLogin} style={{ color: "#0B5563" }}>
             로그인
@@ -383,7 +383,7 @@ function ConsentRow({
         className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors"
         style={{
           backgroundColor: checked ? "#0B5563" : "transparent",
-          border: `1.5px solid ${checked ? "#0B5563" : "#6B5C50"}`,
+          border: `1.5px solid ${checked ? "#0B5563" : "#5A4A3E"}`,
         }}
       >
         {checked && (

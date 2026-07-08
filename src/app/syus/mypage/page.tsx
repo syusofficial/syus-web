@@ -123,7 +123,7 @@ export default function SyusMyPage() {
     <main className="syc-wrap" style={{ ["--c" as string]: "#0B5563" } as React.CSSProperties}>
       <span className="syc-badge syc-badge--static">My · 시우스 SYUS</span>
       <h1 className="syc-title">내 시우스</h1>
-      <p className="syc-tagline" style={{ color: "#6B5C50", fontWeight: 400 }}>{email ?? "로그인됨"}</p>
+      <p className="syc-tagline" style={{ color: "#5A4A3E", fontWeight: 400 }}>{email ?? "로그인됨"}</p>
 
       <div style={{ display: "flex", gap: "6px", borderBottom: "1px solid #E0DBD0", marginBottom: "28px", marginTop: "20px" }}>
         <button type="button" className="symy-tab" data-on={tab === "posts"} onClick={() => setTab("posts")}>내가 쓴 글{myPosts.length ? ` (${myPosts.length})` : ""}</button>

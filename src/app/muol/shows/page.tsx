@@ -181,7 +181,7 @@ export default async function ShowsPage({
           <div>
             <p
               className="text-xs tracking-[0.3em] uppercase mb-3"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
             >
               Shows
             </p>
@@ -195,7 +195,7 @@ export default async function ShowsPage({
                 ? `${school} 공연`
                 : (activeRegion === "전체" ? "진행 중 · 예정 공연" : `${activeRegion} 공연`)}
             </h1>
-            <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+            <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
               {totalCount}개의 공연
             </p>
           </div>
@@ -264,7 +264,7 @@ export default async function ShowsPage({
         >
           <span
             className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             장르
           </span>
@@ -285,7 +285,7 @@ export default async function ShowsPage({
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#6B5C50",
+                  color: isActive ? "#F0EEE9" : "#5A4A3E",
                   border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                 }}
               >
@@ -299,7 +299,7 @@ export default async function ShowsPage({
         <div className="mb-6 flex flex-wrap gap-2 items-center">
           <span
             className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             구분
           </span>
@@ -320,7 +320,7 @@ export default async function ShowsPage({
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#6B5C50",
+                  color: isActive ? "#F0EEE9" : "#5A4A3E",
                   border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                 }}
               >
@@ -338,7 +338,7 @@ export default async function ShowsPage({
           >
             <span
               className="text-xs tracking-wider uppercase mr-2"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
             >
               학교
             </span>
@@ -359,7 +359,7 @@ export default async function ShowsPage({
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
                     backgroundColor: isActive ? "#0B5563" : "transparent",
-                    color: isActive ? "#F0EEE9" : "#6B5C50",
+                    color: isActive ? "#F0EEE9" : "#5A4A3E",
                     border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                   }}
                 >
@@ -376,7 +376,7 @@ export default async function ShowsPage({
             <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
               {q ? "조건에 맞는 무대를 아직 찾지 못했습니다." : "곧 첫 무대가 오릅니다."}
             </p>
-            <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+            <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
               {q ? "다른 검색어로 다시 시도해보세요." : "지나간 공연은 ‘지난 공연’에서 만나보실 수 있습니다."}
             </p>
             <Link
@@ -417,7 +417,7 @@ export default async function ShowsPage({
                 {/* 페이지 번호 */}
                 {generatePageNumbers(currentPage, totalPages).map((p, i) =>
                   p === "..." ? (
-                    <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#6B5C50" }}>···</span>
+                    <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#5A4A3E" }}>···</span>
                   ) : (
                     <Link
                       key={p}

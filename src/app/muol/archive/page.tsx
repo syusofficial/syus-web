@@ -136,7 +136,7 @@ export default async function ArchivePage({
           <div>
             <p
               className="text-xs tracking-[0.3em] uppercase mb-3"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
             >
               Archive
             </p>
@@ -148,13 +148,13 @@ export default async function ArchivePage({
             </h1>
             <p
               className="text-sm leading-relaxed mb-1"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             >
               지나갔지만 사라지지 않은 무대들.
             </p>
             <p
               className="text-sm"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             >
               {totalCount}개의 기록
             </p>
@@ -180,7 +180,7 @@ export default async function ArchivePage({
           <div className="mb-6 flex flex-wrap gap-2 items-center">
             <span
               className="text-xs tracking-wider uppercase mr-2"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
             >
               연도
             </span>
@@ -201,7 +201,7 @@ export default async function ArchivePage({
                   style={{
                     fontFamily: "var(--font-inter)",
                     backgroundColor: isActive ? "#0B5563" : "transparent",
-                    color: isActive ? "#F0EEE9" : "#6B5C50",
+                    color: isActive ? "#F0EEE9" : "#5A4A3E",
                     border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                   }}
                 >
@@ -245,7 +245,7 @@ export default async function ArchivePage({
         <div className="mb-6 flex flex-wrap gap-2 items-center">
           <span
             className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             장르
           </span>
@@ -266,7 +266,7 @@ export default async function ArchivePage({
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#6B5C50",
+                  color: isActive ? "#F0EEE9" : "#5A4A3E",
                   border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                 }}
               >
@@ -283,7 +283,7 @@ export default async function ArchivePage({
         >
           <span
             className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             구분
           </span>
@@ -304,7 +304,7 @@ export default async function ArchivePage({
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#6B5C50",
+                  color: isActive ? "#F0EEE9" : "#5A4A3E",
                   border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
                 }}
               >
@@ -317,10 +317,10 @@ export default async function ArchivePage({
         {/* 기록 그리드 — 4열로 좀 더 빽빽하게 (갤러리 느낌) */}
         {list.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-sm mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+            <p className="text-sm mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
               조건에 맞는 기록이 없습니다.
             </p>
-            <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+            <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
               필터를 바꾸어 다시 살펴보세요.
             </p>
           </div>
@@ -349,7 +349,7 @@ export default async function ArchivePage({
 
                 {generatePageNumbers(currentPage, totalPages).map((p, i) =>
                   p === "..." ? (
-                    <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#6B5C50" }}>···</span>
+                    <span key={`dots-${i}`} className="px-2 text-xs" style={{ color: "#5A4A3E" }}>···</span>
                   ) : (
                     <Link
                       key={p}

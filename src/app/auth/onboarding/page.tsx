@@ -111,13 +111,13 @@ export default function OnboardingPage() {
     <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6 py-12" style={{ backgroundColor: "#F0EEE9" }}>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             Welcome
           </p>
           <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
             가입을 마무리합니다
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             서비스 이용을 위해 약관 동의와
             <br />
             기본 정보를 확인해주세요.
@@ -126,7 +126,7 @@ export default function OnboardingPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5" data-clarity-mask="True">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               이름 (닉네임) <span style={{ color: "#A63D2F" }}>*</span>
             </label>
             <input
@@ -176,7 +176,7 @@ export default function OnboardingPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: submitting || !requiredChecked ? "#6B5C50" : "#0B5563",
+              backgroundColor: submitting || !requiredChecked ? "#5A4A3E" : "#0B5563",
               color: "#F0EEE9",
               cursor: submitting || !requiredChecked ? "not-allowed" : "pointer",
             }}
@@ -204,7 +204,7 @@ function ConsentRow({
         className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors"
         style={{
           backgroundColor: checked ? "#0B5563" : "transparent",
-          border: `1.5px solid ${checked ? "#0B5563" : "#6B5C50"}`,
+          border: `1.5px solid ${checked ? "#0B5563" : "#5A4A3E"}`,
         }}
       >
         {checked && (

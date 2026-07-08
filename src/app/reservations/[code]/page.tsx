@@ -46,13 +46,13 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
       >
         예약 조회
       </h1>
-      <p className="text-xs mb-6" style={{ color: "#6B5C50" }}>
+      <p className="text-xs mb-6" style={{ color: "#5A4A3E" }}>
         신청번호 <strong style={{ color: "#4A3B33" }}>{code}</strong>
       </p>
 
       {!data?.ok && (
         <form onSubmit={handleLookup} className="flex flex-col gap-3">
-          <label className="block text-xs tracking-wider uppercase" style={{ color: "#6B5C50" }}>
+          <label className="block text-xs tracking-wider uppercase" style={{ color: "#5A4A3E" }}>
             신청 시 입력한 연락처
           </label>
           <input
@@ -87,7 +87,7 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
           <p className="text-sm" style={{ color: "#4A3B33" }}>
             <strong>{data.show_title}</strong>
           </p>
-          <p className="text-xs" style={{ color: "#6B5C50" }}>
+          <p className="text-xs" style={{ color: "#5A4A3E" }}>
             인원 {data.party_size}명 · 상태 {STATUS_LABEL[data.status] ?? data.status}
           </p>
           {data.status !== "cancelled" && (
@@ -105,10 +105,10 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
       )}
 
       {cancelMessage && (
-        <p className="text-xs mt-4" style={{ color: "#6B5C50" }}>{cancelMessage}</p>
+        <p className="text-xs mt-4" style={{ color: "#5A4A3E" }}>{cancelMessage}</p>
       )}
 
-      <p className="text-xs mt-8" style={{ color: "#6B5C50" }}>
+      <p className="text-xs mt-8" style={{ color: "#5A4A3E" }}>
         인원 변경 등 그 외 요청은{" "}
         <a href="/muol/contact" className="underline">문의하기</a>를 이용해주세요.
       </p>

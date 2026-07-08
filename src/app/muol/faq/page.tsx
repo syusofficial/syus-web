@@ -142,7 +142,7 @@ export default function FAQPage() {
         <div className="mb-12">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             FAQ
           </p>
@@ -154,7 +154,7 @@ export default function FAQPage() {
           </h1>
           <p
             className="text-sm leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
           >
             궁금한 내용을 검색하시거나 카테고리에서 찾아보세요. 답을 못 찾으셨다면 1:1 문의를 이용해주세요.
           </p>
@@ -183,7 +183,7 @@ export default function FAQPage() {
                 type="button"
                 onClick={() => setQuery("")}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-sm"
-                style={{ color: "#6B5C50" }}
+                style={{ color: "#5A4A3E" }}
                 aria-label="검색어 지우기"
               >
                 ✕
@@ -197,7 +197,7 @@ export default function FAQPage() {
           <div className="mb-10">
             <p
               className="text-xs tracking-[0.2em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
             >
               ★ 가장 많이 묻는 질문
             </p>
@@ -250,7 +250,7 @@ export default function FAQPage() {
         {/* 결과 카운트 */}
         <p
           className="text-xs mb-4"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
         >
           {filteredFaqs.length}개의 질문
           {query && ` · "${query}" 검색`}
@@ -264,13 +264,13 @@ export default function FAQPage() {
           >
             <p
               className="text-sm mb-2"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             >
               검색 결과가 없습니다.
             </p>
             <p
               className="text-xs mb-6 leading-relaxed"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             >
               찾으시는 내용이 없으시면 아래 경로로 알려주세요.
             </p>
@@ -335,7 +335,7 @@ export default function FAQPage() {
                     <div className="flex-1 min-w-0">
                       <p
                         className="text-xs mb-1"
-                        style={{ fontFamily: "var(--font-inter)", color: "#6B5C50", letterSpacing: "0.1em" }}
+                        style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E", letterSpacing: "0.1em" }}
                       >
                         {faq.category}
                       </p>

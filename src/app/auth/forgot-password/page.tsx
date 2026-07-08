@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
     return (
       <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F0EEE9" }}>
         <div className="w-full max-w-sm text-center space-y-6">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             Email Sent
           </p>
           <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
@@ -70,13 +70,13 @@ export default function ForgotPasswordPage() {
     <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F0EEE9" }}>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             Password Reset
           </p>
           <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
             비밀번호 찾기
           </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             가입 시 사용한 이메일을 입력하시면
             <br />
             재설정 링크를 보내드립니다.
@@ -96,7 +96,7 @@ export default function ForgotPasswordPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5" data-clarity-mask="True">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               이메일
             </label>
             <input
@@ -123,7 +123,7 @@ export default function ForgotPasswordPage() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading ? "#6B5C50" : "#0B5563",
+              backgroundColor: loading ? "#5A4A3E" : "#0B5563",
               color: "#F0EEE9",
               cursor: loading ? "not-allowed" : "pointer",
             }}

@@ -113,7 +113,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             01. The Name
           </p>
@@ -148,7 +148,7 @@ export default function AboutPage() {
               </p>
               <p
                 className="pt-3 italic"
-                style={{ borderTop: "1px solid #D4CFC1", color: "#6B5C50" }}
+                style={{ borderTop: "1px solid #D4CFC1", color: "#5A4A3E" }}
               >
                 공연자에게는 “내 무대가 올라간다.”
                 <br />
@@ -260,7 +260,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             03. What Makes Us Different
           </p>
@@ -272,7 +272,7 @@ export default function AboutPage() {
           </h2>
           <p
             className="text-base leading-relaxed mb-14 max-w-3xl"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
           >
             큰 플랫폼들이 전국·대형·상업 공연 중심으로 운영하는 동안, 대학 무대는 매번 첫 회를 끝으로
             잊혀집니다. 무대올림은 그 자리를 정확히 들어갑니다.
@@ -338,7 +338,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             For Audiences
           </p>
@@ -400,7 +400,7 @@ export default function AboutPage() {
                 </h3>
                 <p
                   className="text-xs leading-relaxed"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", wordBreak: "keep-all" }}
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
                 >
                   {b.body}
                 </p>
@@ -506,7 +506,7 @@ export default function AboutPage() {
                 </p>
                 <p
                   className="text-sm leading-relaxed"
-                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", wordBreak: "keep-all" }}
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
                 >
                   {p.body}
                 </p>
@@ -604,7 +604,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             05. Who Runs This
           </p>
@@ -639,7 +639,7 @@ export default function AboutPage() {
               className="text-sm leading-relaxed italic"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: "#6B5C50",
+                color: "#5A4A3E",
                 wordBreak: "keep-all",
               }}
             >

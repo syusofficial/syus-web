@@ -128,11 +128,11 @@ function Style() {
   return (
     <style>{`
       .qa-wrap { max-width: 40rem; margin: 0 auto; padding: clamp(40px, 8vh, 88px) clamp(24px, 6vw, 48px) 120px; }
-      .qa-loading { font-family: var(--font-noto-sans-kr); color: #6B5C50; }
-      .qa-back { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.82rem; letter-spacing: 0.08em; color: #6B5C50; text-decoration: none; margin-bottom: 28px; }
+      .qa-loading { font-family: var(--font-noto-sans-kr); color: #5A4A3E; }
+      .qa-back { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.82rem; letter-spacing: 0.08em; color: #5A4A3E; text-decoration: none; margin-bottom: 28px; }
       .qa-back:hover { color: #241C18; }
       .qa-title { font-family: var(--font-noto-serif-kr); font-size: clamp(1.8rem, 4.4vw, 2.4rem); font-weight: 700; color: #241C18; margin-bottom: 10px; }
-      .qa-sub { font-family: var(--font-noto-sans-kr); font-size: 0.95rem; line-height: 1.7; font-weight: 300; color: #6B5C50; word-break: keep-all; margin-bottom: 34px; }
+      .qa-sub { font-family: var(--font-noto-sans-kr); font-size: 0.95rem; line-height: 1.7; font-weight: 300; color: #5A4A3E; word-break: keep-all; margin-bottom: 34px; }
       .qa-form { display: grid; gap: 22px; }
       .qa-label { display: grid; gap: 8px; font-family: var(--font-noto-sans-kr); font-size: 0.85rem; font-weight: 700; color: #241C18; }
       .qa-hint { font-weight: 300; color: #A79E90; font-size: 0.78rem; }
@@ -143,7 +143,7 @@ function Style() {
       .qa-actions { display: flex; align-items: center; gap: 18px; margin-top: 4px; }
       .qa-submit { appearance: none; cursor: pointer; font-family: var(--font-noto-sans-kr); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em; color: #F4F2ED; background: var(--color-syus-stage-thrust); border: 0; padding: 13px 30px; }
       .qa-submit:disabled { opacity: 0.55; cursor: not-allowed; }
-      .qa-cancel { font-family: var(--font-noto-sans-kr); font-size: 0.88rem; color: #6B5C50; text-decoration: none; }
+      .qa-cancel { font-family: var(--font-noto-sans-kr); font-size: 0.88rem; color: #5A4A3E; text-decoration: none; }
       .qa-cancel:hover { color: #241C18; }
     `}</style>
   );

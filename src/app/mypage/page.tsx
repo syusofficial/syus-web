@@ -200,13 +200,13 @@ export default function MyPage() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             My Page
           </p>
           <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
             {profile.name ?? "회원"}님
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             {profile.email ?? "이메일 미제공 (소셜 가입)"} · {roleLabel}
           </p>
           <Link
@@ -233,7 +233,7 @@ export default function MyPage() {
               className="px-5 py-3 text-sm tracking-wide transition-colors whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                color: tab === t.key ? "#0B5563" : "#6B5C50",
+                color: tab === t.key ? "#0B5563" : "#5A4A3E",
                 borderBottom: tab === t.key ? "2px solid #0B5563" : "2px solid transparent",
                 marginBottom: -1,
               }}
@@ -267,7 +267,7 @@ export default function MyPage() {
                       <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", fontWeight: 600 }}>
                         {b.label}
                       </p>
-                      <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                      <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                         {b.desc}
                       </p>
                     </div>
@@ -287,7 +287,7 @@ export default function MyPage() {
             <div className="p-6 space-y-4" style={{ backgroundColor: "#E6E1D6" }}>
               {/* 이름 (수정 가능) */}
               <div className="grid grid-cols-[100px_1fr] gap-4 items-center">
-                <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+                <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                   이름
                 </span>
                 {editingName ? (
@@ -310,7 +310,7 @@ export default function MyPage() {
                     <button
                       onClick={() => { setEditingName(false); setNewName(profile.name ?? ""); }}
                       className="px-3 py-2 text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", border: "1px solid #D4CFC1" }}
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", border: "1px solid #D4CFC1" }}
                     >
                       취소
                     </button>
@@ -337,7 +337,7 @@ export default function MyPage() {
                 { label: "가입 경로", value: { email: "이메일", google: "Google", kakao: "카카오" }[authProvider] ?? authProvider },
               ].map((item) => (
                 <div key={item.label} className="grid grid-cols-[100px_1fr] gap-4 text-sm">
-                  <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+                  <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                     {item.label}
                   </span>
                   <span style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
@@ -386,7 +386,7 @@ export default function MyPage() {
                         type="button"
                         onClick={() => { setShowPwForm(false); setNewPw(""); setConfirmPw(""); setPwMessage(""); }}
                         className="px-4 py-2 text-xs"
-                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", border: "1px solid #D4CFC1" }}
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", border: "1px solid #D4CFC1" }}
                       >
                         취소
                       </button>
@@ -397,7 +397,7 @@ export default function MyPage() {
             )}
 
             {authProvider !== "email" && (
-              <div className="p-4 text-xs" style={{ backgroundColor: "#E6E1D6", color: "#6B5C50", fontFamily: "var(--font-noto-sans-kr)" }}>
+              <div className="p-4 text-xs" style={{ backgroundColor: "#E6E1D6", color: "#5A4A3E", fontFamily: "var(--font-noto-sans-kr)" }}>
                 {authProvider === "google" ? "Google" : "카카오"} 계정으로 가입하셨기 때문에 비밀번호는 해당 서비스에서 관리됩니다.
               </div>
             )}
@@ -409,7 +409,7 @@ export default function MyPage() {
                   <h3 className="text-sm font-bold mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
                     관심 공연 알림
                   </h3>
-                  <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                  <p className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                     찜한 공연이 사흘 뒤, 또는 내일 막을 올릴 때 메일로 짧게 알려드립니다.
                   </p>
                 </div>
@@ -422,7 +422,7 @@ export default function MyPage() {
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
                     backgroundColor: (profile.notify_show_reminders ?? true) ? "#0B5563" : "transparent",
-                    color: (profile.notify_show_reminders ?? true) ? "#F0EEE9" : "#6B5C50",
+                    color: (profile.notify_show_reminders ?? true) ? "#F0EEE9" : "#5A4A3E",
                     border: (profile.notify_show_reminders ?? true) ? "1px solid #0B5563" : "1px solid #D4CFC1",
                   }}
                 >
@@ -446,7 +446,7 @@ export default function MyPage() {
               <h3 className="text-sm font-bold mb-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#A63D2F" }}>
                 회원 탈퇴
               </h3>
-              <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+              <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                 탈퇴 시 모든 정보(공연 등록 내역, 찜 목록, 가입 정보)가 영구 삭제되며 복구할 수 없습니다.
               </p>
               <button
@@ -479,7 +479,7 @@ export default function MyPage() {
           <>
             {likedShows.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                   아직 찜한 공연이 없습니다.
                 </p>
                 <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
@@ -499,7 +499,7 @@ export default function MyPage() {
           <>
             {recentShows.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                   최근 본 공연이 없습니다.
                 </p>
                 <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
@@ -508,7 +508,7 @@ export default function MyPage() {
               </div>
             ) : (
               <>
-                <p className="text-xs mb-6" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+                <p className="text-xs mb-6" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                   이 기기에서 본 최근 10개 공연이 표시됩니다.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
@@ -524,7 +524,7 @@ export default function MyPage() {
           <>
             {myReservations.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                   아직 신청한 좌석이 없습니다.
                 </p>
                 <Link href="/" className="text-sm tracking-wider" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
@@ -537,7 +537,7 @@ export default function MyPage() {
                   const statusMap: Record<string, { label: string; bg: string; color: string }> = {
                     confirmed: { label: "확정", bg: "#D4EDD4", color: "#3A5E42" },
                     waitlisted: { label: "대기", bg: "#E6E1D6", color: "#0B5563" },
-                    cancelled: { label: "취소됨", bg: "#EDD4D4", color: "#6B5C50" },
+                    cancelled: { label: "취소됨", bg: "#EDD4D4", color: "#5A4A3E" },
                   };
                   const s = statusMap[r.status] ?? statusMap.confirmed;
                   return (
@@ -546,7 +546,7 @@ export default function MyPage() {
                         <p className="text-sm font-semibold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}>
                           {r.show_title ?? "공연 정보 없음"}
                         </p>
-                        <p className="text-xs mt-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                        <p className="text-xs mt-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                           인원 {r.party_size}명 · 신청번호 {r.reservation_code}
                         </p>
                       </div>
@@ -606,7 +606,7 @@ export default function MyPage() {
                 className="px-8 py-3 text-sm tracking-wider transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: applying ? "#6B5C50" : "#0B5563",
+                  backgroundColor: applying ? "#5A4A3E" : "#0B5563",
                   color: "#F0EEE9",
                   cursor: applying ? "not-allowed" : "pointer",
                 }}
@@ -644,7 +644,7 @@ export default function MyPage() {
                   className="px-8 py-3 text-sm tracking-wider"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: applying ? "#6B5C50" : "#0B5563",
+                    backgroundColor: applying ? "#5A4A3E" : "#0B5563",
                     color: "#F0EEE9",
                   }}
                 >

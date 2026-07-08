@@ -83,7 +83,7 @@ export function SocialDivider({ label = "또는" }: { label?: string }) {
       <div className="flex-1 h-px" style={{ backgroundColor: "#D4CFC1" }} />
       <span
         className="text-xs tracking-wider"
-        style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
       >
         {label}
       </span>

@@ -79,7 +79,7 @@ export default function SyusFooter() {
         .syf-name { font-family: var(--font-noto-serif-kr); font-size: 1.3rem; font-weight: 700; color: #241C18; }
         .syf-name span { font-family: var(--font-inter); font-size: 0.72rem; letter-spacing: 0.28em; color: #0B5563; margin-left: 6px; }
         .syf-run { font-family: var(--font-inter); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: #A79E90; margin: 6px 0 14px; }
-        .syf-desc { font-family: var(--font-noto-sans-kr); font-size: 0.9rem; line-height: 1.75; font-weight: 300; color: #6B5C50; word-break: keep-all; }
+        .syf-desc { font-family: var(--font-noto-sans-kr); font-size: 0.9rem; line-height: 1.75; font-weight: 300; color: #5A4A3E; word-break: keep-all; }
 
         .syf-col { display: flex; flex-direction: column; gap: 10px; }
         .syf-col-h { font-family: var(--font-inter); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: #A79E90; margin-bottom: 4px; }
@@ -89,7 +89,7 @@ export default function SyusFooter() {
         .syf-biz { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 32px; padding: 24px 0; border-top: 1px solid #E7E1D6; }
         .syf-biz-row { display: flex; gap: 12px; }
         .syf-biz-label { flex: 0 0 96px; font-family: var(--font-noto-sans-kr); font-size: 0.76rem; color: #A79E90; }
-        .syf-biz-value { font-family: var(--font-noto-sans-kr); font-size: 0.76rem; color: #6B5C50; word-break: keep-all; }
+        .syf-biz-value { font-family: var(--font-noto-sans-kr); font-size: 0.76rem; color: #5A4A3E; word-break: keep-all; }
 
         .syf-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-top: 22px; border-top: 1px solid #E7E1D6; }
         .syf-policy { display: flex; gap: 18px; }

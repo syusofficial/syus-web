@@ -166,7 +166,7 @@ export default function SyusAboutPage() {
           background: url('/wm-syus-mark.png') no-repeat center center; background-size: contain;
         }
         .syab-core-line {
-          font-family: var(--font-noto-sans-kr); font-size: 0.9rem; letter-spacing: 0.04em; color: #6B5C50;
+          font-family: var(--font-noto-sans-kr); font-size: 0.9rem; letter-spacing: 0.04em; color: #5A4A3E;
         }
         .syab-idea { margin-bottom: 26px; }
         .syab-idea-h {
@@ -176,14 +176,14 @@ export default function SyusAboutPage() {
         }
         .syab-idea-b {
           font-family: var(--font-noto-sans-kr);
-          font-size: 1rem; line-height: 1.85; font-weight: 300; color: #6B5C50; word-break: keep-all;
+          font-size: 1rem; line-height: 1.85; font-weight: 300; color: #5A4A3E; word-break: keep-all;
         }
         .syab-links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 30px; }
         .syab-link {
           font-family: var(--font-noto-sans-kr); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em;
           color: #241C18; text-decoration: none; border-bottom: 1px solid #241C18; padding-bottom: 3px;
         }
-        .syab-link--muted { color: #6B5C50; border-bottom-color: #E0DBD0; font-weight: 500; }
+        .syab-link--muted { color: #5A4A3E; border-bottom-color: #E0DBD0; font-weight: 500; }
         .syab-link:hover { opacity: 0.7; }
 
         /* 섹션 카드 */
@@ -210,7 +210,7 @@ export default function SyusAboutPage() {
         }
         .syab-card-holds {
           font-family: var(--font-noto-sans-kr); font-size: 0.92rem; font-weight: 300; line-height: 1.75;
-          color: #6B5C50; word-break: keep-all; margin-bottom: 14px;
+          color: #5A4A3E; word-break: keep-all; margin-bottom: 14px;
         }
         .syab-card-go {
           font-family: var(--font-noto-sans-kr); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em;

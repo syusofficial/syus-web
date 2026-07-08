@@ -175,7 +175,7 @@ function SyusLoginInner() {
         .syus-pw-toggle {
           position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
           appearance: none; background: none; border: 0; cursor: pointer;
-          font-family: var(--font-noto-sans-kr); font-size: 0.72rem; color: #6B5C50; padding: 4px 6px;
+          font-family: var(--font-noto-sans-kr); font-size: 0.72rem; color: #5A4A3E; padding: 4px 6px;
         }
         .syus-pw-toggle:hover { color: ${TEAL}; }
         .syus-remember {
@@ -191,12 +191,12 @@ function SyusLoginInner() {
           display: flex; align-items: center; justify-content: center; gap: 12px;
           margin-top: 18px; font-family: var(--font-noto-sans-kr); font-size: 0.82rem;
         }
-        .syus-auth-links a { color: #6B5C50; }
+        .syus-auth-links a { color: #5A4A3E; }
         .syus-auth-links a:hover { color: ${TEAL}; }
         .syus-auth-links span { color: #D4CFC1; }
         .syus-auth-foot {
           margin-top: 22px; text-align: center;
-          font-family: var(--font-noto-sans-kr); font-size: 0.9rem; color: #6B5C50;
+          font-family: var(--font-noto-sans-kr); font-size: 0.9rem; color: #5A4A3E;
         }
         .syus-auth-foot a { color: ${TEAL}; font-weight: 600; }
       `}</style>

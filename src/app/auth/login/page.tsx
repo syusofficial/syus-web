@@ -148,7 +148,7 @@ function LoginPageInner() {
     <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F0EEE9" }}>
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             Account
           </p>
           <h1 className="text-3xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
@@ -164,7 +164,7 @@ function LoginPageInner() {
 
         <form onSubmit={handleSubmit} className="space-y-5" data-clarity-mask="True">
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               이메일
             </label>
             <input
@@ -180,7 +180,7 @@ function LoginPageInner() {
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
               비밀번호
             </label>
             <PasswordInput value={password} onChange={setPassword} required />
@@ -192,7 +192,7 @@ function LoginPageInner() {
               className="w-4 h-4 shrink-0 flex items-center justify-center transition-colors"
               style={{
                 backgroundColor: rememberId ? "#0B5563" : "transparent",
-                border: `1.5px solid ${rememberId ? "#0B5563" : "#6B5C50"}`,
+                border: `1.5px solid ${rememberId ? "#0B5563" : "#5A4A3E"}`,
               }}
             >
               {rememberId && (
@@ -236,7 +236,7 @@ function LoginPageInner() {
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading || lockedUntil ? "#6B5C50" : "#0B5563",
+              backgroundColor: loading || lockedUntil ? "#5A4A3E" : "#0B5563",
               color: "#F0EEE9",
               cursor: loading || lockedUntil ? "not-allowed" : "pointer",
             }}
@@ -250,24 +250,24 @@ function LoginPageInner() {
         <div className="mt-6 flex items-center justify-center gap-4 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
           <Link
             href="/auth/find-id"
-            style={{ color: "#6B5C50" }}
+            style={{ color: "#5A4A3E" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#0B5563")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B5C50")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#5A4A3E")}
           >
             아이디 찾기
           </Link>
           <span style={{ color: "#D4CFC1" }}>|</span>
           <Link
             href="/auth/forgot-password"
-            style={{ color: "#6B5C50" }}
+            style={{ color: "#5A4A3E" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#0B5563")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B5C50")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#5A4A3E")}
           >
             비밀번호 찾기
           </Link>
         </div>
 
-        <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+        <p className="mt-8 text-center text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
           아직 계정이 없으신가요?{" "}
           <Link href="/auth/signup" style={{ color: "#0B5563" }}>
             회원가입

@@ -38,7 +38,7 @@ const STATS: { t: string; label: string; color: string }[] = [
   { t: "syus_reviews",    label: "관람 후기",  color: "var(--color-syus-stage-blackbox)" },
   { t: "syus_monologues", label: "창작 독백",  color: "var(--color-syus-stage-flex)" },
   { t: "syus_books",      label: "책 후기",    color: "var(--color-syus-stage-corridor)" },
-  { t: "syus_comments",   label: "댓글",       color: "#6B5C50" },
+  { t: "syus_comments",   label: "댓글",       color: "#5A4A3E" },
 ];
 
 function fmt(iso: string) { const d = new Date(iso); return isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; }
@@ -222,7 +222,7 @@ export default function SyusAdminPage() {
         .sya-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 12px; }
         .sya-stat { display: flex; flex-direction: column; gap: 3px; background: #FFFFFF; border: 1px solid #E4DFD4; border-left: 3px solid var(--c, #0B5563); padding: 12px 14px; }
         .sya-stat-n { font-family: var(--font-noto-serif-kr); font-size: 1.4rem; font-weight: 700; color: #241C18; }
-        .sya-stat-l { font-family: var(--font-noto-sans-kr); font-size: 0.78rem; color: #6B5C50; }
+        .sya-stat-l { font-family: var(--font-noto-sans-kr); font-size: 0.78rem; color: #5A4A3E; }
         .sya-qsrc { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; }
       `}</style>
     </main>

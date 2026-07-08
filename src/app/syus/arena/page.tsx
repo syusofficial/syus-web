@@ -74,7 +74,7 @@ export default async function ArenaHub({ searchParams }: { searchParams: Promise
               <p className="syc-empty-h">아직 글이 없어요{cat ? ` (${cat})` : ""}.</p>
               <p className="syc-empty-b">가장 먼저 이야기를 꺼내 두면, 둘러앉은 자리가 채워집니다.</p>
             </div>
-            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#6B5C50" }}>이런 이야기들이 오갈 거예요</h3>
+            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#5A4A3E" }}>이런 이야기들이 오갈 거예요</h3>
             <ul className="syc-list">
               {SEED_POSTS.map((p) => (
                 <li key={p.title} className="syc-item" style={{ opacity: 0.72, cursor: "default" }}>

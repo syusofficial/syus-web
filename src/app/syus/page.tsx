@@ -220,7 +220,7 @@ export default function SyusMindmapPage() {
           font-size: 1rem;
           line-height: 1.7;
           font-weight: 300;
-          color: #6B5C50;
+          color: #5A4A3E;
           word-break: keep-all;
         }
         .syus-intro-hand {
@@ -329,7 +329,7 @@ export default function SyusMindmapPage() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.78rem;
           font-weight: 300;
-          color: #6B5C50;
+          color: #5A4A3E;
         }
         .syus-node-state {
           font-family: var(--font-inter);
@@ -442,7 +442,7 @@ export default function SyusMindmapPage() {
         .syus-modal-section {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.85rem; font-weight: 600; letter-spacing: 0.06em;
-          color: #6B5C50; margin-bottom: 6px;
+          color: #5A4A3E; margin-bottom: 6px;
         }
         .syus-modal-name {
           font-family: var(--font-noto-serif-kr);
@@ -456,7 +456,7 @@ export default function SyusMindmapPage() {
         .syus-modal-prep {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.95rem; line-height: 1.7; font-weight: 300;
-          color: #6B5C50; word-break: keep-all; margin-bottom: 28px;
+          color: #5A4A3E; word-break: keep-all; margin-bottom: 28px;
         }
         .syus-modal-close {
           appearance: none; cursor: pointer; padding: 12px 28px;

@@ -61,7 +61,7 @@ export default async function BlackboxHub() {
               <p className="syc-empty-h">아직 남겨진 잔상이 없어요.</p>
               <p className="syc-empty-b">가장 먼저 본 작품의 잔상을 적어, 이 빈 상자를 채워 주세요.</p>
             </div>
-            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#6B5C50" }}>이런 잔상들이 쌓일 거예요</h3>
+            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#5A4A3E" }}>이런 잔상들이 쌓일 거예요</h3>
             <div className="syc-cards">
               {SEED_REVIEWS.map((r) => (
                 <article key={r.work} className="syc-card" style={{ opacity: 0.74 }}>

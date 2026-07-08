@@ -118,7 +118,7 @@ export default async function UniversitiesPage() {
         <header className="mb-10 sm:mb-14">
           <p
             className="text-xs sm:text-sm tracking-widest mb-3"
-            style={{ color: "var(--color-stone, #6B5C50)", letterSpacing: "0.2em" }}
+            style={{ color: "var(--color-stone, #5A4A3E)", letterSpacing: "0.2em" }}
           >
             UNIVERSITIES
           </p>
@@ -130,7 +130,7 @@ export default async function UniversitiesPage() {
           </h1>
           <p
             className="text-sm sm:text-base leading-relaxed max-w-2xl"
-            style={{ color: "var(--color-stone, #6B5C50)", fontWeight: 300 }}
+            style={{ color: "var(--color-stone, #5A4A3E)", fontWeight: 300 }}
           >
             무대올림에 공연을 올린 적이 있는 학과만 모아 두었습니다.
             현재 {totalDepts.toLocaleString("ko-KR")}개 학과가 자리하고 있고,
@@ -142,7 +142,7 @@ export default async function UniversitiesPage() {
         {totalDepts === 0 ? (
           <div
             className="py-16 text-center"
-            style={{ color: "var(--color-stone, #6B5C50)" }}
+            style={{ color: "var(--color-stone, #5A4A3E)" }}
           >
             <p className="text-sm font-light">
               아직 표시할 학과가 없습니다. 첫 공연이 올라가면 이 자리에 학과가 새겨집니다.
@@ -172,7 +172,7 @@ export default async function UniversitiesPage() {
                   </h2>
                   <span
                     className="text-xs"
-                    style={{ color: "var(--color-stone, #6B5C50)" }}
+                    style={{ color: "var(--color-stone, #5A4A3E)" }}
                   >
                     {list.length}개 학과 · 공연 {list.reduce((sum, e) => sum + e.count, 0)}건
                   </span>
@@ -212,7 +212,7 @@ export default async function UniversitiesPage() {
                           {entry.latestTitle ? (
                             <p
                               className="text-xs leading-relaxed line-clamp-2"
-                              style={{ color: "var(--color-stone, #6B5C50)" }}
+                              style={{ color: "var(--color-stone, #5A4A3E)" }}
                             >
                               최근 ·{" "}
                               <span style={{ color: "var(--color-charcoal, #4A3B33)" }}>
@@ -238,7 +238,7 @@ export default async function UniversitiesPage() {
           className="mt-16 pt-8 text-xs leading-relaxed"
           style={{
             borderTop: "1px solid var(--color-mist, #D4CFC1)",
-            color: "var(--color-stone, #6B5C50)",
+            color: "var(--color-stone, #5A4A3E)",
           }}
         >
           <p className="mb-2">

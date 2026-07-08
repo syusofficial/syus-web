@@ -84,7 +84,7 @@ export default function SeatReservationForm({
       >
         {result.message}
         <br />
-        <span style={{ color: "#6B5C50", fontSize: "0.8rem" }}>
+        <span style={{ color: "#5A4A3E", fontSize: "0.8rem" }}>
           신청번호와 연락처는 잊지 말고 기억해주세요 — 취소·조회 시 필요합니다.
         </span>
       </div>
@@ -96,7 +96,7 @@ export default function SeatReservationForm({
     return (
       <div
         className="px-8 py-4 text-sm tracking-wider text-center"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#D4CFC1", color: "#6B5C50" }}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#D4CFC1", color: "#5A4A3E" }}
       >
         예약이 마감되었습니다
       </div>
@@ -109,7 +109,7 @@ export default function SeatReservationForm({
       <div className="flex flex-col gap-2 items-start">
         <div
           className="px-8 py-4 text-sm tracking-wider text-center"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#6B5C50", color: "#F0EEE9", fontWeight: 600 }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#5A4A3E", color: "#F0EEE9", fontWeight: 600 }}
         >
           매진되었습니다
         </div>
@@ -117,7 +117,7 @@ export default function SeatReservationForm({
           type="button"
           onClick={() => { setShowWaitlistForm(true); setOpen(true); }}
           className="text-xs underline"
-          style={{ color: "#6B5C50" }}
+          style={{ color: "#5A4A3E" }}
         >
           그래도 대기 신청하기
         </button>
@@ -144,14 +144,14 @@ export default function SeatReservationForm({
         >
           <input type="hidden" name="show_id" value={showId} />
 
-          <p className="text-xs leading-relaxed" style={{ color: "#6B5C50" }}>
+          <p className="text-xs leading-relaxed" style={{ color: "#5A4A3E" }}>
             {showWaitlistForm
               ? "정원이 찼습니다. 대기자로 접수되며, 자리가 나면 안내해 드립니다."
               : "신청은 좌석을 희망하신다는 접수이며, 실제 입장은 공연팀·학교 현장 안내를 따릅니다."}
           </p>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-1" style={{ color: "#6B5C50" }}>이름</label>
+            <label className="block text-xs tracking-wider uppercase mb-1" style={{ color: "#5A4A3E" }}>이름</label>
             <input
               type="text"
               name="guest_name"
@@ -165,7 +165,7 @@ export default function SeatReservationForm({
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-1" style={{ color: "#6B5C50" }}>연락처(전화 또는 이메일)</label>
+            <label className="block text-xs tracking-wider uppercase mb-1" style={{ color: "#5A4A3E" }}>연락처(전화 또는 이메일)</label>
             <input
               type="text"
               name="guest_contact"
@@ -180,7 +180,7 @@ export default function SeatReservationForm({
           </div>
 
           <div>
-            <label className="block text-xs tracking-wider uppercase mb-1" style={{ color: "#6B5C50" }}>인원수</label>
+            <label className="block text-xs tracking-wider uppercase mb-1" style={{ color: "#5A4A3E" }}>인원수</label>
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -225,7 +225,7 @@ export default function SeatReservationForm({
               onClick={() => { setOpen(false); setShowWaitlistForm(false); }}
               disabled={isPending}
               className="text-xs underline"
-              style={{ color: "#6B5C50" }}
+              style={{ color: "#5A4A3E" }}
             >
               접기
             </button>

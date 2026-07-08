@@ -188,7 +188,7 @@ export default function ForBusinessPage() {
           </div>
           <p
             className="text-xs mt-6 leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
           >
             ※ 상세 광고 상품·단가표는 1:1 견적 문의 시 미디어킷(PDF)으로 발송드립니다.
           </p>
@@ -296,7 +296,7 @@ function SectionLabel({ no, label, dark }: { no: string; label: string; dark?: b
         className="text-xs tracking-[0.3em]"
         style={{
           fontFamily: "var(--font-inter)",
-          color: dark ? "rgba(248, 249, 252, 0.55)" : "#6B5C50",
+          color: dark ? "rgba(248, 249, 252, 0.55)" : "#5A4A3E",
         }}
       >
         {no}
@@ -339,7 +339,7 @@ function ReasonCard({ n, t, d }: { n: string; t: string; d: string }) {
     <div className="p-6" style={{ backgroundColor: "#F0EEE9", border: "1px solid #0B5563" }}>
       <p
         className="text-xs tracking-[0.25em] mb-3"
-        style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+        style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
       >
         {n}
       </p>
@@ -377,7 +377,7 @@ function Placement({ code, name, desc }: { code: string; name: string; desc: str
         </p>
         <p
           className="text-xs leading-relaxed"
-          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50", wordBreak: "keep-all" }}
+          style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
         >
           {desc}
         </p>

@@ -54,7 +54,7 @@ export default async function CorridorHub() {
                   {b.rating ? <Stars n={b.rating} /> : <span />}
                 </div>
                 <h3 className="syc-card-title">{b.title}</h3>
-                {b.author && <span className="syc-card-meta" style={{ color: "#6B5C50" }}>{b.author}</span>}
+                {b.author && <span className="syc-card-meta" style={{ color: "#5A4A3E" }}>{b.author}</span>}
                 {b.note && <p className="syc-card-body">{b.note}</p>}
               </Link>
             ))}
@@ -65,13 +65,13 @@ export default async function CorridorHub() {
               <p className="syc-empty-h">아직 서가가 비어 있어요.</p>
               <p className="syc-empty-b">곁에 두고 싶은 첫 책을 올려, 서가의 문을 열어 주세요.</p>
             </div>
-            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#6B5C50" }}>이런 책들이 놓일 거예요</h3>
+            <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#5A4A3E" }}>이런 책들이 놓일 거예요</h3>
             <div className="syc-cards">
               {SEED_BOOKS.map((b) => (
                 <article key={b.title} className="syc-card" style={{ opacity: 0.74 }}>
                   <div className="syc-card-row"><span className="syc-tag">{b.topic}</span><Stars n={b.stars} /></div>
                   <h3 className="syc-card-title">{b.title}</h3>
-                  <span className="syc-card-meta" style={{ color: "#6B5C50" }}>{b.author}</span>
+                  <span className="syc-card-meta" style={{ color: "#5A4A3E" }}>{b.author}</span>
                   <p className="syc-card-body">{b.note}</p>
                 </article>
               ))}

@@ -122,7 +122,7 @@ export default async function ThrustQnaHub() {
 
       <style>{`
         .syq-wrap { max-width: 46rem; margin: 0 auto; padding: clamp(40px, 8vh, 88px) clamp(24px, 6vw, 48px) 120px; }
-        .syq-back { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.82rem; letter-spacing: 0.08em; color: #6B5C50; text-decoration: none; margin-bottom: 32px; }
+        .syq-back { display: inline-block; font-family: var(--font-noto-sans-kr); font-size: 0.82rem; letter-spacing: 0.08em; color: #5A4A3E; text-decoration: none; margin-bottom: 32px; }
         .syq-back:hover { color: #241C18; }
         .syq-badge { display: inline-block; font-family: var(--font-inter); font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600; color: #F4F2ED; padding: 6px 14px; margin-bottom: 20px; }
         .syq-title { font-family: var(--font-noto-serif-kr); font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.02em; color: #241C18; margin-bottom: 10px; }
@@ -136,23 +136,23 @@ export default async function ThrustQnaHub() {
         .syq-item { display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; border: 1px solid #E4DFD4; border-left: 3px solid var(--color-syus-stage-thrust); padding: 18px 20px; text-decoration: none; transition: transform 0.18s ease, box-shadow 0.18s ease; }
         .syq-item:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,28,24,0.08); }
         .syq-item-title { font-family: var(--font-noto-sans-kr); font-size: 1.02rem; font-weight: 700; color: #241C18; word-break: keep-all; }
-        .syq-item-body { font-family: var(--font-noto-sans-kr); font-size: 0.9rem; font-weight: 300; color: #6B5C50; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .syq-item-body { font-family: var(--font-noto-sans-kr); font-size: 0.9rem; font-weight: 300; color: #5A4A3E; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .syq-item-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
         .syq-item-meta { font-family: var(--font-noto-sans-kr); font-size: 0.75rem; color: #A79E90; margin-left: auto; }
         .syq-tag { font-family: var(--font-noto-sans-kr); font-size: 0.72rem; font-weight: 600; border: 1px solid; border-radius: 100px; padding: 2px 10px; }
 
         .syq-empty { background: #FFFFFF; border: 1px solid #E4DFD4; padding: 34px 26px; text-align: center; }
         .syq-empty-h { font-family: var(--font-noto-serif-kr); font-size: 1.15rem; font-weight: 700; color: #241C18; margin-bottom: 8px; }
-        .syq-empty-b { font-family: var(--font-noto-sans-kr); font-size: 0.95rem; line-height: 1.7; font-weight: 300; color: #6B5C50; word-break: keep-all; }
+        .syq-empty-b { font-family: var(--font-noto-sans-kr); font-size: 0.95rem; line-height: 1.7; font-weight: 300; color: #5A4A3E; word-break: keep-all; }
         .syq-seedlist { display: grid; gap: 12px; }
         .syq-seed { background: #FFFFFF; border: 1px solid #E4DFD4; padding: 18px 20px; }
         .syq-seed-q { font-family: var(--font-noto-sans-kr); font-size: 0.98rem; font-weight: 700; color: #241C18; margin-bottom: 8px; word-break: keep-all; }
-        .syq-seed-a { font-family: var(--font-noto-sans-kr); font-size: 0.9rem; line-height: 1.7; font-weight: 300; color: #6B5C50; word-break: keep-all; margin-bottom: 10px; }
+        .syq-seed-a { font-family: var(--font-noto-sans-kr); font-size: 0.9rem; line-height: 1.7; font-weight: 300; color: #5A4A3E; word-break: keep-all; margin-bottom: 10px; }
         .syq-seed-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 
         .syq-bridge { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 48px; padding-top: 28px; border-top: 1px solid #E0DBD0; }
         .syq-bridge-link { font-family: var(--font-noto-sans-kr); font-size: 0.88rem; font-weight: 600; color: #241C18; text-decoration: none; border-bottom: 1px solid #241C18; padding-bottom: 3px; }
-        .syq-bridge-link.syq-bridge-muted { color: #6B5C50; border-bottom-color: #E0DBD0; font-weight: 500; }
+        .syq-bridge-link.syq-bridge-muted { color: #5A4A3E; border-bottom-color: #E0DBD0; font-weight: 500; }
         .syq-bridge-link:hover { opacity: 0.7; }
 
         @media (prefers-reduced-motion: reduce) { .syq-item { transition: none; } }

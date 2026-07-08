@@ -63,7 +63,7 @@ export default function PrivacyPage() {
         <div className="mb-12">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             Privacy Policy
           </p>
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
           >
             개인정보처리방침
           </h1>
-          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             시행일: 2026-08-02 (v2.2) · 이전 시행일: 2026-06-15
           </p>
         </div>
@@ -205,9 +205,9 @@ export default function PrivacyPage() {
               <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
-                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>구분</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>보유 기간</th>
-                    <th className="text-left py-2" style={{ color: "#6B5C50" }}>근거</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>구분</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>보유 기간</th>
+                    <th className="text-left py-2" style={{ color: "#5A4A3E" }}>근거</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -260,11 +260,11 @@ export default function PrivacyPage() {
               <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
-                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>수탁자</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>위탁 업무</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>국가</th>
-                    <th className="text-left py-2 pr-4" style={{ color: "#6B5C50" }}>이전 방법·시점</th>
-                    <th className="text-left py-2" style={{ color: "#6B5C50" }}>보유 기간</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>수탁자</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>위탁 업무</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>국가</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>이전 방법·시점</th>
+                    <th className="text-left py-2" style={{ color: "#5A4A3E" }}>보유 기간</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -318,7 +318,7 @@ export default function PrivacyPage() {
                 <li>마이페이지(/mypage) → 설정 → 마케팅 수신 옵션 토글로 즉시 철회</li>
                 <li>회사로부터 받은 마케팅 이메일 본문 하단의 &ldquo;수신 거부&rdquo; 링크 클릭으로 즉시 철회</li>
               </ol>
-              <p className="mt-2 text-xs" style={{ color: "#6B5C50" }}>
+              <p className="mt-2 text-xs" style={{ color: "#5A4A3E" }}>
                 위 두 경로 중 어느 것을 이용하셔도 동일하게 즉시 처리되며, 별도 절차나 추가 인증이 필요하지 않습니다.
               </p>
             </div>
@@ -381,10 +381,10 @@ export default function PrivacyPage() {
             </p>
             <div className="mt-3 p-5" style={{ backgroundColor: "#E6E1D6" }}>
               <div className="grid grid-cols-[110px_1fr] gap-2 text-xs">
-                <span style={{ color: "#6B5C50" }}>개인정보 보호 담당자</span><span>운영자 이혁호</span>
-                <span style={{ color: "#6B5C50" }}>사업자등록번호</span><span>168-05-03666</span>
-                <span style={{ color: "#6B5C50" }}>연락처</span><span>syusflux@gmail.com</span>
-                <span style={{ color: "#6B5C50" }}>담당 부서</span><span>사유유사 운영팀</span>
+                <span style={{ color: "#5A4A3E" }}>개인정보 보호 담당자</span><span>운영자 이혁호</span>
+                <span style={{ color: "#5A4A3E" }}>사업자등록번호</span><span>168-05-03666</span>
+                <span style={{ color: "#5A4A3E" }}>연락처</span><span>syusflux@gmail.com</span>
+                <span style={{ color: "#5A4A3E" }}>담당 부서</span><span>사유유사 운영팀</span>
               </div>
             </div>
             <p className="mt-3">
@@ -410,7 +410,7 @@ export default function PrivacyPage() {
             </p>
           </section>
 
-          <p className="pt-2 text-xs" style={{ color: "#6B5C50" }}>
+          <p className="pt-2 text-xs" style={{ color: "#5A4A3E" }}>
             본 처리방침은 2026-08-02부터 시행됩니다. (이전 시행일: 2026-06-15)
           </p>
 

@@ -104,7 +104,7 @@ export default async function PerformerProfilePage({
         <Link
           href="/muol/shows"
           className="inline-block mb-8 text-xs tracking-[0.2em] uppercase transition-colors"
-          style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+          style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
         >
           ← 공연 목록으로
         </Link>
@@ -113,7 +113,7 @@ export default async function PerformerProfilePage({
         <div className="mb-14 pb-10" style={{ borderBottom: "1px solid #D4CFC1" }}>
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             Performer
           </p>
@@ -126,7 +126,7 @@ export default async function PerformerProfilePage({
           {usedNames.length > 0 && (
             <p
               className="text-sm mb-4 leading-relaxed"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             >
               <span style={{ fontFamily: "var(--font-inter)", letterSpacing: "0.1em" }}>as</span>{" "}
               {usedNames.join(" · ")}
@@ -134,16 +134,16 @@ export default async function PerformerProfilePage({
           )}
           <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
             <p>
-              <span style={{ color: "#6B5C50", marginRight: 8 }}>가입</span>
+              <span style={{ color: "#5A4A3E", marginRight: 8 }}>가입</span>
               <span style={{ fontFamily: "var(--font-inter)" }}>{profile.created_at.slice(0, 10)}</span>
             </p>
             <p>
-              <span style={{ color: "#6B5C50", marginRight: 8 }}>전체 공연</span>
+              <span style={{ color: "#5A4A3E", marginRight: 8 }}>전체 공연</span>
               <span style={{ fontFamily: "var(--font-inter)" }}>{approved.length}</span>
             </p>
             {upcoming.length > 0 && (
               <p>
-                <span style={{ color: "#6B5C50", marginRight: 8 }}>진행 중·예정</span>
+                <span style={{ color: "#5A4A3E", marginRight: 8 }}>진행 중·예정</span>
                 <span style={{ fontFamily: "var(--font-inter)", color: "#0B5563", fontWeight: 600 }}>{upcoming.length}</span>
               </p>
             )}
@@ -162,7 +162,7 @@ export default async function PerformerProfilePage({
               </h2>
               <span
                 className="text-xs tracking-wider uppercase"
-                style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
               >
                 {upcoming.length} works
               </span>
@@ -187,14 +187,14 @@ export default async function PerformerProfilePage({
               </h2>
               <span
                 className="text-xs tracking-wider uppercase"
-                style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
               >
                 {past.length} archived
               </span>
             </div>
             <p
               className="text-xs mb-8 leading-relaxed"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             >
               지나갔지만 사라지지 않은 무대들.
             </p>
@@ -215,13 +215,13 @@ export default async function PerformerProfilePage({
                 style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
               >
                 비공개 공연
-                <span className="ml-2 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+                <span className="ml-2 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                   ({isSelf ? "본인" : "관리자"} 시점)
                 </span>
               </h2>
               <span
                 className="text-xs tracking-wider uppercase"
-                style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+                style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
               >
                 {privateShows.length} private
               </span>
@@ -257,7 +257,7 @@ export default async function PerformerProfilePage({
             </p>
             <p
               className="text-xs"
-              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             >
               이 공연자분의 새 무대를 가장 먼저 알려드리겠습니다.
             </p>

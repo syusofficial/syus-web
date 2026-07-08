@@ -35,7 +35,7 @@ export default function Footer() {
     router.refresh();
   };
 
-  // 다크 배경(#4A3B33) 위에서는 #6B5C50가 약 3.0:1 (AA 미달)
+  // 다크 배경(#4A3B33) 위에서는 #5A4A3E가 약 3.0:1 (AA 미달)
   // 크림 계열 흰색을 opacity 72%로 사용하면 약 9:1 — 위계는 살리고 가독성 확보
   const linkCls = "text-sm transition-colors";
   const FOOTER_LINK_BASE = "rgba(248, 249, 252, 0.72)";
@@ -263,9 +263,9 @@ export default function Footer() {
           <Link
             href="/terms"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B5C50")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#5A4A3E")}
           >
             이용약관
           </Link>
@@ -281,18 +281,18 @@ export default function Footer() {
           <Link
             href="/muol/faq"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B5C50")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#5A4A3E")}
           >
             자주 묻는 질문
           </Link>
           <Link
             href="/muol/contact"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#6B5C50")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#5A4A3E")}
           >
             1:1 문의
           </Link>
@@ -302,13 +302,13 @@ export default function Footer() {
         <div className="pt-6 mt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <p
             className="text-xs tracking-wider"
-            style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
           >
             © 2026 무대올림 · 운영: 사유유사 SYUS. All rights reserved.
           </p>
           <p
             className="text-xs"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
           >
             오늘, 어느 대학의 막이 오른다.
           </p>

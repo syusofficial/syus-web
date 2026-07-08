@@ -32,7 +32,7 @@ export default function ShowCard({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#6B5C50" }}>
+                <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#5A4A3E" }}>
                   포스터 없음
                 </span>
               </div>
@@ -78,16 +78,16 @@ export default function ShowCard({
             {show.subtitle && (
               <span
                 className="text-xs italic shrink-0 pt-0.5"
-                style={{ fontFamily: "var(--font-cormorant)", color: "#6B5C50" }}
+                style={{ fontFamily: "var(--font-cormorant)", color: "#5A4A3E" }}
               >
                 {show.subtitle}
               </span>
             )}
           </div>
-          <p className="text-xs tracking-wide" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+          <p className="text-xs tracking-wide" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             {show.venue}
           </p>
-          <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}>
+          <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             {show.schedule_start} — {show.schedule_end}
           </p>
         </div>

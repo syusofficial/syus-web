@@ -9,7 +9,7 @@ import type { Reservation, Show } from "@/types";
 const STATUS_LABEL: Record<string, { label: string; bg: string; color: string }> = {
   confirmed: { label: "확정", bg: "#D4EDD4", color: "#3A5E42" },
   waitlisted: { label: "대기", bg: "#E6E1D6", color: "#0B5563" },
-  cancelled: { label: "취소됨", bg: "#EDD4D4", color: "#6B5C50" },
+  cancelled: { label: "취소됨", bg: "#EDD4D4", color: "#5A4A3E" },
 };
 
 /**
@@ -118,7 +118,7 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
   if (authState === "denied") {
     return (
       <div className="pt-24 md:pt-36 min-h-screen text-center" style={{ backgroundColor: "#F0EEE9" }}>
-        <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#6B5C50" }}>
+        <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
           이 페이지는 해당 공연의 등록자만 볼 수 있습니다.
         </p>
         <Link href="/muol/performer" className="text-sm underline mt-4 inline-block" style={{ color: "#0B5563" }}>
@@ -133,14 +133,14 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
 
   return (
     <div className="pt-24 md:pt-36 pb-20 px-6 min-h-screen max-w-3xl mx-auto" style={{ backgroundColor: "#F0EEE9", fontFamily: "var(--font-noto-sans-kr)" }}>
-      <Link href="/muol/performer" className="text-xs underline print:hidden" style={{ color: "#6B5C50" }}>
+      <Link href="/muol/performer" className="text-xs underline print:hidden" style={{ color: "#5A4A3E" }}>
         ← 공연자 페이지로
       </Link>
 
       <h1 className="text-xl font-bold mt-3 mb-1" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
         {show?.title ?? "공연"} — 예약 현황
       </h1>
-      <p className="text-xs mb-1" style={{ color: "#6B5C50" }}>
+      <p className="text-xs mb-1" style={{ color: "#5A4A3E" }}>
         확정 {confirmedTotal}명{show?.capacity ? ` / 정원 ${show.capacity}명` : " (정원 무제한)"}
         {waitlistedTotal > 0 && ` · 대기 ${waitlistedTotal}명`}
         {" · 새 신청은 실시간으로 반영됩니다"}
@@ -173,7 +173,7 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
           className="px-4 py-2 text-xs tracking-wider"
           style={
             show?.reservation_closed
-              ? { backgroundColor: "#6B5C50", color: "#F0EEE9" }
+              ? { backgroundColor: "#5A4A3E", color: "#F0EEE9" }
               : { border: "1px solid #A63D2F", color: "#A63D2F" }
           }
         >
@@ -182,7 +182,7 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
       </div>
 
       {rows.length === 0 ? (
-        <p className="text-sm text-center py-16" style={{ color: "#6B5C50" }}>
+        <p className="text-sm text-center py-16" style={{ color: "#5A4A3E" }}>
           아직 접수된 신청이 없습니다.
         </p>
       ) : (
@@ -191,7 +191,7 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
             <thead>
               <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
                 {["이름", "연락처", "인원", "상태", "신청번호"].map((h) => (
-                  <th key={h} className="text-left py-2 px-2 text-xs tracking-wider" style={{ color: "#6B5C50" }}>
+                  <th key={h} className="text-left py-2 px-2 text-xs tracking-wider" style={{ color: "#5A4A3E" }}>
                     {h}
                   </th>
                 ))}
@@ -210,7 +210,7 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
                         {s.label}
                       </span>
                     </td>
-                    <td className="py-2 px-2 text-xs" style={{ color: "#6B5C50" }}>{r.reservation_code}</td>
+                    <td className="py-2 px-2 text-xs" style={{ color: "#5A4A3E" }}>{r.reservation_code}</td>
                   </tr>
                 );
               })}
