@@ -16,6 +16,21 @@ import { buildRatingMap } from "@/lib/ratings";
 import { toReviewView, type ReviewView } from "@/lib/reviews";
 import type { Show, Review } from "@/types";
 
+// 좌석 신청 확정 합계·정원·마감여부 요약 (get_show_reservation_summary RPC 반환 shape)
+//
+// 2026-07-13 버그 메모: 아래 ShowDetailPage 안에서 예전엔 `let reservationSummary: {...} | null = null`
+// 로 인라인 선언하고 `summaryData as typeof reservationSummary` 로 캐스팅했다.
+// 이 "typeof 자기참조" 패턴이 TypeScript 컴파일러 버그(제어 흐름 분석이 그 대입식 자체를
+// 평가하는 시점에 typeof를 순환 참조로 풀면서 타입을 `never`로 좁혀버림)를 유발해
+// `reservationSummary?.capacity` 등 이후 모든 프로퍼티 접근이 "does not exist on type 'never'"
+// 로 타입에러가 났다(→ `next build`/Vercel 배포가 7/7부터 전부 실패).
+// 이름 있는 타입으로 캐스팅하면(= typeof 자기참조를 없애면) 문제가 사라진다.
+type ReservationSummary = {
+  confirmed_total: number;
+  capacity: number | null;
+  reservation_closed: boolean;
+};
+
 export default async function ShowDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
@@ -48,10 +63,10 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
   }
 
   // 좌석 신청 확정 합계·정원·마감여부 — 매진 표시 판단용 (개별 신청자 정보는 노출 안 함)
-  let reservationSummary: { confirmed_total: number; capacity: number | null; reservation_closed: boolean } | null = null;
+  let reservationSummary: ReservationSummary | null = null;
   if (show.status === "approved" && show.use_inhouse_reservation !== false) {
     const { data: summaryData } = await supabase.rpc("get_show_reservation_summary", { p_show_id: id });
-    reservationSummary = summaryData as typeof reservationSummary;
+    reservationSummary = summaryData as ReservationSummary | null;
   }
 
   // 별점 데이터 — 평균·개수·본인 점수
