@@ -46,11 +46,17 @@ function SyusLoginInner() {
     nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") && !nextParam.startsWith("/\\")
       ? nextParam : "/syus";
 
+  // 자동 로그아웃(?reason=) · 가입 완료(?signup=success)
+  // · 소셜 로그인 실패(?error=missing_code|oauth_failed, callback/route.ts가 붙여서 보냄)
   useEffect(() => {
     const reason = searchParams.get("reason");
+    const oauthError = searchParams.get("error");
     if (reason === "absolute") setInfo("보안상 12시간 한도가 지나 자동 로그아웃되었습니다. 다시 로그인해주세요.");
     else if (reason === "idle") setInfo("3시간 동안 활동이 없어 자동 로그아웃되었습니다.");
     else if (searchParams.get("signup") === "success") setInfo("가입이 완료되었습니다. 로그인해주세요.");
+    else if (oauthError === "missing_code") setError("소셜 로그인 인증 정보를 받지 못했습니다. 다시 시도해주세요.");
+    else if (oauthError === "oauth_failed") setError("소셜 로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
+    else if (oauthError) setError("로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
   }, [searchParams]);
 
   useEffect(() => {

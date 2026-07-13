@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
+import { isAtLeast14 } from "@/lib/validators";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function OnboardingPage() {
   const [privacy, setPrivacy] = useState(false);
   const [marketing, setMarketing] = useState(false);
   const [name, setName] = useState("");
+  const [birthDate, setBirthDate] = useState(""); // YYYY-MM-DD — 소셜 가입자도 이메일 가입과 동일한 만 14세 게이트 적용 (PIPA v2.1)
 
   useEffect(() => {
     const supabase = createClient();
@@ -62,30 +64,56 @@ export default function OnboardingPage() {
       return;
     }
 
+    // 생년월일 필수 — 이메일 가입(signup)과 동일한 게이트 (PIPA v2.1)
+    if (!birthDate) {
+      setError("생년월일을 입력해주세요.");
+      return;
+    }
+
+    // 만 14세 이상 확인 — 소셜(구글·카카오) 가입도 이메일 가입과 동일하게 여기서 막는다.
+    if (!isAtLeast14(birthDate)) {
+      setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
+      return;
+    }
+
     setSubmitting(true);
     const supabase = createClient();
     const now = new Date().toISOString();
 
-    // user metadata 업데이트
+    // user metadata 업데이트 — 나이 확인을 통과해야만 terms_agreed_at/privacy_agreed_at이
+    // 기록되므로, 위 나이 검증을 통과하기 전에는 온보딩(가입 완료)이 끝나지 않는다.
     const { error: metaError } = await supabase.auth.updateUser({
       data: {
         name: name.trim(),
+        birth_date: birthDate,
         terms_agreed_at: now,
         privacy_agreed_at: now,
+        age14_confirmed_at: now,
         marketing_opt_in: marketing,
       },
     });
 
     if (metaError) {
-      setError("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+      // DB 레벨 14세 게이트(check constraint)가 막은 경우 안내문 통일
+      if (/profiles_birth_date_age_check/i.test(metaError.message ?? "")) {
+        setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
+      } else {
+        setError("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+      }
       setSubmitting(false);
       return;
     }
 
-    // profiles의 name도 동기화
+    // profiles의 name·birth_date 동기화 — 실패를 무시하지 않고 로그를 남긴다.
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      await supabase.from("profiles").update({ name: name.trim() }).eq("id", user.id);
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ name: name.trim(), birth_date: birthDate })
+        .eq("id", user.id);
+      if (profileError) {
+        console.warn("[onboarding] profiles name/birth_date 업데이트 실패", profileError);
+      }
     }
 
     router.push("/");
@@ -139,6 +167,27 @@ export default function OnboardingPage() {
               onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
+          </div>
+
+          {/* 생년월일 — PIPA v2.1 만 14세 이상 확인 용도 (이메일 가입과 동일 게이트) */}
+          <div>
+            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
+              생년월일 <span style={{ color: "#A63D2F" }}>*</span>
+            </label>
+            <input
+              type="date"
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+              required
+              max={new Date().toISOString().slice(0, 10)}
+              className="w-full px-4 py-3 text-sm outline-none"
+              style={inputStyle}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+            />
+            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
+              만 14세 이상만 가입할 수 있습니다.
+            </p>
           </div>
 
           <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #D4CFC1" }}>

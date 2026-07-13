@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
+import { isAtLeast14 } from "@/lib/validators";
 
 type Consents = {
   terms: boolean;       // 이용약관 (필수)
@@ -13,19 +14,6 @@ type Consents = {
   age14: boolean;       // 만 14세 이상 (필수, PIPA v2.1 2026-06-15 시행)
   marketing: boolean;   // 마케팅 (선택)
 };
-
-/**
- * 생년월일(YYYY-MM-DD) 기준 만 14세 이상인지 확인.
- * 오늘 날짜에서 14년을 뺀 날짜와 비교 — 윤년·생일 미도래까지 자연스럽게 처리.
- */
-function isAtLeast14(birthDate: string): boolean {
-  if (!birthDate) return false;
-  const birth = new Date(birthDate);
-  if (Number.isNaN(birth.getTime())) return false;
-  const today = new Date();
-  const cutoff = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate());
-  return birth.getTime() <= cutoff.getTime();
-}
 
 export default function SignupPage() {
   return (

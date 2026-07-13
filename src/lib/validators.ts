@@ -63,3 +63,18 @@ export function normalizeUrl(url: string): string {
  */
 export const KAKAO_MAP_HOSTS = ["kakao.com", "map.kakao.com", "place.map.kakao.com", "kko.to"];
 export const NAVER_MAP_HOSTS = ["naver.com", "map.naver.com", "naver.me"];
+
+/**
+ * 생년월일(YYYY-MM-DD) 기준 만 14세 이상인지 확인.
+ * 오늘 날짜에서 14년을 뺀 날짜와 비교 — 윤년·생일 미도래까지 자연스럽게 처리.
+ * PIPA v2.1(2026-06-15 시행) 만 14세 이상 가입 게이트 — 이메일 가입(signup)과
+ * 소셜 가입(onboarding)이 동일한 로직을 공유하기 위해 이곳에 둔다.
+ */
+export function isAtLeast14(birthDate: string): boolean {
+  if (!birthDate) return false;
+  const birth = new Date(birthDate);
+  if (Number.isNaN(birth.getTime())) return false;
+  const today = new Date();
+  const cutoff = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate());
+  return birth.getTime() <= cutoff.getTime();
+}
