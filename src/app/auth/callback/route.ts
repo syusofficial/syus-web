@@ -47,11 +47,14 @@ export async function GET(request: Request) {
   }
 
   // 관리자 여부 확인 후 라우팅
+  // maybeSingle() 사용 — handle_new_user 트리거가 아직 profiles row를 못 만들었을 수 있어
+  // (트리거는 비동기가 아니지만 레이스 가능성 배제 불가) .single()이면 행이 없을 때 에러가 나서
+  // profile이 undefined가 되고, 그 뒤 profile?.role 체크 자체는 안전하지만 에러를 그냥 삼키던 문제를 없앤다.
   const { data: profile } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", data.user.id)
-    .single();
+    .maybeSingle();
 
   if (profile?.role === "admin") {
     return NextResponse.redirect(`${origin}/admin`);

@@ -8,6 +8,48 @@ import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 
 const SAVED_EMAIL_KEY = "syus-saved-email";
+const LOGIN_ATTEMPT_KEY_PREFIX = "syus-login-attempts:";
+
+/**
+ * 이메일별 로그인 실패 횟수·잠금 시각을 localStorage에 저장 — 새로고침해도 잠금이 풀리지 않도록.
+ * ⚠ 이건 UX 안내(반복 실패 시 재시도 텀을 두라는 안내)일 뿐 진짜 보안 방어가 아니다.
+ *   localStorage는 사용자가 얼마든지 지우거나 우회할 수 있다. 실제 브루트포스 방어는
+ *   Supabase Auth 자체 rate limit(서버 측)에 의존한다.
+ */
+type LoginAttemptRecord = { count: number; lockedUntil: number | null };
+
+function attemptKey(email: string): string {
+  return LOGIN_ATTEMPT_KEY_PREFIX + email.trim().toLowerCase();
+}
+
+function loadAttemptRecord(email: string): LoginAttemptRecord | null {
+  if (!email.trim()) return null;
+  try {
+    const raw = localStorage.getItem(attemptKey(email));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as LoginAttemptRecord;
+    if (typeof parsed?.count !== "number") return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function saveAttemptRecord(email: string, record: LoginAttemptRecord) {
+  if (!email.trim()) return;
+  try {
+    localStorage.setItem(attemptKey(email), JSON.stringify(record));
+  } catch {
+    // localStorage 접근 실패(프라이빗 모드 등) — UX 안내용이므로 조용히 무시
+  }
+}
+
+function clearAttemptRecord(email: string) {
+  if (!email.trim()) return;
+  try {
+    localStorage.removeItem(attemptKey(email));
+  } catch {}
+}
 
 export default function LoginPage() {
   return (
@@ -65,6 +107,29 @@ function LoginPageInner() {
     }
   }, []);
 
+  // 이메일이 바뀔 때마다(자동완성 포함) 그 이메일의 잠금 기록을 localStorage에서 불러온다.
+  // 새로고침 후에도 잠금이 유지되는 이유가 바로 이 effect.
+  useEffect(() => {
+    const record = loadAttemptRecord(email);
+    if (!record) {
+      setAttemptCount(0);
+      setLockedUntil(null);
+      return;
+    }
+    if (record.lockedUntil && record.lockedUntil > Date.now()) {
+      setAttemptCount(record.count);
+      setLockedUntil(record.lockedUntil);
+    } else if (record.lockedUntil) {
+      // 저장된 잠금 시각이 이미 지남 → 초기화
+      clearAttemptRecord(email);
+      setAttemptCount(0);
+      setLockedUntil(null);
+    } else {
+      setAttemptCount(record.count);
+      setLockedUntil(null);
+    }
+  }, [email]);
+
   // 잠금 카운트다운
   useEffect(() => {
     if (!lockedUntil) return;
@@ -74,13 +139,14 @@ function LoginPageInner() {
         setLockedUntil(null);
         setAttemptCount(0);
         setCountdown(0);
+        clearAttemptRecord(email);
         clearInterval(interval);
       } else {
         setCountdown(remaining);
       }
     }, 500);
     return () => clearInterval(interval);
-  }, [lockedUntil]);
+  }, [lockedUntil, email]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,21 +167,24 @@ function LoginPageInner() {
         const newCount = attemptCount + 1;
         setAttemptCount(newCount);
 
-        // 5회 실패 시 60초 잠금
+        // 5회 실패 시 60초 잠금 — 새로고침해도 유지되도록 localStorage에도 기록
         if (newCount >= 5) {
           const until = Date.now() + 60_000;
           setLockedUntil(until);
           setError("로그인 시도가 5회 실패하여 60초간 잠금됩니다.");
+          saveAttemptRecord(email, { count: newCount, lockedUntil: until });
         } else {
           const remaining = 5 - newCount;
           setError(`이메일 또는 비밀번호가 올바르지 않습니다. (남은 시도: ${remaining}회)`);
+          saveAttemptRecord(email, { count: newCount, lockedUntil: null });
         }
         return;
       }
 
-      // 로그인 성공 → 카운터 초기화
+      // 로그인 성공 → 카운터 초기화 (localStorage 기록도 함께 삭제)
       setAttemptCount(0);
       setLockedUntil(null);
+      clearAttemptRecord(email);
 
       // 아이디 저장 옵션 처리
       if (rememberId) {

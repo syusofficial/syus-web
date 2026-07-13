@@ -42,7 +42,13 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  // 2026-07-13: /api/* 제외 — 각 API 라우트(account/delete, admin/*, syus/monologue/generate 등)는
+  // 이미 자체적으로 createServerClient(cookies())로 supabase.auth.getUser()를 호출해 세션을
+  // 검증·갱신한다(@supabase/ssr이 만료된 access token을 refresh token으로 자동 갱신하고
+  // 쿠키에 다시 써준다). 그래서 미들웨어가 먼저 한 번 더 세션을 갱신할 필요가 없다.
+  // hooks/on-signup·cron/show-reminders는 애초에 쿠키 세션을 쓰지 않는 웹훅/크론 라우트라
+  // 미들웨어의 getUser() 호출이 완전히 낭비였다.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

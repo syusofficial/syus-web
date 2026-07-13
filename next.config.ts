@@ -4,13 +4,18 @@ import { withSentryConfig } from "@sentry/nextjs";
 const SUPABASE_HOST = "mmosvdjautcliafinahd.supabase.co";
 
 /** Content Security Policy - 사이트에서 로드·실행 가능한 리소스를 제한 */
+// 카카오 로그인은 현재 signInWithOAuth 풀페이지 리다이렉트라 CSP에 안 걸리지만,
+// 향후 카카오 프로필 이미지·SDK를 붙일 때 바로 막히지 않도록 미리 도메인을 열어둔다 (2026-07-13).
+const KAKAO_DOMAINS = "https://kauth.kakao.com https://*.kakaocdn.net https://*.kakao.com";
+
 const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.clarity.ms https://c.clarity.ms https://scripts.clarity.ms;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://spoqa.github.io;
   font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://spoqa.github.io data:;
-  img-src 'self' data: blob: https://${SUPABASE_HOST} https://placehold.co https://images.unsplash.com https://www.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms;
-  connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST} https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://cdn.jsdelivr.net https://*.ingest.us.sentry.io;
+  img-src 'self' data: blob: https://${SUPABASE_HOST} https://placehold.co https://images.unsplash.com https://www.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms ${KAKAO_DOMAINS};
+  connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST} https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://cdn.jsdelivr.net https://*.ingest.us.sentry.io ${KAKAO_DOMAINS};
+  frame-src 'self' ${KAKAO_DOMAINS};
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';

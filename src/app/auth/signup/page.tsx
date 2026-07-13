@@ -64,6 +64,12 @@ function SignupInner() {
       return;
     }
 
+    // 이름 공백만 입력 방지 (onboarding/page.tsx와 동일한 검증)
+    if (!name.trim()) {
+      setError("이름을 입력해주세요.");
+      return;
+    }
+
     // 생년월일 필수
     if (!birthDate) {
       setError("생년월일을 입력해주세요.");
@@ -84,7 +90,7 @@ function SignupInner() {
       password,
       options: {
         data: {
-          name,
+          name: name.trim(),
           birth_date: birthDate,
           marketing_opt_in: consents.marketing,
           terms_agreed_at: new Date().toISOString(),
@@ -105,7 +111,9 @@ function SignupInner() {
 
       if (/profiles_birth_date_age_check/i.test(msg)) {
         setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
-      } else if (msg === "User already registered") {
+      } else if (code === "user_already_exists" || /user already registered/i.test(msg)) {
+        // supabase-js가 code(예: user_already_exists)를 내려주면 그걸 우선 사용.
+        // 혹시 code가 안 내려오는 경로가 있을 수 있어 문자열 비교(대소문자 무시)도 함께 유지.
         setError("이미 가입된 이메일입니다.");
       } else if (/signups? (are )?disabled/i.test(msg)) {
         setError("일시적으로 이메일 가입이 중단되어 있습니다. 운영자(syusflux@gmail.com)에게 문의해주세요.");
@@ -122,15 +130,15 @@ function SignupInner() {
     }
 
     // profiles.birth_date 백필 — handle_new_user trigger가 metadata에서 못 가져오는 경우 대비
-    // (있으면 덮어쓰지 않도록 update만 사용; profiles row가 아직 없을 수 있어 실패는 무시)
+    // (있으면 덮어쓰지 않도록 update만 사용; profiles row가 아직 없을 수 있어 실패는 로그만 남김
+    //  — trigger가 동시 처리 중일 수 있으므로 실패해도 가입 흐름은 막지 않고, 다음 로그인/온보딩에서 채워짐)
     if (data.user?.id) {
-      try {
-        await supabase
-          .from("profiles")
-          .update({ birth_date: birthDate })
-          .eq("id", data.user.id);
-      } catch {
-        // trigger가 동시 처리 중일 수 있음 — 다음 로그인/온보딩에서 채워짐
+      const { error: backfillError } = await supabase
+        .from("profiles")
+        .update({ birth_date: birthDate })
+        .eq("id", data.user.id);
+      if (backfillError) {
+        console.warn("[signup] birth_date backfill failed:", backfillError);
       }
     }
 
