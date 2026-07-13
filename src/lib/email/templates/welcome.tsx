@@ -12,7 +12,7 @@
  * - 부가 텍스트: #5A4A3E
  * - CTA 버튼: #D6E58F (페일라임) — 메일 1통당 1개만
  */
-import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "@react-email/components";
+import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "../components";
 import { EmailFooter } from "./footer";
 
 type Props = {

@@ -6,7 +6,7 @@
  * - 운영 채널: syus.co.kr / instagram.com/syus_official
  * - 답장 안내: 운영자에게 곧장 전달된다는 약속(replyTo가 사장님 Gmail로 설정됨)
  */
-import { Hr, Section, Text, Link } from "@react-email/components";
+import { Hr, Section, Text, Link } from "../components";
 
 const HR = { borderColor: "#E8E2D5", margin: "32px 0 20px" } as const;
 

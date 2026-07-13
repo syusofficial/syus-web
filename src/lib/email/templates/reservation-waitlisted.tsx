@@ -2,7 +2,7 @@
  * 좌석 신청 대기 접수 메일 — submit_reservation RPC가 'waitlisted'를 반환했을 때 발송.
  * 디자인 토큰: reservation-confirmed.tsx와 동일.
  */
-import { Html, Head, Preview, Body, Container, Section, Text, Heading } from "@react-email/components";
+import { Html, Head, Preview, Body, Container, Section, Text, Heading } from "../components";
 import { EmailFooter } from "./footer";
 
 type Props = {

@@ -11,7 +11,7 @@
  * - 마케팅팀 톤(사색·자기 낮춤). "놓치지 마세요"·"지금 바로" 금지.
  * - 본문은 한 문장으로 짧게. 카드 1~3개. CTA는 메일 1통당 1개.
  */
-import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "@react-email/components";
+import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "../components";
 import { EmailFooter } from "./footer";
 
 type ReminderShow = {

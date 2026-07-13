@@ -2,7 +2,7 @@
  * 좌석 신청 확정 메일 — submit_reservation RPC가 'confirmed'를 반환했을 때 발송.
  * 디자인 토큰: performer-approved.tsx와 동일.
  */
-import { Html, Head, Preview, Body, Container, Section, Text, Heading } from "@react-email/components";
+import { Html, Head, Preview, Body, Container, Section, Text, Heading } from "../components";
 import { EmailFooter } from "./footer";
 
 type Props = {
