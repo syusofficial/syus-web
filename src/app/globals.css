@@ -26,6 +26,8 @@
   --color-accent-red: #D54545;     /* 포인트 빨강 (경고·삭제) — 유지 */
   --color-accent-yellow: #5C2A42;  /* CTA — Divine Damson (라임에서 자두빛 보라 전환) */
   --color-accent-yellow-hover: #6E3450;
+  --color-damson-light: #C99FB1;   /* Divine Damson 라이트 틴트 — 어두운 배경(Teal·Silhouette) 위 라벨·강조 전용.
+                                       2026-07-14 정식 토큰 승격(구 하드코딩 #C99FB1, 일부 파일 주석에 잘못 "페일 라임"으로 표기돼 있었음 — 명칭만 정정, 값은 그대로 유지해 기존 대비 가독성 보존). */
 
   /* SYUS 원 정체성 브라운 — 로고만 유지 (사장님 결정) */
   --color-syus-logo: #6D3115;

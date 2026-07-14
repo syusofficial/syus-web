@@ -199,7 +199,7 @@ export default async function HomePage() {
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/muol/shows"
-                className="inline-block px-7 py-4 text-sm tracking-wider"
+                className="inline-block px-7 py-4 text-sm tracking-wider transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: "#5C2A42" /* Divine Damson */,
@@ -211,7 +211,7 @@ export default async function HomePage() {
               </Link>
               <Link
                 href="/auth/signup"
-                className="inline-block px-7 py-4 text-sm tracking-wider"
+                className="inline-block px-7 py-4 text-sm tracking-wider transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   border: "1px solid #4A3B33",
@@ -237,7 +237,7 @@ export default async function HomePage() {
             <div>
               <p
                 className="text-xs tracking-[0.4em] uppercase mb-6"
-                style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
+                style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
               >
                 About 무대올림
               </p>
@@ -285,7 +285,7 @@ export default async function HomePage() {
                     className="text-2xl"
                     style={{
                       fontFamily: "var(--font-cormorant)",
-                      color: "#C99FB1",
+                      color: "var(--color-damson-light)",
                       opacity: 0.85,
                       lineHeight: 1,
                     }}
@@ -371,7 +371,7 @@ export default async function HomePage() {
               <div className="pt-8 text-center" style={{ borderTop: "1px solid #D4CFC1" }}>
                 <Link
                   href="/muol/shows"
-                  className="inline-block px-8 py-3 text-xs tracking-widest uppercase transition-colors"
+                  className="inline-block px-8 py-3 text-xs tracking-widest uppercase transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                   style={{
                     fontFamily: "var(--font-inter)",
                     color: "#0B5563",
@@ -400,7 +400,7 @@ export default async function HomePage() {
         <div className="max-w-[1800px] mx-auto text-center">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"
-            style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
           >
             Join 무대올림
           </p>
@@ -421,7 +421,7 @@ export default async function HomePage() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/auth/signup"
-              className="px-8 py-3 text-sm tracking-wider transition-colors"
+              className="px-8 py-3 text-sm tracking-wider transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 backgroundColor: "#5C2A42",
@@ -433,7 +433,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/muol/contact"
-              className="px-8 py-3 text-sm tracking-wider"
+              className="px-8 py-3 text-sm tracking-wider transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid rgba(248,249,252,0.45)", color: "#F0EEE9" }}
             >
               문의하기

@@ -202,7 +202,7 @@ export default async function ShowsPage({
           <div className="flex flex-wrap gap-2">
             <Link
               href="/muol/shows/calendar"
-              className="px-4 py-2 text-xs tracking-wide transition-colors"
+              className="px-4 py-2 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 color: "#0B5563",
@@ -213,7 +213,7 @@ export default async function ShowsPage({
             </Link>
             <Link
               href="/muol/archive"
-              className="px-4 py-2 text-xs tracking-wide transition-colors"
+              className="px-4 py-2 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 color: "#0B5563",
@@ -243,7 +243,7 @@ export default async function ShowsPage({
               <Link
                 key={r}
                 href={href}
-                className="px-3 py-1.5 text-xs tracking-wide transition-colors"
+                className="px-3 py-1.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -281,7 +281,7 @@ export default async function ShowsPage({
               <Link
                 key={g ?? "all"}
                 href={href}
-                className="px-3 py-1 text-xs"
+                className="px-3 py-1 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -316,7 +316,7 @@ export default async function ShowsPage({
               <Link
                 key={c ?? "all-cat"}
                 href={href}
-                className="px-3 py-1 text-xs"
+                className="px-3 py-1 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -355,7 +355,7 @@ export default async function ShowsPage({
                 <Link
                   key={sch ?? "all-schools"}
                   href={href}
-                  className="px-3 py-1 text-xs"
+                  className="px-3 py-1 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
                     backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -381,7 +381,7 @@ export default async function ShowsPage({
             </p>
             <Link
               href="/muol/archive"
-              className="inline-block px-4 py-2 text-xs tracking-wide"
+              className="inline-block px-4 py-2 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 color: "#0B5563",
@@ -405,13 +405,13 @@ export default async function ShowsPage({
                 {currentPage > 1 ? (
                   <Link
                     href={buildPageUrl(currentPage - 1)}
-                    className="px-3 py-2 text-xs"
+                    className="px-3 py-2 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
                   >
                     ← 이전
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>← 이전</span>
+                  <span className="px-3 py-2 text-xs cursor-not-allowed" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }} aria-disabled="true">← 이전</span>
                 )}
 
                 {/* 페이지 번호 */}
@@ -422,7 +422,7 @@ export default async function ShowsPage({
                     <Link
                       key={p}
                       href={buildPageUrl(p as number)}
-                      className="px-3 py-2 text-xs"
+                      className="px-3 py-2 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                       style={{
                         fontFamily: "var(--font-inter)",
                         backgroundColor: p === currentPage ? "#0B5563" : "transparent",
@@ -440,13 +440,13 @@ export default async function ShowsPage({
                 {currentPage < totalPages ? (
                   <Link
                     href={buildPageUrl(currentPage + 1)}
-                    className="px-3 py-2 text-xs"
+                    className="px-3 py-2 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
                   >
                     다음 →
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>다음 →</span>
+                  <span className="px-3 py-2 text-xs cursor-not-allowed" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }} aria-disabled="true">다음 →</span>
                 )}
               </div>
             )}

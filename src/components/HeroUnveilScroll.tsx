@@ -149,8 +149,8 @@ export default function HeroUnveilScroll({
             font-size: 0.78rem;
             letter-spacing: 0.4em;
             text-transform: uppercase;
-            /* 어두운 배경 위에서 Damson은 잘 안 보임 — Damson 라이트 변형 사용 */
-            color: #C99FB1;
+            /* 어두운 배경 위에서 Damson은 잘 안 보임 — Damson 라이트 변형 토큰 사용 */
+            color: var(--color-damson-light);
             font-weight: 600;
             margin-bottom: 28px;
           }
@@ -416,8 +416,8 @@ export default function HeroUnveilScroll({
           opacity: 0.72;
         }
         .unveil-eyebrow-meta {
-          /* 어두운 배경 위 Damson은 안 보임 — Damson 라이트 변형 사용 */
-          color: #C99FB1;
+          /* 어두운 배경 위 Damson은 안 보임 — Damson 라이트 변형 토큰 사용 */
+          color: var(--color-damson-light);
           font-weight: 600;
           opacity: 0.95;
         }
@@ -448,10 +448,10 @@ export default function HeroUnveilScroll({
           text-wrap: balance;
           max-width: 100%;
         }
-        /* "올림" 강조 — 어두운 배경 위 Damson 라이트 변형
+        /* "올림" 강조 — 어두운 배경 위 Damson 라이트 변형 토큰
            (메모리 §1 강조 한·두 글자 예외 범위) */
         .unveil-headline-accent {
-          color: #C99FB1;
+          color: var(--color-damson-light);
         }
         /* 부제 — 한 줄에 한 호흡, 콤마 뒤 줄바꿈은 마크업의 <br/>로 처리 */
         .unveil-subline {
@@ -637,8 +637,8 @@ export default function HeroUnveilScroll({
         .unveil-progress-fill {
           position: absolute;
           inset: 0;
-          /* 어두운 배경 위 — Damson 라이트 변형 */
-          background: #C99FB1;
+          /* 어두운 배경 위 — Damson 라이트 변형 토큰 */
+          background: var(--color-damson-light);
           transform-origin: left center;
           transform: scaleX(var(--p, 0));
         }

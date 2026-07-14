@@ -36,7 +36,7 @@ export default function ForBusinessPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.4em] uppercase mb-10"
-            style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
           >
             For Business
           </p>
@@ -53,7 +53,7 @@ export default function ForBusinessPage() {
             <br />
             조용히 닿는
             <br />
-            <span style={{ color: "#C99FB1" }}>광고</span>를 제안합니다.
+            <span style={{ color: "var(--color-damson-light)" }}>광고</span>를 제안합니다.
           </h1>
           <p
             className="text-lg md:text-xl leading-relaxed max-w-2xl"

@@ -52,7 +52,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.4em] uppercase mb-10"
-            style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
           >
             About 무대올림
           </p>
@@ -68,8 +68,10 @@ export default function AboutPage() {
               letterSpacing: "-0.04em",
             }}
           >
-            {/* "올림" 두 글자에만 페일 라임 강조 — 메모리 §1 강조 한 글자 예외 범위 */}
-            무대<span style={{ color: "#C99FB1" }}>올림</span>
+            {/* "올림" 두 글자에만 Damson 라이트 틴트 강조 — 메모리 §1 강조 한 글자 예외 범위
+                (2026-07-14 정정: 예전 주석이 "페일 라임"이라 적혀 있었으나 실제 값은 로즈빛 Damson 계열이라
+                globals.css에 --color-damson-light로 정식 등록. 값은 그대로, 이름표만 바로잡음) */}
+            무대<span style={{ color: "var(--color-damson-light)" }}>올림</span>
           </h1>
           <p
             className="leading-relaxed max-w-2xl"
@@ -169,7 +171,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
           >
             02. What We Do
           </p>
@@ -219,7 +221,7 @@ export default function AboutPage() {
                   className="text-3xl md:text-4xl leading-none"
                   style={{
                     fontFamily: "var(--font-cormorant)",
-                    color: "#C99FB1",
+                    color: "var(--color-damson-light)",
                     opacity: 0.85,
                   }}
                 >
@@ -411,7 +413,7 @@ export default function AboutPage() {
           <div className="mt-10 text-center">
             <Link
               href="/auth/signup"
-              className="inline-block px-8 py-4 text-sm tracking-wider transition-colors"
+              className="inline-block px-8 py-4 text-sm tracking-wider transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 backgroundColor: "#0B5563",
@@ -517,7 +519,7 @@ export default function AboutPage() {
           <div className="mt-10 text-center">
             <Link
               href="/muol/performer"
-              className="inline-block px-8 py-4 text-sm tracking-wider transition-colors"
+              className="inline-block px-8 py-4 text-sm tracking-wider transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 backgroundColor: "#0B5563",
@@ -539,7 +541,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
           >
             04. With
           </p>
@@ -554,7 +556,7 @@ export default function AboutPage() {
             <div>
               <p
                 className="text-sm tracking-[0.25em] uppercase mb-4"
-                style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", opacity: 0.85 }}
+                style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", opacity: 0.85 }}
               >
                 무대를 만드는 사람
               </p>
@@ -575,7 +577,7 @@ export default function AboutPage() {
             <div>
               <p
                 className="text-sm tracking-[0.25em] uppercase mb-4"
-                style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", opacity: 0.85 }}
+                style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", opacity: 0.85 }}
               >
                 무대를 만나는 사람
               </p>
@@ -669,7 +671,7 @@ export default function AboutPage() {
         <div className="max-w-3xl mx-auto text-center">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"
-            style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
+            style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
           >
             Stay With Us
           </p>
@@ -691,7 +693,7 @@ export default function AboutPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/muol/shows"
-              className="px-8 py-3 text-sm tracking-wider transition-colors"
+              className="px-8 py-3 text-sm tracking-wider transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 backgroundColor: "#5C2A42",
@@ -703,7 +705,7 @@ export default function AboutPage() {
             </Link>
             <Link
               href="/auth/signup"
-              className="px-8 py-3 text-sm tracking-wider transition-colors"
+              className="px-8 py-3 text-sm tracking-wider transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 border: "1px solid rgba(248, 249, 252, 0.45)",
@@ -714,7 +716,7 @@ export default function AboutPage() {
             </Link>
             <Link
               href="/muol/contact"
-              className="px-8 py-3 text-sm tracking-wider transition-colors"
+              className="px-8 py-3 text-sm tracking-wider transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "rgba(248,249,252,0.7)" }}
             >
               문의하기

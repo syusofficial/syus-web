@@ -57,7 +57,7 @@ export default function Footer() {
             </p>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-4"
-              style={{ fontFamily: "var(--font-inter)", color: "#C99FB1", fontWeight: 600 }}
+              style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
             >
               운영: 사유유사 SYUS
             </p>

@@ -553,7 +553,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 />
                 <Link
                   href="/muol/contact"
-                  className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
+                  className="px-8 py-4 text-sm tracking-wider text-center transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                   style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #D4CFC1", color: "#4A3B33" }}
                 >
                   문의하기
@@ -578,7 +578,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     href={show.reservation_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
+                    className="px-8 py-4 text-sm tracking-wider text-center transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                     style={{
                       fontFamily: "var(--font-noto-sans-kr)",
                       backgroundColor: "#5C2A42",
@@ -593,22 +593,23 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                     href={show.ticket_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
+                    className="px-8 py-4 text-sm tracking-wider text-center transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#0B5563", color: "#F0EEE9" }}
                   >
                     티켓 예매하기 →
                   </a>
                 ) : (
                   <span
-                    className="px-8 py-4 text-sm tracking-wider text-center"
+                    className="px-8 py-4 text-sm tracking-wider text-center cursor-not-allowed"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#D4CFC1", color: "#5A4A3E" }}
+                    aria-disabled="true"
                   >
                     예약 링크 없음
                   </span>
                 )}
                 <Link
                   href="/muol/contact"
-                  className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
+                  className="px-8 py-4 text-sm tracking-wider text-center transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                   style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #D4CFC1", color: "#4A3B33" }}
                 >
                   문의하기

@@ -40,7 +40,7 @@ export default async function Image({ params }: { params: { id: string } }) {
           <div style={{ fontSize: 96, fontWeight: 700, color: "#F0EEE9", letterSpacing: -2 }}>
             무대올림
           </div>
-          <div style={{ fontSize: 24, color: "#C99FB1", marginTop: 24, letterSpacing: 6 }}>
+          <div style={{ fontSize: 24, color: "#C99FB1" /* = var(--color-damson-light), OG는 satori 렌더라 리터럴 hex 고정 */, marginTop: 24, letterSpacing: 6 }}>
             운영 · 사유유사 SYUS
           </div>
         </div>

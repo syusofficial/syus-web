@@ -47,8 +47,8 @@ export default function ShowCard({
           <div
             className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1"
             style={{
-              backgroundColor: "rgba(27, 40, 66, 0.85)",
-              color: "#C99FB1",
+              backgroundColor: "rgba(74, 59, 51, 0.85)", // Silhouette #4A3B33 — 구 팔레트(#1B2842 딥 네이비) 교체
+              color: "var(--color-damson-light)",
               fontFamily: "var(--font-inter)",
               fontSize: "0.7rem",
               fontWeight: 600,

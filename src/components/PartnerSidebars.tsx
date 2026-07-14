@@ -30,7 +30,7 @@ export function InstitutionSidebar() {
                 href={inst.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block py-2 px-3 transition-all"
+                className="block py-2 px-3 transition-colors"
                 style={{
                   borderLeft: "2px solid transparent",
                   fontFamily: "var(--font-noto-sans-kr)",
@@ -126,7 +126,7 @@ export function PartnerAdSidebar() {
                       href={ad.url}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
-                      className="block p-4 transition-all"
+                      className="block p-4 transition-colors"
                       style={{ backgroundColor: "#E6E1D6" }}
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#DDD0BD")}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E6E1D6")}

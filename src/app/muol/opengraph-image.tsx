@@ -23,7 +23,7 @@ export default async function OGImage() {
         <div
           style={{
             fontSize: 22,
-            color: "#C99FB1",
+            color: "#C99FB1", // = var(--color-damson-light) (globals.css) — OG 이미지는 satori 렌더라 CSS 변수 불가, 리터럴 hex 고정
             letterSpacing: "0.35em",
             textTransform: "uppercase",
             fontWeight: 600,
@@ -46,7 +46,7 @@ export default async function OGImage() {
         >
           <span>오늘, 어느 대학의</span>
           <span>
-            <span style={{ color: "#C99FB1" }}>막</span>이 오른다.
+            <span style={{ color: "#C99FB1" /* = var(--color-damson-light) */ }}>막</span>이 오른다.
           </span>
         </div>
         <div
