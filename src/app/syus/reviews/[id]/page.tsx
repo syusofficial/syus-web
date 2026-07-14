@@ -43,7 +43,9 @@ export default function ReviewDetail() {
     if (!window.confirm("이 후기를 삭제할까요?")) return;
     setBusy(true);
     const supabase = createClient();
-    await supabase.from("syus_reviews").delete().eq("id", id).eq("user_id", uid);
+    const { error } = await supabase.from("syus_reviews").delete().eq("id", id).eq("user_id", uid);
+    setBusy(false);
+    if (error) { alert("삭제하지 못했습니다. 잠시 후 다시 시도해주세요."); return; }
     router.push("/syus/blackbox");
   };
 

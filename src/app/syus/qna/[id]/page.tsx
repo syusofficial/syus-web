@@ -126,7 +126,9 @@ export default function QnaDetailPage() {
     if (!window.confirm("이 질문을 삭제할까요? 답변도 함께 사라집니다.")) return;
     setBusy(true);
     const supabase = createClient();
-    await supabase.from("syus_questions").delete().eq("id", id).eq("user_id", userId);
+    const { error } = await supabase.from("syus_questions").delete().eq("id", id).eq("user_id", userId);
+    setBusy(false);
+    if (error) { alert("삭제하지 못했습니다. 잠시 후 다시 시도해주세요."); return; }
     router.push("/syus/thrust");
   };
 
