@@ -131,8 +131,21 @@ export default function PerformerPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    // 파일 검증 — reviews/new·books/new와 동일 기준(MIME 화이트리스트 + 5MB).
+    // accept="image/*"는 브라우저 힌트일 뿐 강제되지 않으므로 여기서 직접 막는다.
+    if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
+      setError("포스터는 JPG·PNG·WEBP·GIF 이미지만 올릴 수 있어요.");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("포스터는 5MB 이하만 올릴 수 있어요.");
+      e.target.value = "";
+      return;
+    }
+    setError("");
+    setPosterPreview((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(file); });
     setPosterFile(file);
-    setPosterPreview(URL.createObjectURL(file));
   };
 
   const resetForm = () => {
