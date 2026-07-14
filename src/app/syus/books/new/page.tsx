@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import SyusFileInput from "@/components/SyusFileInput";
 
 const TOPICS = ["이론", "발성", "신체", "연출", "전기", "희곡", "기타"];
 
@@ -89,9 +90,9 @@ export default function BookNew() {
         <label className="syc-label">한 줄 후기
           <textarea className="syc-textarea" value={note} onChange={(e) => setNote(e.target.value)} rows={5} maxLength={4000} placeholder="이 책이 곁에 있어 좋은 이유." />
         </label>
-        <label className="syc-label">표지 이미지 <span className="syc-hint">선택 · 본인이 촬영/보유했거나 정당한 이용 범위에서</span>
-          <input type="file" accept="image/*" onChange={(e) => setCover(e.target.files?.[0] ?? null)} />
-        </label>
+        <div className="syc-label">표지 이미지 <span className="syc-hint">선택 · 본인이 촬영/보유했거나 정당한 이용 범위에서</span>
+          <SyusFileInput id="cover-file" file={cover} onChange={setCover} ariaLabel="표지 이미지 선택" />
+        </div>
         {error && <p className="syc-error">{error}</p>}
         <div className="syc-actions">
           <button type="submit" className="syc-btn" disabled={saving}>{saving ? "등록 중…" : "책 등록"}</button>

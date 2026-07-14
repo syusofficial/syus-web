@@ -298,6 +298,24 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 .syc-btn-ghost:hover::after { opacity: 0.85; transform: scaleY(1.25); }
 .syc-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 
+/* 파일 첨부 트리거 — 실제 <input type=file>은 sr-only로 감추고(접근성 트리·키보드 포커스는
+   유지, display:none 아님) .syc-btn-ghost 라벨을 클릭 영역으로 세운다. 2026-07-14. */
+.syc-file-input {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; outline: none;
+}
+.syc-file-input:focus-visible + .syc-file-trigger { outline: 2px solid var(--c, #0B5563); outline-offset: 4px; }
+.syc-file-trigger:active { transform: translateY(1px); }
+.syc-file-input:disabled + .syc-file-trigger { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.syc-file-picked {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-noto-sans-kr); font-size: 0.8rem; color: #5A4A3E;
+  background: #F4F2ED; border: 1px solid #E4DFD4; border-radius: 100px; padding: 6px 8px 6px 14px;
+  max-width: 100%;
+}
+.syc-file-remove { appearance: none; background: none; border: 0; cursor: pointer; color: #A79E90; font-size: 1rem; line-height: 1; padding: 2px 4px; }
+.syc-file-remove:hover { color: #C0392B; }
+
 /* 로그인 안내 팝업 — 비로그인 CTA 클릭 시(전 섹션 공용). --c = 섹션색. */
 .syc-modal-backdrop {
   position: fixed; inset: 0; z-index: 120;

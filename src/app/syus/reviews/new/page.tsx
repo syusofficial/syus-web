@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import SyusFileInput from "@/components/SyusFileInput";
 
 const TYPES = ["공연", "영화", "드라마"];
 
@@ -94,9 +95,9 @@ export default function ReviewNew() {
         <label className="syc-label">태그 <span className="syc-hint">쉼표로 구분 · 최대 5개</span>
           <input className="syc-input" value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} placeholder="여운, 앙상블" />
         </label>
-        <label className="syc-label">이미지 <span className="syc-hint">선택 · 포스터·스틸 등. 올리면 아래 출처 필수</span>
-          <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files?.[0] ?? null)} />
-        </label>
+        <div className="syc-label">이미지 <span className="syc-hint">선택 · 포스터·스틸 등. 올리면 아래 출처 필수</span>
+          <SyusFileInput id="review-image-file" file={image} onChange={setImage} ariaLabel="관람 후기 이미지 선택" />
+        </div>
         {image && (
           <label className="syc-label">이미지 출처 <span className="syc-hint">필수 · 예: 영화 「올드보이」 / ○○극단 공연 스틸</span>
             <input className="syc-input" value={imageSource} onChange={(e) => setImageSource(e.target.value)} maxLength={200} placeholder="출처를 반드시 적어 주세요" />
