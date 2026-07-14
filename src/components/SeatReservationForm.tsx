@@ -87,6 +87,10 @@ export default function SeatReservationForm({
         <span style={{ color: "#5A4A3E", fontSize: "0.8rem" }}>
           신청번호와 연락처는 잊지 말고 기억해주세요 — 취소·조회 시 필요합니다.
         </span>
+        <br />
+        <span style={{ color: "#5A4A3E", fontSize: "0.8rem" }}>
+          일정이 바뀌면 언제든 취소해 주세요. 취소하신 자리는 대기 중인 다음 분께 자동으로 안내됩니다.
+        </span>
       </div>
     );
   }
@@ -145,9 +149,15 @@ export default function SeatReservationForm({
           <input type="hidden" name="show_id" value={showId} />
 
           <p className="text-xs leading-relaxed" style={{ color: "#5A4A3E" }}>
-            {showWaitlistForm
-              ? "정원이 찼습니다. 대기자로 접수되며, 자리가 나면 안내해 드립니다."
-              : "신청은 좌석을 희망하신다는 접수이며, 실제 입장은 공연팀·학교 현장 안내를 따릅니다."}
+            {showWaitlistForm ? (
+              "정원이 찼습니다. 대기자로 접수되며, 자리가 나면 안내해 드립니다."
+            ) : (
+              <>
+                신청은 좌석을 희망하신다는 접수이며, 실제 입장은 공연팀·학교 현장 안내를 따릅니다.
+                <br />
+                취소는 공연 시작 전까지 마이페이지 또는 예약 조회 페이지에서 언제든 가능합니다.
+              </>
+            )}
           </p>
 
           <div>

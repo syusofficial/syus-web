@@ -170,7 +170,7 @@ export default function MyPage() {
   };
 
   const handleCancelReservation = async (reservation: Reservation) => {
-    if (!window.confirm("이 좌석 신청을 취소하시겠습니까?")) return;
+    if (!window.confirm("이 좌석 신청을 취소하시겠습니까? 취소하시면 대기 중인 다음 분께 자리가 자동으로 안내됩니다.")) return;
     setCancellingId(reservation.id);
     const res = await cancelReservationAction(reservation.reservation_code, "");
     if (res.ok) {
@@ -522,6 +522,11 @@ export default function MyPage() {
         {/* Tab: 내 예약 */}
         {tab === "reservations" && (
           <>
+            <p className="text-xs leading-relaxed mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
+              취소는 공연 시작 전까지 언제든 가능하며, 별도 위약금이나 페널티는 없습니다.
+              <br />
+              확정 신청을 취소하시면 대기 순번대로 자동 확정되어 안내됩니다.
+            </p>
             {myReservations.length === 0 ? (
               <div className="text-center py-20">
                 <p className="text-sm mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>

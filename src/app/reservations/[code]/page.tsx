@@ -30,7 +30,7 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
   };
 
   const handleCancel = () => {
-    if (!window.confirm("이 좌석 신청을 취소하시겠습니까?")) return;
+    if (!window.confirm("이 좌석 신청을 취소하시겠습니까? 취소하시면 대기 중인 다음 분께 자리가 자동으로 안내됩니다.")) return;
     startTransition(async () => {
       const res = await cancelReservationAction(code, contact.trim());
       setCancelMessage(res.message);
@@ -109,7 +109,7 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
       )}
 
       <p className="text-xs mt-8" style={{ color: "#5A4A3E" }}>
-        인원 변경 등 그 외 요청은{" "}
+        취소는 공연 시작 전까지 시간 제한 없이 가능합니다. 인원 변경 등 그 외 요청은{" "}
         <a href="/muol/contact" className="underline">문의하기</a>를 이용해주세요.
       </p>
     </main>
