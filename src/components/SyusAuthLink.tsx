@@ -64,6 +64,11 @@ export default function SyusAuthLink({ style }: { style?: React.CSSProperties })
     );
   }
 
+  // loggedIn === null → getUser() 응답 전 잠깐의 로딩 구간. 이때 "로그인"을 먼저 보여주면
+  // 실제로는 로그인돼 있는데도 순간적으로 "로그인 안 됨"으로 보이는 깜빡임이 생긴다.
+  // 확실히 비로그인(false)으로 판명 났을 때만 "로그인" 링크를 그린다.
+  if (loggedIn === null) return null;
+
   return (
     <Link href="/syus/login?next=/syus" style={style}>
       로그인

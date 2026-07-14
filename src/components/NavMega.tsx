@@ -265,7 +265,17 @@ export default function NavMega() {
   const [mobileChapter, setMobileChapter] = useState<Chapter["key"] | null>(null);
 
   // ── auth 로드 (기존 Nav.tsx 패턴 그대로) ──
+  // 2026-07-14 (제작팀 — 무대올림↔시우스 로그인 표시 불일치 진단):
+  // 이 메뉴는 "/"·"/syus*"에서는 화면에 그려지지 않는다(맨 아래 hidden 분기, hook 순서 보존을
+  // 위해 return 위치는 그대로 둠). 하지만 컴포넌트 자체는 계속 마운트돼 있어 effect는 계속
+  // 실행됐고, 그 결과 /syus 진입 시점마다 "보이지 않는" NavMega가 또 하나의 GoTrueClient로
+  // getUser()를 쏘아 시우스 쪽 컴포넌트(SyusAuthLink 등)와 동시에 같은 세션 쿠키를 놓고 경합했다
+  // (Supabase가 명시적으로 경고하는 "multiple GoTrueClient instances" 상황). 게다가 약관 미동의
+  // 계정이면 시우스 브라우징 중에도 /auth/onboarding으로 강제 이동시킬 수 있었다.
+  // 숨겨진 경로에서는 아예 실행하지 않는다.
   const loadUserAndRole = useCallback(async () => {
+    if (pathname === "/" || pathname.startsWith("/syus")) return;
+
     const supabase = createClient();
     const {
       data: { user: currentUser },
