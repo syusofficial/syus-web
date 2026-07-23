@@ -9,9 +9,16 @@ import { cancelReservationAction } from "@/app/actions/reservations";
 import PageLoader from "@/components/PageLoader";
 import ShowCard from "@/components/ShowCard";
 import PasswordInput from "@/components/PasswordInput";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import type { Profile, Show, Reservation } from "@/types";
 
 type Tab = "info" | "likes" | "recent" | "performer" | "reservations";
+
+// 버튼 4상태 공통 클래스(디자인팀 2026-07-20 진단 3번 반영)
+const LINK_BTN_STATES =
+  "transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]";
+
+type PendingConfirm = { type: "cancelReservation"; reservation: Reservation } | { type: "withdraw" } | null;
 
 export default function MyPage() {
   const router = useRouter();
@@ -19,7 +26,9 @@ export default function MyPage() {
   const [likedShows, setLikedShows] = useState<Show[]>([]);
   const [recentShows, setRecentShows] = useState<Show[]>([]);
   const [myReservations, setMyReservations] = useState<Reservation[]>([]);
+  const [waitlistPositions, setWaitlistPositions] = useState<Record<string, number>>({});
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [pendingConfirm, setPendingConfirm] = useState<PendingConfirm>(null);
   const [tab, setTab] = useState<Tab>("info");
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
@@ -100,6 +109,16 @@ export default function MyPage() {
         })
       );
 
+      // 대기 순번 — 다른 신청자 정보 노출 없이 본인 대기 건의 순번(숫자)만 받아온다 (디자인팀 B3)
+      const { data: positionsData } = await supabase.rpc("get_my_waitlist_positions");
+      if (Array.isArray(positionsData)) {
+        const positions: Record<string, number> = {};
+        for (const p of positionsData as { id: string; position: number }[]) {
+          positions[p.id] = p.position;
+        }
+        setWaitlistPositions(positions);
+      }
+
       setLoading(false);
     });
   }, [router]);
@@ -169,8 +188,12 @@ export default function MyPage() {
     setApplying(false);
   };
 
-  const handleCancelReservation = async (reservation: Reservation) => {
-    if (!window.confirm("이 좌석 신청을 취소하시겠습니까? 취소하시면 대기 중인 다음 분께 자리가 자동으로 안내됩니다.")) return;
+  const handleCancelReservation = (reservation: Reservation) => {
+    setPendingConfirm({ type: "cancelReservation", reservation });
+  };
+
+  const executeCancelReservation = async (reservation: Reservation) => {
+    setPendingConfirm(null);
     setCancellingId(reservation.id);
     const res = await cancelReservationAction(reservation.reservation_code, "");
     if (res.ok) {
@@ -181,6 +204,19 @@ export default function MyPage() {
       alert(res.message);
     }
     setCancellingId(null);
+  };
+
+  const executeWithdraw = async () => {
+    setPendingConfirm(null);
+    const res = await fetch("/api/account/delete", { method: "POST" });
+    const json = await res.json();
+    if (res.ok) {
+      alert("탈퇴가 완료되었습니다. 그동안 이용해주셔서 감사합니다.");
+      router.push("/");
+      router.refresh();
+    } else {
+      alert(json.error ?? "탈퇴 중 오류가 발생했습니다.");
+    }
   };
 
   if (loading) {
@@ -197,6 +233,23 @@ export default function MyPage() {
 
   return (
     <div className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F0EEE9" }}>
+      <ConfirmDialog
+        open={pendingConfirm !== null}
+        title={pendingConfirm?.type === "withdraw" ? "회원 탈퇴" : "좌석 신청 취소"}
+        message={
+          pendingConfirm?.type === "withdraw"
+            ? "정말 탈퇴하시겠습니까?\n\n등록한 공연, 찜 목록, 모든 가입 정보가 영구 삭제되며 복구할 수 없습니다."
+            : "이 좌석 신청을 취소하시겠습니까?\n\n취소하시면 대기 중인 다음 분께 자리가 자동으로 안내됩니다. 취소 후 다시 신청하시면 대기로 접수될 수 있습니다."
+        }
+        confirmLabel={pendingConfirm?.type === "withdraw" ? "탈퇴하기" : "취소하기"}
+        danger
+        onCancel={() => setPendingConfirm(null)}
+        onConfirm={() => {
+          if (!pendingConfirm) return;
+          if (pendingConfirm.type === "withdraw") executeWithdraw();
+          else executeCancelReservation(pendingConfirm.reservation);
+        }}
+      />
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-12">
@@ -450,22 +503,8 @@ export default function MyPage() {
                 탈퇴 시 모든 정보(공연 등록 내역, 찜 목록, 가입 정보)가 영구 삭제되며 복구할 수 없습니다.
               </p>
               <button
-                onClick={async () => {
-                  const ok = window.confirm(
-                    "정말 탈퇴하시겠습니까?\n\n등록한 공연, 찜 목록, 모든 가입 정보가 영구 삭제되며 복구할 수 없습니다."
-                  );
-                  if (!ok) return;
-                  const res = await fetch("/api/account/delete", { method: "POST" });
-                  const json = await res.json();
-                  if (res.ok) {
-                    alert("탈퇴가 완료되었습니다. 그동안 이용해주셔서 감사합니다.");
-                    router.push("/");
-                    router.refresh();
-                  } else {
-                    alert(json.error ?? "탈퇴 중 오류가 발생했습니다.");
-                  }
-                }}
-                className="text-xs px-4 py-2"
+                onClick={() => setPendingConfirm({ type: "withdraw" })}
+                className={`text-xs px-4 py-2 ${LINK_BTN_STATES}`}
                 style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F", border: "1px solid #A63D2F" }}
               >
                 탈퇴하기
@@ -558,15 +597,16 @@ export default function MyPage() {
                       <div className="flex items-center gap-3">
                         <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color }}>
                           {s.label}
+                          {r.status === "waitlisted" && waitlistPositions[r.id] != null && ` · ${waitlistPositions[r.id]}번째`}
                         </span>
                         {r.status !== "cancelled" && (
                           <button
                             onClick={() => handleCancelReservation(r)}
                             disabled={cancellingId === r.id}
-                            className="text-xs underline"
+                            className={`text-xs underline ${LINK_BTN_STATES}`}
                             style={{ color: "#D54545" }}
                           >
-                            취소
+                            {cancellingId === r.id ? "취소 중…" : "취소"}
                           </button>
                         )}
                       </div>

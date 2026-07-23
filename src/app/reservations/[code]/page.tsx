@@ -2,12 +2,19 @@
 
 import { useState, useTransition, use } from "react";
 import { lookupReservationAction, cancelReservationAction, type LookupReservationResult } from "@/app/actions/reservations";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 const STATUS_LABEL: Record<string, string> = {
   confirmed: "확정",
   waitlisted: "대기",
   cancelled: "취소됨",
 };
+
+// 버튼 4상태 공통 클래스(디자인팀 2026-07-20 진단 반영)
+const BTN_STATES =
+  "transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor] disabled:opacity-100 disabled:cursor-wait";
+const LINK_BTN_STATES =
+  "transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]";
 
 /**
  * 게스트 셀프 조회·취소 페이지 — 신청번호(URL)+연락처(입력) 일치 시에만 노출.
@@ -19,6 +26,7 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
   const [isPending, startTransition] = useTransition();
   const [data, setData] = useState<LookupReservationResult | null>(null);
   const [cancelMessage, setCancelMessage] = useState<string | null>(null);
+  const [confirmCancel, setConfirmCancel] = useState(false);
 
   const handleLookup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +37,8 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
     });
   };
 
-  const handleCancel = () => {
-    if (!window.confirm("이 좌석 신청을 취소하시겠습니까? 취소하시면 대기 중인 다음 분께 자리가 자동으로 안내됩니다.")) return;
+  const executeCancel = () => {
+    setConfirmCancel(false);
     startTransition(async () => {
       const res = await cancelReservationAction(code, contact.trim());
       setCancelMessage(res.message);
@@ -66,7 +74,7 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
           <button
             type="submit"
             disabled={isPending || !contact.trim()}
-            className="px-6 py-3 text-sm tracking-wider self-start"
+            className={`px-6 py-3 text-sm tracking-wider self-start ${BTN_STATES}`}
             style={{
               backgroundColor: isPending ? "#D4CFC1" : "#0B5563",
               color: "#F0EEE9",
@@ -89,13 +97,14 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
           </p>
           <p className="text-xs" style={{ color: "#5A4A3E" }}>
             인원 {data.party_size}명 · 상태 {STATUS_LABEL[data.status] ?? data.status}
+            {data.status === "waitlisted" && data.waitlist_position != null && ` (대기 ${data.waitlist_position}번째)`}
           </p>
           {data.status !== "cancelled" && (
             <button
               type="button"
-              onClick={handleCancel}
+              onClick={() => setConfirmCancel(true)}
               disabled={isPending}
-              className="text-xs underline self-start"
+              className={`text-xs underline self-start ${LINK_BTN_STATES}`}
               style={{ color: "#D54545" }}
             >
               신청 취소
@@ -103,6 +112,16 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
           )}
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmCancel}
+        title="좌석 신청 취소"
+        message={"이 좌석 신청을 취소하시겠습니까?\n\n취소하시면 대기 중인 다음 분께 자리가 자동으로 안내되며, 취소 후 다시 신청하시면 대기로 접수될 수 있습니다."}
+        confirmLabel="취소하기"
+        danger
+        onCancel={() => setConfirmCancel(false)}
+        onConfirm={executeCancel}
+      />
 
       {cancelMessage && (
         <p className="text-xs mt-4" style={{ color: "#5A4A3E" }}>{cancelMessage}</p>

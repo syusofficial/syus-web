@@ -154,6 +154,8 @@ export type LookupReservationResult =
       party_size: number;
       status: string;
       code: string;
+      /** 대기 순번 — status가 waitlisted일 때만 값이 있음 (디자인팀 B3) */
+      waitlist_position?: number | null;
     }
   | { ok: false; message: string };
 
@@ -176,6 +178,7 @@ export async function lookupReservationAction(code: string, contact: string): Pr
     party_size?: number;
     status?: string;
     code?: string;
+    waitlist_position?: number | null;
   };
 
   if (!result.ok) {
@@ -194,5 +197,6 @@ export async function lookupReservationAction(code: string, contact: string): Pr
     party_size: result.party_size!,
     status: result.status!,
     code: result.code!,
+    waitlist_position: result.waitlist_position,
   };
 }

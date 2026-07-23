@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, use } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import type { Reservation, Show } from "@/types";
 
 const STATUS_LABEL: Record<string, { label: string; bg: string; color: string }> = {
@@ -11,6 +12,25 @@ const STATUS_LABEL: Record<string, { label: string; bg: string; color: string }>
   waitlisted: { label: "대기", bg: "#E6E1D6", color: "#0B5563" },
   cancelled: { label: "취소됨", bg: "#EDD4D4", color: "#5A4A3E" },
 };
+
+// 버튼 4상태 공통 클래스(디자인팀 2026-07-20 진단 2번 반영)
+const BTN_STATES =
+  "transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor] disabled:opacity-50 disabled:pointer-events-none";
+const OUTLINE_BTN_STATES =
+  "transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor] disabled:opacity-50 disabled:pointer-events-none";
+
+/** 연락처가 전화번호 패턴이면 tel:, 이메일 패턴이면 mailto: 링크로 감싼다 (디자인팀 A4) */
+function ContactLink({ contact }: { contact: string | null | undefined }) {
+  if (!contact) return <>-</>;
+  const digitsOnly = contact.replace(/[\s-]/g, "");
+  if (/^01[0-9]{8,9}$/.test(digitsOnly)) {
+    return <a href={`tel:${digitsOnly}`} className="underline">{contact}</a>;
+  }
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) {
+    return <a href={`mailto:${contact}`} className="underline">{contact}</a>;
+  }
+  return <>{contact}</>;
+}
 
 /**
  * 공연자용 예약 현황 — 본인이 등록한 공연의 좌석 신청자(이름·연락처·인원)를
@@ -22,6 +42,7 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
   const [authState, setAuthState] = useState<"loading" | "denied" | "ready">("loading");
   const [show, setShow] = useState<Show | null>(null);
   const [rows, setRows] = useState<Reservation[]>([]);
+  const [confirmClose, setConfirmClose] = useState(false);
 
   const load = useCallback(async () => {
     const supabase = createClient();
@@ -71,11 +92,8 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
     };
   }, [authState, showId, load]);
 
-  const handleToggleClosed = async () => {
+  const applyToggleClosed = async (next: boolean) => {
     if (!show) return;
-    const next = !show.reservation_closed;
-    if (next && !window.confirm("예약을 마감(매진 처리)하시겠습니까?\n\n관객은 더 이상 좌석을 신청할 수 없게 됩니다.")) return;
-
     const supabase = createClient();
     const { error } = await supabase.from("shows").update({ reservation_closed: next }).eq("id", show.id);
     if (error) {
@@ -83,6 +101,13 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
       return;
     }
     setShow({ ...show, reservation_closed: next });
+  };
+
+  const handleToggleClosed = () => {
+    if (!show) return;
+    const next = !show.reservation_closed;
+    if (next) { setConfirmClose(true); return; }
+    applyToggleClosed(next);
   };
 
   const handleExportCsv = () => {
@@ -151,11 +176,11 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
         </p>
       )}
 
-      <div className="flex gap-2 mb-6 print:hidden flex-wrap">
+      <div className="flex gap-2 mb-2 print:hidden flex-wrap">
         <button
           onClick={handleExportCsv}
           disabled={rows.length === 0}
-          className="px-4 py-2 text-xs tracking-wider"
+          className={`px-4 py-2 text-xs tracking-wider ${BTN_STATES}`}
           style={{ backgroundColor: "#0B5563", color: "#F0EEE9", fontWeight: 600 }}
         >
           CSV 다운로드
@@ -163,14 +188,14 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
         <button
           onClick={() => window.print()}
           disabled={rows.length === 0}
-          className="px-4 py-2 text-xs tracking-wider"
+          className={`px-4 py-2 text-xs tracking-wider ${OUTLINE_BTN_STATES}`}
           style={{ border: "1px solid #D4CFC1", color: "#4A3B33" }}
         >
           인쇄
         </button>
         <button
           onClick={handleToggleClosed}
-          className="px-4 py-2 text-xs tracking-wider"
+          className={`px-4 py-2 text-xs tracking-wider ${show?.reservation_closed ? BTN_STATES : OUTLINE_BTN_STATES}`}
           style={
             show?.reservation_closed
               ? { backgroundColor: "#5A4A3E", color: "#F0EEE9" }
@@ -180,6 +205,21 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
           {show?.reservation_closed ? "예약 다시 열기" : "예약 마감하기"}
         </button>
       </div>
+      {rows.length > 0 && (
+        <p className="text-xs mb-6 print:hidden" style={{ color: "#5A4A3E" }}>
+          ⓘ 이 명단에는 신청자의 이름·연락처가 포함되어 있습니다 — 인쇄 후에는 안전하게 보관·폐기해 주세요.
+        </p>
+      )}
+
+      <ConfirmDialog
+        open={confirmClose}
+        title="예약 마감"
+        message={"예약을 마감(매진 처리)하시겠습니까?\n\n관객은 더 이상 좌석을 신청할 수 없게 됩니다."}
+        confirmLabel="마감하기"
+        danger
+        onCancel={() => setConfirmClose(false)}
+        onConfirm={() => { setConfirmClose(false); applyToggleClosed(true); }}
+      />
 
       {rows.length === 0 ? (
         <p className="text-sm text-center py-16" style={{ color: "#5A4A3E" }}>
@@ -203,7 +243,9 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
                 return (
                   <tr key={r.id} style={{ borderBottom: "1px solid #E6E1D6" }}>
                     <td className="py-2 px-2" style={{ color: "#4A3B33" }}>{r.guest_name ?? "-"}</td>
-                    <td className="py-2 px-2" style={{ color: "#4A3B33" }}>{r.guest_contact ?? "-"}</td>
+                    <td className="py-2 px-2" style={{ color: "#4A3B33" }}>
+                      <ContactLink contact={r.guest_contact} />
+                    </td>
                     <td className="py-2 px-2" style={{ color: "#4A3B33" }}>{r.party_size}명</td>
                     <td className="py-2 px-2">
                       <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color }}>

@@ -2,7 +2,7 @@
  * 좌석 신청 확정 메일 — submit_reservation RPC가 'confirmed'를 반환했을 때 발송.
  * 디자인 토큰: performer-approved.tsx와 동일.
  */
-import { Html, Head, Preview, Body, Container, Section, Text, Heading } from "../components";
+import { Html, Head, Preview, Body, Container, Section, Text, Heading, Link } from "../components";
 import { EmailFooter } from "./footer";
 
 type Props = {
@@ -54,7 +54,11 @@ export function ReservationConfirmedEmail({ name, showTitle, code, partySize }: 
           </Section>
           <Text style={PARAGRAPH}>
             이 신청은 좌석을 희망하신다는 접수이며, 실제 입장은 공연팀·학교 현장 안내를 따릅니다.
-            취소는 신청번호와 연락처로 syus.co.kr/reservations 에서 직접 하실 수 있습니다.
+            취소는 신청번호와 연락처로{" "}
+            <Link href={`https://syus.co.kr/reservations/${code}`} style={{ color: "#0B5563" }}>
+              예약 조회·취소 페이지
+            </Link>
+            에서 직접 하실 수 있습니다.
           </Text>
           <Text style={SIGNOFF}>무대에서 뵙기를 바라며,</Text>
           <EmailFooter />

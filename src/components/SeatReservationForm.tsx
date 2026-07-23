@@ -1,8 +1,16 @@
 "use client";
 
 import { useState, useTransition, useEffect, useRef } from "react";
-import { submitReservation } from "@/app/actions/reservations";
+import Link from "next/link";
+import { submitReservation, type SubmitReservationState } from "@/app/actions/reservations";
 import { createClient } from "@/lib/supabase/client";
+
+// 버튼 4상태(hover/focus/active/disabled) 공통 클래스 — shows/[id]/page.tsx의
+// "문의하기"·"티켓 예매하기" 버튼과 동일 패턴(디자인팀 2026-07-20 진단 1번 반영).
+const BTN_STATES =
+  "transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor] disabled:opacity-100 disabled:cursor-wait";
+const LINK_BTN_STATES =
+  "transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]";
 
 type Props = {
   showId: string;
@@ -37,7 +45,7 @@ export default function SeatReservationForm({
   const [contact, setContact] = useState("");
   const [partySize, setPartySize] = useState(1);
   const [isPending, startTransition] = useTransition();
-  const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const [result, setResult] = useState<SubmitReservationState | null>(null);
 
   const [capacity, setCapacity] = useState<number | null>(initialCapacity);
   const [confirmedTotal, setConfirmedTotal] = useState(initialConfirmedTotal);
@@ -91,6 +99,15 @@ export default function SeatReservationForm({
         <span style={{ color: "#5A4A3E", fontSize: "0.8rem" }}>
           일정이 바뀌면 언제든 취소해 주세요. 취소하신 자리는 대기 중인 다음 분께 자동으로 안내됩니다.
         </span>
+        <div className="mt-3">
+          <Link
+            href={`/reservations/${result.code}`}
+            className={`inline-block text-xs underline ${LINK_BTN_STATES}`}
+            style={{ color: "#0B5563", fontWeight: 600 }}
+          >
+            예약 조회 페이지 바로가기 →
+          </Link>
+        </div>
       </div>
     );
   }
@@ -120,7 +137,7 @@ export default function SeatReservationForm({
         <button
           type="button"
           onClick={() => { setShowWaitlistForm(true); setOpen(true); }}
-          className="text-xs underline"
+          className={`text-xs underline ${LINK_BTN_STATES}`}
           style={{ color: "#5A4A3E" }}
         >
           그래도 대기 신청하기
@@ -135,7 +152,7 @@ export default function SeatReservationForm({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="px-8 py-4 text-sm tracking-wider text-center transition-colors"
+          className={`px-8 py-4 text-sm tracking-wider text-center ${BTN_STATES}`}
           style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#5C2A42", color: "#F0EEE9", fontWeight: 600 }}
         >
           좌석 신청하기 ⌄
@@ -150,7 +167,11 @@ export default function SeatReservationForm({
 
           <p className="text-xs leading-relaxed" style={{ color: "#5A4A3E" }}>
             {showWaitlistForm ? (
-              "정원이 찼습니다. 대기자로 접수되며, 자리가 나면 안내해 드립니다."
+              <>
+                정원이 찼습니다. 대기자로 접수됩니다.
+                <br />
+                이메일로 신청하신 경우 자리가 나면 메일로 안내해 드립니다. 전화번호로 신청하신 경우 예약 조회 페이지에서 직접 확인해주세요.
+              </>
             ) : (
               <>
                 신청은 좌석을 희망하신다는 접수이며, 실제 입장은 공연팀·학교 현장 안내를 따릅니다.
@@ -169,6 +190,7 @@ export default function SeatReservationForm({
               onChange={(e) => setName(e.target.value)}
               required
               disabled={isPending}
+              autoComplete="name"
               className="w-full px-3 py-2 text-sm outline-none"
               style={{ backgroundColor: "#F0EEE9", border: "1px solid #D4CFC1", color: "#4A3B33" }}
             />
@@ -183,6 +205,7 @@ export default function SeatReservationForm({
               onChange={(e) => setContact(e.target.value)}
               required
               disabled={isPending}
+              autoComplete="tel"
               placeholder="010-0000-0000 또는 이메일"
               className="w-full px-3 py-2 text-sm outline-none"
               style={{ backgroundColor: "#F0EEE9", border: "1px solid #D4CFC1", color: "#4A3B33" }}
@@ -196,7 +219,7 @@ export default function SeatReservationForm({
                 type="button"
                 onClick={() => setPartySize((n) => Math.max(1, n - 1))}
                 disabled={isPending || partySize <= 1}
-                className="w-8 h-8 text-sm"
+                className={`w-11 h-11 text-sm ${LINK_BTN_STATES}`}
                 style={{ backgroundColor: "#F0EEE9", border: "1px solid #D4CFC1", color: "#4A3B33" }}
               >
                 −
@@ -206,7 +229,7 @@ export default function SeatReservationForm({
                 type="button"
                 onClick={() => setPartySize((n) => Math.min(10, n + 1))}
                 disabled={isPending || partySize >= 10}
-                className="w-8 h-8 text-sm"
+                className={`w-11 h-11 text-sm ${LINK_BTN_STATES}`}
                 style={{ backgroundColor: "#F0EEE9", border: "1px solid #D4CFC1", color: "#4A3B33" }}
               >
                 +
@@ -219,7 +242,7 @@ export default function SeatReservationForm({
             <button
               type="submit"
               disabled={isPending}
-              className="px-6 py-3 text-sm tracking-wider transition-colors"
+              className={`px-6 py-3 text-sm tracking-wider ${BTN_STATES}`}
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 backgroundColor: isPending ? "#D4CFC1" : "#5C2A42",
@@ -234,7 +257,7 @@ export default function SeatReservationForm({
               type="button"
               onClick={() => { setOpen(false); setShowWaitlistForm(false); }}
               disabled={isPending}
-              className="text-xs underline"
+              className={`text-xs underline ${LINK_BTN_STATES}`}
               style={{ color: "#5A4A3E" }}
             >
               접기

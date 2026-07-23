@@ -5,9 +5,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import { REGIONS_EXCLUDE_ALL, GENRES, SHOW_CATEGORIES, GENRE_DETAILS, hasGenreDetails } from "@/lib/constants";
 import { isValidUrl, normalizeUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
 import type { Show } from "@/types";
+
+// 버튼 4상태 공통 클래스(디자인팀 2026-07-20/23 진단 반영)
+const OUTLINE_BTN_STATES =
+  "transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]";
+
+type PendingShowAction = { type: "delete" | "close"; show: Show } | null;
 
 const StatusBadge = ({ status }: { status: string }) => {
   const map: Record<string, { label: string; bg: string; color: string }> = {
@@ -54,6 +61,8 @@ export default function PerformerPage() {
   const [existingPosterUrl, setExistingPosterUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [pendingAction, setPendingAction] = useState<PendingShowAction>(null);
+  const [capacitySummaries, setCapacitySummaries] = useState<Record<string, { confirmedTotal: number; capacity: number | null }>>({});
 
   const draftKey = currentUserId ? `syus-performer-draft-${currentUserId}` : null;
 
@@ -87,6 +96,28 @@ export default function PerformerPage() {
       setAuthState("ready");
     });
   }, [router]);
+
+  // 정원 임박 배지 — 정원이 설정된 게시 중인 공연만 확정 합계를 가져와 90%/100% 도달 여부 계산 (디자인팀 B5)
+  useEffect(() => {
+    const targets = myShows.filter(
+      (s) => s.status === "approved" && s.use_inhouse_reservation !== false && s.capacity != null
+    );
+    if (targets.length === 0) return;
+
+    let cancelled = false;
+    const supabase = createClient();
+    (async () => {
+      const entries = await Promise.all(
+        targets.map(async (s) => {
+          const { data } = await supabase.rpc("get_show_reservation_summary", { p_show_id: s.id });
+          const summary = data as { confirmed_total: number; capacity: number | null } | null;
+          return [s.id, { confirmedTotal: summary?.confirmed_total ?? 0, capacity: summary?.capacity ?? s.capacity ?? null }] as const;
+        })
+      );
+      if (!cancelled) setCapacitySummaries(Object.fromEntries(entries));
+    })();
+    return () => { cancelled = true; };
+  }, [myShows]);
 
   // 임시저장 — 신규 등록 모드에서만, 폼 변경 1초 debounce
   useEffect(() => {
@@ -200,13 +231,11 @@ export default function PerformerPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // 공연 삭제
-  const deleteShow = async (show: Show) => {
-    const confirmed = window.confirm(
-      `"${show.title}" 공연을 삭제하시겠습니까?\n\n포스터 이미지와 공연 정보가 완전히 제거되며 복구할 수 없습니다.`
-    );
-    if (!confirmed) return;
+  // 공연 삭제 — 확인 모달을 먼저 띄우고, 실제 삭제는 executeDeleteShow가 처리 (디자인팀 B4)
+  const deleteShow = (show: Show) => setPendingAction({ type: "delete", show });
 
+  const executeDeleteShow = async (show: Show) => {
+    setPendingAction(null);
     const supabase = createClient();
 
     // Storage에서 포스터 삭제
@@ -229,11 +258,14 @@ export default function PerformerPage() {
     }
   };
 
-  /** 예약 마감/재개 — 공연팀이 직접 매진 처리 (정원 자동 마감과 별개) */
-  const toggleReservationClosed = async (show: Show) => {
+  /** 예약 마감/재개 — 공연팀이 직접 매진 처리 (정원 자동 마감과 별개). 마감(닫기) 방향만 확인 모달을 거친다. */
+  const toggleReservationClosed = (show: Show) => {
     const next = !show.reservation_closed;
-    if (next && !window.confirm(`"${show.title}" 공연의 예약을 마감(매진 처리)하시겠습니까?\n\n관객은 더 이상 좌석을 신청할 수 없게 됩니다.`)) return;
+    if (next) { setPendingAction({ type: "close", show }); return; }
+    applyToggleReservationClosed(show, next);
+  };
 
+  const applyToggleReservationClosed = async (show: Show, next: boolean) => {
     const supabase = createClient();
     const { error } = await supabase.from("shows").update({ reservation_closed: next }).eq("id", show.id);
     if (error) {
@@ -462,6 +494,25 @@ export default function PerformerPage() {
 
   return (
     <div className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F0EEE9" }}>
+      <ConfirmDialog
+        open={pendingAction !== null}
+        title={pendingAction?.type === "delete" ? "공연 삭제" : "예약 마감"}
+        message={
+          pendingAction?.type === "delete"
+            ? `"${pendingAction.show.title}" 공연을 삭제하시겠습니까?\n\n포스터 이미지와 공연 정보가 완전히 제거되며 복구할 수 없습니다.`
+            : pendingAction
+              ? `"${pendingAction.show.title}" 공연의 예약을 마감(매진 처리)하시겠습니까?\n\n관객은 더 이상 좌석을 신청할 수 없게 됩니다.`
+              : ""
+        }
+        confirmLabel={pendingAction?.type === "delete" ? "삭제하기" : "마감하기"}
+        danger
+        onCancel={() => setPendingAction(null)}
+        onConfirm={() => {
+          if (!pendingAction) return;
+          if (pendingAction.type === "delete") executeDeleteShow(pendingAction.show);
+          else applyToggleReservationClosed(pendingAction.show, true);
+        }}
+      />
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-12">
@@ -1030,18 +1081,38 @@ export default function PerformerPage() {
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <StatusBadge status={show.status} />
+                    {(() => {
+                      const summary = capacitySummaries[show.id];
+                      if (!summary || summary.capacity == null) return null;
+                      const ratio = summary.confirmedTotal / summary.capacity;
+                      if (ratio >= 1) {
+                        return (
+                          <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: "#5A4A3E", color: "#F0EEE9", fontFamily: "var(--font-inter)" }}>
+                            정원 도달
+                          </span>
+                        );
+                      }
+                      if (ratio >= 0.9) {
+                        return (
+                          <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: "#5C2A42", color: "#F0EEE9", fontFamily: "var(--font-inter)" }}>
+                            정원 임박 {summary.confirmedTotal}/{summary.capacity}
+                          </span>
+                        );
+                      }
+                      return null;
+                    })()}
                     {show.status === "approved" && show.use_inhouse_reservation !== false && (
                       <>
                         <Link
                           href={`/muol/performer/reservations/${show.id}`}
-                          className="text-xs px-3 py-1 transition-colors"
+                          className={`text-xs px-3 py-1 ${OUTLINE_BTN_STATES}`}
                           style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5C2A42", border: "1px solid #5C2A42" }}
                         >
                           예약 현황
                         </Link>
                         <button
                           onClick={() => toggleReservationClosed(show)}
-                          className="text-xs px-3 py-1 transition-colors"
+                          className={`text-xs px-3 py-1 ${OUTLINE_BTN_STATES}`}
                           style={
                             show.reservation_closed
                               ? { fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", backgroundColor: "#5A4A3E" }

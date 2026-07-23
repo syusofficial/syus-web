@@ -2,7 +2,7 @@
  * 좌석 신청 대기 접수 메일 — submit_reservation RPC가 'waitlisted'를 반환했을 때 발송.
  * 디자인 토큰: reservation-confirmed.tsx와 동일.
  */
-import { Html, Head, Preview, Body, Container, Section, Text, Heading } from "../components";
+import { Html, Head, Preview, Body, Container, Section, Text, Heading, Link } from "../components";
 import { EmailFooter } from "./footer";
 
 type Props = {
@@ -54,7 +54,11 @@ export function ReservationWaitlistedEmail({ name, showTitle, code, partySize }:
             <Text style={CODE_TEXT}>{code}</Text>
           </Section>
           <Text style={PARAGRAPH}>
-            취소를 원하시면 신청번호와 연락처로 syus.co.kr/reservations 에서 직접 하실 수 있습니다.
+            취소를 원하시면 신청번호와 연락처로{" "}
+            <Link href={`https://syus.co.kr/reservations/${code}`} style={{ color: "#5C2A42" }}>
+              예약 조회·취소 페이지
+            </Link>
+            에서 직접 하실 수 있습니다.
           </Text>
           <Text style={SIGNOFF}>기다려주셔서 감사합니다,</Text>
           <EmailFooter />
