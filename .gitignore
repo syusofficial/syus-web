@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 일회성 관리 스크립트 실행 로그 (내부 DB id·발송 통계만 담김 — 그래도 git 이력에는 남기지 않음)
+scripts/privacy-notice-20260802/logs/
+
+.vercel
+.env*
