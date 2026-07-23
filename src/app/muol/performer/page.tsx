@@ -16,6 +16,43 @@ const OUTLINE_BTN_STATES =
 
 type PendingShowAction = { type: "delete" | "close"; show: Show } | null;
 
+// ── 예약 시스템 B1(회차별 정원 분리) — 2026-07-24 신설 ──────────────────────
+// 회차 한 행. id가 있으면 DB에 이미 존재하는 회차(수정 대상), 없으면 신규 입력행(삽입 대상).
+// capacity를 비워두면(빈 문자열) DB에는 null로 저장되고, 그 회차는 공연 전체 정원을 상속한다.
+type SessionRow = { id?: string; date: string; time: string; capacity: string };
+
+// 자동 생성은 한 달(31일)까지만 — 그보다 긴 기간을 "매일 회차"로 만들면 회차가 지나치게
+// 많아질 수 있어(예: 학기 전체 기간 오기입), 이 경우 회차 1개로 시작해 공연자가 직접 나누게 한다.
+const AUTO_GENERATE_MAX_DAYS = 31;
+
+/** "2026.05.10"·"2026-05-10"·"2026/05/10" 같은 자유 텍스트에서 날짜를 최대한 읽어낸다. 실패 시 null. */
+function parseFreeformDate(text: string): Date | null {
+  const m = text.trim().match(/(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})/);
+  if (!m) return null;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** show_time("평일 19:30 / 주말 15:00")에서 첫 HH:MM을 찾아 회차 기본 시간으로 쓴다. 없으면 19:30. */
+function extractDefaultTime(showTime: string): string {
+  const m = showTime.match(/(\d{1,2}):(\d{2})/);
+  if (!m) return "19:30";
+  return `${m[1].padStart(2, "0")}:${m[2]}`;
+}
+
+function toLocalDateInputValue(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** 회차 날짜+시간 입력값을 서버 저장용 ISO 문자열로 변환(한국 사용자 대상 서비스라 브라우저 로컬시간 = KST 가정). */
+function toSessionIso(date: string, time: string): string {
+  const t = (time || "19:30").trim();
+  return new Date(`${date}T${t}:00`).toISOString();
+}
+
 const StatusBadge = ({ status }: { status: string }) => {
   const map: Record<string, { label: string; bg: string; color: string }> = {
     pending:  { label: "승인 대기", bg: "#E6E1D6", color: "#0B5563" },
@@ -64,7 +101,75 @@ export default function PerformerPage() {
   const [pendingAction, setPendingAction] = useState<PendingShowAction>(null);
   const [capacitySummaries, setCapacitySummaries] = useState<Record<string, { confirmedTotal: number; capacity: number | null }>>({});
 
+  // 예약 시스템 B1(회차별 정원 분리) — 2026-07-24 신설
+  const [sessions, setSessions] = useState<SessionRow[]>([]);
+  const [originalSessionIds, setOriginalSessionIds] = useState<string[]>([]);
+  // 회차 테이블(show_sessions)이 아직 DB에 없으면(마이그레이션 전) true → false로 바뀌어
+  // 회차 관리 UI 전체를 조용히 숨긴다. 낙관적으로 true로 시작하고 실패 시에만 끈다.
+  const [sessionsFeatureAvailable, setSessionsFeatureAvailable] = useState(true);
+
   const draftKey = currentUserId ? `syus-performer-draft-${currentUserId}` : null;
+
+  /** 이 공연의 회차 목록을 불러온다 — 실패(테이블 없음 등)하면 회차 기능을 조용히 끈다. */
+  const loadSessionsFor = async (showId: string) => {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("show_sessions")
+      .select("*")
+      .eq("show_id", showId)
+      .order("session_at", { ascending: true });
+
+    if (error) {
+      setSessionsFeatureAvailable(false);
+      setSessions([]);
+      setOriginalSessionIds([]);
+      return;
+    }
+    setSessionsFeatureAvailable(true);
+    const rows = (data ?? []) as { id: string; session_at: string; capacity: number | null }[];
+    setSessions(
+      rows.map((r) => {
+        const d = new Date(r.session_at);
+        return {
+          id: r.id,
+          date: toLocalDateInputValue(d),
+          time: `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`,
+          capacity: r.capacity != null ? String(r.capacity) : "",
+        };
+      })
+    );
+    setOriginalSessionIds(rows.map((r) => r.id));
+  };
+
+  const addSessionRow = () => setSessions((prev) => [...prev, { date: "", time: "19:30", capacity: "" }]);
+  const updateSessionRow = (idx: number, patch: Partial<SessionRow>) =>
+    setSessions((prev) => prev.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
+  const removeSessionRow = (idx: number) => setSessions((prev) => prev.filter((_, i) => i !== idx));
+
+  /** 공연 기간(schedule_start~schedule_end)을 보고 회차를 자동 생성 — 애매하면 회차 1개로 시작 */
+  const handleAutoGenerateSessions = () => {
+    const start = parseFreeformDate(form.schedule_start);
+    if (!start) {
+      setSessions([{ date: "", time: extractDefaultTime(form.show_time), capacity: "" }]);
+      return;
+    }
+    const end = parseFreeformDate(form.schedule_end);
+    const defaultTime = extractDefaultTime(form.show_time);
+    const dayMs = 24 * 60 * 60 * 1000;
+    const spanDays = end ? Math.round((end.getTime() - start.getTime()) / dayMs) : 0;
+
+    if (!end || spanDays < 0 || spanDays > AUTO_GENERATE_MAX_DAYS) {
+      // 기간이 없거나(종료일 파싱 실패) 한 달 초과 — 회차 1개로 시작, 나머지는 공연자가 직접 추가
+      setSessions([{ date: toLocalDateInputValue(start), time: defaultTime, capacity: "" }]);
+      return;
+    }
+    const rows: SessionRow[] = [];
+    for (let i = 0; i <= spanDays; i++) {
+      const d = new Date(start.getTime() + i * dayMs);
+      rows.push({ date: toLocalDateInputValue(d), time: defaultTime, capacity: "" });
+    }
+    setSessions(rows);
+  };
 
   // 권한 체크 + 내 공연 로딩
   useEffect(() => {
@@ -191,6 +296,16 @@ export default function PerformerPage() {
     setExistingPosterUrl(null);
     setEditingId(null);
     setError("");
+    // 신규 등록 모드 — 회차는 빈 채로 시작(제출 시 최소 1개로 자동 백필됨). 이 시점엔 아직
+    // showId가 없어 loadSessionsFor를 못 쓰므로, 테이블 존재 여부만 가볍게 확인해둔다.
+    setSessions([]);
+    setOriginalSessionIds([]);
+    const supabase = createClient();
+    supabase
+      .from("show_sessions")
+      .select("id")
+      .limit(1)
+      .then(({ error }) => setSessionsFeatureAvailable(!error));
   };
 
   // 수정 모드 진입 — 기존 공연 데이터로 폼 채우기
@@ -228,6 +343,9 @@ export default function PerformerPage() {
     setPosterPreview(null);
     setShowForm(true);
     setError("");
+    setSessions([]);
+    setOriginalSessionIds([]);
+    loadSessionsFor(show.id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -327,6 +445,19 @@ export default function PerformerPage() {
       parsedCapacity = n;
     }
 
+    // 회차 검증 — 날짜가 채워진 행만 유효한 회차로 취급(빈 행은 조용히 무시), 정원은
+    // 비워두면(무제한 아니라) "공연 전체 정원을 그대로 상속" 의미이므로 검증만 하고 통과시킨다.
+    const validSessionRows = sessions.filter((r) => r.date.trim());
+    for (const r of validSessionRows) {
+      if (r.capacity.trim()) {
+        const n = Number(r.capacity.trim());
+        if (!Number.isInteger(n) || n < 1) {
+          setError("회차별 정원은 1 이상의 숫자로 입력해주세요. 공연 전체 정원을 그대로 쓰려면 비워두세요.");
+          return;
+        }
+      }
+    }
+
     setLoading(true);
 
     const supabase = createClient();
@@ -404,6 +535,8 @@ export default function PerformerPage() {
       capacity: parsedCapacity,
     };
 
+    let savedShowId: string | null = null;
+
     if (editingId) {
       // 수정 모드 — 상태는 다시 pending으로 (관리자 재검토)
       const { data: updated, error: updateError } = await supabase
@@ -421,6 +554,7 @@ export default function PerformerPage() {
         return;
       }
       setMyShows((prev) => prev.map((s) => s.id === editingId ? (updated as Show) : s));
+      savedShowId = editingId;
     } else {
       // 신규 등록
       const { data: newShow, error: insertError } = await supabase
@@ -437,8 +571,55 @@ export default function PerformerPage() {
         return;
       }
       setMyShows((prev) => [newShow as Show, ...prev]);
+      savedShowId = (newShow as Show).id;
       // 등록 성공 → 임시저장 삭제
       if (draftKey) localStorage.removeItem(draftKey);
+    }
+
+    // 회차 동기화 — 공연 저장 자체는 이미 끝났으므로, 이 단계가 실패해도 조용히 기록만
+    // 하고 넘어간다(회차는 부가 정보, 나중에 "수정"에서 다시 손볼 수 있다).
+    if (sessionsFeatureAvailable && useInhouseReservation && savedShowId) {
+      try {
+        // 회차를 하나도 안 만들었다면 "회차 1개(전체 기간)"로 자동 백필 — 회차 UI를 전혀
+        // 안 건드린 공연자도 관객 신청 경험이 기존과 동일하게 유지된다.
+        const rowsToSave: SessionRow[] =
+          validSessionRows.length > 0
+            ? validSessionRows
+            : [
+                {
+                  date: toLocalDateInputValue(parseFreeformDate(form.schedule_start) ?? new Date()),
+                  time: extractDefaultTime(form.show_time),
+                  capacity,
+                },
+              ];
+
+        const keepIds = rowsToSave.filter((r) => r.id).map((r) => r.id as string);
+        const toDelete = originalSessionIds.filter((id) => !keepIds.includes(id));
+        if (toDelete.length) {
+          await supabase.from("show_sessions").delete().in("id", toDelete);
+        }
+        for (const r of rowsToSave.filter((r) => r.id)) {
+          await supabase
+            .from("show_sessions")
+            .update({
+              session_at: toSessionIso(r.date, r.time),
+              capacity: r.capacity.trim() ? Number(r.capacity.trim()) : null,
+            })
+            .eq("id", r.id);
+        }
+        const newRows = rowsToSave
+          .filter((r) => !r.id)
+          .map((r) => ({
+            show_id: savedShowId,
+            session_at: toSessionIso(r.date, r.time),
+            capacity: r.capacity.trim() ? Number(r.capacity.trim()) : null,
+          }));
+        if (newRows.length) {
+          await supabase.from("show_sessions").insert(newRows);
+        }
+      } catch (e) {
+        console.error("[performer/syncSessions] error:", e);
+      }
     }
 
     setShowForm(false);
@@ -845,6 +1026,83 @@ export default function PerformerPage() {
                       onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                     />
+
+                    {/* 회차 관리 — 예약 시스템 B1(회차별 정원 분리), 2026-07-24 신설.
+                        DB 마이그레이션 전에는 sessionsFeatureAvailable이 false가 되어 이 블록 전체가
+                        조용히 숨는다(재배포 없이 마이그레이션 실행 후 자동으로 나타남). */}
+                    {sessionsFeatureAvailable && (
+                      <div className="mt-6 pt-5 max-w-none" style={{ borderTop: "1px dashed #D4CFC1" }}>
+                        <div className="flex items-center justify-between gap-2 flex-wrap mb-2">
+                          <label className="block text-xs tracking-wider uppercase" style={labelStyle}>
+                            회차 관리 (선택)
+                          </label>
+                          <div className="flex gap-3">
+                            {sessions.length === 0 && form.schedule_start.trim() && form.schedule_end.trim() && (
+                              <button
+                                type="button"
+                                onClick={handleAutoGenerateSessions}
+                                className={`text-xs underline ${OUTLINE_BTN_STATES}`}
+                                style={{ color: "#0B5563" }}
+                              >
+                                공연 기간으로 회차 자동 생성
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={addSessionRow}
+                              className={`text-xs underline ${OUTLINE_BTN_STATES}`}
+                              style={{ color: "#0B5563" }}
+                            >
+                              + 회차 추가
+                            </button>
+                          </div>
+                        </div>
+                        <p className="text-xs leading-relaxed mb-3" style={{ color: "#5A4A3E", wordBreak: "keep-all" }}>
+                          공연이 여러 날·여러 시간대로 열린다면 회차별로 날짜·시간·정원을 따로 관리할 수
+                          있습니다. 아무 것도 추가하지 않으면 공연 기간 전체를 회차 1개로 자동 등록합니다
+                          (지금까지와 동일한 방식). 회차별 정원을 비워두면 위 정원을 그대로 씁니다.
+                        </p>
+                        {sessions.length > 0 && (
+                          <div className="flex flex-col gap-2">
+                            {sessions.map((row, idx) => (
+                              <div key={row.id ?? `new-${idx}`} className="flex items-center gap-2 flex-wrap">
+                                <input
+                                  type="date"
+                                  value={row.date}
+                                  onChange={(e) => updateSessionRow(idx, { date: e.target.value })}
+                                  className="px-3 py-2 text-sm outline-none"
+                                  style={inputStyle}
+                                />
+                                <input
+                                  type="time"
+                                  value={row.time}
+                                  onChange={(e) => updateSessionRow(idx, { time: e.target.value })}
+                                  className="px-3 py-2 text-sm outline-none"
+                                  style={inputStyle}
+                                />
+                                <input
+                                  type="number"
+                                  min={1}
+                                  value={row.capacity}
+                                  onChange={(e) => updateSessionRow(idx, { capacity: e.target.value })}
+                                  placeholder="정원(비우면 위 정원 사용)"
+                                  className="px-3 py-2 text-sm outline-none w-48"
+                                  style={inputStyle}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => removeSessionRow(idx)}
+                                  className={`text-xs underline ${OUTLINE_BTN_STATES}`}
+                                  style={{ color: "#A63D2F" }}
+                                >
+                                  삭제
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div>

@@ -1,11 +1,27 @@
 "use client";
 
-import { useEffect, useState, useCallback, use } from "react";
+import { useEffect, useState, useCallback, useMemo, use } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import type { Reservation, Show } from "@/types";
+import type { Reservation, Show, ShowSession } from "@/types";
+
+/** "2026-07-24T10:30:00+00:00" → "7월 24일(금) 19:30" — 회차 그룹 헤더·CSV용 (예약 시스템 B1) */
+function formatSessionAt(iso: string): string {
+  try {
+    const d = new Date(iso);
+    const datePart = new Intl.DateTimeFormat("ko-KR", {
+      month: "long", day: "numeric", weekday: "short", timeZone: "Asia/Seoul",
+    }).format(d);
+    const timePart = new Intl.DateTimeFormat("ko-KR", {
+      hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Seoul",
+    }).format(d);
+    return `${datePart} ${timePart}`;
+  } catch {
+    return iso;
+  }
+}
 
 const STATUS_LABEL: Record<string, { label: string; bg: string; color: string }> = {
   confirmed: { label: "확정", bg: "#D4EDD4", color: "#3A5E42" },
@@ -42,6 +58,7 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
   const [authState, setAuthState] = useState<"loading" | "denied" | "ready">("loading");
   const [show, setShow] = useState<Show | null>(null);
   const [rows, setRows] = useState<Reservation[]>([]);
+  const [sessions, setSessions] = useState<ShowSession[]>([]);
   const [confirmClose, setConfirmClose] = useState(false);
 
   const load = useCallback(async () => {
@@ -52,8 +69,16 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
       .select("*")
       .eq("show_id", showId)
       .order("created_at", { ascending: true });
+    // 회차 목록 — 예약 시스템 B1(2026-07-24). 마이그레이션 전이면 테이블이 없어 에러가 나므로
+    // 그때는 조용히 빈 배열로 두고(기존 flat 목록 그대로 표시), 별도 안내 없이 넘어간다.
+    const { data: sessionData } = await supabase
+      .from("show_sessions")
+      .select("*")
+      .eq("show_id", showId)
+      .order("session_at", { ascending: true });
     setShow((showData as Show) ?? null);
     setRows((resData as Reservation[]) ?? []);
+    setSessions((sessionData as ShowSession[]) ?? []);
   }, [showId]);
 
   useEffect(() => {
@@ -110,9 +135,34 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
     applyToggleClosed(next);
   };
 
+  // 회차 라벨 — 예약 시스템 B1(2026-07-24). 회차가 없으면(레거시·마이그레이션 전) "—".
+  const sessionLabel = (sessionId: string | null | undefined) => {
+    if (!sessionId) return "—";
+    const s = sessions.find((x) => x.id === sessionId);
+    return s ? formatSessionAt(s.session_at) : "—";
+  };
+
+  // 회차가 2개 이상인 공연만 회차별로 묶어 보여준다(0~1개면 기존처럼 flat 목록 그대로).
+  const groupedEntries = useMemo(() => {
+    if (sessions.length <= 1) return null;
+    const map = new Map<string, Reservation[]>();
+    for (const r of rows) {
+      const key = r.session_id ?? "__none__";
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(r);
+    }
+    const ordered: { key: string; label: string; items: Reservation[] }[] = [];
+    for (const s of sessions) {
+      if (map.has(s.id)) ordered.push({ key: s.id, label: formatSessionAt(s.session_at), items: map.get(s.id)! });
+    }
+    if (map.has("__none__")) ordered.push({ key: "__none__", label: "회차 미지정", items: map.get("__none__")! });
+    return ordered;
+  }, [rows, sessions]);
+
   const handleExportCsv = () => {
-    const header = ["이름", "연락처", "인원수", "상태", "신청번호", "신청일시"];
+    const header = ["회차", "이름", "연락처", "인원수", "상태", "신청번호", "신청일시"];
     const lines = rows.map((r) => [
+      sessionLabel(r.session_id),
       r.guest_name ?? "",
       r.guest_contact ?? "",
       String(r.party_size),
@@ -225,41 +275,69 @@ export default function PerformerReservationsPage({ params }: { params: Promise<
         <p className="text-sm text-center py-16" style={{ color: "#5A4A3E" }}>
           아직 접수된 신청이 없습니다.
         </p>
-      ) : (
-        <div className="overflow-x-auto" data-clarity-mask="True">
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
-                {["이름", "연락처", "인원", "상태", "신청번호"].map((h) => (
-                  <th key={h} className="text-left py-2 px-2 text-xs tracking-wider" style={{ color: "#5A4A3E" }}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => {
-                const s = STATUS_LABEL[r.status] ?? STATUS_LABEL.confirmed;
-                return (
-                  <tr key={r.id} style={{ borderBottom: "1px solid #E6E1D6" }}>
-                    <td className="py-2 px-2" style={{ color: "#4A3B33" }}>{r.guest_name ?? "-"}</td>
-                    <td className="py-2 px-2" style={{ color: "#4A3B33" }}>
-                      <ContactLink contact={r.guest_contact} />
-                    </td>
-                    <td className="py-2 px-2" style={{ color: "#4A3B33" }}>{r.party_size}명</td>
-                    <td className="py-2 px-2">
-                      <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color }}>
-                        {s.label}
-                      </span>
-                    </td>
-                    <td className="py-2 px-2 text-xs" style={{ color: "#5A4A3E" }}>{r.reservation_code}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      ) : groupedEntries ? (
+        // 회차가 2개 이상인 공연 — 회차별로 묶어서 표시 (예약 시스템 B1, 2026-07-24)
+        <div className="flex flex-col gap-8">
+          {groupedEntries.map((g) => {
+            const gConfirmed = g.items.filter((r) => r.status === "confirmed").reduce((sum, r) => sum + r.party_size, 0);
+            const gWaitlisted = g.items.filter((r) => r.status === "waitlisted").reduce((sum, r) => sum + r.party_size, 0);
+            return (
+              <div key={g.key}>
+                <div className="flex items-baseline justify-between mb-2 flex-wrap gap-1">
+                  <h2 className="text-sm font-semibold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
+                    {g.label}
+                  </h2>
+                  <span className="text-xs" style={{ color: "#5A4A3E" }}>
+                    확정 {gConfirmed}명{gWaitlisted > 0 && ` · 대기 ${gWaitlisted}명`}
+                  </span>
+                </div>
+                <ReservationTable rows={g.items} />
+              </div>
+            );
+          })}
         </div>
+      ) : (
+        <ReservationTable rows={rows} />
       )}
+    </div>
+  );
+}
+
+/** 신청자 테이블 — flat 목록과 회차별 그룹 목록 양쪽에서 재사용. */
+function ReservationTable({ rows }: { rows: Reservation[] }) {
+  return (
+    <div className="overflow-x-auto" data-clarity-mask="True">
+      <table className="w-full text-sm">
+        <thead>
+          <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
+            {["이름", "연락처", "인원", "상태", "신청번호"].map((h) => (
+              <th key={h} className="text-left py-2 px-2 text-xs tracking-wider" style={{ color: "#5A4A3E" }}>
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => {
+            const s = STATUS_LABEL[r.status] ?? STATUS_LABEL.confirmed;
+            return (
+              <tr key={r.id} style={{ borderBottom: "1px solid #E6E1D6" }}>
+                <td className="py-2 px-2" style={{ color: "#4A3B33" }}>{r.guest_name ?? "-"}</td>
+                <td className="py-2 px-2" style={{ color: "#4A3B33" }}>
+                  <ContactLink contact={r.guest_contact} />
+                </td>
+                <td className="py-2 px-2" style={{ color: "#4A3B33" }}>{r.party_size}명</td>
+                <td className="py-2 px-2">
+                  <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color }}>
+                    {s.label}
+                  </span>
+                </td>
+                <td className="py-2 px-2 text-xs" style={{ color: "#5A4A3E" }}>{r.reservation_code}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }

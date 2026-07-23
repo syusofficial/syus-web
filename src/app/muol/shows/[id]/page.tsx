@@ -14,7 +14,7 @@ import { isEnded, extractSchoolName, todayKey } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
 import { toReviewView, type ReviewView } from "@/lib/reviews";
-import type { Show, Review } from "@/types";
+import type { Show, Review, SessionReservationSummary } from "@/types";
 
 // 좌석 신청 확정 합계·정원·마감여부 요약 (get_show_reservation_summary RPC 반환 shape)
 //
@@ -29,6 +29,8 @@ type ReservationSummary = {
   confirmed_total: number;
   capacity: number | null;
   reservation_closed: boolean;
+  /** 회차별 잔여석 — 예약 시스템 B1(2026-07-24). 마이그레이션 전이면 undefined. */
+  sessions?: SessionReservationSummary[];
 };
 
 export default async function ShowDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -550,6 +552,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   initialCapacity={reservationSummary?.capacity ?? show.capacity ?? null}
                   initialConfirmedTotal={reservationSummary?.confirmed_total ?? 0}
                   initialReservationClosed={reservationSummary?.reservation_closed ?? show.reservation_closed ?? false}
+                  initialSessions={reservationSummary?.sessions ?? []}
                 />
                 <Link
                   href="/muol/contact"

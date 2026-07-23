@@ -20,6 +20,28 @@ const LINK_BTN_STATES =
 
 type PendingConfirm = { type: "cancelReservation"; reservation: Reservation } | { type: "withdraw" } | null;
 
+/** syus_reservations + 조인 결과(shows·show_sessions) 원본 행 — 예약 시스템 B1, 2026-07-24 */
+type ReservationJoinRow = Reservation & {
+  shows?: { title?: string; schedule_start?: string; schedule_end?: string } | null;
+  show_sessions?: { session_at?: string } | null;
+};
+
+/** "2026-07-24T10:30:00+00:00" → "7월 24일(금) 19:30" — 내 예약 목록 회차 표기용 (예약 시스템 B1) */
+function formatSessionAt(iso: string): string {
+  try {
+    const d = new Date(iso);
+    const datePart = new Intl.DateTimeFormat("ko-KR", {
+      month: "long", day: "numeric", weekday: "short", timeZone: "Asia/Seoul",
+    }).format(d);
+    const timePart = new Intl.DateTimeFormat("ko-KR", {
+      hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Seoul",
+    }).format(d);
+    return `${datePart} ${timePart}`;
+  } catch {
+    return iso;
+  }
+}
+
 export default function MyPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -90,23 +112,35 @@ export default function MyPage() {
         setRecentShows(ordered);
       }
 
-      // 내 좌석 신청 내역
-      const { data: reservationRows } = await supabase
+      // 내 좌석 신청 내역 (show_sessions 조인은 예약 시스템 B1, 2026-07-24 신설).
+      // 마이그레이션 전에는 show_sessions 테이블·session_id 관계 자체가 없어 이 조인이 에러가
+      // 나므로, 그때는 조인 없는 예전 쿼리로 안전하게 폴백한다(신청 내역이 통째로 안 보이는
+      // 사고를 막기 위한 안전장치 — "컬럼·테이블 존재 여부에 안전한 폴백" 원칙).
+      let reservationRows: ReservationJoinRow[] | null = null;
+      const withSessions = await supabase
         .from("syus_reservations")
-        .select("*, shows(title, schedule_start, schedule_end)")
+        .select("*, shows(title, schedule_start, schedule_end), show_sessions(session_at)")
         .eq("user_id", data.user.id)
         .order("created_at", { ascending: false });
+      if (withSessions.error) {
+        const legacy = await supabase
+          .from("syus_reservations")
+          .select("*, shows(title, schedule_start, schedule_end)")
+          .eq("user_id", data.user.id)
+          .order("created_at", { ascending: false });
+        reservationRows = legacy.data as ReservationJoinRow[] | null;
+      } else {
+        reservationRows = withSessions.data as ReservationJoinRow[] | null;
+      }
 
       setMyReservations(
-        (reservationRows ?? []).map((row) => {
-          const joinedShow = row.shows as unknown as { title?: string; schedule_start?: string; schedule_end?: string } | null;
-          return {
-            ...row,
-            show_title: joinedShow?.title,
-            schedule_start: joinedShow?.schedule_start,
-            schedule_end: joinedShow?.schedule_end,
-          } as Reservation;
-        })
+        (reservationRows ?? []).map((row) => ({
+          ...row,
+          show_title: row.shows?.title,
+          schedule_start: row.shows?.schedule_start,
+          schedule_end: row.shows?.schedule_end,
+          session_at: row.show_sessions?.session_at ?? null,
+        }))
       );
 
       // 대기 순번 — 다른 신청자 정보 노출 없이 본인 대기 건의 순번(숫자)만 받아온다 (디자인팀 B3)
@@ -591,6 +625,7 @@ export default function MyPage() {
                           {r.show_title ?? "공연 정보 없음"}
                         </p>
                         <p className="text-xs mt-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
+                          {r.session_at && `${formatSessionAt(r.session_at)} · `}
                           인원 {r.party_size}명 · 신청번호 {r.reservation_code}
                         </p>
                       </div>

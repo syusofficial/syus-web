@@ -23,6 +23,9 @@ const REASON_MESSAGES: Record<string, string> = {
   guest_info_required: "이름과 연락처를 입력해주세요.",
   show_not_found: "공연 정보를 찾을 수 없습니다.",
   reservation_closed: "공연팀이 예약을 마감했습니다.",
+  // 예약 시스템 B1(회차별 정원 분리, 2026-07-24) — 마이그레이션 이후에만 발생 가능
+  session_required: "관람 회차를 선택해주세요.",
+  session_not_found: "선택하신 회차를 찾을 수 없습니다. 새로고침 후 다시 시도해주세요.",
 };
 
 export async function submitReservation(formData: FormData): Promise<SubmitReservationState> {
@@ -30,6 +33,10 @@ export async function submitReservation(formData: FormData): Promise<SubmitReser
   const partySize = Number(formData.get("party_size") ?? "1");
   const guestName = String(formData.get("guest_name") ?? "").trim();
   const guestContact = String(formData.get("guest_contact") ?? "").trim();
+  // 회차(session_id)는 폼이 회차 기능을 감지했을 때만 채워진다 — 마이그레이션 전이거나
+  // 회차가 아직 없는 공연은 이 필드 자체가 FormData에 없으므로, RPC 호출에도 절대
+  // 포함하지 않는다(구 버전 4-인자 함수와도 그대로 호환되도록 하는 안전장치).
+  const sessionId = String(formData.get("session_id") ?? "").trim();
 
   if (!showId) return { ok: false, message: "공연 정보가 없습니다." };
   if (!guestName || !guestContact) return { ok: false, message: "이름과 연락처를 입력해주세요." };
@@ -39,12 +46,15 @@ export async function submitReservation(formData: FormData): Promise<SubmitReser
 
   const supabase = await createClient();
 
-  const { data: rpcData, error } = await supabase.rpc("submit_reservation", {
+  const rpcPayload: Record<string, unknown> = {
     p_show_id: showId,
     p_party_size: partySize,
     p_guest_name: guestName,
     p_guest_contact: guestContact,
-  });
+  };
+  if (sessionId) rpcPayload.p_session_id = sessionId;
+
+  const { data: rpcData, error } = await supabase.rpc("submit_reservation", rpcPayload);
 
   if (error) {
     console.error("[submitReservation] RPC error:", error);
@@ -156,6 +166,8 @@ export type LookupReservationResult =
       code: string;
       /** 대기 순번 — status가 waitlisted일 때만 값이 있음 (디자인팀 B3) */
       waitlist_position?: number | null;
+      /** 신청한 회차 날짜+시간 — 회차 없는(레거시) 신청이면 null (예약 시스템 B1, 2026-07-24) */
+      session_at?: string | null;
     }
   | { ok: false; message: string };
 
@@ -179,6 +191,7 @@ export async function lookupReservationAction(code: string, contact: string): Pr
     status?: string;
     code?: string;
     waitlist_position?: number | null;
+    session_at?: string | null;
   };
 
   if (!result.ok) {
@@ -194,6 +207,7 @@ export async function lookupReservationAction(code: string, contact: string): Pr
     show_title: result.show_title!,
     schedule_start: result.schedule_start,
     schedule_end: result.schedule_end,
+    session_at: result.session_at,
     party_size: result.party_size!,
     status: result.status!,
     code: result.code!,

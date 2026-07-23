@@ -42,6 +42,24 @@ export type Show = {
 
 export type ReservationStatus = "confirmed" | "waitlisted" | "cancelled";
 
+/** 공연 회차 — 예약 시스템 B1(회차별 정원 분리), 2026-07-24 신설. */
+export type ShowSession = {
+  id: string;
+  show_id: string;
+  session_at: string;       // 회차 날짜+시간 (timestamptz)
+  capacity: number | null;  // null이면 공연 전체 정원(shows.capacity)을 그대로 상속
+  created_at?: string;
+};
+
+/** get_show_reservation_summary RPC의 sessions[] 항목 — 회차별 잔여석 계산에 필요한 값만 포함. */
+export type SessionReservationSummary = {
+  id: string;
+  session_at: string;
+  capacity: number | null;
+  effective_capacity: number | null; // capacity가 null이면 공연 전체 capacity를 상속한 값
+  confirmed_total: number;
+};
+
 export type Reservation = {
   id: string;
   show_id: string;
@@ -53,10 +71,14 @@ export type Reservation = {
   reservation_code: string;
   created_at: string;
   updated_at?: string;
+  /** 회차 없는 예약은 null(레거시) — 예약 시스템 B1, 2026-07-24 신설 */
+  session_id?: string | null;
   /** 조인 시 (관리자·게스트 조회 화면용) */
   show_title?: string;
   schedule_start?: string;
   schedule_end?: string;
+  /** 조인 시(마이페이지·공연자 현황판) — 회차 날짜+시간 */
+  session_at?: string | null;
 };
 
 export type Profile = {

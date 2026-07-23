@@ -10,6 +10,22 @@ const STATUS_LABEL: Record<string, string> = {
   cancelled: "취소됨",
 };
 
+/** "2026-07-24T10:30:00+00:00" → "7월 24일(금) 19:30" — 회차 표기용 (예약 시스템 B1, 2026-07-24) */
+function formatSessionAt(iso: string): string {
+  try {
+    const d = new Date(iso);
+    const datePart = new Intl.DateTimeFormat("ko-KR", {
+      month: "long", day: "numeric", weekday: "short", timeZone: "Asia/Seoul",
+    }).format(d);
+    const timePart = new Intl.DateTimeFormat("ko-KR", {
+      hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Seoul",
+    }).format(d);
+    return `${datePart} ${timePart}`;
+  } catch {
+    return iso;
+  }
+}
+
 // 버튼 4상태 공통 클래스(디자인팀 2026-07-20 진단 반영)
 const BTN_STATES =
   "transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor] disabled:opacity-100 disabled:cursor-wait";
@@ -95,6 +111,9 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
           <p className="text-sm" style={{ color: "#4A3B33" }}>
             <strong>{data.show_title}</strong>
           </p>
+          {data.session_at && (
+            <p className="text-xs" style={{ color: "#5A4A3E" }}>{formatSessionAt(data.session_at)}</p>
+          )}
           <p className="text-xs" style={{ color: "#5A4A3E" }}>
             인원 {data.party_size}명 · 상태 {STATUS_LABEL[data.status] ?? data.status}
             {data.status === "waitlisted" && data.waitlist_position != null && ` (대기 ${data.waitlist_position}번째)`}
