@@ -13,6 +13,7 @@
  */
 import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "../components";
 import { EmailFooter } from "./footer";
+import { safeGreetingName } from "../greeting";
 
 type ReminderShow = {
   id: string;
@@ -140,8 +141,8 @@ function formatYmdWeek(iso?: string | null): string {
 }
 
 export function ShowReminderEmail({ name, shows }: Props) {
-  const trimmedName = name?.trim();
-  const greeting = trimmedName ? `${trimmedName}님,` : "안녕하세요,";
+  const trimmedName = safeGreetingName(name);
+  const greeting = trimmedName ? `${trimmedName}님,` : "회원님,";
 
   // 가장 임박한 공연을 기준으로 메일 제목·미리보기 결정
   const sorted = [...shows].sort((a, b) => a.daysLeft - b.daysLeft);

@@ -19,6 +19,7 @@
  */
 import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading, Hr } from "../components";
 import { EmailFooter } from "./footer";
+import { safeGreetingName } from "../greeting";
 import {
   BODY,
   CONTAINER,
@@ -43,8 +44,8 @@ type Props = {
 };
 
 export function NewSignupPrivacyNotice20260802Email({ name }: Props) {
-  const trimmedName = name?.trim();
-  const greeting = trimmedName ? `${trimmedName}님, 안녕하세요.` : "안녕하세요.";
+  const trimmedName = safeGreetingName(name);
+  const greeting = trimmedName ? `${trimmedName}님, 안녕하세요.` : "회원님, 안녕하세요.";
 
   return (
     <Html lang="ko">

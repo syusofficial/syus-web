@@ -14,6 +14,7 @@
  */
 import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "../components";
 import { EmailFooter } from "./footer";
+import { safeGreetingName } from "../greeting";
 
 type Props = {
   name?: string | null;
@@ -114,8 +115,8 @@ const SIGNOFF = {
 } as const;
 
 export function WelcomeEmail({ name }: Props) {
-  const trimmedName = name?.trim();
-  const greeting = trimmedName ? `${trimmedName}님, 안녕하세요.` : "안녕하세요.";
+  const trimmedName = safeGreetingName(name);
+  const greeting = trimmedName ? `${trimmedName}님, 안녕하세요.` : "회원님, 안녕하세요.";
 
   return (
     <Html lang="ko">

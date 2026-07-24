@@ -4,6 +4,7 @@
  */
 import { Html, Head, Preview, Body, Container, Section, Text, Heading, Link } from "../components";
 import { EmailFooter } from "./footer";
+import { safeGreetingName } from "../greeting";
 
 type Props = {
   name?: string | null;
@@ -35,8 +36,8 @@ const CODE_TEXT = { fontSize: "22px", fontWeight: 700, color: "#5C2A42", margin:
 const SIGNOFF = { ...PARAGRAPH, marginTop: "32px", color: "#5A4A3E" } as const;
 
 export function ReservationWaitlistedEmail({ name, showTitle, code, partySize }: Props) {
-  const trimmedName = name?.trim();
-  const greeting = trimmedName ? `${trimmedName}님, 안녕하세요.` : "안녕하세요.";
+  const trimmedName = safeGreetingName(name);
+  const greeting = trimmedName ? `${trimmedName}님, 안녕하세요.` : "회원님, 안녕하세요.";
 
   return (
     <Html lang="ko">

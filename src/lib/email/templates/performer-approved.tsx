@@ -8,6 +8,7 @@
  */
 import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "../components";
 import { EmailFooter } from "./footer";
+import { safeGreetingName } from "../greeting";
 
 type Props = {
   name?: string | null;
@@ -91,8 +92,8 @@ const SIGNATURE = {
 } as const;
 
 export function PerformerApprovedEmail({ name }: Props) {
-  const trimmedName = name?.trim();
-  const greeting = trimmedName ? `${trimmedName}님, 안녕하세요.` : "안녕하세요.";
+  const trimmedName = safeGreetingName(name);
+  const greeting = trimmedName ? `${trimmedName}님, 안녕하세요.` : "회원님, 안녕하세요.";
   const closingLine = trimmedName
     ? `${trimmedName}님의 무대가 한 사람의 주말이 되기를 바라며,`
     : "당신의 무대가 한 사람의 주말이 되기를 바라며,";

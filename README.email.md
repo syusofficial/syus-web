@@ -10,7 +10,7 @@
 1. **회원가입 환영 메일** — 가입자가 컨펌 메일의 링크를 클릭한 직후, `welcome` 템플릿이 1회 발송됩니다.
 2. **공연자 승인 메일** — 관리자 페이지에서 "승인" 버튼을 누르면 DB 갱신과 동시에 `performer-approved` 템플릿이 1회 발송됩니다.
 
-발신: `무대올림 <no-reply@syus.co.kr>`
+발신: `사유유사 SYUS <no-reply@syus.co.kr>` (인스타그램과 동일하게 발신 명의는 항상 사유유사 — 2026-07-24)
 회신: `syusflux@gmail.com` (사장님 Gmail로 직행)
 
 ---
@@ -45,7 +45,7 @@ npm install
 | 키 | 값 |
 |---|---|
 | `RESEND_API_KEY` | (Resend에서 발급받은 키) |
-| `RESEND_FROM` | `무대올림 <no-reply@syus.co.kr>` |
+| `RESEND_FROM` | `사유유사 SYUS <no-reply@syus.co.kr>` |
 | `RESEND_REPLY_TO` | `syusflux@gmail.com` |
 | `SUPABASE_SERVICE_ROLE_KEY` | (Supabase → Project Settings → API → service_role secret 키) |
 | `SYUS_WEBHOOK_SECRET` | 사장님이 임의로 만든 긴 랜덤 문자열 (예: 64자 영숫자) |
