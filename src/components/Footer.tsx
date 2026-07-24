@@ -61,6 +61,13 @@ export default function Footer() {
             >
               운영: 사유유사 SYUS
             </p>
+            {/* 2026-07-24 신설 — 사장님 확정 미션 문장. 이 Footer는 "/" "/syus*"에서 이미 렌더 안 함(위 pathname 가드) → 무대올림 전용 안전 */}
+            <p
+              className="text-[0.7rem] mb-4"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_META, letterSpacing: "0.02em" }}
+            >
+              한국 대학 무대예술의 진흥을 향해
+            </p>
             <p
               className="text-sm leading-relaxed"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE, wordBreak: "keep-all" }}

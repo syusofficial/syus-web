@@ -100,7 +100,7 @@ export default async function HomePage() {
     url: "https://syus.co.kr",
     logo: "https://syus.co.kr/og-default.png",
     description:
-      "대학 무대예술 공연을 올리고 지역 관객이 좌석을 예약하는 플랫폼. 공연팀에게 등록·게재 수수료를 받지 않습니다.",
+      "한국 대학 무대예술의 진흥을 위해 — 대학 무대예술 공연을 올리고 지역 관객이 좌석을 예약하는 플랫폼. 공연팀에게 등록·게재 수수료를 받지 않습니다.",
   };
 
   return (
@@ -170,6 +170,18 @@ export default async function HomePage() {
         {/* (B) 텍스트 + CTA */}
         <div className="px-6 md:px-12 lg:px-20 pt-6 md:pt-10 pb-20 md:pb-28">
           <div className="max-w-[1800px] mx-auto">
+            {/* 미션 eyebrow — 2026-07-24 신설. "한국 대학 무대예술의 진흥" 확정 문구.
+                (A)의 Top5 라벨(Teal)과 색을 구분해 다른 성격의 캡션임을 시각적으로 알림. */}
+            <p
+              className="text-[0.7rem] tracking-[0.35em] uppercase mb-4"
+              style={{
+                fontFamily: "var(--font-inter)",
+                color: "#5C2A42" /* Divine Damson */,
+                fontWeight: 600,
+              }}
+            >
+              한국 대학 무대예술의 진흥
+            </p>
             <h1
               className="font-bold mb-7"
               style={{

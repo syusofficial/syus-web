@@ -5,12 +5,12 @@ import { buildBreadcrumbList } from "@/lib/structuredData";
 export const metadata: Metadata = {
   title: "소개",
   description:
-    "무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 좌석을 예약하는 플랫폼입니다. 공연팀 게재료 없음. 연극·뮤지컬·무용·발레·국악·음악·전통연희. 운영: 사유유사 SYUS.",
+    "한국 대학 무대예술의 진흥을 향해 — 무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 좌석을 예약하는 플랫폼입니다. 공연팀 게재료 없음. 연극·뮤지컬·무용·발레·국악·음악·전통연희. 운영: 사유유사 SYUS.",
   alternates: { canonical: "https://syus.co.kr/about" },
   openGraph: {
     title: "소개 · 무대올림",
     description:
-      "대학 무대예술 공연을 올리고, 지역 관객이 좌석을 예약하는 플랫폼. 공연팀 게재료 없음. 운영: 사유유사 SYUS.",
+      "한국 대학 무대예술의 진흥을 향해 — 대학 무대예술 공연을 올리고, 지역 관객이 좌석을 예약하는 플랫폼. 공연팀 게재료 없음. 운영: 사유유사 SYUS.",
     url: "https://syus.co.kr/about",
     type: "website",
     images: [
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "소개 · 무대올림",
     description:
-      "대학 무대예술 공연 플랫폼. 공연팀 게재료 없음. 16개 지역·8개 장르의 학생 공연을 한 곳에서.",
+      "한국 대학 무대예술의 진흥을 향해. 대학 무대예술 공연 플랫폼. 공연팀 게재료 없음. 16개 지역·8개 장르의 학생 공연을 한 곳에서.",
     images: ["/og-default.png"],
   },
 };
@@ -107,6 +107,45 @@ export default function AboutPage() {
               국악 · 음악 · 전통연희
             </span>
           </div>
+        </div>
+      </section>
+
+      {/* ── 00. 미션 ──
+          2026-07-24 사장님 확정: "한국 대학 무대예술의 진흥"이 무대올림의 핵심 기조(왜 하는가).
+          기존 "대학 공연을 올리고 좌석을 예약하는 플랫폼"이라는 기능 정체성 위에 얹는 문장 — 대체 아님.
+          섹션 넘버링은 01부터 시작하던 기존 관례를 존중해 00으로 그 앞에 붙인다(나머지 번호 변경 없음). */}
+      <section className="px-6 md:px-12 lg:px-20 py-24">
+        <div className="max-w-5xl mx-auto">
+          <p
+            className="text-xs tracking-[0.3em] uppercase mb-3"
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+          >
+            00. Our Mission
+          </p>
+          <h2
+            className="text-2xl md:text-3xl font-bold mb-8"
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+          >
+            우리가 존재하는 이유
+          </h2>
+          <p
+            className="text-[1.4rem] sm:text-[1.7rem] md:text-[2.1rem] leading-snug font-light mb-8"
+            style={{
+              fontFamily: "var(--font-noto-serif-kr)",
+              color: "#4A3B33",
+              wordBreak: "keep-all",
+              textWrap: "balance",
+            }}
+          >
+            한국 대학 무대예술의 <span style={{ color: "#5C2A42" }}>진흥</span>.
+          </p>
+          <p
+            className="text-base leading-[1.9] max-w-3xl"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+          >
+            무대올림은 이 한 문장을 향해 존재합니다. 흩어진 대학의 무대를 기록하고, 예술가와 관객을
+            잇고, 조용히 알려 — 한국 대학 무대예술이 잊히지 않고 자라나도록 돕습니다.
+          </p>
         </div>
       </section>
 

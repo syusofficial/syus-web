@@ -5,7 +5,7 @@ import { buildBreadcrumbList } from "@/lib/structuredData";
 export const metadata: Metadata = {
   title: "광고주를 위한 안내 · 무대올림",
   description:
-    "대학 무대예술 공연자와 지역 관객이 모이는 무대올림에 광고를 게재해보세요. 공연·문화 인접 브랜드를 위한 광고 안내 페이지입니다. 운영: 사유유사 SYUS.",
+    "한국 대학 무대예술의 진흥을 지향하는 무대올림에 광고를 게재해보세요. 공연·문화 인접 브랜드를 위한 광고 안내 페이지입니다. 운영: 사유유사 SYUS.",
   openGraph: {
     title: "광고주를 위한 안내 · 무대올림",
     description: "공연·문화 인접 브랜드를 위한 광고 안내. 1:1 견적 문의 환영합니다.",
@@ -148,6 +148,13 @@ export default function ForBusinessPage() {
             <br className="md:hidden" />
             정확한 맥락 매칭.
           </h2>
+          <p
+            className="text-base md:text-lg leading-relaxed mb-10 max-w-3xl"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+          >
+            무대올림은 한국 대학 무대예술의 진흥을 지향합니다. 그 지향 위에서, 광고 역시 소음이
+            아니라 공연이라는 맥락 안에서 자연스럽게 만나야 한다고 믿습니다.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <ReasonCard
               n="01"

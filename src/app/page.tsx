@@ -44,7 +44,7 @@ export default function GatewayPage() {
             넓게 <span className="gw-dash">—</span> 둘러보다
           </h2>
           <p className="gw-desc gw-desc--muol">
-            대학 무대예술의 오늘을 한데 모아,
+            한국 대학 무대예술의 진흥을 향해.
             <br />
             가까운 무대와 관객을 잇습니다.
           </p>
