@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
-import { isAtLeast14 } from "@/lib/validators";
 import { triggerWelcomeEmail } from "./actions";
 
 type Consents = {
@@ -34,7 +33,6 @@ function SignupInner() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [birthDate, setBirthDate] = useState(""); // YYYY-MM-DD (PIPA v2.1)
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [consents, setConsents] = useState<Consents>({
@@ -71,18 +69,6 @@ function SignupInner() {
       return;
     }
 
-    // 생년월일 필수
-    if (!birthDate) {
-      setError("생년월일을 입력해주세요.");
-      return;
-    }
-
-    // 만 14세 이상 확인 — 서버 액션 전 클라이언트 차단 (PIPA v2.1)
-    if (!isAtLeast14(birthDate)) {
-      setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
-      return;
-    }
-
     setLoading(true);
 
     const supabase = createClient();
@@ -92,7 +78,6 @@ function SignupInner() {
       options: {
         data: {
           name: name.trim(),
-          birth_date: birthDate,
           marketing_opt_in: consents.marketing,
           terms_agreed_at: new Date().toISOString(),
           privacy_agreed_at: new Date().toISOString(),
@@ -110,9 +95,7 @@ function SignupInner() {
       // 진단을 위해 콘솔에 모든 정보 노출
       console.error("[SIGNUP ERROR]", { message: msg, code, status, error });
 
-      if (/profiles_birth_date_age_check/i.test(msg)) {
-        setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
-      } else if (code === "user_already_exists" || /user already registered/i.test(msg)) {
+      if (code === "user_already_exists" || /user already registered/i.test(msg)) {
         // supabase-js가 code(예: user_already_exists)를 내려주면 그걸 우선 사용.
         // 혹시 code가 안 내려오는 경로가 있을 수 있어 문자열 비교(대소문자 무시)도 함께 유지.
         setError("이미 가입된 이메일입니다.");
@@ -128,19 +111,6 @@ function SignupInner() {
       }
       setLoading(false);
       return;
-    }
-
-    // profiles.birth_date 백필 — handle_new_user trigger가 metadata에서 못 가져오는 경우 대비
-    // (있으면 덮어쓰지 않도록 update만 사용; profiles row가 아직 없을 수 있어 실패는 로그만 남김
-    //  — trigger가 동시 처리 중일 수 있으므로 실패해도 가입 흐름은 막지 않고, 다음 로그인/온보딩에서 채워짐)
-    if (data.user?.id) {
-      const { error: backfillError } = await supabase
-        .from("profiles")
-        .update({ birth_date: birthDate })
-        .eq("id", data.user.id);
-      if (backfillError) {
-        console.warn("[signup] birth_date backfill failed:", backfillError);
-      }
     }
 
     // 2026-07-28: 이메일 컨펌 절차 제거 — 가입과 동시에 세션이 발급되는 것이 기본 동작.
@@ -263,27 +233,6 @@ function SignupInner() {
             </label>
             <PasswordInput value={password} onChange={setPassword} required minLength={8} />
             <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>8자 이상</p>
-          </div>
-
-          {/* 생년월일 — PIPA v2.1 만 14세 이상 확인 용도 */}
-          <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
-              생년월일
-            </label>
-            <input
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              required
-              max={new Date().toISOString().slice(0, 10)}
-              className="w-full px-4 py-3 text-sm outline-none"
-              style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
-            />
-            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
-              만 14세 이상만 가입할 수 있습니다.
-            </p>
           </div>
 
           {/* ─── 약관 동의 섹션 ─── */}

@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
-import { isAtLeast14 } from "@/lib/validators";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -14,9 +13,9 @@ export default function OnboardingPage() {
   const [error, setError] = useState("");
   const [terms, setTerms] = useState(false);
   const [privacy, setPrivacy] = useState(false);
+  const [age14, setAge14] = useState(false); // 만 14세 이상 자기인증 (계산 검증 아님, PIPA v2.1 절충안 2026-07-28)
   const [marketing, setMarketing] = useState(false);
   const [name, setName] = useState("");
-  const [birthDate, setBirthDate] = useState(""); // YYYY-MM-DD — 소셜 가입자도 이메일 가입과 동일한 만 14세 게이트 적용 (PIPA v2.1)
 
   useEffect(() => {
     const supabase = createClient();
@@ -42,13 +41,14 @@ export default function OnboardingPage() {
     });
   }, [router]);
 
-  const allChecked = terms && privacy && marketing;
-  const requiredChecked = terms && privacy;
+  const allChecked = terms && privacy && age14 && marketing;
+  const requiredChecked = terms && privacy && age14;
 
   const toggleAll = () => {
     const next = !allChecked;
     setTerms(next);
     setPrivacy(next);
+    setAge14(next);
     setMarketing(next);
   };
 
@@ -64,28 +64,15 @@ export default function OnboardingPage() {
       return;
     }
 
-    // 생년월일 필수 — 이메일 가입(signup)과 동일한 게이트 (PIPA v2.1)
-    if (!birthDate) {
-      setError("생년월일을 입력해주세요.");
-      return;
-    }
-
-    // 만 14세 이상 확인 — 소셜(구글·카카오) 가입도 이메일 가입과 동일하게 여기서 막는다.
-    if (!isAtLeast14(birthDate)) {
-      setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
-      return;
-    }
-
     setSubmitting(true);
     const supabase = createClient();
     const now = new Date().toISOString();
 
-    // user metadata 업데이트 — 나이 확인을 통과해야만 terms_agreed_at/privacy_agreed_at이
-    // 기록되므로, 위 나이 검증을 통과하기 전에는 온보딩(가입 완료)이 끝나지 않는다.
+    // user metadata 업데이트 — requiredChecked(terms && privacy && age14)를 통과해야만
+    // 여기 도달하므로, 세 필수 동의 없이는 온보딩(가입 완료)이 끝나지 않는다.
     const { error: metaError } = await supabase.auth.updateUser({
       data: {
         name: name.trim(),
-        birth_date: birthDate,
         terms_agreed_at: now,
         privacy_agreed_at: now,
         age14_confirmed_at: now,
@@ -94,25 +81,20 @@ export default function OnboardingPage() {
     });
 
     if (metaError) {
-      // DB 레벨 14세 게이트(check constraint)가 막은 경우 안내문 통일
-      if (/profiles_birth_date_age_check/i.test(metaError.message ?? "")) {
-        setError("본 서비스는 만 14세 이상만 가입 가능합니다.");
-      } else {
-        setError("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
-      }
+      setError("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
       setSubmitting(false);
       return;
     }
 
-    // profiles의 name·birth_date 동기화 — 실패를 무시하지 않고 로그를 남긴다.
+    // profiles의 name 동기화 — 실패를 무시하지 않고 로그를 남긴다.
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({ name: name.trim(), birth_date: birthDate })
+        .update({ name: name.trim() })
         .eq("id", user.id);
       if (profileError) {
-        console.warn("[onboarding] profiles name/birth_date 업데이트 실패", profileError);
+        console.warn("[onboarding] profiles name 업데이트 실패", profileError);
       }
     }
 
@@ -169,27 +151,6 @@ export default function OnboardingPage() {
             />
           </div>
 
-          {/* 생년월일 — PIPA v2.1 만 14세 이상 확인 용도 (이메일 가입과 동일 게이트) */}
-          <div>
-            <label className="block text-xs tracking-wider uppercase mb-2" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
-              생년월일 <span style={{ color: "#A63D2F" }}>*</span>
-            </label>
-            <input
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              required
-              max={new Date().toISOString().slice(0, 10)}
-              className="w-full px-4 py-3 text-sm outline-none"
-              style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
-            />
-            <p className="mt-1 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
-              만 14세 이상만 가입할 수 있습니다.
-            </p>
-          </div>
-
           <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #D4CFC1" }}>
             <ConsentRow checked={allChecked} onChange={toggleAll} label="전체 동의" bold />
             <div className="pl-3 space-y-2" style={{ borderLeft: "2px solid #E6E1D6", paddingLeft: "12px" }}>
@@ -204,6 +165,12 @@ export default function OnboardingPage() {
                 onChange={() => setPrivacy(!privacy)}
                 required
                 label={<>개인정보 수집 및 이용 동의 <Link href="/privacy" target="_blank" className="underline" style={{ color: "#0B5563" }}>보기</Link></>}
+              />
+              <ConsentRow
+                checked={age14}
+                onChange={() => setAge14(!age14)}
+                required
+                label="만 14세 이상입니다."
               />
               <ConsentRow
                 checked={marketing}
