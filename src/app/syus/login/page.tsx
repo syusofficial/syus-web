@@ -5,6 +5,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
+import { useLoginLockout } from "@/hooks/useLoginLockout";
 
 /**
  * 시우스 독립 로그인 페이지 (/syus/login)
@@ -36,9 +37,7 @@ function SyusLoginInner() {
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
-  const [attemptCount, setAttemptCount] = useState(0);
-  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
-  const [countdown, setCountdown] = useState(0);
+  const { lockedUntil, countdown, recordFailure, recordSuccess } = useLoginLockout(email);
 
   // 로그인 후 복귀 목적지(기본 /syus). 오픈 리다이렉트 방지: 내부 경로만 허용.
   const nextParam = searchParams.get("next");
@@ -64,16 +63,6 @@ function SyusLoginInner() {
     if (saved) { setEmail(saved); setRememberId(true); }
   }, []);
 
-  useEffect(() => {
-    if (!lockedUntil) return;
-    const interval = setInterval(() => {
-      const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
-      if (remaining <= 0) { setLockedUntil(null); setAttemptCount(0); setCountdown(0); clearInterval(interval); }
-      else setCountdown(remaining);
-    }, 500);
-    return () => clearInterval(interval);
-  }, [lockedUntil]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -86,18 +75,11 @@ function SyusLoginInner() {
       const supabase = createClient();
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error || !data.user) {
-        const newCount = attemptCount + 1;
-        setAttemptCount(newCount);
-        if (newCount >= 5) {
-          setLockedUntil(Date.now() + 60_000);
-          setError("로그인 시도가 5회 실패하여 60초간 잠금됩니다.");
-        } else {
-          setError(`이메일 또는 비밀번호가 올바르지 않습니다. (남은 시도: ${5 - newCount}회)`);
-        }
+        // 5회 실패 시 60초 잠금 — 새로고침해도 유지되도록 localStorage에도 기록(useLoginLockout이 처리)
+        setError(recordFailure(email));
         return;
       }
-      setAttemptCount(0);
-      setLockedUntil(null);
+      recordSuccess(email);
       if (rememberId) localStorage.setItem(SAVED_EMAIL_KEY, email);
       else localStorage.removeItem(SAVED_EMAIL_KEY);
       // 시우스에서 로그인하면 시우스로 복귀(관리자도 여기선 시우스에 머문다 — 검수는 /syus/monologues/review).
