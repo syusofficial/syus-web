@@ -32,7 +32,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { REGIONS_EXCLUDE_ALL, GENRES } from "@/lib/constants";
+import { REGIONS_EXCLUDE_ALL, GENRES, GENRE_DETAILS, GENRE_DETAIL_GROUPS, hasGenreDetails } from "@/lib/constants";
 import type { User } from "@supabase/supabase-js";
 import { SyusLogoSvg } from "@/components/Nav";
 
@@ -40,7 +40,52 @@ import { SyusLogoSvg } from "@/components/Nav";
 // 메가 메뉴 챕터 정의 (라우트 전수조사 기반)
 // ────────────────────────────────────────────────
 
-type ChapterItem = { label: string; href: string; desc?: string };
+type SubLink = { label: string; href: string };
+type ChapterItem = {
+  label: string;
+  href: string;
+  desc?: string;
+  // 2026-07-28: "장르" 컬럼 전용 — 그룹 헤더가 있는 하위 분류(무용 → 순수무용/실용무용)
+  subGroups?: { heading: string; items: SubLink[] }[];
+  // 그룹 헤더 없이 평탄한 하위 분류(음악 → 성악/피아노/관현악/실용음악)
+  subFlat?: SubLink[];
+};
+
+/**
+ * 장르 컬럼 아이템 생성 — GENRES를 그대로 나열하되, GENRE_DETAIL_GROUPS/GENRE_DETAILS에
+ * 하위 분류가 있는 장르(무용·음악)는 마우스 오버 시 펼쳐지는 하위 링크를 함께 붙인다.
+ * 부모 링크는 그대로 `?genre=` 만으로 이동(장르 전체 보기), 하위 링크는 `&detail=` 추가.
+ */
+function buildGenreItems(): ChapterItem[] {
+  return GENRES.map((g) => {
+    const href = `/muol/shows?genre=${encodeURIComponent(g)}`;
+    const groups = GENRE_DETAIL_GROUPS[g];
+    if (groups) {
+      return {
+        label: g,
+        href,
+        subGroups: Object.entries(groups).map(([heading, subs]) => ({
+          heading,
+          items: subs.map((s) => ({
+            label: s,
+            href: `/muol/shows?genre=${encodeURIComponent(g)}&detail=${encodeURIComponent(s)}`,
+          })),
+        })),
+      };
+    }
+    if (hasGenreDetails(g)) {
+      return {
+        label: g,
+        href,
+        subFlat: GENRE_DETAILS[g].map((s) => ({
+          label: s,
+          href: `/muol/shows?genre=${encodeURIComponent(g)}&detail=${encodeURIComponent(s)}`,
+        })),
+      };
+    }
+    return { label: g, href };
+  });
+}
 type Chapter = {
   key: "shows" | "region" | "about" | "faq";
   label: string;
@@ -69,11 +114,9 @@ const CHAPTERS: Chapter[] = [
       },
       {
         heading: "장르",
-        tagline: "무대예술 8개로 펼쳐본다",
-        items: GENRES.map((g) => ({
-          label: g,
-          href: `/muol/shows?genre=${encodeURIComponent(g)}`,
-        })),
+        tagline: `무대예술 ${GENRES.length}개로 펼쳐본다`,
+        // 무용·음악은 마우스를 올리면 하위 분류가 펼쳐진다(buildGenreItems 참고)
+        items: buildGenreItems(),
       },
     ],
     feature: {
@@ -173,14 +216,59 @@ function MegaPanel({ chapter }: { chapter: Chapter }) {
             <p className="mega-col-heading">{col.heading}</p>
             {col.tagline && <p className="mega-col-tagline">{col.tagline}</p>}
             <ul className="mega-col-list">
-              {col.items.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="mega-item">
-                    <span className="mega-item-label">{item.label}</span>
-                    {item.desc && <span className="mega-item-desc">{item.desc}</span>}
-                  </Link>
-                </li>
-              ))}
+              {col.items.map((item) => {
+                const hasSub = !!(item.subGroups || item.subFlat);
+                if (!hasSub) {
+                  return (
+                    <li key={item.href}>
+                      <Link href={item.href} className="mega-item">
+                        <span className="mega-item-label">{item.label}</span>
+                        {item.desc && <span className="mega-item-desc">{item.desc}</span>}
+                      </Link>
+                    </li>
+                  );
+                }
+                // 하위 분류가 있는 장르(무용·음악) — 마우스를 올리면(hover/focus-within)
+                // 순수 CSS로 하위 링크가 펼쳐진다. 부모 자체는 여전히 링크(클릭 시 장르 전체 보기).
+                return (
+                  <li key={item.href} className="mega-item-wrap">
+                    <div className="mega-item-row">
+                      <Link href={item.href} className="mega-item mega-item-parent">
+                        <span className="mega-item-label">{item.label}</span>
+                      </Link>
+                      <span className="mega-item-caret" aria-hidden="true">▸</span>
+                    </div>
+                    <div className="mega-subpanel">
+                      {item.subGroups
+                        ? item.subGroups.map((group) => (
+                            <div key={group.heading} className="mega-subgroup">
+                              <p className="mega-subgroup-heading">{group.heading}</p>
+                              <ul className="mega-subgroup-list">
+                                {group.items.map((sub) => (
+                                  <li key={sub.href}>
+                                    <Link href={sub.href} className="mega-subitem">
+                                      {sub.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))
+                        : (
+                          <ul className="mega-subgroup-list mega-subgroup-list-flat">
+                            {item.subFlat!.map((sub) => (
+                              <li key={sub.href}>
+                                <Link href={sub.href} className="mega-subitem">
+                                  {sub.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}
@@ -855,6 +943,89 @@ export default function NavMega() {
           letter-spacing: 0.02em;
         }
 
+        /* ── 장르 하위 분류(무용·음악) — hover/focus로 펼쳐지는 CSS 전용 플라이아웃 ──
+           2026-07-28: 처음엔 아래로 펼치는 아코디언(max-height, 형제 항목을 밀어내는 방식)을
+           시도했으나, Playwright 호버 실측에서 두 가지 문제를 확인했다.
+             1) "무용"에서 "음악"으로 마우스를 옮기는 동안 무용 패널이 접히며 형제 항목 위치가
+                같이 움직여 커서 아래에서 타깃이 미끄러짐.
+             2) "무용" 바로 아래에 있는 "국악"·"음악" 행이 무용의 펼침 패널 자체에 뒤덮여
+                (패널이 그 행들 위에 절대위치로 겹침) 클릭이 가로막힘 — 실제 사용자도 겪을 문제.
+           그래서 형제 목록을 절대 건드리지 않는 "오른쪽 옆으로 펼치는" 플라이아웃으로 교체했다.
+           item과 flyout 사이 간격을 0으로 둔 이유: 간격이 있으면 그 틈을 건너는 동안
+           mouseleave가 발생해 패널이 먼저 닫혀버린다(상위 트리거→메가패널의 ::before 브리지와
+           같은 문제). flyout은 li(.mega-item-wrap)의 DOM 자식이라 위치와 무관하게 hover가
+          유지되므로, 간격만 0으로 두면 별도 브리지 없이도 자연스럽게 이어진다. */
+        .mega-item-wrap { position: relative; }
+        .mega-item-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 6px;
+        }
+        .mega-item-row .mega-item-parent { flex: 1 1 auto; }
+        .mega-item-caret {
+          font-size: 0.6rem;
+          color: #8E8579;
+          padding-right: 2px;
+          transition: transform 0.18s ease, color 0.15s ease;
+        }
+        .mega-item-wrap:hover .mega-item-caret,
+        .mega-item-wrap:focus-within .mega-item-caret {
+          transform: rotate(90deg);
+          color: #0B5563;
+        }
+        .mega-subpanel {
+          position: absolute;
+          top: -8px;
+          left: 100%;
+          z-index: 5;
+          min-width: 176px;
+          padding: 10px 16px;
+          background-color: #F0EEE9;
+          border: 1px solid #D4CFC1;
+          border-left: none;
+          box-shadow: 6px 10px 20px rgba(32, 40, 51, 0.1);
+          max-height: 0;
+          overflow: hidden;
+          opacity: 0;
+          pointer-events: none;
+          transition: max-height 0.2s ease, opacity 0.15s ease;
+        }
+        .mega-item-wrap:hover .mega-subpanel,
+        .mega-item-wrap:focus-within .mega-subpanel {
+          max-height: 320px;
+          opacity: 1;
+          pointer-events: auto;
+        }
+        .mega-subgroup { margin: 4px 0 0 2px; padding-top: 6px; }
+        .mega-subgroup:first-child { margin-top: 0; padding-top: 0; }
+        .mega-subgroup-heading {
+          font-family: var(--font-inter);
+          font-size: 0.65rem;
+          font-weight: 600;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #8E8579;
+          margin-bottom: 2px;
+        }
+        .mega-subgroup-list { list-style: none; margin: 0; padding: 0; }
+        .mega-subgroup-list-flat { margin: 0 0 0 2px; padding-top: 0; }
+        .mega-subitem {
+          display: block;
+          padding: 5px 0 5px 8px;
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.82rem;
+          color: #5A4A3E;
+          text-decoration: none;
+          border-left: 1px solid #D4CFC1;
+          transition: color 0.15s ease, border-color 0.15s ease;
+        }
+        .mega-subitem:hover,
+        .mega-subitem:focus-visible {
+          color: #0B5563;
+          border-left-color: #0B5563;
+        }
+
         .mega-region-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
@@ -1073,6 +1244,8 @@ export default function NavMega() {
 
         @media (prefers-reduced-motion: reduce) {
           .mega-panel,
+          .mega-subpanel,
+          .mega-item-caret,
           .navmega-hamburger span,
           .navmega-trigger,
           .navmega-side,
