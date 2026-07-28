@@ -27,16 +27,20 @@ export const REGIONS_EXCLUDE_ALL = REGIONS.slice(1);
  *   - 무용 sub: 발레 / 현대무용 / 한국무용
  *   - 음악 sub: 클래식 / 실용음악 / 합창·앙상블
  *   - 국악은 별도 유지 (음대와 분리된 단과대 구조, 정악·민속악·창작국악 별도 검토)
- * 2026-07-28: "무용" 최상위 장르를 "순수무용"·"실용무용" 2개로 분리(사장님 결정).
+ * 2026-07-28 오전: "무용" 최상위 장르를 "순수무용"·"실용무용" 2개로 분리(사장님 결정, 커밋 e5e610d).
  *   - 순수무용 sub: 한국무용 / 발레 / 현대무용
  *   - 실용무용 sub: 대중무용 / 댄스
  *   - 배열 내 위치는 기존 "무용" 자리를 그대로 이어받아 인접 배치(연극·뮤지컬 뒤, 국악 앞)
+ * 2026-07-28 오후: 구조 분리를 되돌리고 호버 메뉴로 전환(사장님 재결정, 실 등록 데이터 0건 확인 후).
+ *   - 최상위는 다시 "무용" 하나로 복귀. 순수무용/실용무용은 GENRE_DETAIL_GROUPS(아래)의
+ *     그룹 헤더로만 존재 — NavMega 호버 드롭다운에서 "무용" 아래 그룹 라벨로 표시.
+ *   - 음악 sub-genre도 이번에 함께 교체: [클래식, 실용음악, 합창·앙상블] → [성악, 피아노, 관현악, 실용음악]
+ *   - GENRE_DETAILS(등록 폼 상세분류)는 그대로 유지 — 무용 5개 평탄 목록, hasGenreDetails 로직 불변.
  */
 export const GENRES = [
   "연극",
   "뮤지컬",
-  "순수무용",
-  "실용무용",
+  "무용",
   "국악",
   "음악",
   "전통연희",
@@ -45,19 +49,31 @@ export const GENRES = [
 
 /**
  * 장르 sub-genre 매핑.
- * 순수무용·실용무용·음악 선택 시 추가로 상세 분류 선택 (드롭다운).
+ * 무용·음악 선택 시 추가로 상세 분류 선택 (드롭다운/버튼).
  * 다른 장르는 sub-genre 없음 — 단순 선택만.
  */
 export const GENRE_DETAILS = {
-  "순수무용": ["한국무용", "발레", "현대무용"],
-  "실용무용": ["대중무용", "댄스"],
-  "음악": ["클래식", "실용음악", "합창·앙상블"],
+  "무용": ["한국무용", "발레", "현대무용", "대중무용", "댄스"],
+  "음악": ["성악", "피아노", "관현악", "실용음악"],
 } as const satisfies Partial<Record<typeof GENRES[number], readonly string[]>>;
 
 export type GenreWithDetails = keyof typeof GENRE_DETAILS;
 export function hasGenreDetails(genre: string): genre is GenreWithDetails {
   return genre in GENRE_DETAILS;
 }
+
+/**
+ * 그룹 헤더가 있는 장르만 정의 — 내비게이션(NavMega) 호버 드롭다운·등록 폼 전용.
+ * "무용"은 순수무용/실용무용 두 그룹으로 나눠 보여주지만, 실제 저장되는 genre 값은
+ * 여전히 "무용" 하나이고 genre_detail에 한국무용/발레/... 중 하나가 들어간다.
+ * 그룹이 없는 장르(예: 음악)는 GENRE_DETAILS를 그대로 평탄하게 쓴다.
+ */
+export const GENRE_DETAIL_GROUPS: Partial<Record<Genre, Record<string, readonly string[]>>> = {
+  "무용": {
+    "순수무용": ["한국무용", "발레", "현대무용"],
+    "실용무용": ["대중무용", "댄스"],
+  },
+};
 
 /** 공연 구분 — 등록 시 필수 선택. 장르(작품 형식)와 별개로 공연의 성격을 분류. */
 export const SHOW_CATEGORIES = ["교내 공연", "외부 공연", "워크샵"] as const;
