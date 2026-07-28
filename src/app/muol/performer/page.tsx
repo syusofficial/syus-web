@@ -402,7 +402,7 @@ export default function PerformerPage() {
       setError("기타 장르명을 입력해주세요.");
       return;
     }
-    // 2026-06-17: 무용·음악 선택 시 상세 분류 필수
+    // 2026-06-17: 무용·음악 선택 시 상세 분류 필수 (2026-07-28: 무용 → 순수무용·실용무용 분리)
     if (hasGenreDetails(genre) && !form.genre_detail.trim()) {
       setError(`${genre}의 상세 분류를 선택해주세요.`);
       return;
@@ -852,7 +852,7 @@ export default function PerformerPage() {
                   })}
                 </div>
 
-                {/* 무용·음악 sub-genre — 2026-06-17 신설 */}
+                {/* 순수무용·실용무용·음악 sub-genre — 2026-06-17 신설(2026-07-28 무용 분리 반영) */}
                 {hasGenreDetails(genre) && (
                   <div className="mt-3">
                     <p className="text-xs mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>

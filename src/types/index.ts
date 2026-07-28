@@ -18,8 +18,8 @@ export type Show = {
   performer_name?: string;
 
   // 신규 카테고리 / 상세 필드
-  genre?: string;              // 연극 | 뮤지컬 | 무용 | 국악 | 음악 | 전통연희 | 기타 (2026-06-17 발레 제거)
-  genre_detail?: string;       // 무용 → 발레·현대무용·한국무용 / 음악 → 클래식·실용음악·합창·앙상블
+  genre?: string;              // 연극 | 뮤지컬 | 순수무용 | 실용무용 | 국악 | 음악 | 전통연희 | 기타 (2026-07-28 무용 분리)
+  genre_detail?: string;       // 순수무용 → 한국무용·발레·현대무용 / 실용무용 → 대중무용·댄스 / 음악 → 클래식·실용음악·합창·앙상블
   genre_custom?: string;       // 기타 선택 시 직접 입력
   show_category?: string;      // 교내 공연 | 외부 공연 | 워크샵
   region?: string;             // 전체 | 서울 | 경기 | ...
