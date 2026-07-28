@@ -79,9 +79,9 @@ function isEnded(show: Show, today: string): boolean {
 export default async function ShowsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string; genre?: string; category?: string; q?: string; school?: string; page?: string }>;
+  searchParams: Promise<{ region?: string; genre?: string; detail?: string; category?: string; q?: string; school?: string; page?: string }>;
 }) {
-  const { region, genre, category, q, school, page } = await searchParams;
+  const { region, genre, detail, category, q, school, page } = await searchParams;
   const supabase = await createClient();
 
   const currentPage = Math.max(1, parseInt(page ?? "1", 10) || 1);
@@ -95,6 +95,12 @@ export default async function ShowsPage({
   }
   if (genre) {
     query = query.eq("genre", genre);
+  }
+  // NavMega 호버 드롭다운(무용 → 발레 등)에서 넘어오는 세부 분류 필터.
+  // genre_detail 컬럼과 매칭 — genre가 없어도 detail만 단독으로 들어오는 경우는 없다고
+  // 가정하되(링크는 항상 genre+detail을 함께 보냄), 방어적으로 genre 필터와 별개로 적용한다.
+  if (detail) {
+    query = query.eq("genre_detail", detail);
   }
   if (category) {
     query = query.eq("show_category", category);
@@ -153,6 +159,7 @@ export default async function ShowsPage({
     const params = new URLSearchParams();
     if (region) params.set("region", region);
     if (genre) params.set("genre", genre);
+    if (detail) params.set("detail", detail);
     if (category) params.set("category", category);
     if (school) params.set("school", school);
     if (q) params.set("q", q);
@@ -235,6 +242,7 @@ export default async function ShowsPage({
             const params = new URLSearchParams();
             if (r !== "전체") params.set("region", r);
             if (genre) params.set("genre", genre);
+            if (detail) params.set("detail", detail);
             if (category) params.set("category", category);
             if (school) params.set("school", school);
             if (q) params.set("q", q);
@@ -273,6 +281,9 @@ export default async function ShowsPage({
             const params = new URLSearchParams();
             if (region) params.set("region", region);
             if (g) params.set("genre", g);
+            // 여기서는 detail을 의도적으로 실어보내지 않는다 — 장르 칩을 다시 누르면
+            // "그 장르 전체 보기"로 되돌아가야 하고, detail은 이전 장르에 속했던 값이라
+            // 새 장르와 맞지 않을 수 있다(NavMega 호버 하위 항목 클릭 시에만 detail이 실린다).
             if (category) params.set("category", category);
             if (school) params.set("school", school);
             if (q) params.set("q", q);
@@ -308,6 +319,7 @@ export default async function ShowsPage({
             const params = new URLSearchParams();
             if (region) params.set("region", region);
             if (genre) params.set("genre", genre);
+            if (detail) params.set("detail", detail);
             if (c) params.set("category", c);
             if (school) params.set("school", school);
             if (q) params.set("q", q);
@@ -347,6 +359,7 @@ export default async function ShowsPage({
               const params = new URLSearchParams();
               if (region) params.set("region", region);
               if (genre) params.set("genre", genre);
+              if (detail) params.set("detail", detail);
               if (category) params.set("category", category);
               if (sch) params.set("school", sch);
               if (q) params.set("q", q);
