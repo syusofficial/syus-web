@@ -351,6 +351,10 @@ export default function NavMega() {
   // 모바일 드로어
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileChapter, setMobileChapter] = useState<Chapter["key"] | null>(null);
+  // 2026-07-28: 모바일 장르 항목(무용·음악) 하위 분류 아코디언 — 탭으로 펼치고 접는다.
+  // hover가 없는 터치 환경이라 PC의 플라이아웃(옆으로) 대신 아래로 펼치는 방식.
+  // item.href를 키로 써서 어느 항목이 펼쳐졌는지 추적(챕터 안에 하위분류 있는 항목은 무용·음악뿐).
+  const [mobileSubOpen, setMobileSubOpen] = useState<string | null>(null);
 
   // ── auth 로드 (기존 Nav.tsx 패턴 그대로) ──
   // 2026-07-14 (제작팀 — 무대올림↔시우스 로그인 표시 불일치 진단):
@@ -439,6 +443,7 @@ export default function NavMega() {
     setOpenChapter(null);
     setMobileOpen(false);
     setMobileChapter(null);
+    setMobileSubOpen(null);
   }, [pathname]);
 
   const handleLogout = async () => {
@@ -582,7 +587,10 @@ export default function NavMega() {
                   <button
                     type="button"
                     className="navmega-mobile-chapter-btn"
-                    onClick={() => setMobileChapter(opened ? null : ch.key)}
+                    onClick={() => {
+                      setMobileChapter(opened ? null : ch.key);
+                      setMobileSubOpen(null); // 챕터 전환 시 하위 아코디언도 초기화
+                    }}
                     aria-expanded={opened}
                   >
                     <span>{ch.label}</span>
@@ -594,13 +602,73 @@ export default function NavMega() {
                         <div key={col.heading} className="navmega-mobile-col">
                           <p className="navmega-mobile-col-heading">{col.heading}</p>
                           <ul>
-                            {col.items.map((item) => (
-                              <li key={item.href}>
-                                <Link href={item.href} onClick={() => setMobileOpen(false)}>
-                                  {item.label}
-                                </Link>
-                              </li>
-                            ))}
+                            {col.items.map((item) => {
+                              const hasSub = !!(item.subGroups || item.subFlat);
+                              if (!hasSub) {
+                                return (
+                                  <li key={item.href}>
+                                    <Link href={item.href} onClick={() => setMobileOpen(false)}>
+                                      {item.label}
+                                    </Link>
+                                  </li>
+                                );
+                              }
+                              // 하위 분류가 있는 장르(무용·음악) — 라벨을 탭하면 장르 전체로 이동,
+                              // 화살표 버튼을 탭하면 하위 분류가 아래로 펼쳐진다(터치 아코디언).
+                              const subOpen = mobileSubOpen === item.href;
+                              return (
+                                <li key={item.href} className="navmega-mobile-sub-wrap">
+                                  <div className="navmega-mobile-sub-row">
+                                    <Link
+                                      href={item.href}
+                                      onClick={() => setMobileOpen(false)}
+                                      className="navmega-mobile-sub-label"
+                                    >
+                                      {item.label}
+                                    </Link>
+                                    <button
+                                      type="button"
+                                      className={`navmega-mobile-sub-toggle${subOpen ? " is-open" : ""}`}
+                                      onClick={() => setMobileSubOpen(subOpen ? null : item.href)}
+                                      aria-expanded={subOpen}
+                                      aria-label={`${item.label} 하위 분류 ${subOpen ? "접기" : "펼치기"}`}
+                                    >
+                                      <span aria-hidden="true">▸</span>
+                                    </button>
+                                  </div>
+                                  {subOpen && (
+                                    <div className="navmega-mobile-sub-body">
+                                      {item.subGroups
+                                        ? item.subGroups.map((group) => (
+                                            <div key={group.heading} className="navmega-mobile-subgroup">
+                                              <p className="navmega-mobile-subgroup-heading">{group.heading}</p>
+                                              <ul className="navmega-mobile-subgroup-list">
+                                                {group.items.map((sub) => (
+                                                  <li key={sub.href}>
+                                                    <Link href={sub.href} onClick={() => setMobileOpen(false)}>
+                                                      {sub.label}
+                                                    </Link>
+                                                  </li>
+                                                ))}
+                                              </ul>
+                                            </div>
+                                          ))
+                                        : (
+                                          <ul className="navmega-mobile-subgroup-list navmega-mobile-subgroup-list-flat">
+                                            {item.subFlat!.map((sub) => (
+                                              <li key={sub.href}>
+                                                <Link href={sub.href} onClick={() => setMobileOpen(false)}>
+                                                  {sub.label}
+                                                </Link>
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        )}
+                                    </div>
+                                  )}
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                       ))}
@@ -1166,6 +1234,70 @@ export default function NavMega() {
           color: #4A3B33;
           text-decoration: none;
         }
+
+        /* ── 모바일 장르 하위 분류 아코디언(무용·음악) ──
+           2026-07-28: 라벨(Link)과 토글(button)을 분리한 행. 라벨을 탭하면 장르 전체로
+           이동, 화살표 버튼을 탭하면 하위 분류가 아래로 펼쳐진다. hover가 없으니 PC의
+           옆으로 펼치는 플라이아웃 대신 형제 항목을 자연스럽게 밀어내는 아코디언으로 구현. */
+        .navmega-mobile-sub-wrap { list-style: none; }
+        .navmega-mobile-sub-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .navmega-mobile-sub-label {
+          flex: 1 1 auto;
+          display: block;
+          padding: 10px 0;
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.92rem;
+          color: #4A3B33;
+          text-decoration: none;
+        }
+        .navmega-mobile-sub-toggle {
+          appearance: none;
+          background: transparent;
+          border: 0;
+          flex: 0 0 auto;
+          width: 44px;
+          height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.7rem;
+          color: #8E8579;
+          cursor: pointer;
+          transition: transform 0.18s ease, color 0.15s ease;
+        }
+        .navmega-mobile-sub-toggle.is-open {
+          transform: rotate(90deg);
+          color: #0B5563;
+        }
+        .navmega-mobile-sub-body {
+          padding: 0 0 10px 4px;
+        }
+        .navmega-mobile-subgroup { margin-top: 8px; }
+        .navmega-mobile-subgroup:first-child { margin-top: 0; }
+        .navmega-mobile-subgroup-heading {
+          font-family: var(--font-inter);
+          font-size: 0.65rem;
+          font-weight: 600;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #8E8579;
+          margin: 0 0 2px;
+        }
+        .navmega-mobile-subgroup-list { list-style: none; margin: 0; padding: 0; }
+        .navmega-mobile-subgroup-list-flat { margin-top: 2px; }
+        .navmega-mobile-subgroup-list li a {
+          display: block;
+          padding: 11px 0 11px 14px;
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.86rem;
+          color: #5A4A3E;
+          text-decoration: none;
+          border-left: 1px solid #D4CFC1;
+        }
         .navmega-mobile-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
@@ -1249,7 +1381,8 @@ export default function NavMega() {
           .navmega-hamburger span,
           .navmega-trigger,
           .navmega-side,
-          .navmega-cta { transition: none; }
+          .navmega-cta,
+          .navmega-mobile-sub-toggle { transition: none; }
         }
       `}</style>
     </nav>
