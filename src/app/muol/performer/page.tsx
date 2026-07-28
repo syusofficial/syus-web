@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import { REGIONS_EXCLUDE_ALL, GENRES, SHOW_CATEGORIES, GENRE_DETAILS, hasGenreDetails } from "@/lib/constants";
+import { REGIONS_EXCLUDE_ALL, GENRES, SHOW_CATEGORIES, GENRE_DETAILS, GENRE_DETAIL_GROUPS, hasGenreDetails } from "@/lib/constants";
 import { isValidUrl, normalizeUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
 import type { Show } from "@/types";
 
@@ -402,7 +402,7 @@ export default function PerformerPage() {
       setError("기타 장르명을 입력해주세요.");
       return;
     }
-    // 2026-06-17: 무용·음악 선택 시 상세 분류 필수 (2026-07-28: 무용 → 순수무용·실용무용 분리)
+    // 2026-06-17: 무용·음악 선택 시 상세 분류 필수 (2026-07-28 오후: 무용은 다시 단일 장르, 그룹은 UI 표시만)
     if (hasGenreDetails(genre) && !form.genre_detail.trim()) {
       setError(`${genre}의 상세 분류를 선택해주세요.`);
       return;
@@ -852,14 +852,16 @@ export default function PerformerPage() {
                   })}
                 </div>
 
-                {/* 순수무용·실용무용·음악 sub-genre — 2026-06-17 신설(2026-07-28 무용 분리 반영) */}
+                {/* 무용·음악 sub-genre — 2026-06-17 신설, 2026-07-28 오전 순수/실용무용 분리 →
+                    2026-07-28 오후 "무용" 단일 장르로 복귀 + 그룹 표시(순수무용/실용무용 소제목)로 전환.
+                    음악은 그룹 없이 기존처럼 flat 4버튼. */}
                 {hasGenreDetails(genre) && (
                   <div className="mt-3">
                     <p className="text-xs mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                       {genre} 상세 분류 <span style={{ color: "#A63D2F" }}>*</span>
                     </p>
-                    <div className="flex flex-wrap gap-2">
-                      {GENRE_DETAILS[genre].map((d) => {
+                    {(() => {
+                      const detailButton = (d: string) => {
                         const dActive = form.genre_detail === d;
                         return (
                           <button
@@ -877,8 +879,33 @@ export default function PerformerPage() {
                             {d}
                           </button>
                         );
-                      })}
-                    </div>
+                      };
+                      const groups = GENRE_DETAIL_GROUPS[genre];
+                      if (groups) {
+                        return (
+                          <div className="space-y-3">
+                            {Object.entries(groups).map(([groupHeading, subs]) => (
+                              <div key={groupHeading}>
+                                <p
+                                  className="text-[11px] tracking-[0.12em] uppercase mb-1.5"
+                                  style={{ fontFamily: "var(--font-inter)", color: "#8E8579" }}
+                                >
+                                  {groupHeading}
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                  {subs.map((d) => detailButton(d))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      }
+                      return (
+                        <div className="flex flex-wrap gap-2">
+                          {GENRE_DETAILS[genre].map((d) => detailButton(d))}
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
 
