@@ -5,7 +5,7 @@ import { buildBreadcrumbList } from "@/lib/structuredData";
 export const metadata: Metadata = {
   title: "소개",
   description:
-    "한국 대학 무대예술의 진흥을 향해 — 무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 좌석을 예약하는 플랫폼입니다. 공연팀 게재료 없음. 연극·뮤지컬·무용·발레·국악·음악·전통연희. 운영: 사유유사 SYUS.",
+    "한국 대학 무대예술의 진흥을 향해 — 무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 좌석을 예약하는 플랫폼입니다. 공연팀 게재료 없음. 연극·뮤지컬·순수무용·실용무용·국악·음악·전통연희. 운영: 사유유사 SYUS.",
   alternates: { canonical: "https://syus.co.kr/about" },
   openGraph: {
     title: "소개 · 무대올림",
@@ -98,7 +98,7 @@ export default function AboutPage() {
               className="text-sm tracking-[0.15em]"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", opacity: 0.75 }}
             >
-              연극 · 뮤지컬 · 무용 · 국악
+              연극 · 뮤지컬 · 순수무용 · 실용무용 · 국악
             </span>
             <span
               className="text-sm tracking-[0.15em]"
@@ -185,7 +185,7 @@ export default function AboutPage() {
                 압니다.
               </p>
               <p className="mb-3">
-                ‘무대’ 한 글자가 연극·뮤지컬·무용·발레·국악·음악·전통연희까지 모두 품습니다.
+                ‘무대’ 한 글자가 연극·뮤지컬·순수무용·실용무용·국악·음악·전통연희까지 모두 품습니다.
               </p>
               <p
                 className="pt-3 italic"
@@ -608,7 +608,7 @@ export default function AboutPage() {
                   wordBreak: "keep-all",
                 }}
               >
-                대학에서 무대를 올리는 연극·뮤지컬·무용·발레·국악·음악·전통연희 동아리, 학과, 졸업 워크샵.
+                대학에서 무대를 올리는 연극·뮤지컬·순수무용·실용무용·국악·음악·전통연희 동아리, 학과, 졸업 워크샵.
                 <br />
                 막을 올리는 모든 젊은 예술가가 무대올림의 동료입니다.
               </p>

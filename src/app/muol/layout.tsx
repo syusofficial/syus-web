@@ -11,7 +11,7 @@ const SITE_URL = "https://syus.co.kr";
 const SITE_NAME = "무대올림";
 const SITE_TAGLINE = "운영: 사유유사 SYUS";
 const SITE_DESCRIPTION =
-  "한국 대학 무대예술의 진흥을 위해 — 무대올림은 대학 무대예술 공연을 올리고 지역 관객이 좌석을 예약하는 플랫폼입니다. 공연팀 게재료 없음. 연극·뮤지컬·무용·국악·음악·전통연희.";
+  "한국 대학 무대예술의 진흥을 위해 — 무대올림은 대학 무대예술 공연을 올리고 지역 관객이 좌석을 예약하는 플랫폼입니다. 공연팀 게재료 없음. 연극·뮤지컬·순수무용·실용무용·국악·음악·전통연희.";
 
 export const metadata: Metadata = {
   title: {
@@ -29,7 +29,8 @@ export const metadata: Metadata = {
     "무대예술",
     "대학 연극",
     "대학 뮤지컬",
-    "대학 무용",
+    "대학 순수무용",
+    "대학 실용무용",
     "대학 국악",
     "대학 음악",
     "전통연희",
