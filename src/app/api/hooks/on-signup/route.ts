@@ -1,16 +1,23 @@
 /**
  * Supabase Database Webhook 수신 — 회원가입 환영 메일 발송.
  *
- * 트리거 정책 (사장님 결정 2026-06-08)
- * - Supabase Auth 컨펌 메일은 ON 유지
- * - 사용자가 컨펌 링크 클릭 → auth.users.email_confirmed_at이 채워짐
- * - 그 시점에 Supabase Database Webhook(UPDATE on auth.users)이 이 엔드포인트로 POST
- * - 이 핸들러는 컨펌이 처음 완료된 경우에만 환영 메일을 1회 발송
+ * 트리거 정책 (2026-07-28 사장님 결정으로 컨펌 절차 제거 — 이전 2026-06-08 "컨펌 메일 ON 유지"
+ * 결정을 뒤집음. 가입 불편 민원 다수로 이메일 링크 클릭 단계를 없애기로 함)
+ * - Supabase Auth "Confirm email"은 이제 OFF가 기본(대시보드 설정, 운영자 직접 액션)
+ * - 컨펌이 OFF면 auth.users.email_confirmed_at이 가입 즉시(INSERT 시점)에 채워진다.
+ *   컨펌이 ON으로 남아있는 예외적 경우엔 컨펌 링크 클릭 시 UPDATE로 채워진다.
+ *   이 핸들러는 두 경우 모두 대응한다 (아래 3번 판정 로직 참고).
+ * - 다만 이 엔드포인트는 어디까지나 보조 경로다. 신뢰의 축은
+ *   src/app/auth/signup/actions.ts(triggerWelcomeEmail) — 가입 화면에서 세션이 발급되는
+ *   순간 직접 호출하는 경로 — 로 옮겼다. Database Webhook의 구독 이벤트(Insert/Update)는
+ *   Supabase 대시보드 설정이라 코드에서 보장할 수 없기 때문 (README.email.md 참고).
  *
  * 멱등성 (중복 발송 방지)
  * - profiles.welcome_email_sent_at 컬럼이 있으면 그 값으로 판단
  *   (없으면 best-effort: in-memory Set으로 같은 인스턴스 내 중복만 차단)
  * - DB에 컬럼 추가 SQL은 README.email.md에 기록 — 사장님이 Supabase에서 직접 실행
+ * - 실제 발송 로직은 src/lib/email/welcome-trigger.ts에 공유돼 있어, 이 웹훅 경로와
+ *   signup actions.ts 직접 호출 경로가 동시에 도착해도 중복 발송을 막는다.
  *
  * 보안
  * - SYUS_WEBHOOK_SECRET 헤더(x-syus-webhook-secret) 일치 시에만 처리
@@ -18,17 +25,15 @@
  */
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendMail } from "@/lib/email/send";
-import { WelcomeEmail } from "@/lib/email/templates/welcome";
+import { sendWelcomeEmailOnce } from "@/lib/email/welcome-trigger";
 
 // Edge가 아닌 Node 런타임 필요 (Resend SDK · React Email 렌더링)
 export const runtime = "nodejs";
 // 동적 처리 보장 (webhook은 캐시되지 않아야 함)
 export const dynamic = "force-dynamic";
 
-// fallback 멱등성 — 프로세스 내 중복 호출 방어
-// (Vercel 인스턴스가 새로 뜨면 리셋되지만, profiles.welcome_email_sent_at이 1차 방어선)
-const inMemorySent = new Set<string>();
+// 프로세스 내 중복 호출 방어(in-memory Set)는 src/lib/email/welcome-trigger.ts로 이동
+// (웹훅 경로·signup actions.ts 직접 호출 경로가 하나의 멱등 상태를 공유하도록)
 
 type SupabaseWebhookPayload = {
   // Database Webhook 형식 (UPDATE on auth.users)
@@ -144,63 +149,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, skipped: "not_new_confirmation" });
   }
 
-  // 4) 멱등성 — 프로세스 내 중복 차단
-  if (inMemorySent.has(record.id)) {
-    return NextResponse.json({ ok: true, skipped: "already_sent_in_memory" });
-  }
-
-  // 5) 멱등성 — DB 기반 (profiles.welcome_email_sent_at)
-  //    컬럼이 없을 수도 있으므로 에러는 무시하고 계속 진행
+  // 4)~7) 멱등 발송 — 공유 헬퍼(src/lib/email/welcome-trigger.ts)가
+  //    in-memory Set·profiles.welcome_email_sent_at 멱등 체크와 실제 발송을 모두 처리한다.
+  //    signup actions.ts의 직접 호출 경로와 동일한 멱등 상태를 공유하므로 중복 발송 걱정 없음.
   const admin = createAdminClient();
-  let name: string | null = record.raw_user_meta_data?.name ?? null;
+  const name = record.raw_user_meta_data?.name ?? null;
 
-  try {
-    const { data: profile } = await admin
-      .from("profiles")
-      .select("name, welcome_email_sent_at")
-      .eq("id", record.id)
-      .maybeSingle();
+  const result = await sendWelcomeEmailOnce(admin, { id: record.id, email: record.email, name });
 
-    if (profile?.welcome_email_sent_at) {
-      inMemorySent.add(record.id);
-      return NextResponse.json({ ok: true, skipped: "already_sent_in_db" });
-    }
-    if (profile?.name) name = profile.name;
-  } catch (err) {
-    // 컬럼 미생성 등의 사유로 실패 가능 — 발송은 계속 진행하되 로그만 남김
-    console.warn("[on-signup] profiles 조회 경고:", err);
+  if (!result.sent) {
+    return NextResponse.json({ ok: true, skipped: result.reason });
   }
 
-  // 6) 메일 발송 — 실패해도 200 반환 (가입 흐름은 절대 막지 않음)
-  let result: { ok: boolean; id?: string; error?: unknown };
-  try {
-    result = await sendMail({
-      to: record.email,
-      subject: "사유유사 무대올림에 오신 것을 환영합니다",
-      react: WelcomeEmail({ name }),
-    });
-  } catch (err) {
-    console.error("[on-signup] sendMail 예외:", err);
-    return NextResponse.json({ ok: true, skipped: "send_exception" });
-  }
-
-  if (!result.ok) {
-    console.error("[on-signup] 발송 실패:", result.error);
-    return NextResponse.json({ ok: true, skipped: "send_failed" });
-  }
-
-  // 7) 멱등성 기록
-  inMemorySent.add(record.id);
-  try {
-    await admin
-      .from("profiles")
-      .update({ welcome_email_sent_at: new Date().toISOString() })
-      .eq("id", record.id);
-  } catch (err) {
-    // 컬럼 없으면 무시 — in-memory Set이 같은 인스턴스 내 중복은 막아 줌
-    console.warn("[on-signup] welcome_email_sent_at 기록 경고:", err);
-  }
-
-  console.log("[on-signup] 환영메일 발송 성공", { id: result.id });
   return NextResponse.json({ ok: true, id: result.id });
 }

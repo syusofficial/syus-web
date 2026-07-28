@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 import { isAtLeast14 } from "@/lib/validators";
+import { triggerWelcomeEmail } from "./actions";
 
 type Consents = {
   terms: boolean;       // 이용약관 (필수)
@@ -142,12 +143,21 @@ function SignupInner() {
       }
     }
 
-    // 이메일 컨펌이 OFF여도 안전을 위해 세션이 있는지 확인
+    // 2026-07-28: 이메일 컨펌 절차 제거 — 가입과 동시에 세션이 발급되는 것이 기본 동작.
+    // data.session이 있으면 바로 로그인 처리하고, 환영 메일도 이 순간 직접 트리거한다
+    // (Database Webhook 도착 여부와 무관하게 확실히 나가도록 — welcome-trigger.ts 참고).
+    // 메일 발송은 화면 전환을 막지 않도록 기다리지 않는다(best-effort, 실패해도 가입은 유효).
     if (data.session) {
+      if (data.user?.id) {
+        triggerWelcomeEmail(data.user.id).catch((err) => {
+          console.warn("[signup] triggerWelcomeEmail 호출 실패:", err);
+        });
+      }
       router.push(safeNext);
       router.refresh();
     } else {
-      // 컨펌이 ON 상태로 남아있는 경우 — 로그인 페이지로(온 곳에 맞춰 시우스/무대올림)
+      // 드물게 컨펌이 ON으로 남아있거나 세션 발급이 지연되는 경우의 안전장치 —
+      // 이 경우엔 웹훅 경로(on-signup/route.ts)가 환영 메일을 대신 처리한다.
       router.push(`${backToLogin}?signup=success`);
     }
   };

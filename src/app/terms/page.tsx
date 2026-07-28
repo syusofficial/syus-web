@@ -65,7 +65,7 @@ export default function TermsPage() {
       h: "제4조 (회원가입)",
       body: (
         <ol className="list-decimal pl-5 space-y-1">
-          <li>가입 희망자가 본 약관 및 개인정보처리방침에 동의하고 이메일 인증을 완료하면 회원가입이 완료됩니다.</li>
+          <li>가입 희망자가 본 약관 및 개인정보처리방침에 동의하고 필요한 정보를 입력하면 회원가입이 완료됩니다.</li>
           <li>
             회사는 다음의 경우 가입을 거절하거나 사후에 취소할 수 있습니다.
             <ul className="list-disc pl-5 mt-1 space-y-0.5">
