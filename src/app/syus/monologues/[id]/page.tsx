@@ -13,7 +13,7 @@ type Mono = {
 };
 
 const STATUS_LABEL: Record<string, string> = {
-  pending: "접수됨 · 생성 대기", reviewing: "검수 중", delivered: "전달 완료", rejected: "반려됨",
+  pending: "접수됨 · 생성 대기", reviewing: "생성 중", delivered: "전달 완료", rejected: "반려됨",
 };
 
 function fmt(iso: string) { const d = new Date(iso); return isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`; }
@@ -41,7 +41,8 @@ export default function MonologueDetail() {
 
   const isOwner = uid === m.user_id;
   const reqLine = [m.char_type, m.emotion, m.tone, m.purpose].filter(Boolean).join(" · ");
-  // 검수 게이트: 운영자 승인(delivered) 또는 공개 처리된 뒤에만 본문 노출. reviewing/pending/rejected는 상태만.
+  // 전달 게이트: AI 생성 즉시 delivered(2026-07-29~, 운영자 수동 승인 없음) 또는 공개 처리된 뒤에만 본문 노출.
+  // 과거 reviewing 잔여 건은 운영자가 /syus/monologues/review 에서 수동 승인해야 delivered가 됨. pending/rejected는 상태만.
   const revealed = !!m.generated_text && (m.status === "delivered" || m.is_public);
 
   return (
@@ -53,7 +54,7 @@ export default function MonologueDetail() {
 
         {revealed ? (
           <>
-            <span className="syc-badge syc-badge--static" style={{ color: "var(--color-syus-stage-flex)", marginBottom: 12 }}>AI 창작 원본 · 검수본</span>
+            <span className="syc-badge syc-badge--static" style={{ color: "var(--color-syus-stage-flex)", marginBottom: 12 }}>AI 창작 원본</span>
             <p className="syc-detail-body" style={{ fontSize: "1.05rem", lineHeight: 1.9 }}>{m.generated_text}</p>
           </>
         ) : (
@@ -61,7 +62,7 @@ export default function MonologueDetail() {
             <p className="syc-empty-h">{STATUS_LABEL[m.status] ?? "처리 중"}</p>
             <p className="syc-empty-b" style={{ marginBottom: 0 }}>
               {isOwner
-                ? "요청이 접수되었어요. 생성 후 운영자 검수를 거쳐 이 자리에 독백이 전달됩니다."
+                ? "요청이 접수되었어요. 지금 AI가 독백을 짓고 있어요. 완료되면 바로 이 자리에 독백이 나타납니다."
                 : "아직 전달·공개되지 않은 요청입니다."}
             </p>
           </div>

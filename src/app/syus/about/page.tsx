@@ -34,7 +34,7 @@ const LEFT: SectionIntro[] = [
   {
     slug: "flex", stage: "변형 무대", section: "창작 독백 아카이브", color: "var(--color-syus-stage-flex)",
     space: "필요에 따라 형태가 바뀌는 가변 무대.",
-    holds: "요청할 때마다 새 독백이 지어지는 서고입니다. 기존 작품을 베끼지 않은 AI 창작 원본을 운영자 검수를 거쳐 건네고, 동의한 것들이 쌓입니다.",
+    holds: "요청할 때마다 새 독백이 지어지는 서고입니다. 기존 작품을 베끼지 않은 AI 창작 원본을 요청 즉시 지어 곧바로 건네고, 동의한 것들이 쌓입니다.",
   },
   {
     slug: "blackbox", stage: "블랙박스", section: "관람의 잔상", color: "var(--color-syus-stage-blackbox)",

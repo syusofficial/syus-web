@@ -6,9 +6,15 @@ import { createAdminClient } from "@/lib/supabase/admin";
 /**
  * 창작 독백 생성 백엔드 (가이드북 §6.3 — B안 큐 기반)
  *
- * 흐름: 요청 폼이 syus_monologues에 status='pending'으로 저장 → 이 라우트를 호출
- *   → Anthropic API로 "원본(창작) 독백" 생성 → status='reviewing'로 전환(검수 대기)
- *   → 운영자가 /syus/monologues/review 에서 승인(delivered) / 반려(rejected).
+ * 흐름 (2026-07-29 사장님 결정 — 운영자 수동 검수 단계 폐지):
+ *   요청 폼이 syus_monologues에 status='pending'으로 저장 → 이 라우트를 호출
+ *   → Anthropic API로 "원본(창작) 독백" 생성 성공 시 → 그 즉시 status='delivered'로 확정,
+ *     is_public도 요청 시 사용자가 고른 allow_public 값을 그대로 반영해 회원에게 곧바로 전달.
+ *     (예전엔 여기서 'reviewing'으로 멈추고 /syus/monologues/review 에서 운영자가
+ *      승인 버튼을 눌러야만 delivered로 넘어갔지만, 이제 그 수동 승인 단계가 없다.)
+ *   → 생성 실패 시에는 그대로 pending으로 되돌림(revert(), 아래 그대로 유지).
+ *   → /syus/monologues/review 페이지는 삭제하지 않고 "생성 실패·미생성 건 재시도" +
+ *     "이번 변경 전 이미 reviewing으로 쌓인 과거 건" 처리용 안전판으로 남겨둔다.
  *
  * 보안·방어 (§6.3):
  * - API 키는 서버측 .env(ANTHROPIC_API_KEY)만. 이 라우트에서만 사용, 클라이언트 노출 금지.
@@ -148,7 +154,7 @@ export async function POST(req: Request) {
   // 5) 대상 행 필드 조회 (프롬프트용) — service role
   const { data: row } = await admin
     .from("syus_monologues")
-    .select("char_type, emotion, length_spec, tone, purpose, gender, age_range")
+    .select("char_type, emotion, length_spec, tone, purpose, gender, age_range, allow_public")
     .eq("id", id)
     .maybeSingle();
   if (!row) { await revert(); return NextResponse.json({ error: "요청을 찾을 수 없습니다." }, { status: 404 }); }
@@ -205,10 +211,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "독백 생성 중 오류가 발생했어요." }, { status: 502 });
   }
 
-  // 8) 검수 대기로 확정 (RLS update = 운영자 전용 → service role). status는 이미 reviewing(RPC) 또는 여기서 전환(레거시).
+  // 8) 생성 성공 → 즉시 전달 확정 (RLS update = 운영자 전용 → service role).
+  //    운영자 승인 버튼(예전 /syus/monologues/review approve())이 하던 일을 여기서 그대로 수행.
   const { error: upErr } = await admin
     .from("syus_monologues")
-    .update({ generated_text: generated, status: "reviewing" })
+    .update({ generated_text: generated, status: "delivered", is_public: row.allow_public })
     .eq("id", id);
   if (upErr) {
     console.error("[monologue/generate] update 실패", upErr.message);
@@ -216,5 +223,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "생성본 저장에 실패했어요." }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, status: "reviewing" });
+  return NextResponse.json({ ok: true, status: "delivered" });
 }

@@ -6,10 +6,13 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 /**
- * 창작 독백 운영자 검수 페이지 (/syus/monologues/review)
- * 가이드북 §6.3 검수 게이트 — 운영자(profiles.role='admin')만 접근.
- * - reviewing: 생성본 확인 → 승인(delivered, 동의 시 공개) / 반려(rejected)
- * - pending  : 생성이 아직/실패 → '생성 실행'으로 파이프라인 재호출
+ * 창작 독백 검수·재처리 페이지 (/syus/monologues/review) — 운영자(profiles.role='admin')만 접근.
+ *
+ * 2026-07-29 사장님 결정으로 정상 흐름의 수동 승인 단계는 폐지됐다(신규 요청은 생성 성공 시
+ * /api/syus/monologue/generate 안에서 곧바로 delivered로 전달된다). 이 화면은 이제
+ * 두 가지 예외 용도로만 쓰인다:
+ * - reviewing: 이번 변경 전에 이미 검수 대기로 쌓여 있던 과거 건 → 승인(delivered, 동의 시 공개) / 반려(rejected)
+ * - pending  : 생성이 아직 안 됐거나 실패한 요청 → '생성 실행'으로 파이프라인 재호출(그대로 유효)
  * RLS상 syus_monologues update는 운영자 전용이므로 admin 세션의 브라우저 update가 통과한다.
  */
 
@@ -101,12 +104,12 @@ export default function MonologueReview() {
     <main className="syc-wrap" style={{ ["--c" as string]: COLOR } as React.CSSProperties}>
       <Link href="/syus/flex" className="syc-back">← 창작 독백 아카이브</Link>
       <span className="syc-badge">운영자 검수</span>
-      <h1 className="syc-title">독백 검수</h1>
-      <p className="syc-tagline">생성된 독백을 확인하고, 요청자에게 전달할지 결정합니다.</p>
+      <h1 className="syc-title">독백 검수·재처리</h1>
+      <p className="syc-tagline">신규 요청은 이제 자동으로 전달되며, 이 화면은 생성 실패 재처리·예외 처리용입니다.</p>
       {msg && <p className="syc-error">{msg}</p>}
 
       <div className="syc-block">
-        <h2 className="syc-h2">검수 대기 · {reviewing.length}건</h2>
+        <h2 className="syc-h2">과거 검수 대기 · {reviewing.length}건</h2>
         {reviewing.length === 0 ? (
           <div className="syc-empty"><p className="syc-empty-h">검수할 독백이 없어요.</p></div>
         ) : (

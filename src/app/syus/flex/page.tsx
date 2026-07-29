@@ -8,7 +8,7 @@ const COLOR = "var(--color-syus-stage-flex)";
 
 export const metadata: Metadata = {
   title: "창작 독백 아카이브 · 변형 무대",
-  description: "요청할 때마다 새 독백이 지어지는 서고. AI 창작 원본을 운영자 검수를 거쳐 건넵니다. 시우스는 연기 커뮤니티입니다.",
+  description: "요청할 때마다 새 독백이 지어지는 서고. AI가 요청 즉시 창작 원본을 지어 곧바로 건넵니다. 시우스는 연기 커뮤니티입니다.",
   alternates: { canonical: "https://syus.co.kr/syus/flex" },
 };
 
@@ -52,12 +52,12 @@ export default async function FlexHub() {
       <Link href="/syus" className="syc-back">← 여섯 무대로</Link>
       <h1 className="syc-title">창작 독백 아카이브</h1>
       <p className="syc-tagline">변형 무대 · 형태가 계속 바뀌는, 끝없이 새로 지어지는 무대</p>
-      <p className="syc-lead">원하는 결의 독백을 요청하면, AI가 기존 작품을 베끼지 않은 창작 독백을 지어 전달합니다. 운영자 검수를 거쳐 건네지고, 동의하면 서고에 쌓여 다른 사람도 둘러봅니다.</p>
+      <p className="syc-lead">원하는 결의 독백을 요청하면, AI가 기존 작품을 베끼지 않은 창작 독백을 요청 즉시 지어 바로 전달합니다. 동의하면 서고에 쌓여 다른 사람도 둘러봅니다.</p>
 
       <div className="syc-cta-row syc-rule">
         <SyusWriteCta stage="flex" label="독백 요청하기" color="var(--color-syus-stage-flex)" writeHref="/syus/monologues/request" />
         <Link href="/syus/mypage" className="syc-btn-ghost">내 요청 보기</Link>
-        {isAdmin && <Link href="/syus/monologues/review" className="syc-btn-ghost">독백 검수{pendingCount > 0 ? ` · ${pendingCount}` : ""}</Link>}
+        {isAdmin && <Link href="/syus/monologues/review" className="syc-btn-ghost">독백 검수·재처리{pendingCount > 0 ? ` · ${pendingCount}` : ""}</Link>}
       </div>
 
       <div className="syc-block">
@@ -75,7 +75,7 @@ export default async function FlexHub() {
           <>
             <div className="syc-empty">
               <p className="syc-empty-h">아직 공개된 독백이 없어요.</p>
-              <p className="syc-empty-b">첫 독백을 요청하면, 검수를 거쳐 이 서고의 문이 열립니다.</p>
+              <p className="syc-empty-b">첫 독백을 요청하면, AI가 곧바로 지어 이 서고의 문을 엽니다.</p>
             </div>
             <h3 className="syc-h2" style={{ fontSize: "1.05rem", marginTop: "32px", marginBottom: "14px", color: "#5A4A3E" }}>이렇게 지어져 쌓일 거예요</h3>
             <article className="syc-card" style={{ opacity: 0.82 }}>
@@ -84,7 +84,7 @@ export default async function FlexHub() {
             </article>
           </>
         )}
-        <p className="syc-note">※ 모든 독백은 AI가 지은 창작 원본입니다. 운영자 검수 뒤 전달되며(컨시어지 방식), 연습·오디션에 자유롭게 쓸 수 있어요.</p>
+        <p className="syc-note">※ 모든 독백은 AI가 지은 창작 원본입니다. 요청 즉시 지어져 곧바로 전달되며(하루 3건까지), 연습·오디션에 자유롭게 쓸 수 있어요.</p>
       </div>
 
       <nav className="syc-bridge">

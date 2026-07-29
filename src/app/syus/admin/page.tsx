@@ -143,13 +143,13 @@ export default function SyusAdminPage() {
       <Link href="/syus" className="syc-back">← 여섯 무대로</Link>
       <span className="syc-badge">시우스 운영</span>
       <h1 className="syc-title">시우스 관리</h1>
-      <p className="syc-tagline">신고를 살피고, 남겨진 질문을 보고, 독백을 검수합니다.</p>
+      <p className="syc-tagline">신고를 살피고, 남겨진 질문을 보고, 독백 생성 실패 건을 재처리합니다.</p>
       {msg && <p className="syc-error">{msg}</p>}
 
       {/* 바로가기 + 통계 */}
       <div className="syc-block">
         <div className="sya-links">
-          <Link href="/syus/monologues/review" className="syc-btn-ghost">독백 검수{monoPending > 0 ? ` · ${monoPending}` : ""}</Link>
+          <Link href="/syus/monologues/review" className="syc-btn-ghost">독백 검수·재처리{monoPending > 0 ? ` · ${monoPending}` : ""}</Link>
           <Link href="/syus/essays/new" className="syc-btn-ghost">견해글 쓰기</Link>
           <Link href="/admin" className="syc-btn-ghost">무대올림 관리</Link>
         </div>

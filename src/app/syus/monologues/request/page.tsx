@@ -40,7 +40,7 @@ export default function MonologueRequest() {
       })
       .select("id").single();
     if (e2 || !data) { setError("요청을 접수하지 못했습니다. 잠시 후 다시 시도해주세요."); setSaving(false); return; }
-    // 접수 후 생성 파이프라인 호출(검수 대기로 전환). 실패해도 요청은 pending으로 남아 상세에서 상태 확인 가능.
+    // 접수 후 생성 파이프라인 호출(성공 시 곧바로 delivered로 전환, 운영자 승인 대기 없음). 실패해도 요청은 pending으로 남아 상세에서 상태 확인 가능.
     try {
       const resp = await fetch("/api/syus/monologue/generate", {
         method: "POST",
@@ -64,7 +64,7 @@ export default function MonologueRequest() {
     <main className="syc-wrap" style={{ ["--c" as string]: "var(--color-syus-stage-flex)" } as React.CSSProperties}>
       <Link href="/syus/flex" className="syc-back">← 창작 독백 아카이브</Link>
       <h1 className="syc-title">독백 요청하기</h1>
-      <p className="syc-tagline">원하는 결을 적어 주시면, 새 독백을 지어 검수 뒤 전달합니다.</p>
+      <p className="syc-tagline">원하는 결을 적어 주시면, 요청 즉시 AI가 새 독백을 지어 곧바로 전달합니다.</p>
 
       <form onSubmit={submit} className="syc-form" style={{ marginTop: "12px" }}>
         <label className="syc-label">인물 유형
@@ -97,7 +97,7 @@ export default function MonologueRequest() {
           완성된 독백을 서고에 공개하는 데 동의합니다 (다른 사람도 둘러볼 수 있어요)
         </label>
         {error && <p className="syc-error">{error}</p>}
-        <p className="syc-note">※ 실시간 생성이 아니라 요청 접수 → 생성 → 운영자 검수 → 전달 순서입니다. 접수 후 마이페이지·상세에서 상태를 볼 수 있어요.</p>
+        <p className="syc-note">※ 요청을 접수하면 AI가 즉시 독백을 지어 곧바로 전달합니다(하루 3건까지). 접수 후 마이페이지·상세에서 상태를 볼 수 있어요.</p>
         <div className="syc-actions">
           <button type="submit" className="syc-btn" disabled={saving}>{saving ? "독백을 짓는 중… (최대 1분)" : "요청 접수"}</button>
           <Link href="/syus/flex" className="syc-cancel">취소</Link>
