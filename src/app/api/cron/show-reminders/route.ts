@@ -28,6 +28,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendMail } from "@/lib/email/send";
 import { ShowReminderEmail } from "@/lib/email/templates/show-reminder";
+import { showDateKey } from "@/lib/showDate";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -70,14 +71,37 @@ function isAuthorized(req: Request): boolean {
 }
 
 /**
- * iso 시각이 (now + lowDays) ~ (now + highDays) 구간 안에 있는지.
+ * 공연 날짜 문자열("2026-05-10")을 **KST 자정의 실제 시각**으로 바꾼다.
+ *
+ * 2026-08-03 수정. 이전 구현은 `new Date("2026-05-10")`을 그대로 썼는데,
+ * 이 형식은 자바스크립트가 UTC 자정으로 해석한다. 게다가 Vercel 서버 타임존은 UTC라
+ * 로컬 자정 = UTC 자정이 되어, 한국 자정과 9시간 어긋난 채로 D-3/D-1 창을 계산하고 있었다.
+ * 그 9시간이 창(윈도우) 밖으로 밀어내면 알림 메일이 **조용히 발송되지 않는다.**
+ * 관객도 운영자도 "안 왔다"는 사실조차 모른다.
+ */
+function kstMidnight(raw: string | null): number | null {
+  const ymd = showDateKey(raw);
+  if (!ymd) return null;
+  const t = Date.parse(`${ymd}T00:00:00+09:00`);
+  return Number.isNaN(t) ? null : t;
+}
+
+/** 오늘로부터 offsetDays 뒤의 KST 날짜를 "YYYY-MM-DD"로 (DB 1차 필터용) */
+function kstDateKey(now: number, offsetDays: number): string {
+  const KST_OFFSET = 9 * 60 * 60 * 1000;
+  return new Date(now + KST_OFFSET + offsetDays * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+}
+
+/**
+ * 공연 날짜가 (now + lowDays) ~ (now + highDays) 구간 안에 있는지.
  * 시간 단위까지 비교하므로 cron이 매일 같은 시각에 돌지 않아도
  * D-3 윈도우 24h, D-1 윈도우 24h가 빠지지 않고 잡힌다.
  */
 function inDayWindow(iso: string | null, now: number, lowDays: number, highDays: number): boolean {
-  if (!iso) return false;
-  const t = new Date(iso).getTime();
-  if (Number.isNaN(t)) return false;
+  const t = kstMidnight(iso);
+  if (t === null) return false;
   const diffDays = (t - now) / (1000 * 60 * 60 * 24);
   return diffDays >= lowDays && diffDays < highDays;
 }
@@ -122,8 +146,12 @@ export async function GET(req: Request) {
   // 1) 모든 likes ⨝ shows(approved) 조인
   // 효율을 위해 미래 14일 안의 공연만 1차 필터한 뒤, 메모리에서 윈도우 컷.
   // (likes 테이블이 매우 커지면 SQL view·rpc로 전환 필요 — 운영팀 모니터링)
-  const horizon = new Date(now + 14 * 24 * 60 * 60 * 1000).toISOString();
-  const floor = new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString();
+  // 2026-08-03 수정: schedule_start 컬럼은 text("2026-05-10")인데 여기에 전체 ISO 문자열
+  // ("2026-05-10T00:00:00.000Z")을 넘기고 있었다. PostgREST는 글자 비교를 하므로
+  // 같은 날짜라도 "2026-05-10" < "2026-05-10T00:00..." 이 되어 경계일이 통째로 잘려나갔다.
+  // 컬럼과 같은 형식(날짜만)으로 넘긴다.
+  const horizon = kstDateKey(now, 14);
+  const floor = kstDateKey(now, -1);
 
   const { data: likeRows, error: likeErr } = await admin
     .from("likes")

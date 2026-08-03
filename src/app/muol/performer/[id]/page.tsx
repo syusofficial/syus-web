@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ShowCard from "@/components/ShowCard";
+import { parseShowDate } from "@/lib/showDate";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
@@ -65,13 +66,10 @@ export default async function PerformerProfilePage({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const parseDate = (s?: string): Date | null => {
-    if (!s) return null;
-    // "2026.05.10" 또는 "2026-05-10" 모두 허용
-    const normalized = s.replace(/\./g, "-");
-    const d = new Date(normalized);
-    return isNaN(d.getTime()) ? null : d;
-  };
+  // 2026-08-03: 로컬 parseDate 제거 → 공통 유틸(@/lib/showDate)로 통일.
+  // 기존 구현의 new Date("2026-05-10")은 UTC 자정 해석이라 KST에서 하루 밀렸고,
+  // 그래서 오늘 끝나는 공연이 이미 지난 공연으로 분류되는 경계 오류가 있었다.
+  const parseDate = parseShowDate;
 
   const approved = shows.filter((s) => s.status === "approved");
   const upcoming = approved.filter((s) => {

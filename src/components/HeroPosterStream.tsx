@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { formatShowDate } from "@/lib/showDate";
 
 export type StreamItem = {
   id: string;
@@ -112,7 +113,9 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
                   <p className="hero-stream-meta">
                     {[
                       item.performer_name,
-                      item.schedule_start?.replace(/-/g, ".").slice(2, 10),
+                      // 2026-08-03: slice(2,10) 자리수 자르기 폐기.
+                      // 값이 "2026.5.10"처럼 0을 안 채운 옛 형식이면 엉뚱한 글자가 잘려나갔다.
+                      formatShowDate(item.schedule_start, { weekday: false }),
                     ]
                       .filter(Boolean)
                       .join(" · ")}

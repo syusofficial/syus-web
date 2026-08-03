@@ -12,6 +12,7 @@
  * - 본문은 한 문장으로 짧게. 카드 1~3개. CTA는 메일 1통당 1개.
  */
 import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "../components";
+import { formatShowDate } from "@/lib/showDate";
 import { EmailFooter } from "./footer";
 import { safeGreetingName } from "../greeting";
 
@@ -132,12 +133,11 @@ const LINK_STYLE = {
   textDecoration: "none",
 } as const;
 
+// 2026-08-03: 로컬 사본 제거 → 공통 유틸(@/lib/showDate)로 통일.
+// 기존 new Date("2026-05-10")은 UTC 자정 해석이라 KST 기준 하루 전 날짜가 메일에 찍혔다.
+// 즉 "내일 막이 오릅니다" 메일에 오늘 날짜가 적히는 상태였다.
 function formatYmdWeek(iso?: string | null): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  const week = ["일", "월", "화", "수", "목", "금", "토"][d.getDay()];
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} (${week})`;
+  return formatShowDate(iso, { weekday: true });
 }
 
 export function ShowReminderEmail({ name, shows }: Props) {

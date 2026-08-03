@@ -3,28 +3,16 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import type { Show } from "@/types";
+// 2026-08-03: 로컬 사본 제거. 기존 parseShowDate는 new Date("2026-05-10")을 썼는데
+// 이 형식은 UTC 자정으로 해석되어 KST 브라우저에서 로컬 날짜가 전날로 밀렸다.
+// → 공연이 캘린더에 하루 앞당겨 찍히는 버그. 공통 유틸(로컬 자정 기준)로 통일한다.
+import { parseShowDate, toDateInputValue as dateKey } from "@/lib/showDate";
 
 type ShowsCalendarProps = {
   shows: Show[];
 };
 
 const WEEKDAYS_KR = ["일", "월", "화", "수", "목", "금", "토"];
-
-/** "2026.05.10" 또는 "2026-05-10" 형식의 문자열을 Date로 파싱 */
-function parseShowDate(s?: string): Date | null {
-  if (!s) return null;
-  const normalized = s.replace(/\./g, "-").trim();
-  const d = new Date(normalized);
-  return isNaN(d.getTime()) ? null : d;
-}
-
-/** Date를 "YYYY-MM-DD" 키로 변환 (시간대 무시, 로컬 기준) */
-function dateKey(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
 
 export default function ShowsCalendar({ shows }: ShowsCalendarProps) {
   const today = useMemo(() => {

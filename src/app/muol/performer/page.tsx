@@ -8,6 +8,14 @@ import PageLoader from "@/components/PageLoader";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { REGIONS_EXCLUDE_ALL, GENRES, SHOW_CATEGORIES, GENRE_DETAILS, GENRE_DETAIL_GROUPS, hasGenreDetails } from "@/lib/constants";
 import { isValidUrl, normalizeUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
+import {
+  parseShowDate,
+  toDateInputValue,
+  showDateKey,
+  isValidShowDate,
+  showDateInputMin,
+  formatShowPeriod,
+} from "@/lib/showDate";
 import type { Show } from "@/types";
 
 // 버튼 4상태 공통 클래스(디자인팀 2026-07-20/23 진단 반영)
@@ -25,13 +33,9 @@ type SessionRow = { id?: string; date: string; time: string; capacity: string };
 // 많아질 수 있어(예: 학기 전체 기간 오기입), 이 경우 회차 1개로 시작해 공연자가 직접 나누게 한다.
 const AUTO_GENERATE_MAX_DAYS = 31;
 
-/** "2026.05.10"·"2026-05-10"·"2026/05/10" 같은 자유 텍스트에서 날짜를 최대한 읽어낸다. 실패 시 null. */
-function parseFreeformDate(text: string): Date | null {
-  const m = text.trim().match(/(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})/);
-  if (!m) return null;
-  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-  return Number.isNaN(d.getTime()) ? null : d;
-}
+// 날짜 파싱·표시는 전부 @/lib/showDate 로 옮겼다(2026-08-03).
+// 예전엔 이 파일에 parseFreeformDate·toLocalDateInputValue 사본이 따로 있어서,
+// 같은 날짜를 폼과 목록 페이지가 서로 다르게 해석했다. 사본은 남기지 않는다.
 
 /** show_time("평일 19:30 / 주말 15:00")에서 첫 HH:MM을 찾아 회차 기본 시간으로 쓴다. 없으면 19:30. */
 function extractDefaultTime(showTime: string): string {
@@ -40,12 +44,8 @@ function extractDefaultTime(showTime: string): string {
   return `${m[1].padStart(2, "0")}:${m[2]}`;
 }
 
-function toLocalDateInputValue(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
+/** 공연 기간 두 칸(시작·종료) — 예전 자유 텍스트 값이 들어 있을 수 있는 필드 */
+type ScheduleFieldKey = "schedule_start" | "schedule_end";
 
 /** 회차 날짜+시간 입력값을 서버 저장용 ISO 문자열로 변환(한국 사용자 대상 서비스라 브라우저 로컬시간 = KST 가정). */
 function toSessionIso(date: string, time: string): string {
@@ -101,6 +101,14 @@ export default function PerformerPage() {
   const [pendingAction, setPendingAction] = useState<PendingShowAction>(null);
   const [capacitySummaries, setCapacitySummaries] = useState<Record<string, { confirmedTotal: number; capacity: number | null }>>({});
 
+  // 공연 기간을 <input type="date">로 강제하되(2026-08-03), 예전에 자유 텍스트로 저장된 값
+  // ("미정", "5월 둘째 주" 등)은 date input이 읽지 못해 빈칸이 된다. 그대로 저장하면 날짜가
+  // 지워지므로, 읽지 못한 칸만 텍스트 입력으로 되돌려 원문을 보여주고 고쳐 달라고 안내한다.
+  const [legacyDateFields, setLegacyDateFields] = useState<Record<ScheduleFieldKey, boolean>>({
+    schedule_start: false,
+    schedule_end: false,
+  });
+
   // 예약 시스템 B1(회차별 정원 분리) — 2026-07-24 신설
   const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [originalSessionIds, setOriginalSessionIds] = useState<string[]>([]);
@@ -132,7 +140,7 @@ export default function PerformerPage() {
         const d = new Date(r.session_at);
         return {
           id: r.id,
-          date: toLocalDateInputValue(d),
+          date: toDateInputValue(d),
           time: `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`,
           capacity: r.capacity != null ? String(r.capacity) : "",
         };
@@ -148,25 +156,25 @@ export default function PerformerPage() {
 
   /** 공연 기간(schedule_start~schedule_end)을 보고 회차를 자동 생성 — 애매하면 회차 1개로 시작 */
   const handleAutoGenerateSessions = () => {
-    const start = parseFreeformDate(form.schedule_start);
+    const start = parseShowDate(form.schedule_start);
     if (!start) {
       setSessions([{ date: "", time: extractDefaultTime(form.show_time), capacity: "" }]);
       return;
     }
-    const end = parseFreeformDate(form.schedule_end);
+    const end = parseShowDate(form.schedule_end);
     const defaultTime = extractDefaultTime(form.show_time);
     const dayMs = 24 * 60 * 60 * 1000;
     const spanDays = end ? Math.round((end.getTime() - start.getTime()) / dayMs) : 0;
 
     if (!end || spanDays < 0 || spanDays > AUTO_GENERATE_MAX_DAYS) {
       // 기간이 없거나(종료일 파싱 실패) 한 달 초과 — 회차 1개로 시작, 나머지는 공연자가 직접 추가
-      setSessions([{ date: toLocalDateInputValue(start), time: defaultTime, capacity: "" }]);
+      setSessions([{ date: toDateInputValue(start), time: defaultTime, capacity: "" }]);
       return;
     }
     const rows: SessionRow[] = [];
     for (let i = 0; i <= spanDays; i++) {
       const d = new Date(start.getTime() + i * dayMs);
-      rows.push({ date: toLocalDateInputValue(d), time: defaultTime, capacity: "" });
+      rows.push({ date: toDateInputValue(d), time: defaultTime, capacity: "" });
     }
     setSessions(rows);
   };
@@ -243,13 +251,49 @@ export default function PerformerPage() {
     }
   }, [showForm, editingId, draftKey]);
 
+  /**
+   * 저장돼 있던 공연 기간(예전 자유 텍스트일 수 있음)을 폼에 안전하게 채운다.
+   *  - 읽히는 값 → "YYYY-MM-DD"로 정규화해 <input type="date">가 그대로 표시
+   *  - 못 읽는 값 → 원문을 유지하고 그 칸만 텍스트 입력으로 폴백(legacy 플래그)
+   * 이 변환을 빼먹으면 date input이 값을 못 읽어 빈칸이 되고, 그대로 저장 시 날짜가 지워진다.
+   */
+  const normalizeScheduleForForm = (rawStart?: string | null, rawEnd?: string | null) => {
+    const startText = (rawStart ?? "").trim();
+    const endText = (rawEnd ?? "").trim();
+    const startKey = showDateKey(startText);
+    const endKey = showDateKey(endText);
+    return {
+      schedule_start: startKey ?? startText,
+      schedule_end: endKey ?? endText,
+      legacy: {
+        schedule_start: !!startText && !startKey,
+        schedule_end: !!endText && !endKey,
+      } as Record<ScheduleFieldKey, boolean>,
+    };
+  };
+
+  /** 폴백 텍스트 칸을 비우고 달력 입력으로 되돌린다 */
+  const switchToDatePicker = (key: ScheduleFieldKey) => {
+    setForm((prev) => ({ ...prev, [key]: "" }));
+    setLegacyDateFields((prev) => ({ ...prev, [key]: false }));
+  };
+
   const restoreDraft = () => {
     if (!draftKey) return;
     const raw = localStorage.getItem(draftKey);
     if (!raw) return;
     try {
       const draft = JSON.parse(raw);
-      if (draft.form) setForm(draft.form);
+      if (draft.form) {
+        // 이 브라우저에 남아 있던 임시저장은 자유 텍스트 시절 값일 수 있다 — 동일하게 정규화
+        const schedule = normalizeScheduleForForm(draft.form.schedule_start, draft.form.schedule_end);
+        setForm({
+          ...draft.form,
+          schedule_start: schedule.schedule_start,
+          schedule_end: schedule.schedule_end,
+        });
+        setLegacyDateFields(schedule.legacy);
+      }
       if (draft.genre) setGenre(draft.genre);
       if (draft.showCategory) setShowCategory(draft.showCategory);
       if (draft.region) setRegion(draft.region);
@@ -296,6 +340,7 @@ export default function PerformerPage() {
     setExistingPosterUrl(null);
     setEditingId(null);
     setError("");
+    setLegacyDateFields({ schedule_start: false, schedule_end: false });
     // 신규 등록 모드 — 회차는 빈 채로 시작(제출 시 최소 1개로 자동 백필됨). 이 시점엔 아직
     // showId가 없어 loadSessionsFor를 못 쓰므로, 테이블 존재 여부만 가볍게 확인해둔다.
     setSessions([]);
@@ -311,14 +356,17 @@ export default function PerformerPage() {
   // 수정 모드 진입 — 기존 공연 데이터로 폼 채우기
   const startEditing = (show: Show) => {
     setEditingId(show.id);
+    // 공연 기간은 저장 형식이 예전(자유 텍스트)일 수 있어 반드시 정규화를 거친다.
+    const schedule = normalizeScheduleForForm(show.schedule_start, show.schedule_end);
+    setLegacyDateFields(schedule.legacy);
     setForm({
       title: show.title ?? "",
       subtitle: show.subtitle ?? "",
       description: show.description ?? "",
       venue: show.venue ?? "",
       venue_address: show.venue_address ?? "",
-      schedule_start: show.schedule_start ?? "",
-      schedule_end: show.schedule_end ?? "",
+      schedule_start: schedule.schedule_start,
+      schedule_end: schedule.schedule_end,
       cast_members: show.cast_members?.join(", ") ?? "",
       directions: show.directions ?? "",
       ticket_url: show.ticket_url ?? "",
@@ -409,6 +457,23 @@ export default function PerformerPage() {
     }
     if (!showCategory) { setError("공연 구분을 선택해주세요."); return; }
     if (!region) { setError("공연 지역을 선택해주세요."); return; }
+
+    // 공연 기간 — 사이트 전체가 하나의 형식(YYYY-MM-DD)만 쓰도록 여기서 확정한다.
+    // 여기를 통과한 값만 DB에 들어가므로, 목록·아카이브·캘린더·리마인더가 같은 날짜를 본다.
+    if (!isValidShowDate(form.schedule_start)) {
+      setError("공연 시작일을 날짜로 골라주세요. (예: 2026-05-10 — 달력에서 선택하시면 됩니다)");
+      return;
+    }
+    if (!isValidShowDate(form.schedule_end)) {
+      setError("공연 종료일을 날짜로 골라주세요. 하루만 공연한다면 시작일과 같은 날을 고르시면 됩니다.");
+      return;
+    }
+    const scheduleStart = showDateKey(form.schedule_start) as string;
+    const scheduleEnd = showDateKey(form.schedule_end) as string;
+    if (scheduleEnd < scheduleStart) {
+      setError("공연 종료일이 시작일보다 빠릅니다. 날짜를 다시 확인해주세요.");
+      return;
+    }
 
     // URL 정규화 — 프로토콜 없이 입력해도 자동 https:// 보완
     const ticketUrl = normalizeUrl(form.ticket_url);
@@ -511,8 +576,9 @@ export default function PerformerPage() {
       description: form.description,
       venue: form.venue,
       venue_address: form.venue_address || null,
-      schedule_start: form.schedule_start,
-      schedule_end: form.schedule_end,
+      // 저장 형식은 항상 "YYYY-MM-DD" 하나 (위에서 정규화·검증 완료)
+      schedule_start: scheduleStart,
+      schedule_end: scheduleEnd,
       cast_members: castArray,
       directions: form.directions || null,
       ticket_url: ticketUrl || null,
@@ -587,7 +653,8 @@ export default function PerformerPage() {
             ? validSessionRows
             : [
                 {
-                  date: toLocalDateInputValue(parseFreeformDate(form.schedule_start) ?? new Date()),
+                  // scheduleStart는 위 검증을 통과한 "YYYY-MM-DD" — 그대로 회차 날짜로 쓴다
+                  date: scheduleStart,
                   time: extractDefaultTime(form.show_time),
                   capacity,
                 },
@@ -888,7 +955,7 @@ export default function PerformerPage() {
                               <div key={groupHeading}>
                                 <p
                                   className="text-[11px] tracking-[0.12em] uppercase mb-1.5"
-                                  style={{ fontFamily: "var(--font-inter)", color: "#8E8579" }}
+                                  style={{ fontFamily: "var(--font-inter)", color: "#6B5C50" }}
                                 >
                                   {groupHeading}
                                 </p>
@@ -995,29 +1062,58 @@ export default function PerformerPage() {
                     { label: "공연명 *", key: "title", required: true, span: "sm:col-span-2" },
                     { label: "영문 제목 (선택)", key: "subtitle", required: false },
                     { label: "학교/학과 (선택)", key: "school_department", required: false, placeholder: "예: 한양대학교 연극영화학과 / 동국대학교 연극학부" },
-                    { label: "공연 기간 시작 *", key: "schedule_start", required: true, placeholder: "예: 2026.05.10" },
-                    { label: "공연 기간 종료 *", key: "schedule_end", required: true, placeholder: "예: 2026.05.25" },
+                    // 공연 기간은 달력 입력(2026-08-03) — 자유 텍스트를 받으면 사이트 곳곳에서
+                    // 종료 판정·리마인더·캘린더가 조용히 어긋난다.
+                    { label: "공연 시작일 *", key: "schedule_start", required: true, type: "date" },
+                    { label: "공연 종료일 *", key: "schedule_end", required: true, type: "date" },
                     { label: "공연 시간 (선택)", key: "show_time", required: false, placeholder: "평일 19:30 / 주말 15:00" },
                     { label: "러닝 타임 (선택)", key: "running_time", required: false, placeholder: "100분" },
                     { label: "관람 연령 (선택)", key: "age_rating", required: false, placeholder: "7세 이상" },
-                  ].map((field) => (
-                    <div key={field.key} className={field.span ?? ""}>
-                      <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
-                        {field.label}
-                      </label>
-                      <input
-                        type="text"
-                        value={form[field.key as keyof typeof form]}
-                        onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                        required={field.required}
-                        placeholder={field.placeholder}
-                        className="w-full px-4 py-3 text-base outline-none"
-                        style={inputStyle}
-                        onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
-                        onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
-                      />
-                    </div>
-                  ))}
+                  ].map((field) => {
+                    // date 필드인데 예전 형식이라 달력이 못 읽는 값이면 텍스트로 폴백한다
+                    const isDateField = field.type === "date";
+                    const isLegacyText = isDateField && legacyDateFields[field.key as ScheduleFieldKey];
+                    const useDatePicker = isDateField && !isLegacyText;
+                    // 연도 오타(예: 1026년) 방어용 하한선. 지난 공연 아카이브 등록은 막지 않도록 1년 전까지 허용.
+                    const dateMin = useDatePicker ? showDateInputMin() : undefined;
+                    return (
+                      <div key={field.key} className={field.span ?? ""}>
+                        <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
+                          {field.label}
+                        </label>
+                        <input
+                          type={useDatePicker ? "date" : "text"}
+                          value={form[field.key as keyof typeof form]}
+                          onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                          required={field.required}
+                          placeholder={field.placeholder}
+                          min={dateMin}
+                          className="w-full px-4 py-3 text-base outline-none"
+                          style={inputStyle}
+                          onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
+                          onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
+                        />
+                        {isLegacyText && (
+                          <p
+                            className="mt-2 text-xs leading-relaxed"
+                            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F", wordBreak: "keep-all" }}
+                          >
+                            예전에 저장된 형식이라 달력으로 읽지 못했습니다. 형식을 확인해 주세요 —
+                            2026-05-10처럼 적어주시거나{" "}
+                            <button
+                              type="button"
+                              onClick={() => switchToDatePicker(field.key as ScheduleFieldKey)}
+                              className={`underline ${OUTLINE_BTN_STATES}`}
+                              style={{ color: "#0B5563" }}
+                            >
+                              달력에서 다시 고르기
+                            </button>
+                            를 눌러 주세요.
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1192,7 +1288,7 @@ export default function PerformerPage() {
                       <br />
                       <span style={{ color: "#0B5563" }}>모바일에서 공유한 형식</span>도 그대로 붙여넣을 수 있어요.
                       <br />
-                      <span style={{ color: "#8E8579" }}>예) <code>[카카오맵] 낙산공원 https://kko.to/abc</code></span>
+                      <span style={{ color: "#6B5C50" }}>예) <code>[카카오맵] 낙산공원 https://kko.to/abc</code></span>
                     </p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -1343,7 +1439,8 @@ export default function PerformerPage() {
                             : show.genre,
                         show.region,
                         show.venue,
-                        show.schedule_start,
+                        // 표시 포맷은 사이트 전체 공통 (읽지 못하는 예전 값은 원문 그대로 나온다)
+                        formatShowPeriod(show.schedule_start, show.schedule_end, { weekday: false }),
                       ].filter(Boolean).join(" · ")}
                     </p>
                     {/* 통계: 조회수 (approved 공연만 표시) */}

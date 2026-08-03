@@ -34,6 +34,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { StreamItem } from "@/components/HeroPosterStream";
+import { formatShowDate } from "@/lib/showDate";
 
 type Props = {
   items: StreamItem[];
@@ -328,7 +329,8 @@ export default function HeroUnveilScroll({
                   <p className="unveil-poster-meta">
                     {[
                       item.performer_name,
-                      item.schedule_start?.replace(/-/g, ".").slice(2, 10),
+                      // 2026-08-03: slice(2,10) 자리수 자르기 폐기 (HeroPosterStream과 동일 사유)
+                      formatShowDate(item.schedule_start, { weekday: false }),
                     ]
                       .filter(Boolean)
                       .join(" · ")}
