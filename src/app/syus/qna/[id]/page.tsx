@@ -101,11 +101,14 @@ export default function QnaDetailPage() {
     setBusy(true);
     const supabase = createClient();
     if (likedByMe) {
-      await supabase.from("syus_likes").delete().eq("target_type", "question").eq("target_id", id).eq("user_id", userId);
-      setLikedByMe(false); setLikeCount((c) => Math.max(0, c - 1));
+      // 2026-08-03 — 해제 실패가 성공처럼 보이던 문제 수정(결과 확인 후에만 상태 변경)
+      const { error } = await supabase.from("syus_likes").delete().eq("target_type", "question").eq("target_id", id).eq("user_id", userId);
+      if (error) { alert("찜을 해제하지 못했습니다. 잠시 후 다시 시도해주세요."); }
+      else { setLikedByMe(false); setLikeCount((c) => Math.max(0, c - 1)); }
     } else {
       const { error } = await supabase.from("syus_likes").insert({ user_id: userId, target_type: "question", target_id: id });
-      if (!error) { setLikedByMe(true); setLikeCount((c) => c + 1); }
+      if (error) { alert("찜하지 못했습니다. 잠시 후 다시 시도해주세요."); }
+      else { setLikedByMe(true); setLikeCount((c) => c + 1); }
     }
     setBusy(false);
   };
@@ -137,8 +140,15 @@ export default function QnaDetailPage() {
     setBusy(true);
     const supabase = createClient();
     // 기존 채택 해제 후 이 답변 채택(단일 채택)
-    await supabase.from("syus_answers").update({ is_accepted: false }).eq("question_id", id);
-    await supabase.from("syus_answers").update({ is_accepted: true }).eq("id", answerId);
+    // 2026-08-03 — 두 UPDATE 결과를 확인하지 않아 채택이 실패해도 성공처럼 보이던 문제 수정.
+    //   앞 단계가 실패하면 뒤 단계는 진행하지 않고, 어느 쪽이든 실패 시 알린 뒤 load()로 실제 상태를 다시 읽는다.
+    const { error: clearErr } = await supabase.from("syus_answers").update({ is_accepted: false }).eq("question_id", id);
+    const { error: markErr } = clearErr
+      ? { error: clearErr }
+      : await supabase.from("syus_answers").update({ is_accepted: true }).eq("id", answerId);
+    if (clearErr || markErr) {
+      alert("답변을 채택하지 못했습니다. 잠시 후 다시 시도해주세요.");
+    }
     await load();
     setBusy(false);
   };

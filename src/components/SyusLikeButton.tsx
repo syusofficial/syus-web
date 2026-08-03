@@ -51,11 +51,14 @@ export default function SyusLikeButton({ targetType, targetId }: { targetType: s
     setBusy(true);
     const supabase = createClient();
     if (on) {
-      await supabase.from("syus_likes").delete().eq("target_type", targetType).eq("target_id", targetId).eq("user_id", uid);
-      setOn(false); setCount((c) => Math.max(0, c - 1));
+      // 2026-08-03 — 해제 실패가 성공처럼 보이던 문제 수정(결과 확인 후에만 상태 변경)
+      const { error } = await supabase.from("syus_likes").delete().eq("target_type", targetType).eq("target_id", targetId).eq("user_id", uid);
+      if (error) { alert("찜을 해제하지 못했습니다. 잠시 후 다시 시도해주세요."); }
+      else { setOn(false); setCount((c) => Math.max(0, c - 1)); }
     } else {
       const { error } = await supabase.from("syus_likes").insert({ user_id: uid, target_type: targetType, target_id: targetId });
-      if (!error) { setOn(true); setCount((c) => c + 1); }
+      if (error) { alert("찜하지 못했습니다. 잠시 후 다시 시도해주세요."); }
+      else { setOn(true); setCount((c) => c + 1); }
     }
     setBusy(false);
   };

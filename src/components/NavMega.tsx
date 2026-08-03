@@ -34,7 +34,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { REGIONS_EXCLUDE_ALL, GENRES, GENRE_DETAILS, GENRE_DETAIL_GROUPS, hasGenreDetails } from "@/lib/constants";
 import type { User } from "@supabase/supabase-js";
-import { SyusLogoSvg } from "@/components/Nav";
+import { SyusLogoSvg } from "@/components/SyusLogoSvg";
 
 // ────────────────────────────────────────────────
 // 메가 메뉴 챕터 정의 (라우트 전수조사 기반)

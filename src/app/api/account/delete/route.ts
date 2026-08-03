@@ -6,11 +6,60 @@ import { NextResponse } from "next/server";
 /**
  * 계정 탈퇴 API
  * 1. 사용자 인증 확인 (쿠키 세션)
- * 2. Storage에서 본인 포스터 일괄 삭제
+ * 2. Storage에서 본인 업로드 파일 일괄 삭제 (posters + syus-media)
  * 3. auth.users 행 삭제 (CASCADE로 profiles, shows, likes 모두 삭제)
  *
  * 환경변수 SUPABASE_SERVICE_ROLE_KEY 필요 (Vercel Settings → Environment Variables)
  */
+
+// service role 클라이언트의 storage 부분만 넘겨 쓴다 (아래 헬퍼용)
+type AdminStorage = ReturnType<typeof createAdminClient>["storage"];
+
+const LIST_PAGE = 1000; // Supabase storage list() 1회 최대 건수
+
+/**
+ * 버킷의 특정 경로를 끝까지 훑어 파일 이름을 모은다. (2026-08-03)
+ * list()는 한 번에 최대 1000건만 돌려주므로 offset을 밀어가며 전부 읽는다.
+ * (기존에는 첫 1000건만 봐서 버킷이 커지면 일부 파일이 지워지지 않고 남았다.)
+ */
+async function listAllNames(storage: AdminStorage, bucket: string, prefix: string): Promise<string[]> {
+  const names: string[] = [];
+  for (let offset = 0; ; offset += LIST_PAGE) {
+    const { data, error } = await storage.from(bucket).list(prefix, { limit: LIST_PAGE, offset });
+    if (error) {
+      console.error(`[account/delete] storage list 실패 (${bucket}/${prefix})`, error.message);
+      break;
+    }
+    if (!data || data.length === 0) break;
+    names.push(...data.map((f) => f.name));
+    if (data.length < LIST_PAGE) break;
+  }
+  return names;
+}
+
+/**
+ * 탈퇴자가 올린 파일 파기 (2026-08-03 추가 — 개인정보 파기 의무)
+ * - posters   : 루트에 평면 저장, 파일명이 `{userId}-타임스탬프.확장자`
+ * - syus-media: `{userId}/{uuid}.확장자` 폴더 저장 (시우스 책 표지·후기 이미지)
+ *   → 예전엔 posters만 지워서 syus-media 파일이 공개 URL로 영구히 남았다.
+ */
+async function purgeUserFiles(storage: AdminStorage, userId: string) {
+  // posters — 루트 목록에서 본인 접두사만 골라 삭제
+  const posterNames = await listAllNames(storage, "posters", "");
+  const myPosters = posterNames.filter((n) => n.startsWith(userId + "-"));
+  if (myPosters.length > 0) {
+    const { error } = await storage.from("posters").remove(myPosters);
+    if (error) console.error("[account/delete] posters 삭제 실패", error.message);
+  }
+
+  // syus-media — 본인 폴더 안의 파일만 삭제 (경로에 폴더명을 다시 붙여야 한다)
+  const mediaNames = await listAllNames(storage, "syus-media", userId);
+  const myMedia = mediaNames.map((n) => `${userId}/${n}`);
+  if (myMedia.length > 0) {
+    const { error } = await storage.from("syus-media").remove(myMedia);
+    if (error) console.error("[account/delete] syus-media 삭제 실패", error.message);
+  }
+}
 export async function POST() {
   const cookieStore = await cookies();
 
@@ -48,14 +97,8 @@ export async function POST() {
     serviceKey
   );
 
-  // Storage 포스터 일괄 삭제
-  const { data: files } = await admin.storage.from("posters").list("", { limit: 1000 });
-  const myFiles = (files ?? [])
-    .filter((f) => f.name.startsWith(user.id + "-"))
-    .map((f) => f.name);
-  if (myFiles.length > 0) {
-    await admin.storage.from("posters").remove(myFiles);
-  }
+  // Storage 업로드 파일 일괄 삭제 (posters + syus-media)
+  await purgeUserFiles(admin.storage, user.id);
 
   // auth.users 삭제 → CASCADE로 profiles, shows, likes 자동 삭제
   const { error: deleteError } = await admin.auth.admin.deleteUser(user.id);

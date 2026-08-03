@@ -11,28 +11,57 @@
 
 // ─── 1단: 한국어 욕설/비방/모욕 사전 ─────────────────────────────────
 // 대표 단어 + 자주 쓰이는 우회 변형. 운영자가 admin에서 신고 누적 단어 추가 가능.
-// 비방·모욕·차별·성적 표현·악성 댓글 패턴.
+//
+// 2026-08-03 정비 — 1단은 '문맥과 무관하게 명백한 것'만 잡는다.
+//   1단에 걸리면 후기가 DB에 저장조차 안 되고 "정책 위배"만 뜨므로(사용자는 이유를 모른 채 이탈),
+//   정상적인 연극 비평에 쓰일 수 있는 말은 사전에서 뺐다. 뉘앙스 판단은 2단(OpenAI)에 맡긴다.
+//   뺀 말: 장애인(장애인 좌석·장애인 역할) / 쌍(쌍둥이·한 쌍) / 쓰레기·쓰래기(쓰레기통·"쓰레기 같은 인물")
+//          한심·미친놈·또라이·정신병자(배역 묘사) / 야해(의상 비평) / 졸라(졸라매다)
+//          보지("보지 못했다") / 자지("자지 않고") / 꺼져("조명이 꺼져" — 극장 상용어)
+//          시바(시바견) / 역겹·역겨·구역질·토나(정상 비평 어휘) / 한남(한남대학교·한남동 → "한남충"으로 좁힘)
 
-const KOREAN_BAD_WORDS = [
+// 사전 A — 문맥과 무관하게 차단. 공백·특수문자를 지운 뒤 부분 일치로 검사(띄어쓰기 우회 차단).
+const HARD_BAD_WORDS = [
   // 욕설 기본
-  "씨발", "씨봘", "ㅅㅂ", "시발", "시바", "썅", "쌍", "개새끼", "개색기", "개색끼",
-  "병신", "븅신", "빙신", "ㅂㅅ", "지랄", "ㅈㄹ", "닥쳐", "꺼져",
-  "좆", "좃", "ㅈ같", "ㅈ나", "졸라", "존나",
+  "씨발", "씨봘", "ㅅㅂ", "썅", "개새끼", "개색기", "개색끼",
+  "병신", "븅신", "빙신", "ㅂㅅ", "지랄", "ㅈㄹ",
+  "좆", "좃", "ㅈ같", "ㅈ나", "존나",
   "엿먹", "엿같", "빡친다", "빡쳐",
   // 모욕·비방
-  "쓰레기", "쓰래기", "한심", "찌질", "찐따", "또라이", "정신병자", "미친놈", "미친년", "ㅁㅊ",
-  "역겹", "역겨", "구역질", "토나",
+  "찌질", "찐따", "미친년", "ㅁㅊ",
   // 차별·혐오
-  "장애인", "꼴페미", "한남", "김치녀", "맘충", "급식충",
+  "꼴페미", "한남충", "김치녀", "맘충", "급식충",
   // 성적
-  "보지", "자지", "젖탱", "야해", "야동",
+  "젖탱", "야동",
   // 모욕 + 영문 변형
   "ㅄ", "ㅗ", "fxxk", "fck",
 ];
 
+// 사전 B — 일반 어휘의 일부로도 등장하는 말. 원문(띄어쓰기 살린 상태) 기준으로 보고,
+//   앞이나 뒤에 한글이 더 붙어 있으면 다른 단어로 간주해 통과시킨다.
+//   예) "시발점"·"닥쳐온다" → 통과 / "시발!"·"아 시발" → 차단
+const BOUNDED_BAD_WORDS = ["시발", "닥쳐"];
+
+// 한글 음절 + 자모 (앞뒤 인접 문자 판정용)
+const HANGUL_CHAR = /[가-힣ㄱ-ㅎㅏ-ㅣ]/;
+
+/** 사전 B 판정 — 앞뒤가 한글로 이어지지 않는 자리에서 등장할 때만 적중 */
+function hasBoundedWord(text: string, word: string): boolean {
+  let from = 0;
+  for (;;) {
+    const i = text.indexOf(word, from);
+    if (i < 0) return false;
+    const before = text[i - 1];
+    const after = text[i + word.length];
+    const glued = (before && HANGUL_CHAR.test(before)) || (after && HANGUL_CHAR.test(after));
+    if (!glued) return true;
+    from = i + 1;
+  }
+}
+
 /**
  * 1차 — 한국어 사전 매칭
- * 공백·특수문자 무시 정규화 후 비교.
+ * 사전 A는 공백·특수문자 무시 정규화 후, 사전 B는 원문 기준으로 비교.
  */
 export type DictResult = {
   matched: string[];
@@ -43,10 +72,17 @@ export function checkKoreanBadWords(text: string): DictResult {
   // 공백·점·하이픈·언더바·*제거. 한글 자모 노출도 그대로 검사.
   const normalized = text.replace(/[\s.\-_*~`]/g, "");
   const lower = normalized.toLowerCase();
+  const raw = text.toLowerCase();
   const matched: string[] = [];
 
-  for (const word of KOREAN_BAD_WORDS) {
+  for (const word of HARD_BAD_WORDS) {
     if (lower.includes(word.toLowerCase())) {
+      matched.push(word);
+    }
+  }
+
+  for (const word of BOUNDED_BAD_WORDS) {
+    if (hasBoundedWord(raw, word.toLowerCase())) {
       matched.push(word);
     }
   }

@@ -32,14 +32,18 @@ export default function LikeButton({ showId, size = 24 }: { showId: string; size
       return;
     }
 
+    // 2026-08-03 — 실패해도 하트만 채워지던 문제 수정.
+    // 결과(error)를 확인해 성공했을 때만 상태를 바꾸고, 실패는 사용자에게 알린다.
     const supabase = createClient();
-    if (liked) {
-      await supabase.from("likes").delete().eq("user_id", userId).eq("show_id", showId);
-      setLiked(false);
-    } else {
-      await supabase.from("likes").insert({ user_id: userId, show_id: showId });
-      setLiked(true);
+    const { error } = liked
+      ? await supabase.from("likes").delete().eq("user_id", userId).eq("show_id", showId)
+      : await supabase.from("likes").insert({ user_id: userId, show_id: showId });
+
+    if (error) {
+      alert("찜을 처리하지 못했습니다. 잠시 후 다시 시도해주세요.");
+      return;
     }
+    setLiked(!liked);
   };
 
   if (loading) return null;

@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Phase 1 시안 · 2026-06-15 · 무대올림</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<link rel="stylesheet" href="https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css" />
+<style>
+  /* Mineral Stage 팔레트 (사장님 잠금) */
+  :root {
+    --paper: #FBF8F1;
+    --paper-dark: #F0EBE0;
+    --mist: #D8D3C9;
+    --stone: #5F584F;
+    --charcoal: #202833;
+    --blue: #3B5A6B;
+    --blue-light: #5C7C8E;
+    --navy: #202833;
+    --green: #7BA86F;
+    --red: #D54545;
+    --lime: #C8D96F;
+    --lime-hover: #D5E482;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--charcoal);
+    font-family: "Spoqa Han Sans Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── 시안 안내 영역 ── */
+  .mockup-shell { max-width: 1400px; margin: 0 auto; padding: 40px 24px 80px; }
+  .mockup-intro {
+    border-left: 3px solid var(--blue);
+    padding: 20px 24px;
+    background: var(--paper-dark);
+    margin-bottom: 56px;
+  }
+  .mockup-intro h1 {
+    font-family: "Spoqa Han Sans Neo", sans-serif;
+    font-weight: 300;
+    font-size: 26px;
+    margin: 0 0 12px;
+    color: var(--charcoal);
+    letter-spacing: -0.01em;
+  }
+  .mockup-intro p { margin: 6px 0; font-size: 14px; color: var(--stone); }
+  .mockup-intro code { background: #fff; padding: 2px 6px; font-size: 12px; color: var(--blue); }
+
+  .section-block { margin-bottom: 72px; }
+  .section-head {
+    border-bottom: 1px solid var(--mist);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .section-head .tag {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--stone);
+    text-transform: uppercase;
+  }
+  .section-head h2 {
+    font-family: "Spoqa Han Sans Neo", sans-serif;
+    font-weight: 300;
+    font-size: 22px;
+    color: var(--charcoal);
+    margin: 0;
+  }
+  .section-head .hint { font-size: 13px; color: var(--stone); margin-left: auto; }
+
+  .ba-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
+  @media (min-width: 900px) { .ba-grid { grid-template-columns: 1fr 1fr; gap: 28px; } }
+
+  .ba-cell { background: #fff; border: 1px solid var(--mist); padding: 0; overflow: hidden; }
+  .ba-cell-label {
+    padding: 10px 16px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--stone);
+    border-bottom: 1px solid var(--mist);
+    background: var(--paper-dark);
+  }
+  .ba-cell-label.after { color: var(--blue); }
+  .ba-cell-body { padding: 24px; }
+
+  /* ── 권고 1: 카드 시각 위계 ── */
+  .top5-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .top5-card { background: var(--paper-dark); border: 1px solid var(--mist); padding: 8px; aspect-ratio: 3/4; display: flex; flex-direction: column; justify-content: space-between; }
+  .top5-card .poster { flex: 1; background: linear-gradient(135deg, #5C7C8E 0%, #3B5A6B 60%, #202833 100%); margin-bottom: 8px; }
+  .top5-card .title { font-size: 11px; color: var(--charcoal); font-weight: 400; line-height: 1.3; }
+  .top5-card .meta { font-size: 9px; color: var(--stone); margin-top: 3px; }
+
+  /* Before: 동일 크기 5장 + 큰 노란 1·2·3 랭크 배지 */
+  .before-rank-badge {
+    position: absolute; top: 4px; left: 4px;
+    background: #F5C84F; color: #202833;
+    font-family: "Geist", "Inter", sans-serif;
+    font-weight: 700; font-size: 13px;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 0;
+  }
+  .top5-card.has-rank { position: relative; }
+
+  /* After: 1순위만 와이드 + 큰 타이틀, 2~5는 작게 동일 비율 + 8장르 도트만 */
+  .top5-row-after {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .top5-row-after .top5-card.lead { aspect-ratio: 3/4; }
+  .top5-row-after .top5-card.lead .poster {
+    background: linear-gradient(135deg, #5C7C8E 0%, #3B5A6B 50%, #202833 100%);
+  }
+  .top5-row-after .top5-card.lead .title {
+    font-size: 14px; font-weight: 400; color: var(--charcoal); line-height: 1.35;
+  }
+  .top5-row-after .top5-card.lead .meta { font-size: 10px; }
+  .top5-row-after .top5-card.lead .lead-line {
+    font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 4px;
+  }
+  .top5-row-after .top5-card.sub { aspect-ratio: 3/4; }
+  .top5-row-after .top5-card.sub .title { font-size: 10px; opacity: 0.95; }
+  .top5-row-after .top5-card.sub .meta { font-size: 8px; opacity: 0.85; }
+
+  /* 8장르 도트 (미네랄 블루 채도 변형만) */
+  .genre-dot {
+    display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    margin-right: 5px; vertical-align: middle;
+  }
+  .g-yeon  { background: #3B5A6B; }                 /* 연극 - 미네랄 베이스 */
+  .g-mu    { background: #5C7C8E; }                 /* 뮤지컬 - 라이트 */
+  .g-mu-d  { background: #2C4555; }                 /* 무용 - 딥 */
+  .g-bal   { background: #7C9AAA; }                 /* 발레 - 페일 */
+  .g-guk   { background: #4A6D7E; }                 /* 국악 - 중간 */
+  .g-eum   { background: #1F3340; }                 /* 음악 - 다크 */
+  .g-jeon  { background: #6F8C9C; }                 /* 전통연희 */
+  .g-etc   { background: #B6BFC5; }                 /* 기타 - 그레이 */
+
+  .genre-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; font-size: 10px; color: var(--stone); }
+  .genre-legend span { letter-spacing: 0.04em; }
+
+  /* ── 권고 4: 캘린더 셀 장르 색 ── */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-cell {
+    aspect-ratio: 1;
+    border: 1px solid var(--mist);
+    padding: 6px;
+    font-size: 10px;
+    color: var(--stone);
+    background: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .cal-cell .day { font-size: 10px; color: var(--stone); }
+  .cal-cell .ev {
+    height: 3px;
+    margin-top: 2px;
+    background: var(--blue);
+  }
+  .cal-cell .ev + .ev { margin-top: 1px; }
+
+  /* Before: 모든 이벤트 단일 미네랄 블루 막대 */
+  .cal-before .ev { background: var(--blue); }
+
+  /* After: 자주 등록 5장르 + 나머지 회색 통합 */
+  .cal-after .ev-yeon  { background: #3B5A6B; }     /* 연극 */
+  .cal-after .ev-mu    { background: #5C7C8E; }     /* 뮤지컬 */
+  .cal-after .ev-eum   { background: #1F3340; }     /* 음악 */
+  .cal-after .ev-mu-d  { background: #7C9AAA; }     /* 무용 (페일) */
+  .cal-after .ev-guk   { background: #4A6D7E; }     /* 국악 */
+  .cal-after .ev-etc   { background: #B6BFC5; }     /* 나머지 통합 회색 */
+
+  .cal-legend {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 12px; font-size: 10px; color: var(--stone);
+    padding-top: 10px; border-top: 1px dotted var(--mist);
+  }
+  .cal-legend .chip { display: inline-flex; align-items: center; gap: 5px; letter-spacing: 0.02em; }
+  .cal-legend .swatch { width: 10px; height: 3px; display: inline-block; }
+
+  /* ── 권고 5: 헤더 메타 라벨 ── */
+  .page-header { padding: 28px 20px; border-bottom: 1px solid var(--mist); background: var(--paper); }
+  .page-header .meta {
+    font-family: "Geist", "Inter", "Spoqa Han Sans Neo", sans-serif;
+    font-size: 11px;
+    color: var(--stone);
+    margin-bottom: 10px;
+  }
+  .page-header h1 {
+    font-family: "Spoqa Han Sans Neo", sans-serif;
+    font-weight: 300;
+    font-size: 28px;
+    color: var(--charcoal);
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .page-header p { margin: 0; font-size: 13px; color: var(--stone); }
+
+  /* Before: 페이지마다 다른 라벨 표기 (UNIVERSITIES 대문자 + 들쭉날쭉) */
+  .header-before .meta { letter-spacing: 0.25em; text-transform: uppercase; }
+  .header-before-1 .meta { letter-spacing: 0.3em; }
+  .header-before-2 .meta { letter-spacing: 0.3em; }
+  .header-before-3 .meta { letter-spacing: 0.25em; }
+
+  /* After: 모두 소문자(첫 글자만 대문자) + 자간 통일 0.2em + Geist */
+  .header-after .meta { letter-spacing: 0.2em; text-transform: none; }
+
+  .header-stack { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .header-stack .page-header { margin-bottom: 0; }
+
+  /* 모바일 미리보기 영역 */
+  .mobile-stage {
+    max-width: 360px; margin: 0 auto;
+    border: 1px solid var(--mist);
+    background: var(--paper);
+    padding: 16px;
+  }
+  .mobile-stage .top5-row,
+  .mobile-stage .top5-row-after { grid-template-columns: 1fr; gap: 8px; }
+  .mobile-stage .top5-row-after { grid-template-columns: 1fr; }
+  .mobile-stage .top5-row-after .top5-card.lead { aspect-ratio: 16/9; }
+  .mobile-stage .top5-row-after .top5-card.sub { aspect-ratio: 16/9; }
+
+  /* 본문 캡션 */
+  .caption { font-size: 12px; color: var(--stone); margin-top: 10px; line-height: 1.55; }
+  .caption b { color: var(--charcoal); font-weight: 500; }
+
+  /* CTA 버튼 (페일 라임) — 룰 위배 X */
+  .cta {
+    display: inline-block; padding: 8px 14px;
+    background: var(--lime); color: var(--charcoal);
+    font-size: 12px; letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: background 120ms ease;
+  }
+  .cta:hover { background: var(--lime-hover); }
+
+  /* 뷰 토글 라벨 */
+  .view-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--stone); margin: 0 0 8px;
+  }
+</style>
+</head>
+<body>
+<div class="mockup-shell">
+
+  <div class="mockup-intro">
+    <h1>Phase 1 시안 · 2026-06-15</h1>
+    <p>사장님 결정 잠금 3건의 Before/After입니다. 각 권고마다 <b>데스크탑 뷰 · 모바일 뷰</b> 두 가지를 함께 둡니다.</p>
+    <p>팔레트: <code>Mineral Stage</code> · 미네랄 블루 <code>#3B5A6B</code> 70% / 크림 <code>#FBF8F1</code> 20% / 페일 라임 CTA <code>#C8D96F</code>. 노랑·빨강·초록 강조 사용 없음.</p>
+    <p>금지 룰 준수: TOP 1·1위·우승 직접 표기 없음 · 노랑 본문 사용 없음 · (주)/대표이사 표기 없음.</p>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- 권고 1: 카드 시각 위계 -->
+  <!-- ============================================ -->
+  <section class="section-block">
+    <div class="section-head">
+      <span class="tag">권고 1</span>
+      <h2>카드 시각 위계 강화 — TOP 5 노출 방식</h2>
+      <span class="hint">메인 페이지 · HeroPosterStream 대안</span>
+    </div>
+
+    <!-- 데스크탑 -->
+    <p class="view-label">Desktop</p>
+    <div class="ba-grid">
+
+      <div class="ba-cell">
+        <div class="ba-cell-label">Before — 1·2·3 노란 배지 + 5장 동일 크기</div>
+        <div class="ba-cell-body">
+          <div class="top5-row">
+            <div class="top5-card has-rank">
+              <div class="before-rank-badge">1</div>
+              <div class="poster"></div>
+              <div>
+                <div class="title">햄릿 — 외전</div>
+                <div class="meta">한예종 · 6.18</div>
+              </div>
+            </div>
+            <div class="top5-card has-rank">
+              <div class="before-rank-badge">2</div>
+              <div class="poster"></div>
+              <div>
+                <div class="title">레미제라블 스튜디오</div>
+                <div class="meta">중앙대 · 6.20</div>
+              </div>
+            </div>
+            <div class="top5-card has-rank">
+              <div class="before-rank-badge">3</div>
+              <div class="poster"></div>
+              <div>
+                <div class="title">백조의 호수 · 발췌</div>
+                <div class="meta">서울예대 · 6.21</div>
+              </div>
+            </div>
+            <div class="top5-card">
+              <div class="poster"></div>
+              <div>
+                <div class="title">판소리 흥보가</div>
+                <div class="meta">한국예술원 · 6.22</div>
+              </div>
+            </div>
+            <div class="top5-card">
+              <div class="poster"></div>
+              <div>
+                <div class="title">사물의 결</div>
+                <div class="meta">동덕여대 · 6.24</div>
+              </div>
+            </div>
+          </div>
+          <p class="caption">노란 1·2·3 배지가 직접 서열을 표시 → 메모리 §2 금지 룰 저촉 위험. 5장 동일 크기라 시선이 어디로 가야 할지 안내가 없음.</p>
+        </div>
+      </div>
+
+      <div class="ba-cell">
+        <div class="ba-cell-label after">After — 시각 위계만 변주 · 라벨 없음 · 8장르 도트</div>
+        <div class="ba-cell-body">
+          <div class="top5-row-after">
+            <div class="top5-card lead">
+              <div class="poster"></div>
+              <div>
+                <div class="lead-line">이번 주의 무대</div>
+                <div class="title"><span class="genre-dot g-yeon"></span>햄릿 — 외전</div>
+                <div class="meta">한예종 연극원 · 6.18 — 6.22</div>
+              </div>
+            </div>
+            <div class="top5-card sub">
+              <div class="poster"></div>
+              <div>
+                <div class="title"><span class="genre-dot g-mu"></span>레미제라블</div>
+                <div class="meta">중앙대 · 6.20</div>
+              </div>
+            </div>
+            <div class="top5-card sub">
+              <div class="poster"></div>
+              <div>
+                <div class="title"><span class="genre-dot g-bal"></span>백조의 호수</div>
+                <div class="meta">서울예대 · 6.21</div>
+              </div>
+            </div>
+            <div class="top5-card sub">
+              <div class="poster"></div>
+              <div>
+                <div class="title"><span class="genre-dot g-guk"></span>흥보가</div>
+                <div class="meta">한국예술원 · 6.22</div>
+              </div>
+            </div>
+            <div class="top5-card sub">
+              <div class="poster"></div>
+              <div>
+                <div class="title"><span class="genre-dot g-mu-d"></span>사물의 결</div>
+                <div class="meta">동덕여대 · 6.24</div>
+              </div>
+            </div>
+          </div>
+          <div class="genre-legend">
+            <span><span class="genre-dot g-yeon"></span>연극</span>
+            <span><span class="genre-dot g-mu"></span>뮤지컬</span>
+            <span><span class="genre-dot g-mu-d"></span>무용</span>
+            <span><span class="genre-dot g-bal"></span>발레</span>
+            <span><span class="genre-dot g-guk"></span>국악</span>
+            <span><span class="genre-dot g-eum"></span>음악</span>
+            <span><span class="genre-dot g-jeon"></span>전통연희</span>
+            <span><span class="genre-dot g-etc"></span>기타</span>
+          </div>
+          <p class="caption">
+            <b>1순위:</b> 와이드 + 큰 타이틀 + "이번 주의 무대" 라벨로 시선 유도.
+            <b>2~5순위:</b> 동일 비율 작은 카드로 균등 노출 — 서열 라벨 없음.
+            <b>8장르 도트:</b> 미네랄 블루 채도 변형 8단계로만 구분 (다른 컬러 도입 X).
+            큐레이션은 살리되, 직접 1·2·3 서열은 보이지 않음.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 모바일 -->
+    <p class="view-label" style="margin-top:32px">Mobile</p>
+    <div class="ba-grid">
+      <div class="ba-cell">
+        <div class="ba-cell-label">Before — 세로 스크롤, 배지 그대로</div>
+        <div class="ba-cell-body">
+          <div class="mobile-stage">
+            <div class="top5-row">
+              <div class="top5-card has-rank">
+                <div class="before-rank-badge">1</div>
+                <div class="poster"></div>
+                <div><div class="title">햄릿 — 외전</div><div class="meta">한예종 · 6.18</div></div>
+              </div>
+              <div class="top5-card has-rank">
+                <div class="before-rank-badge">2</div>
+                <div class="poster"></div>
+                <div><div class="title">레미제라블</div><div class="meta">중앙대 · 6.20</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ba-cell">
+        <div class="ba-cell-label after">After — lead 1장 크게 + sub 균등</div>
+        <div class="ba-cell-body">
+          <div class="mobile-stage">
+            <div class="top5-row-after" style="grid-template-columns: 1fr;">
+              <div class="top5-card lead" style="aspect-ratio: 16/9;">
+                <div class="poster"></div>
+                <div>
+                  <div class="lead-line">이번 주의 무대</div>
+                  <div class="title"><span class="genre-dot g-yeon"></span>햄릿 — 외전</div>
+                  <div class="meta">한예종 연극원 · 6.18 — 6.22</div>
+                </div>
+              </div>
+              <div class="top5-card sub" style="aspect-ratio: 16/9;">
+                <div class="poster"></div>
+                <div>
+                  <div class="title"><span class="genre-dot g-mu"></span>레미제라블</div>
+                  <div class="meta">중앙대 · 6.20</div>
+                </div>
+              </div>
+              <div class="top5-card sub" style="aspect-ratio: 16/9;">
+                <div class="poster"></div>
+                <div>
+                  <div class="title"><span class="genre-dot g-bal"></span>백조의 호수</div>
+                  <div class="meta">서울예대 · 6.21</div>
+                </div>
+              </div>
+            </div>
+            <p class="caption" style="margin-top:8px;">모바일은 1순위 카드만 크고, 2·3·4·5는 가로 와이드 동일 비율로 흐름. 한 손 엄지 스크롤에서 위계가 자연스럽게 읽힘.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 권고 4: 캘린더 셀 장르 색 -->
+  <!-- ============================================ -->
+  <section class="section-block">
+    <div class="section-head">
+      <span class="tag">권고 4</span>
+      <h2>캘린더 셀 장르 색 — 자주 등록 5장르 + 나머지 회색</h2>
+      <span class="hint">/shows/calendar · 월별 뷰</span>
+    </div>
+
+    <p class="view-label">Desktop</p>
+    <div class="ba-grid">
+
+      <div class="ba-cell">
+        <div class="ba-cell-label">Before — 모든 이벤트가 같은 미네랄 블루 막대</div>
+        <div class="ba-cell-body">
+          <div class="cal-grid cal-before">
+            <!-- 5x7 = 35 셀, 일부만 이벤트 표시 -->
+            <div class="cal-cell"><span class="day">1</span></div>
+            <div class="cal-cell"><span class="day">2</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">3</span></div>
+            <div class="cal-cell"><span class="day">4</span><div class="ev"></div><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">5</span></div>
+            <div class="cal-cell"><span class="day">6</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">7</span></div>
+            <div class="cal-cell"><span class="day">8</span></div>
+            <div class="cal-cell"><span class="day">9</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">10</span><div class="ev"></div><div class="ev"></div><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">11</span></div>
+            <div class="cal-cell"><span class="day">12</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">13</span></div>
+            <div class="cal-cell"><span class="day">14</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">15</span></div>
+            <div class="cal-cell"><span class="day">16</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">17</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">18</span><div class="ev"></div><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">19</span></div>
+            <div class="cal-cell"><span class="day">20</span><div class="ev"></div><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">21</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">22</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">23</span></div>
+            <div class="cal-cell"><span class="day">24</span><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">25</span></div>
+            <div class="cal-cell"><span class="day">26</span><div class="ev"></div><div class="ev"></div></div>
+            <div class="cal-cell"><span class="day">27</span></div>
+            <div class="cal-cell"><span class="day">28</span><div class="ev"></div></div>
+          </div>
+          <p class="caption">이벤트 막대가 전부 동일 색 → 어느 날 어떤 장르가 모이는지 한눈에 안 보임. 검색·필터에 의존해야만 안다.</p>
+        </div>
+      </div>
+
+      <div class="ba-cell">
+        <div class="ba-cell-label after">After — 5장르 색 + 나머지 회색 통합</div>
+        <div class="ba-cell-body">
+          <div class="cal-grid cal-after">
+            <div class="cal-cell"><span class="day">1</span></div>
+            <div class="cal-cell"><span class="day">2</span><div class="ev ev-yeon"></div></div>
+            <div class="cal-cell"><span class="day">3</span></div>
+            <div class="cal-cell"><span class="day">4</span><div class="ev ev-mu"></div><div class="ev ev-eum"></div></div>
+            <div class="cal-cell"><span class="day">5</span></div>
+            <div class="cal-cell"><span class="day">6</span><div class="ev ev-yeon"></div></div>
+            <div class="cal-cell"><span class="day">7</span></div>
+            <div class="cal-cell"><span class="day">8</span></div>
+            <div class="cal-cell"><span class="day">9</span><div class="ev ev-guk"></div></div>
+            <div class="cal-cell"><span class="day">10</span><div class="ev ev-yeon"></div><div class="ev ev-mu"></div><div class="ev ev-etc"></div></div>
+            <div class="cal-cell"><span class="day">11</span></div>
+            <div class="cal-cell"><span class="day">12</span><div class="ev ev-mu-d"></div></div>
+            <div class="cal-cell"><span class="day">13</span></div>
+            <div class="cal-cell"><span class="day">14</span><div class="ev ev-yeon"></div></div>
+            <div class="cal-cell"><span class="day">15</span></div>
+            <div class="cal-cell"><span class="day">16</span><div class="ev ev-eum"></div></div>
+            <div class="cal-cell"><span class="day">17</span><div class="ev ev-yeon"></div></div>
+            <div class="cal-cell"><span class="day">18</span><div class="ev ev-mu"></div><div class="ev ev-guk"></div></div>
+            <div class="cal-cell"><span class="day">19</span></div>
+            <div class="cal-cell"><span class="day">20</span><div class="ev ev-mu"></div><div class="ev ev-eum"></div></div>
+            <div class="cal-cell"><span class="day">21</span><div class="ev ev-mu-d"></div></div>
+            <div class="cal-cell"><span class="day">22</span><div class="ev ev-yeon"></div></div>
+            <div class="cal-cell"><span class="day">23</span></div>
+            <div class="cal-cell"><span class="day">24</span><div class="ev ev-etc"></div></div>
+            <div class="cal-cell"><span class="day">25</span></div>
+            <div class="cal-cell"><span class="day">26</span><div class="ev ev-yeon"></div><div class="ev ev-mu"></div></div>
+            <div class="cal-cell"><span class="day">27</span></div>
+            <div class="cal-cell"><span class="day">28</span><div class="ev ev-eum"></div></div>
+          </div>
+          <div class="cal-legend">
+            <span class="chip"><span class="swatch" style="background:#3B5A6B"></span>연극</span>
+            <span class="chip"><span class="swatch" style="background:#5C7C8E"></span>뮤지컬</span>
+            <span class="chip"><span class="swatch" style="background:#1F3340"></span>음악</span>
+            <span class="chip"><span class="swatch" style="background:#7C9AAA"></span>무용</span>
+            <span class="chip"><span class="swatch" style="background:#4A6D7E"></span>국악</span>
+            <span class="chip"><span class="swatch" style="background:#B6BFC5"></span>그 외 (발레·전통연희·기타)</span>
+          </div>
+          <p class="caption">
+            <b>채도 변형 룰:</b> 미네랄 블루 한 계열 안에서 명도·채도만 조절 → 여백 결 유지.
+            <b>5장르 선정:</b> 연극·뮤지컬·음악·무용·국악 (운영팀 학과 분류 실데이터 정합 — 사장님 확인 후 교체 가능).
+            <b>회색 통합:</b> 발레·전통연희·기타는 한 칸 회색으로 묶어 "여백 압박 없음".
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="view-label" style="margin-top:32px">Mobile</p>
+    <div class="ba-grid">
+      <div class="ba-cell">
+        <div class="ba-cell-label">Before</div>
+        <div class="ba-cell-body">
+          <div class="mobile-stage">
+            <div class="cal-grid cal-before" style="gap:2px;">
+              <div class="cal-cell" style="padding:3px"><span class="day">1</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">2</span><div class="ev"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">3</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">4</span><div class="ev"></div><div class="ev"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">5</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">6</span><div class="ev"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">7</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">8</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">9</span><div class="ev"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">10</span><div class="ev"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">11</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">12</span><div class="ev"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">13</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">14</span><div class="ev"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-cell">
+        <div class="ba-cell-label after">After</div>
+        <div class="ba-cell-body">
+          <div class="mobile-stage">
+            <div class="cal-grid cal-after" style="gap:2px;">
+              <div class="cal-cell" style="padding:3px"><span class="day">1</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">2</span><div class="ev ev-yeon"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">3</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">4</span><div class="ev ev-mu"></div><div class="ev ev-eum"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">5</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">6</span><div class="ev ev-yeon"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">7</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">8</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">9</span><div class="ev ev-guk"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">10</span><div class="ev ev-yeon"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">11</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">12</span><div class="ev ev-mu-d"></div></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">13</span></div>
+              <div class="cal-cell" style="padding:3px"><span class="day">14</span><div class="ev ev-yeon"></div></div>
+            </div>
+            <div class="cal-legend" style="font-size:9px;gap:6px;">
+              <span class="chip"><span class="swatch" style="background:#3B5A6B"></span>연극</span>
+              <span class="chip"><span class="swatch" style="background:#5C7C8E"></span>뮤지컬</span>
+              <span class="chip"><span class="swatch" style="background:#1F3340"></span>음악</span>
+              <span class="chip"><span class="swatch" style="background:#7C9AAA"></span>무용</span>
+              <span class="chip"><span class="swatch" style="background:#4A6D7E"></span>국악</span>
+              <span class="chip"><span class="swatch" style="background:#B6BFC5"></span>그 외</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 권고 5: 헤더 메타 라벨 통일 -->
+  <!-- ============================================ -->
+  <section class="section-block">
+    <div class="section-head">
+      <span class="tag">권고 5</span>
+      <h2>헤더 메타 라벨 통일 — 소문자 + 자간 통일</h2>
+      <span class="hint">/shows · /archive · /universities</span>
+    </div>
+
+    <p class="view-label">Desktop</p>
+    <div class="ba-grid">
+
+      <div class="ba-cell">
+        <div class="ba-cell-label">Before — 페이지마다 다른 자간, "UNIVERSITIES" 대문자</div>
+        <div class="ba-cell-body">
+          <div class="header-stack">
+            <div class="page-header header-before header-before-1">
+              <p class="meta">Shows</p>
+              <h1>진행 중 · 예정 공연</h1>
+              <p>오늘 막이 오르는 무대를 한 곳에서.</p>
+            </div>
+            <div class="page-header header-before header-before-2">
+              <p class="meta">Archive</p>
+              <h1>지난 공연</h1>
+              <p>지나갔지만 사라지지 않은 무대들.</p>
+            </div>
+            <div class="page-header header-before header-before-3">
+              <p class="meta">UNIVERSITIES</p>
+              <h1>학과 디렉토리</h1>
+              <p>무대를 올린 적이 있는 학과만 모아 두었습니다.</p>
+            </div>
+          </div>
+          <p class="caption">자간이 0.3em / 0.3em / 0.25em으로 들쭉날쭉, 마지막만 대문자. 페이지 사이를 오갈 때 결이 어긋남.</p>
+        </div>
+      </div>
+
+      <div class="ba-cell">
+        <div class="ba-cell-label after">After — 소문자 통일 · 자간 0.2em · Geist Thin</div>
+        <div class="ba-cell-body">
+          <div class="header-stack">
+            <div class="page-header header-after">
+              <p class="meta">Shows · 이번 주의 무대</p>
+              <h1>진행 중 · 예정 공연</h1>
+              <p>오늘 막이 오르는 무대를 한 곳에서.</p>
+            </div>
+            <div class="page-header header-after">
+              <p class="meta">Archive · 지난 기록</p>
+              <h1>지난 공연</h1>
+              <p>지나갔지만 사라지지 않은 무대들.</p>
+            </div>
+            <div class="page-header header-after">
+              <p class="meta">Universities · 학과 디렉토리</p>
+              <h1>학과 디렉토리</h1>
+              <p>무대를 올린 적이 있는 학과만 모아 두었습니다.</p>
+            </div>
+          </div>
+          <p class="caption">
+            <b>대소문자:</b> 첫 글자만 대문자 (Shows / Archive / Universities) — 사유유사 차분한 톤에 부합.
+            <b>자간:</b> 0.2em 통일.
+            <b>한글 결:</b> 영어 라벨 뒤에 작은 점(·)으로 한글 결을 함께 둠 — "Editor's Pick" 같은 추상 영어보다 구체적·차분.
+            <b>메인 페이지 "Editor's Pick" 권고:</b> "이번 주의 무대"로 한글 결 변환 (마케팅팀 권고 채택).
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="view-label" style="margin-top:32px">Mobile</p>
+    <div class="ba-grid">
+      <div class="ba-cell">
+        <div class="ba-cell-label">Before</div>
+        <div class="ba-cell-body">
+          <div class="mobile-stage" style="padding:0;">
+            <div class="page-header header-before header-before-3" style="padding:18px 14px;">
+              <p class="meta" style="font-size:10px;">UNIVERSITIES</p>
+              <h1 style="font-size:20px;">학과 디렉토리</h1>
+              <p style="font-size:12px;">무대를 올린 학과만 모아 두었습니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-cell">
+        <div class="ba-cell-label after">After</div>
+        <div class="ba-cell-body">
+          <div class="mobile-stage" style="padding:0;">
+            <div class="page-header header-after" style="padding:18px 14px;">
+              <p class="meta" style="font-size:10px;">Universities · 학과 디렉토리</p>
+              <h1 style="font-size:20px;">학과 디렉토리</h1>
+              <p style="font-size:12px;">무대를 올린 학과만 모아 두었습니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mockup-intro" style="border-left-color: var(--lime); margin-top: 40px;">
+    <h1 style="font-size:18px;">사장님 검토 후 다음 단계</h1>
+    <p>이 시안에서 권고 1·4·5 각각 <b>OK / 조정 / 보류</b> 답을 주시면, 그 답대로 실제 사이트 코드를 수정합니다.</p>
+    <p>특히 권고 4의 <b>"자주 등록되는 5장르 선정"</b>은 실 데이터 기준이 필요합니다 — 운영팀 학과 분류 작업과 함께 확정.</p>
+    <p>코드 변경 예상 위치: <code>src/components/HeroPosterStream.tsx</code>, <code>src/components/ShowsCalendar.tsx</code>, <code>src/app/{shows,archive,universities}/page.tsx</code>.</p>
+  </div>
+
+</div>
+</body>
+</html>

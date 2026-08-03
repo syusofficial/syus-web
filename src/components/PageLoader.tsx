@@ -1,6 +1,6 @@
 "use client";
 
-import { SyusLogoSvg } from "./Nav";
+import { SyusLogoSvg } from "./SyusLogoSvg";
 
 export default function PageLoader() {
   return (

@@ -106,6 +106,16 @@ export async function POST(req: Request) {
   // 4) 원자적 클레임 + 사용량 캡 (DB 함수). 없으면 레거시 비원자 검사로 폴백.
   let claimedByRpc = false;
   const { data: rpcRes, error: rpcErr } = await supabase.rpc("syus_start_generation", { p_id: id });
+  if (rpcErr) {
+    // 2026-08-03 — RPC 실패를 조용히 넘기면 동시성 방어(advisory lock)가 통째로 사라진 채
+    //   레거시 경로로 내려간다(동시 요청 2건이 모두 통과 → Anthropic 중복 과금).
+    //   폴백 자체는 운영 안전을 위해 유지하되, 언제 어떤 이유로 빠졌는지는 반드시 남긴다.
+    console.error("[monologue/generate] syus_start_generation RPC 실패 → 레거시 폴백", {
+      id,
+      code: rpcErr.code,
+      message: rpcErr.message,
+    });
+  }
   if (!rpcErr) {
     switch (rpcRes) {
       case "ok": claimedByRpc = true; break;
@@ -138,7 +148,8 @@ export async function POST(req: Request) {
       const { count } = await supabase
         .from("syus_monologues").select("id", { count: "exact", head: true })
         .eq("user_id", user.id).gte("created_at", since);
-      if ((count ?? 0) > DAILY_CAP) {
+      // 2026-08-03 — `>` 였을 때 4건까지 통과해 SQL 함수(>= 3)와 기준이 어긋났다. `>=`로 통일.
+      if ((count ?? 0) >= DAILY_CAP) {
         return NextResponse.json({ error: `하루 독백 요청은 ${DAILY_CAP}건까지예요. 내일 다시 청해 주세요.` }, { status: 429 });
       }
     }

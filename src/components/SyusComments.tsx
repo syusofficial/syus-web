@@ -64,7 +64,9 @@ export default function SyusComments({ targetType, targetId }: { targetType: str
     if (!uid || busy) return;
     setBusy(true);
     const supabase = createClient();
-    await supabase.from("syus_comments").delete().eq("id", id).eq("user_id", uid);
+    // 2026-08-03 — 삭제 실패(RLS 거부·네트워크)를 알리지 않고 넘어가던 문제 수정
+    const { error } = await supabase.from("syus_comments").delete().eq("id", id).eq("user_id", uid);
+    if (error) alert("댓글을 삭제하지 못했습니다. 잠시 후 다시 시도해주세요.");
     await load();
     setBusy(false);
   };
