@@ -79,6 +79,10 @@ export default function SeatReservationForm({
   const [partySize, setPartySize] = useState(1);
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<SubmitReservationState | null>(null);
+  // 개인정보 수집·이용 및 공연팀 제공 동의(필수) — 비회원도 신청할 수 있는 폼이라
+  // 약관·방침 동의를 거친 적 없는 이용자가 이름·연락처를 남기게 된다. 그래서 이 폼
+  // 자체에서 동의를 받는다(개인정보처리방침 제3조 제10항·제5조와 문구를 맞춰둘 것).
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
 
   const [capacity, setCapacity] = useState<number | null>(initialCapacity);
   const [confirmedTotal, setConfirmedTotal] = useState(initialConfirmedTotal);
@@ -134,6 +138,11 @@ export default function SeatReservationForm({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setResult(null);
+    // 필수 동의 미체크 시 제출 차단 — 기존 에러 표시(빨간 박스)와 같은 경로로 알린다.
+    if (!privacyAgreed) {
+      setResult({ ok: false, message: "개인정보 수집·이용 및 공연팀 제공에 동의해주세요." });
+      return;
+    }
     const fd = new FormData(e.currentTarget);
     startTransition(async () => {
       const res = await submitReservation(fd);
@@ -338,6 +347,48 @@ export default function SeatReservationForm({
                 +
               </button>
               <input type="hidden" name="party_size" value={partySize} />
+            </div>
+          </div>
+
+          {/* 개인정보 수집·이용 동의 (필수) — 비회원 신청자를 위한 고지.
+              항목·보유기간·제공처는 개인정보처리방침 제3조 제10항·제4조·제5조와 일치시킬 것. */}
+          <div className="pt-1" style={{ borderTop: "1px solid #D4CFC1" }}>
+            <label className="flex items-start gap-2.5 cursor-pointer select-none pt-3">
+              <input
+                type="checkbox"
+                checked={privacyAgreed}
+                onChange={() => setPrivacyAgreed((v) => !v)}
+                disabled={isPending}
+                className="mt-0.5 shrink-0"
+                style={{ accentColor: "#5C2A42", width: "1rem", height: "1rem" }}
+              />
+              <span className="text-xs leading-relaxed" style={{ color: "#4A3B33" }}>
+                <span style={{ color: "#5C2A42", fontWeight: 600, marginRight: "4px" }}>[필수]</span>
+                개인정보 수집·이용 및 공연팀 제공에 동의합니다.
+              </span>
+            </label>
+            <div className="mt-2 text-[11px] leading-relaxed" style={{ color: "#5A4A3E" }}>
+              <p>수집 항목: 이름, 연락처, 신청 인원수</p>
+              <p>이용 목적: 좌석 신청 확인·취소 안내</p>
+              <p>보유 기간: 해당 공연 종료 후 1개월</p>
+              <p>
+                제공: 신청하신 공연을 등록한 공연팀에게 위 항목이 제공됩니다(관람객 명단 확인·현장 입장 안내 목적).
+              </p>
+              <p>
+                국외 이전: 신청 정보 보관과 확인 메일 발송을 위해 미국에 서버를 둔 처리 위탁사로 전송될 수 있습니다.
+              </p>
+              <p className="mt-1">
+                동의를 거부하실 수 있으며, 이 경우 좌석 신청은 어렵습니다. 자세한 내용은{" "}
+                <Link
+                  href="/privacy"
+                  target="_blank"
+                  className={`underline ${LINK_BTN_STATES}`}
+                  style={{ color: "#0B5563" }}
+                >
+                  개인정보처리방침
+                </Link>
+                에서 확인하실 수 있습니다.
+              </p>
             </div>
           </div>
 

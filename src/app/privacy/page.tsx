@@ -10,14 +10,16 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 // ─── 변경 고지 배너 (7일 노출) ───────────────────────────────
-// 시행일(2026-08-02) ~ 시행 +7일(2026-08-09) 동안만 노출.
+// 시행일(2026-08-03) ~ 시행 +7일(2026-08-10) 동안만 노출.
 // 종료일이 지나면 서버 컴포넌트 SSR 시점에 자동으로 사라짐.
-// ⚠️ 2026-08-02는 잠정 시행일입니다. 위탁사 추가(Anthropic)가 제12조상 "중대한 영향" 변경에
-// 해당하는지, 30일 전 고지·개별 이메일 통지가 필요한지는 변호사 확인이 필요합니다
+// ⚠️ 2026-08-03는 잠정 시행일입니다. v2.3은 실제 코드 동작과 어긋나 있던 문구를 사실대로
+// 정정한 개정입니다(좌석 신청 정보의 공연팀 제공 명시, 위탁사 Sentry 추가, 국외 이전 고지
+// 항목 보완, 마케팅 철회 경로 정정). 이 중 제3자 제공·위탁사 추가가 제12조상 "중대한 영향"
+// 변경에 해당해 30일 전 고지·개별 이메일 통지가 필요한지는 변호사 확인이 필요합니다
 // (근거: output/legal/2026-07-02_privacy_policy_syus_addendum_draft.md 제6조 항목).
 // 실제 발행 시점에 맞춰 사장님이 이 날짜를 재조정해야 합니다.
-const BANNER_START = "2026-08-02";
-const BANNER_END = "2026-08-09";
+const BANNER_START = "2026-08-03";
+const BANNER_END = "2026-08-10";
 
 function shouldShowBanner(now: Date): boolean {
   const today = now.toISOString().slice(0, 10); // YYYY-MM-DD (UTC 기준, 7일 윈도라 시차 영향 미미)
@@ -52,9 +54,11 @@ export default function PrivacyPage() {
               className="text-sm leading-relaxed"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
             >
-              <strong>2026-08-02 개인정보처리방침이 v2.2로 개정되었습니다.</strong>
+              <strong>2026-08-03 개인정보처리방침이 v2.3으로 개정되었습니다.</strong>
               <br />
-              주요 변경: 시우스 커뮤니티(견해글·QnA·자유 게시판·관람 후기·창작 독백·책 서재) 서비스 제공 목적·수집 항목·보유 기간 추가 · 창작 독백 생성을 위한 위탁사 Anthropic PBC(미국) 추가 · 공연 좌석 신청(예약) 서비스 제공 목적·수집 항목(이름·연락처·인원수)·보유 기간(공연 종료 후 1개월) 추가.
+              주요 변경: 좌석 신청 정보(이름·연락처·인원수 등)가 해당 공연을 등록한 공연팀에게 제공된다는 사실을 제3조·제5조에 명시 · 위탁사에 Functional Software, Inc.(Sentry, 미국, 오류·성능 모니터링) 추가 · 국외 이전 표에 &ldquo;이전되는 개인정보 항목&rdquo;과 &ldquo;이전받는 자의 연락처&rdquo; 보완 · 마케팅 수신 철회 경로를 실제 이용 가능한 방법(1:1 문의·이메일 요청)으로 정정.
+              <br />
+              이번 개정은 새로운 수집을 늘리는 변경이 아니라, 이미 이루어지고 있던 처리를 있는 그대로 적어 방침과 실제를 맞춘 것입니다.
             </p>
           </div>
         )}
@@ -74,7 +78,7 @@ export default function PrivacyPage() {
             개인정보처리방침
           </h1>
           <p className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-            시행일: 2026-08-02 (v2.2) · 이전 시행일: 2026-06-15
+            시행일: 2026-08-03 (v2.3) · 이전 시행일: 2026-08-02 (v2.2) · 2026-06-15
           </p>
         </div>
 
@@ -190,7 +194,15 @@ export default function PrivacyPage() {
                 <ul className="list-disc pl-5 space-y-1">
                   <li>필수: 이름, 연락처(전화번호 또는 이메일), 신청 인원수</li>
                   <li>회원 로그인 상태로 신청한 경우 회원 식별자가 함께 저장되어 마이페이지에서 신청 내역을 확인할 수 있습니다.</li>
-                  <li>좌석 신청은 희망 접수이며, 실제 입장이 보장되는 것은 아닙니다. 신청 정보는 좌석 신청 확인·취소 목적으로만 이용되며, 공연팀·제3자에게 별도 제공되지 않습니다.</li>
+                  <li>좌석 신청은 희망 접수이며, 실제 입장이 보장되는 것은 아닙니다.</li>
+                  <li>
+                    <strong>공연팀 제공 안내</strong> — 좌석 신청 정보는 해당 공연을 등록한 공연팀(공연자 회원)에게 제공됩니다.
+                    제공받는 자는 그 공연의 등록자이며, 제공 목적은 관람객 명단 확인·현장 입장 안내·좌석 운영입니다.
+                    제공 항목은 이름, 연락처, 신청 인원수, 관람 회차, 신청 상태, 신청번호, 신청 일시입니다.
+                    공연팀은 자신이 등록한 공연의 명단만 열람할 수 있고, 현장 안내를 위해 파일(CSV)로 내려받을 수 있습니다.
+                    이 목적을 벗어난 제3자 제공은 하지 않습니다.
+                  </li>
+                  <li>좌석 신청 화면에서 위 수집·이용 및 공연팀 제공에 대한 동의를 별도로 받으며, 동의하지 않으실 경우 좌석 신청은 어렵습니다.</li>
                 </ul>
               </div>
             </div>
@@ -245,6 +257,32 @@ export default function PrivacyPage() {
               <li>「개인정보 보호법」 제17조 제1항 제2호 등 법령에 특별한 규정이 있는 경우</li>
               <li>수사기관이 법령에 정해진 절차와 방법에 따라 요구하는 경우</li>
             </ol>
+            <p className="mt-3">
+              위 제1호(사전 동의)에 따라 현재 정기적으로 이루어지는 제3자 제공은 다음 한 가지입니다.
+            </p>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>제공받는 자</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>제공 목적</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>제공 항목</th>
+                    <th className="text-left py-2" style={{ color: "#5A4A3E" }}>보유·이용 기간</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ borderBottom: "1px solid #E6E1D6" }}>
+                    <td className="py-2 pr-4 align-top">해당 공연을 등록한 공연팀(공연자 회원)</td>
+                    <td className="py-2 pr-4 align-top">관람객 명단 확인·현장 입장 안내·좌석 운영</td>
+                    <td className="py-2 pr-4 align-top">이름, 연락처, 신청 인원수, 관람 회차, 신청 상태, 신청번호, 신청 일시</td>
+                    <td className="py-2 align-top">해당 공연 종료 후 1개월</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3">
+              이용자는 위 제공에 동의하지 않을 권리가 있으며, 동의하지 않으실 경우 좌석 신청 이용이 제한됩니다.
+            </p>
           </section>
 
           {/* 제6조 */}
@@ -262,21 +300,24 @@ export default function PrivacyPage() {
                   <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
                     <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>수탁자</th>
                     <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>위탁 업무</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>이전되는 개인정보 항목</th>
                     <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>국가</th>
                     <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>이전 방법·시점</th>
+                    <th className="text-left py-2 pr-4" style={{ color: "#5A4A3E" }}>이전받는 자의 연락처</th>
                     <th className="text-left py-2" style={{ color: "#5A4A3E" }}>보유 기간</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    ["Supabase Inc.", "데이터베이스·인증·스토리지", "미국", "회원가입·서비스 이용 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
-                    ["Vercel Inc.", "웹 서비스 호스팅·서버리스 함수", "미국", "서비스 이용 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
-                    ["Google LLC", "웹 트래픽 분석(GA4), 로그인 인증(OAuth)", "미국", "서비스 이용 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
-                    ["Microsoft Corporation", "사용자 행동 분석(Clarity)", "미국", "서비스 이용 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
-                    ["Kakao Corp.", "로그인 인증(OAuth)", "대한민국", "로그인 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
-                    ["OpenAI, L.L.C.", "후기 자동 검열(Moderation API)", "미국", "후기 작성 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
-                    ["Resend, Inc.", "이메일 발송(가입 안내·답변 통지)", "미국", "이메일 발송 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
-                    ["Anthropic PBC", "창작 독백 생성(AI 모델 API, Claude)", "미국", "독백 요청 시 TLS 암호화 전송", "위탁 계약 종료 시까지"],
+                    ["Supabase Inc.", "데이터베이스·인증·스토리지", "회원 정보(이메일·이름·비밀번호 해시), 게시물·후기·문의 내용, 좌석 신청 정보(이름·연락처·인원수), 접속 기록 등 서비스 이용 과정에서 저장되는 개인정보", "미국", "회원가입·서비스 이용 시 TLS 암호화 전송", "supabase.com/support", "위탁 계약 종료 시까지"],
+                    ["Vercel Inc.", "웹 서비스 호스팅·서버리스 함수", "IP 주소, 접속 로그, 요청 처리 과정에서 전달되는 입력값", "미국", "서비스 이용 시 TLS 암호화 전송", "vercel.com/help", "위탁 계약 종료 시까지"],
+                    ["Google LLC", "웹 트래픽 분석(GA4), 로그인 인증(OAuth)", "GA4 — 쿠키 식별자, 접속 기기·브라우저 정보, 페이지 이용 기록 / OAuth — 이메일, 이름, 프로필 이미지 URL, Google 식별자", "미국", "서비스 이용 시 TLS 암호화 전송", "support.google.com", "위탁 계약 종료 시까지"],
+                    ["Microsoft Corporation", "사용자 행동 분석(Clarity)", "쿠키 식별자, 접속 기기·브라우저 정보, 클릭·스크롤 등 행동 기록(입력값은 마스킹)", "미국", "서비스 이용 시 TLS 암호화 전송", "privacy.microsoft.com", "위탁 계약 종료 시까지"],
+                    ["Kakao Corp.", "로그인 인증(OAuth)", "이메일, 닉네임, 프로필 이미지 URL, Kakao 식별자", "대한민국", "로그인 시 TLS 암호화 전송", "cs.kakao.com", "위탁 계약 종료 시까지"],
+                    ["OpenAI, L.L.C.", "후기 자동 검열(Moderation API)", "후기 본문 텍스트", "미국", "후기 작성 시 TLS 암호화 전송", "help.openai.com", "위탁 계약 종료 시까지"],
+                    ["Resend, Inc.", "이메일 발송(가입 안내·답변 통지·좌석 신청 확인)", "수신자 이메일 주소, 이름, 메일 본문에 담기는 안내 정보(문의 답변·신청번호·공연명 등)", "미국", "이메일 발송 시 TLS 암호화 전송", "resend.com/contact", "위탁 계약 종료 시까지"],
+                    ["Anthropic PBC", "창작 독백 생성(AI 모델 API, Claude)", "독백 요청 조건(인물 유형, 감정·상황, 길이, 톤·장르, 용도, 성별·연령대). 회원 식별 정보는 전송하지 않습니다.", "미국", "독백 요청 시 TLS 암호화 전송", "support.anthropic.com", "위탁 계약 종료 시까지"],
+                    ["Functional Software, Inc. (Sentry)", "오류·성능 모니터링", "오류 발생 시점의 요청 경로, 브라우저·기기·운영체제 정보, 오류 스택(오류 메시지에 입력값 일부가 포함될 수 있음)", "미국", "오류·성능 이벤트 발생 시 TLS 암호화 전송", "sentry.io/support", "위탁 계약 종료 시까지"],
                   ].map((row) => (
                     <tr key={row[0]} style={{ borderBottom: "1px solid #E6E1D6" }}>
                       {row.map((c, i) => <td key={i} className="py-2 pr-4 align-top">{c}</td>)}
@@ -286,7 +327,10 @@ export default function PrivacyPage() {
               </table>
             </div>
             <p className="mt-3">
-              이용자는 국외 이전에 동의하지 않을 권리가 있으며, 거부 시 일부 서비스(회원 가입·로그인·문의 접수·후기 작성·창작 독백 요청·이메일 통지) 이용이 제한될 수 있습니다.
+              이용자는 국외 이전에 동의하지 않을 권리가 있으며, 거부 시 일부 서비스(회원 가입·로그인·문의 접수·후기 작성·창작 독백 요청·좌석 신청·이메일 통지) 이용이 제한될 수 있습니다.
+            </p>
+            <p className="mt-2 text-xs" style={{ color: "#5A4A3E" }}>
+              위 연락처는 각 수탁자가 공개하고 있는 지원·문의 창구입니다. 수탁자별 최신 연락처와 개인정보 취급 내용은 해당 사업자의 개인정보처리방침에서 확인하실 수 있습니다.
             </p>
           </section>
 
@@ -315,11 +359,14 @@ export default function PrivacyPage() {
             <div className="mt-4 p-4" style={{ backgroundColor: "#E6E1D6" }}>
               <p className="font-semibold mb-2">마케팅 수신 동의 철회 방법</p>
               <ol className="list-decimal pl-5 space-y-1">
-                <li>마이페이지(/mypage) → 설정 → 마케팅 수신 옵션 토글로 즉시 철회</li>
-                <li>회사로부터 받은 마케팅 이메일 본문 하단의 &ldquo;수신 거부&rdquo; 링크 클릭으로 즉시 철회</li>
+                <li>1:1 문의(/muol/contact)에 &ldquo;마케팅 수신 철회&rdquo;를 남겨주시면 운영자가 확인 후 처리합니다.</li>
+                <li>이메일(syusflux@gmail.com)로 철회를 요청하셔도 동일하게 처리됩니다.</li>
               </ol>
               <p className="mt-2 text-xs" style={{ color: "#5A4A3E" }}>
-                위 두 경로 중 어느 것을 이용하셔도 동일하게 즉시 처리되며, 별도 절차나 추가 인증이 필요하지 않습니다.
+                운영자 1인 구조라 자동 해지 화면 대신 요청 접수 방식으로 운영하고 있습니다. 접수된 철회는 지체 없이(영업일 기준 10일 이내) 반영되며, 별도의 추가 인증은 요구하지 않습니다.
+              </p>
+              <p className="mt-2 text-xs" style={{ color: "#5A4A3E" }}>
+                한편 마이페이지(/mypage)의 &ldquo;관심 공연 알림&rdquo; 토글은 좋아요하신 공연의 D-3·D-1 안내 메일에 적용되는 설정으로, 마케팅 수신 동의와는 별개입니다. 이 토글은 마이페이지에서 언제든 직접 끄고 켜실 수 있습니다.
               </p>
             </div>
           </section>
@@ -411,7 +458,7 @@ export default function PrivacyPage() {
           </section>
 
           <p className="pt-2 text-xs" style={{ color: "#5A4A3E" }}>
-            본 처리방침은 2026-08-02부터 시행됩니다. (이전 시행일: 2026-06-15)
+            본 처리방침은 2026-08-03부터 시행됩니다. (이전 시행일: 2026-08-02 · 2026-06-15)
           </p>
 
           <div className="pt-8 text-center" style={{ borderTop: "1px solid #D4CFC1" }}>

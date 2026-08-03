@@ -293,7 +293,13 @@ export default function ContactPage() {
               />
               <span className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
                 <span style={{ color: "#A63D2F", marginRight: "4px" }}>[필수]</span>
-                개인정보 수집·이용에 동의합니다 (수집 항목: 이름·이메일·문의 내용 / 보유 기간: 3년 또는 처리 완료 시까지).{" "}
+                개인정보 수집·이용에 동의합니다.
+                <br />
+                수집 항목: 이름·이메일·문의 내용(필수), 연락처(선택) / 이용 목적: 문의 접수 및 답변 회신 / 보유 기간: 접수 후 3년
+                <br />
+                <span style={{ color: "#5A4A3E" }}>
+                  동의를 거부하실 수 있으며, 이 경우 문의 접수가 어렵습니다.
+                </span>{" "}
                 <Link href="/privacy" target="_blank" className="underline" style={{ color: "#0B5563" }}>
                   자세히
                 </Link>
