@@ -28,6 +28,7 @@ export default function ShowCard({
                 src={show.poster_url}
                 alt={show.title}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             ) : (
@@ -70,14 +71,14 @@ export default function ShowCard({
         <div className="space-y-1.5">
           <div className="flex items-start justify-between gap-2">
             <h3
-              className="text-base font-semibold leading-snug transition-colors group-hover:opacity-70"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+              className="text-base font-semibold leading-snug transition-colors group-hover:opacity-70 min-w-0 line-clamp-2"
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
             >
               {show.title}
             </h3>
             {show.subtitle && (
               <span
-                className="text-xs italic shrink-0 pt-0.5"
+                className="text-xs italic pt-0.5"
                 style={{ fontFamily: "var(--font-cormorant)", color: "#5A4A3E" }}
               >
                 {show.subtitle}

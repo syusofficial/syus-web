@@ -44,7 +44,9 @@ export default function RatingInput({ showId, isLoggedIn, initialMyScore }: Prop
       );
 
     if (upsertError) {
-      setError("저장 중 오류가 발생했습니다. (RLS 정책 확인 필요)");
+      // 원인 단서는 콘솔에만 — 관객이 보는 화면에 내부 용어를 남기지 않는다. (RLS 정책 확인)
+      console.error("[RatingInput] 별점 저장 실패", upsertError);
+      setError("잠시 후 다시 시도해 주세요.");
       return;
     }
 

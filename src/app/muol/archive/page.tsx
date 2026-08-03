@@ -103,6 +103,11 @@ export default async function ArchivePage({
   const list = filtered.slice(from, to);
   const activeRegion = region ?? "전체";
 
+  // 조건이 하나라도 걸려 있으면 0건 화면에서 되돌아갈 길을 준다.
+  const hasFilters = Boolean(
+    (region && region !== "전체") || genre || category || (q && q.trim()) || selectedYear
+  );
+
   // 페이지네이션 URL 생성기
   const buildPageUrl = (p: number) => {
     const params = new URLSearchParams();
@@ -197,7 +202,7 @@ export default async function ArchivePage({
                 <Link
                   key={y ?? "all"}
                   href={href}
-                  className="px-3 py-1 text-xs"
+                  className="px-3 py-2.5 text-xs"
                   style={{
                     fontFamily: "var(--font-inter)",
                     backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -227,7 +232,7 @@ export default async function ArchivePage({
               <Link
                 key={r}
                 href={href}
-                className="px-3 py-1.5 text-xs tracking-wide transition-colors"
+                className="px-3 py-2.5 text-xs tracking-wide transition-colors"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -262,7 +267,7 @@ export default async function ArchivePage({
               <Link
                 key={g ?? "all"}
                 href={href}
-                className="px-3 py-1 text-xs"
+                className="px-3 py-2.5 text-xs"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -300,7 +305,7 @@ export default async function ArchivePage({
               <Link
                 key={c ?? "all-cat"}
                 href={href}
-                className="px-3 py-1 text-xs"
+                className="px-3 py-2.5 text-xs"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -320,9 +325,22 @@ export default async function ArchivePage({
             <p className="text-sm mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
               조건에 맞는 기록이 없습니다.
             </p>
-            <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-              필터를 바꾸어 다시 살펴보세요.
+            <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
+              {hasFilters
+                ? "걸어둔 조건을 풀면 다른 기록이 보일 수 있습니다."
+                : "지금 막이 오르는 무대는 공연 목록에서 만나보실 수 있습니다."}
             </p>
+            <Link
+              href={hasFilters ? "/muol/archive" : "/muol/shows"}
+              className="inline-block px-4 py-2.5 text-xs tracking-wide transition-colors"
+              style={{
+                fontFamily: "var(--font-noto-sans-kr)",
+                color: "#0B5563",
+                border: "1px solid #D4CFC1",
+              }}
+            >
+              {hasFilters ? "필터 모두 지우기" : "진행 중 공연으로 →"}
+            </Link>
           </div>
         ) : (
           <>
@@ -338,13 +356,13 @@ export default async function ArchivePage({
                 {currentPage > 1 ? (
                   <Link
                     href={buildPageUrl(currentPage - 1)}
-                    className="px-3 py-2 text-xs"
+                    className="px-3 py-2.5 text-xs"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
                   >
                     ← 이전
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>← 이전</span>
+                  <span className="px-3 py-2.5 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>← 이전</span>
                 )}
 
                 {generatePageNumbers(currentPage, totalPages).map((p, i) =>
@@ -354,7 +372,7 @@ export default async function ArchivePage({
                     <Link
                       key={p}
                       href={buildPageUrl(p as number)}
-                      className="px-3 py-2 text-xs"
+                      className="px-3 py-2.5 text-xs"
                       style={{
                         fontFamily: "var(--font-inter)",
                         backgroundColor: p === currentPage ? "#0B5563" : "transparent",
@@ -372,13 +390,13 @@ export default async function ArchivePage({
                 {currentPage < totalPages ? (
                   <Link
                     href={buildPageUrl(currentPage + 1)}
-                    className="px-3 py-2 text-xs"
+                    className="px-3 py-2.5 text-xs"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
                   >
                     다음 →
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>다음 →</span>
+                  <span className="px-3 py-2.5 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>다음 →</span>
                 )}
               </div>
             )}

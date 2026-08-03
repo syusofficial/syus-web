@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type StreamItem = {
   id: string;
@@ -24,13 +24,39 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // 터치 기기 정지 — hover가 없는 폰에서는 손이 닿는 순간 흐름을 멈춘다.
+  // 누르려는 포스터가 움직이면 오조작이 난다. 손을 뗀 뒤 잠시 있다가 다시 흐른다.
+  const [touchPaused, setTouchPaused] = useState(false);
+  const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const holdStream = () => {
+    if (resumeTimer.current) {
+      clearTimeout(resumeTimer.current);
+      resumeTimer.current = null;
+    }
+    setTouchPaused(true);
+  };
+  const releaseStream = () => {
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+    resumeTimer.current = setTimeout(() => setTouchPaused(false), 3000);
+  };
+
+  useEffect(() => () => {
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+  }, []);
+
   if (items.length === 0) return null;
 
   // 무한 루프를 위해 두 세트 복제
   const duplicated = [...items, ...items];
 
   return (
-    <div className={`hero-stream-wrapper${mounted ? " is-animated" : ""}`}>
+    <div
+      className={`hero-stream-wrapper${mounted ? " is-animated" : ""}${touchPaused ? " is-touch-paused" : ""}`}
+      onTouchStart={holdStream}
+      onTouchEnd={releaseStream}
+      onTouchCancel={releaseStream}
+    >
       <div className="hero-stream-track">
         {duplicated.map((item, idx) => {
           // 카드별 둥둥 위상 분산 — 진폭·지연·주기 무작위 느낌
@@ -118,6 +144,10 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           .hero-stream-wrapper:hover .hero-stream-track {
             animation-play-state: paused;
           }
+        }
+        .hero-stream-wrapper.is-touch-paused .hero-stream-track,
+        .hero-stream-wrapper.is-touch-paused .hero-card-bob {
+          animation-play-state: paused;
         }
         .hero-stream-card {
           display: block;

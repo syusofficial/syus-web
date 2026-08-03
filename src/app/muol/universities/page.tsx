@@ -112,8 +112,8 @@ export default async function UniversitiesPage() {
   const activeRegions = [...byRegion.entries()].filter(([, list]) => list.length > 0);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--color-paper, #F0EEE9)" }}>
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
+    <div className="pt-24 md:pt-36 min-h-screen" style={{ backgroundColor: "var(--color-paper, #F0EEE9)" }}>
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 pb-12 sm:pb-16">
         {/* 헤더 */}
         <header className="mb-10 sm:mb-14">
           <p
@@ -148,11 +148,11 @@ export default async function UniversitiesPage() {
               아직 표시할 학과가 없습니다. 첫 공연이 올라가면 이 자리에 학과가 새겨집니다.
             </p>
             <Link
-              href="/muol/performer/apply"
+              href="/muol/performer"
               className="inline-block mt-6 px-6 py-3 text-sm transition-opacity hover:opacity-80"
               style={{
                 backgroundColor: "var(--color-accent-yellow, #5C2A42)",
-                color: "var(--color-charcoal, #4A3B33)",
+                color: "var(--color-paper, #F0EEE9)",
                 letterSpacing: "0.05em",
               }}
             >
@@ -246,7 +246,7 @@ export default async function UniversitiesPage() {
           </p>
           <p>
             아직 보이지 않는 학과의 학생·운영자께서는{" "}
-            <Link href="/muol/performer/apply" style={{ color: "var(--color-blue, #0B5563)", textDecoration: "underline" }}>
+            <Link href="/muol/performer" style={{ color: "var(--color-blue, #0B5563)", textDecoration: "underline" }}>
               공연자 신청
             </Link>
             을 해주시면, 첫 공연 승인과 함께 자리가 새겨집니다.

@@ -63,7 +63,7 @@ export default function ReservationLookupPage({ params }: { params: Promise<{ co
   };
 
   return (
-    <main className="max-w-md mx-auto px-6 py-16" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
+    <main className="max-w-md mx-auto px-6 pt-24 md:pt-36 pb-16" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
       <h1
         className="text-xl font-bold mb-2"
         style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}

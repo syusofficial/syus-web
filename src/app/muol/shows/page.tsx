@@ -136,6 +136,13 @@ export default async function ShowsPage({
   const list = activeShows.slice(from, to);
   const activeRegion = region ?? "전체";
 
+  // 제목에 그대로 얹으면 긴 검색어가 가로 스크롤을 만든다 — 표시용으로만 줄인다(필터는 원본 q 사용).
+  const qDisplay = q && q.length > 30 ? `${q.slice(0, 30)}…` : q;
+  // 조건이 하나라도 걸려 있으면 0건 화면에서 되돌아갈 길을 준다.
+  const hasFilters = Boolean(
+    (region && region !== "전체") || genre || detail || category || school || (q && q.trim())
+  );
+
   // 등록된 학교 목록 자동 추출 (학과 텍스트가 같이 있어도 첫 단어로 그룹핑)
   // 예: "한양대학교 연극영화학과" → "한양대학교"
   const { data: allActiveForSchools } = await supabase
@@ -194,10 +201,15 @@ export default async function ShowsPage({
             </p>
             <h1
               className="text-4xl md:text-5xl font-bold mb-3"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+              style={{
+                fontFamily: "var(--font-noto-serif-kr)",
+                color: "#0B5563",
+                wordBreak: "keep-all",
+                overflowWrap: "anywhere",
+              }}
             >
               {q
-                ? `"${q}" 검색 결과`
+                ? `"${qDisplay}" 검색 결과`
                 : school
                 ? `${school} 공연`
                 : (activeRegion === "전체" ? "진행 중 · 예정 공연" : `${activeRegion} 공연`)}
@@ -251,7 +263,7 @@ export default async function ShowsPage({
               <Link
                 key={r}
                 href={href}
-                className="px-3 py-1.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                className="px-3 py-2.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -292,7 +304,7 @@ export default async function ShowsPage({
               <Link
                 key={g ?? "all"}
                 href={href}
-                className="px-3 py-1 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -328,7 +340,7 @@ export default async function ShowsPage({
               <Link
                 key={c ?? "all-cat"}
                 href={href}
-                className="px-3 py-1 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -368,7 +380,7 @@ export default async function ShowsPage({
                 <Link
                   key={sch ?? "all-schools"}
                   href={href}
-                  className="px-3 py-1 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                  className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                   style={{
                     fontFamily: "var(--font-noto-sans-kr)",
                     backgroundColor: isActive ? "#0B5563" : "transparent",
@@ -387,21 +399,21 @@ export default async function ShowsPage({
         {list.length === 0 ? (
           <div className="text-center py-24">
             <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
-              {q ? "조건에 맞는 무대를 아직 찾지 못했습니다." : "곧 첫 무대가 오릅니다."}
+              {hasFilters ? "조건에 맞는 무대를 아직 찾지 못했습니다." : "곧 첫 무대가 오릅니다."}
             </p>
             <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-              {q ? "다른 검색어로 다시 시도해보세요." : "지나간 공연은 ‘지난 공연’에서 만나보실 수 있습니다."}
+              {hasFilters ? "걸어둔 조건을 풀면 다른 무대가 보일 수 있습니다." : "지나간 공연은 ‘지난 공연’에서 만나보실 수 있습니다."}
             </p>
             <Link
-              href="/muol/archive"
-              className="inline-block px-4 py-2 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+              href={hasFilters ? "/muol/shows" : "/muol/archive"}
+              className="inline-block px-4 py-2.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 color: "#0B5563",
                 border: "1px solid #D4CFC1",
               }}
             >
-              지난 공연으로 →
+              {hasFilters ? "필터 모두 지우기" : "지난 공연으로 →"}
             </Link>
           </div>
         ) : (
@@ -418,13 +430,13 @@ export default async function ShowsPage({
                 {currentPage > 1 ? (
                   <Link
                     href={buildPageUrl(currentPage - 1)}
-                    className="px-3 py-2 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                    className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
                   >
                     ← 이전
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs cursor-not-allowed" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }} aria-disabled="true">← 이전</span>
+                  <span className="px-3 py-2.5 text-xs cursor-not-allowed" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }} aria-disabled="true">← 이전</span>
                 )}
 
                 {/* 페이지 번호 */}
@@ -435,7 +447,7 @@ export default async function ShowsPage({
                     <Link
                       key={p}
                       href={buildPageUrl(p as number)}
-                      className="px-3 py-2 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                      className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                       style={{
                         fontFamily: "var(--font-inter)",
                         backgroundColor: p === currentPage ? "#0B5563" : "transparent",
@@ -453,13 +465,13 @@ export default async function ShowsPage({
                 {currentPage < totalPages ? (
                   <Link
                     href={buildPageUrl(currentPage + 1)}
-                    className="px-3 py-2 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                    className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
                   >
                     다음 →
                   </Link>
                 ) : (
-                  <span className="px-3 py-2 text-xs cursor-not-allowed" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }} aria-disabled="true">다음 →</span>
+                  <span className="px-3 py-2.5 text-xs cursor-not-allowed" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }} aria-disabled="true">다음 →</span>
                 )}
               </div>
             )}

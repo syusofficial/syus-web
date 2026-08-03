@@ -270,9 +270,9 @@ export default function Footer() {
           <Link
             href="/terms"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#5A4A3E")}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
           >
             이용약관
           </Link>
@@ -288,18 +288,18 @@ export default function Footer() {
           <Link
             href="/muol/faq"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#5A4A3E")}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
           >
             자주 묻는 질문
           </Link>
           <Link
             href="/muol/contact"
             className="text-xs transition-colors"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#F0EEE9")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#5A4A3E")}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = FOOTER_LINK_BASE)}
           >
             1:1 문의
           </Link>
@@ -309,13 +309,13 @@ export default function Footer() {
         <div className="pt-6 mt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <p
             className="text-xs tracking-wider"
-            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+            style={{ fontFamily: "var(--font-inter)", color: FOOTER_LINK_BASE }}
           >
             © 2026 무대올림 · 운영: 사유유사 SYUS. All rights reserved.
           </p>
           <p
             className="text-xs"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE }}
           >
             오늘, 어느 대학의 막이 오른다.
           </p>
