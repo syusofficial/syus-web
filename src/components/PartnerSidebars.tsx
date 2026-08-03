@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { INSTITUTIONS, PARTNER_ADS } from "@/lib/partners";
+import { INSTITUTIONS, PARTNER_ADS, type PartnerAd } from "@/lib/partners";
 
 /** 좌측 — 연관 기관 목록 */
 export function InstitutionSidebar() {
@@ -66,7 +66,15 @@ export function InstitutionSidebar() {
   );
 }
 
-/** 우측 — 스크롤 가능한 제휴/광고 영역 */
+/**
+ * 우측 — 스크롤 가능한 제휴/광고 영역 (PC 전용, 가로 1280px 이상)
+ *
+ * 1280px 미만에서는 이 사이드바가 숨고, 대신 MobilePartnerStrip이 본문 아래에 뜬다.
+ * 두 지면이 절대 동시에 보이면 안 된다 — 같은 광고가 두 번 노출되면
+ * 광고주에게 노출수를 이중으로 세게 된다. (여기 hidden xl:block ↔ 저기 xl:hidden)
+ *
+ * 카드 본문은 아래 PartnerCardBody를 모바일 지면과 함께 쓴다.
+ */
 export function PartnerAdSidebar() {
   return (
     <aside className="hidden xl:block">
@@ -174,19 +182,35 @@ export function PartnerAdSidebar() {
   );
 }
 
-function PartnerCardBody({ ad }: { ad: { name: string; category: string; desc: string; tag?: string } }) {
+/**
+ * 광고 카드 본문 — PC 사이드바(PartnerAdSidebar)와 모바일 지면(MobilePartnerStrip)이 공유한다.
+ *
+ * 광고 문구를 이 한 곳만 고치면 PC·모바일이 함께 바뀐다.
+ * 두 지면은 폭이 크게 달라 글자 크기만 variant로 나눈다.
+ *   - "sidebar" : 폭 240px 사이드바용 (작게)
+ *   - "mobile"  : 본문 전체 폭용 (한 단계 크게, short 카피 우선)
+ */
+export function PartnerCardBody({
+  ad,
+  variant = "sidebar",
+}: {
+  ad: PartnerAd;
+  variant?: "sidebar" | "mobile";
+}) {
+  const isMobile = variant === "mobile";
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-1.5">
+      <div className="flex items-center justify-between mb-1.5 gap-2">
         <span
-          className="text-[9px] tracking-[0.2em] uppercase"
+          className={isMobile ? "text-[10px] tracking-[0.2em] uppercase" : "text-[9px] tracking-[0.2em] uppercase"}
           style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
         >
           {ad.category}
         </span>
         {ad.tag && (
           <span
-            className="text-[9px] px-1.5 py-0.5"
+            className={isMobile ? "text-[10px] px-2 py-0.5 shrink-0" : "text-[9px] px-1.5 py-0.5 shrink-0"}
             style={{ backgroundColor: "#0B5563", color: "#F0EEE9", fontFamily: "var(--font-inter)" }}
           >
             {ad.tag}
@@ -194,16 +218,17 @@ function PartnerCardBody({ ad }: { ad: { name: string; category: string; desc: s
         )}
       </div>
       <p
-        className="text-xs font-semibold leading-tight mb-1.5"
-        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}
+        className={isMobile ? "text-sm font-semibold leading-tight mb-1.5" : "text-xs font-semibold leading-tight mb-1.5"}
+        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
       >
         {ad.name}
       </p>
       <p
-        className="text-[10px] leading-relaxed"
-        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
+        className={isMobile ? "text-xs leading-relaxed" : "text-[10px] leading-relaxed"}
+        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
       >
-        {ad.desc}
+        {/* 모바일은 가로가 넓어 긴 설명이 늘어져 보이므로 short를 먼저 쓴다(없으면 desc). */}
+        {isMobile ? ad.short ?? ad.desc : ad.desc}
       </p>
     </div>
   );
