@@ -811,7 +811,7 @@ export default function PerformerPage() {
                   onChange={(e) => setForm({ ...form, performer_name: e.target.value })}
                   required
                   placeholder="이 공연을 올리는 명의 (예: 한양대 연극영화학과, 극단 노을, 본인 이름)"
-                  className="w-full px-4 py-3 text-sm outline-none"
+                  className="w-full px-4 py-3 text-base outline-none"
                   style={inputStyle}
                   onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                   onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -915,7 +915,7 @@ export default function PerformerPage() {
                     value={form.genre_custom}
                     onChange={(e) => setForm({ ...form, genre_custom: e.target.value })}
                     placeholder="장르를 직접 입력해주세요 (예: 인형극, 마술쇼, 넌버벌)"
-                    className="w-full mt-3 px-4 py-3 text-sm outline-none"
+                    className="w-full mt-3 px-4 py-3 text-base outline-none"
                     style={inputStyle}
                     onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                     onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -1011,7 +1011,7 @@ export default function PerformerPage() {
                         onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
                         required={field.required}
                         placeholder={field.placeholder}
-                        className="w-full px-4 py-3 text-sm outline-none"
+                        className="w-full px-4 py-3 text-base outline-none"
                         style={inputStyle}
                         onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -1048,7 +1048,7 @@ export default function PerformerPage() {
                       value={capacity}
                       onChange={(e) => setCapacity(e.target.value)}
                       placeholder="비워두면 무제한"
-                      className="w-full px-4 py-3 text-sm outline-none"
+                      className="w-full px-4 py-3 text-base outline-none"
                       style={inputStyle}
                       onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -1097,14 +1097,14 @@ export default function PerformerPage() {
                                   type="date"
                                   value={row.date}
                                   onChange={(e) => updateSessionRow(idx, { date: e.target.value })}
-                                  className="px-3 py-2 text-sm outline-none"
+                                  className="px-3 py-2 text-base outline-none"
                                   style={inputStyle}
                                 />
                                 <input
                                   type="time"
                                   value={row.time}
                                   onChange={(e) => updateSessionRow(idx, { time: e.target.value })}
-                                  className="px-3 py-2 text-sm outline-none"
+                                  className="px-3 py-2 text-base outline-none"
                                   style={inputStyle}
                                 />
                                 <input
@@ -1113,7 +1113,7 @@ export default function PerformerPage() {
                                   value={row.capacity}
                                   onChange={(e) => updateSessionRow(idx, { capacity: e.target.value })}
                                   placeholder="정원(비우면 위 정원 사용)"
-                                  className="px-3 py-2 text-sm outline-none w-48"
+                                  className="px-3 py-2 text-base outline-none w-48"
                                   style={inputStyle}
                                 />
                                 <button
@@ -1141,7 +1141,7 @@ export default function PerformerPage() {
                       value={form.reservation_url}
                       onChange={(e) => setForm({ ...form, reservation_url: e.target.value })}
                       placeholder="공연팀 자체 폼만 받습니다(구글폼·네이버폼 등). 상업 예매처 링크는 받지 않습니다"
-                      className="w-full px-4 py-3 text-sm outline-none"
+                      className="w-full px-4 py-3 text-base outline-none"
                       style={inputStyle}
                       onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -1171,7 +1171,7 @@ export default function PerformerPage() {
                         onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
                         required={field.required}
                         placeholder={field.placeholder}
-                        className="w-full px-4 py-3 text-sm outline-none"
+                        className="w-full px-4 py-3 text-base outline-none"
                         style={inputStyle}
                         onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -1205,7 +1205,7 @@ export default function PerformerPage() {
                         value={form.map_kakao_url}
                         onChange={(e) => setForm({ ...form, map_kakao_url: e.target.value })}
                         placeholder="https://place.map.kakao.com/... 또는 모바일 공유 텍스트"
-                        className="w-full px-4 py-3 text-sm outline-none"
+                        className="w-full px-4 py-3 text-base outline-none"
                         style={inputStyle}
                         onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -1220,7 +1220,7 @@ export default function PerformerPage() {
                         value={form.map_naver_url}
                         onChange={(e) => setForm({ ...form, map_naver_url: e.target.value })}
                         placeholder="https://map.naver.com/... 또는 모바일 공유 텍스트"
-                        className="w-full px-4 py-3 text-sm outline-none"
+                        className="w-full px-4 py-3 text-base outline-none"
                         style={inputStyle}
                         onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -1246,7 +1246,7 @@ export default function PerformerPage() {
                       onChange={(e) => setForm({ ...form, cast_members: e.target.value })}
                       required
                       placeholder="예: 홍길동(배역명), 김철수(배역명), 박영희(배역명)"
-                      className="w-full px-4 py-3 text-sm outline-none"
+                      className="w-full px-4 py-3 text-base outline-none"
                       style={inputStyle}
                       onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -1261,7 +1261,7 @@ export default function PerformerPage() {
                       onChange={(e) => setForm({ ...form, description: e.target.value })}
                       required
                       rows={5}
-                      className="w-full px-4 py-3 text-sm outline-none resize-none"
+                      className="w-full px-4 py-3 text-base outline-none resize-none"
                       style={inputStyle}
                       onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}

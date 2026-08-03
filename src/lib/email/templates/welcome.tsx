@@ -6,13 +6,14 @@
  * 본문은 마케팅팀이 2026-06-08 잠근 초안(1,050자 4블록)을 그대로 옮긴 것이다.
  * 임의 수정 금지 — 카피 변경은 마케팅팀 요청 후 재배포.
  *
- * 디자인 토큰 (color_lock 룰 반영)
- * - 본문 배경(외곽): #F0EEE9 (크림)
+ * 디자인 토큰 (2026-06-15 색상 잠금 반영, syus_color_and_copy_lock 기준)
+ * - 본문 배경(외곽): #F0EEE9 (Cloud Dancer)
  * - 카드 배경: #FFFFFF
- * - 제목·강조: #274E9B (코발트)
- * - 본문 텍스트: #4A3B33
+ * - 제목·강조·링크: #0B5563 (Transformative Teal) — 구 코발트 #274E9B 폐기
+ * - 본문 텍스트: #4A3B33 (Silhouette)
  * - 부가 텍스트: #5A4A3E
- * - CTA 버튼: #D6E58F (페일라임) — 메일 1통당 1개만
+ * - CTA 버튼: #5C2A42 (Divine Damson) 배경 + #F0EEE9 글자 — 메일 1통당 1개만.
+ *   구 페일라임 #D6E58F(밝은 배경 + 어두운 글자) 폐기에 따라 명암을 뒤집었다.
  */
 import { Html, Head, Preview, Body, Container, Section, Text, Link, Button, Heading } from "../components";
 import { EmailFooter } from "./footer";
@@ -59,7 +60,7 @@ const SUBHEADING = {
   fontFamily: FONT_FAMILY,
   fontSize: "15px",
   fontWeight: 600,
-  color: "#274E9B",
+  color: "#0B5563",
   margin: "36px 0 16px",
   letterSpacing: "0.02em",
 } as const;
@@ -82,7 +83,7 @@ const LIST_DESC = {
 } as const;
 
 const LINK_STYLE = {
-  color: "#274E9B",
+  color: "#0B5563",
   textDecoration: "none",
 } as const;
 
@@ -92,8 +93,8 @@ const CTA_WRAP = {
 } as const;
 
 const CTA_BUTTON = {
-  backgroundColor: "#D6E58F",
-  color: "#4A3B33",
+  backgroundColor: "#5C2A42",
+  color: "#F0EEE9",
   fontFamily: FONT_FAMILY,
   fontSize: "14px",
   fontWeight: 600,
@@ -106,7 +107,7 @@ const CTA_BUTTON = {
 const SIGNATURE = {
   ...PARAGRAPH,
   marginTop: "32px",
-  color: "#274E9B",
+  color: "#0B5563",
   fontWeight: 500,
 } as const;
 
@@ -149,9 +150,9 @@ export function WelcomeEmail({ name }: Props) {
 
           <Section>
             <Text style={LIST_ITEM}>
-              <strong style={{ color: "#274E9B" }}>공연 둘러보기</strong>
+              <strong style={{ color: "#0B5563" }}>공연 둘러보기</strong>
               {" · "}
-              <Link href="https://syus.co.kr/shows" style={LINK_STYLE}>syus.co.kr/shows</Link>
+              <Link href="https://syus.co.kr/muol/shows" style={LINK_STYLE}>syus.co.kr/muol/shows</Link>
             </Text>
             <Text style={LIST_DESC}>
               이번 주, 다음 주 막이 오르는 무대를 살펴보실 수 있습니다.
@@ -160,9 +161,9 @@ export function WelcomeEmail({ name }: Props) {
 
           <Section style={{ marginTop: "20px" }}>
             <Text style={LIST_ITEM}>
-              <strong style={{ color: "#274E9B" }}>공연자 신청</strong>
+              <strong style={{ color: "#0B5563" }}>공연자 신청</strong>
               {" · "}
-              <Link href="https://syus.co.kr/performer/apply" style={LINK_STYLE}>syus.co.kr/performer/apply</Link>
+              <Link href="https://syus.co.kr/muol/performer" style={LINK_STYLE}>syus.co.kr/muol/performer</Link>
             </Text>
             <Text style={LIST_DESC}>
               직접 무대를 올리시는 분이라면, 공연자 권한을 신청해 두실 수 있습니다.
@@ -172,7 +173,7 @@ export function WelcomeEmail({ name }: Props) {
 
           <Section style={{ marginTop: "20px" }}>
             <Text style={LIST_ITEM}>
-              <strong style={{ color: "#274E9B" }}>인스타그램</strong>
+              <strong style={{ color: "#0B5563" }}>인스타그램</strong>
               {" · "}
               <Link href="https://instagram.com/syus_official" style={LINK_STYLE}>@syus_official</Link>
             </Text>
@@ -183,7 +184,7 @@ export function WelcomeEmail({ name }: Props) {
           </Section>
 
           <Section style={CTA_WRAP}>
-            <Button href="https://syus.co.kr/shows" style={CTA_BUTTON}>
+            <Button href="https://syus.co.kr/muol/shows" style={CTA_BUTTON}>
               공연 둘러보기
             </Button>
           </Section>

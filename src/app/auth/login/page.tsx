@@ -151,7 +151,7 @@ function LoginPageInner() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 text-sm outline-none transition-colors"
+              className="w-full px-4 py-3 text-base outline-none transition-colors"
               style={inputStyle}
               onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -167,15 +167,17 @@ function LoginPageInner() {
 
           {/* 아이디 저장 — 한국 사이트 표준 */}
           <label className="flex items-center gap-2.5 cursor-pointer select-none">
+            {/* 체크박스 크기는 가입 페이지(ConsentRow)와 20px로 통일 — 같은 컨트롤이
+                페이지마다 다른 크기로 보이지 않게(디자인팀 진단 8번). */}
             <span
-              className="w-4 h-4 shrink-0 flex items-center justify-center transition-colors"
+              className="w-5 h-5 shrink-0 flex items-center justify-center transition-colors"
               style={{
                 backgroundColor: rememberId ? "#0B5563" : "transparent",
                 border: `1.5px solid ${rememberId ? "#0B5563" : "#5A4A3E"}`,
               }}
             >
               {rememberId && (
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F0EEE9" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F0EEE9" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               )}

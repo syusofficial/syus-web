@@ -305,8 +305,12 @@ export default function MyPage() {
           </Link>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-0 mb-10 overflow-x-auto" style={{ borderBottom: "1px solid #D4CFC1" }}>
+        {/* Tabs — 모바일에서는 줄바꿈으로 5개를 전부 드러낸다.
+            한 줄 가로 스크롤로 두면 360px 화면에 2개 반만 들어가고, 폰에는 스크롤바도
+            힌트도 없어서 마지막 '공연자 신청' 탭의 존재 자체를 모르게 된다.
+            공연자 전환은 핵심 동선이므로 감춰지면 안 된다(디자인팀 진단 5번).
+            md 이상에서는 기존처럼 한 줄로 둔다. */}
+        <div className="flex flex-wrap md:flex-nowrap gap-0 mb-10 md:overflow-x-auto" style={{ borderBottom: "1px solid #D4CFC1" }}>
           {[
             { key: "info",      label: "내 정보" },
             { key: "likes",     label: `찜한 공연${likedShows.length ? ` (${likedShows.length})` : ""}` },
@@ -317,7 +321,7 @@ export default function MyPage() {
             <button
               key={t.key}
               onClick={() => setTab(t.key as Tab)}
-              className="px-5 py-3 text-sm tracking-wide transition-colors whitespace-nowrap"
+              className="px-3 md:px-5 py-3 text-sm tracking-wide transition-colors whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 color: tab === t.key ? "#0B5563" : "#5A4A3E",
@@ -372,35 +376,39 @@ export default function MyPage() {
             </div>
 
             <div className="p-6 space-y-4" style={{ backgroundColor: "#E6E1D6" }}>
-              {/* 이름 (수정 가능) */}
-              <div className="grid grid-cols-[100px_1fr] gap-4 items-center">
+              {/* 이름 (수정 가능) — 모바일에서는 라벨/값을 세로로 쌓는다.
+                  360px 화면에서 [100px_1fr] 2열을 유지하면 입력창에 남는 폭이 약 36px까지
+                  줄어들어 글자 두어 개도 안 보였다(디자인팀 진단 4번). */}
+              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] gap-2 sm:gap-4 items-start sm:items-center">
                 <span className="text-xs tracking-wider uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                   이름
                 </span>
                 {editingName ? (
-                  <div className="flex gap-2 items-center">
+                  <div className="space-y-2">
                     <input
                       type="text"
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
-                      className="flex-1 px-3 py-2 text-sm outline-none"
+                      className="w-full px-3 py-2 text-base outline-none"
                       style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#F0EEE9", color: "#4A3B33", border: "1px solid #0B5563" }}
                     />
-                    <button
-                      onClick={handleNameSave}
-                      disabled={nameSaving || !newName.trim()}
-                      className="px-3 py-2 text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#0B5563", color: "#F0EEE9" }}
-                    >
-                      {nameSaving ? "저장 중..." : "저장"}
-                    </button>
-                    <button
-                      onClick={() => { setEditingName(false); setNewName(profile.name ?? ""); }}
-                      className="px-3 py-2 text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", border: "1px solid #D4CFC1" }}
-                    >
-                      취소
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleNameSave}
+                        disabled={nameSaving || !newName.trim()}
+                        className="px-3 py-2 text-xs"
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#0B5563", color: "#F0EEE9" }}
+                      >
+                        {nameSaving ? "저장 중..." : "저장"}
+                      </button>
+                      <button
+                        onClick={() => { setEditingName(false); setNewName(profile.name ?? ""); }}
+                        className="px-3 py-2 text-xs"
+                        style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", border: "1px solid #D4CFC1" }}
+                      >
+                        취소
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex justify-between items-center">
@@ -661,13 +669,13 @@ export default function MyPage() {
                 공연자 신청이란?
               </h2>
               <p className="text-sm leading-relaxed mb-6" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
-                공연자 신청을 하시면 공연을 직접 등록할 수 있는 권한이 부여됩니다.
+                공연자 신청을 하시면 운영자 검토를 거쳐 공연을 직접 등록할 수 있는 권한이 부여됩니다.
                 <br />
                 등록한 공연은 관리자 최종 승인 후 게시됩니다.
               </p>
               <div className="space-y-2">
                 {[
-                  "공연자 신청 → 즉시 공연자 권한 부여",
+                  "공연자 신청 → 운영자 검토 → 승인 시 공연자 권한 부여 (보통 1~3일)",
                   "공연자 페이지에서 공연 등록 (제목, 포스터, 일정 등)",
                   "등록된 공연은 관리자 검토 후 메인 페이지에 게시",
                 ].map((text, i) => (

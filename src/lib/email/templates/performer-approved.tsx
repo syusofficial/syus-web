@@ -51,13 +51,13 @@ const SUBHEADING = {
   fontFamily: FONT_FAMILY,
   fontSize: "15px",
   fontWeight: 600,
-  color: "#274E9B",
+  color: "#0B5563",
   margin: "36px 0 16px",
   letterSpacing: "0.02em",
 } as const;
 
 const LINK_STYLE = {
-  color: "#274E9B",
+  color: "#0B5563",
   textDecoration: "none",
 } as const;
 
@@ -67,8 +67,8 @@ const CTA_WRAP = {
 } as const;
 
 const CTA_BUTTON = {
-  backgroundColor: "#D6E58F",
-  color: "#4A3B33",
+  backgroundColor: "#5C2A42",
+  color: "#F0EEE9",
   fontFamily: FONT_FAMILY,
   fontSize: "14px",
   fontWeight: 600,
@@ -87,7 +87,7 @@ const SIGNOFF = {
 const SIGNATURE = {
   ...PARAGRAPH,
   marginTop: "8px",
-  color: "#274E9B",
+  color: "#0B5563",
   fontWeight: 500,
 } as const;
 
@@ -117,7 +117,7 @@ export function PerformerApprovedEmail({ name }: Props) {
           <Text style={PARAGRAPH}>
             오늘부터 공연자 페이지에서 직접 무대를 올리실 수 있습니다.
             {" "}
-            <Link href="https://syus.co.kr/performer" style={LINK_STYLE}>syus.co.kr/performer</Link>
+            <Link href="https://syus.co.kr/muol/performer" style={LINK_STYLE}>syus.co.kr/muol/performer</Link>
           </Text>
           <Text style={PARAGRAPH}>
             공연 등록은 폼 한 번으로 끝납니다. 등록해 주신 무대는 운영자가 24시간 안에
@@ -126,7 +126,7 @@ export function PerformerApprovedEmail({ name }: Props) {
           </Text>
 
           <Section style={CTA_WRAP}>
-            <Button href="https://syus.co.kr/performer" style={CTA_BUTTON}>
+            <Button href="https://syus.co.kr/muol/performer" style={CTA_BUTTON}>
               공연자 페이지로
             </Button>
           </Section>

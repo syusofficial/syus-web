@@ -19,7 +19,7 @@ const META_TEXT = {
 } as const;
 
 const LINK_STYLE = {
-  color: "#274E9B",
+  color: "#0B5563",
   textDecoration: "none",
 } as const;
 

@@ -47,7 +47,7 @@ export default function ShowsSearchBar({ basePath }: { basePath?: string } = {})
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="공연명, 장소, 대학명으로 검색"
-          className="w-full px-4 py-3 pr-10 text-sm outline-none transition-colors"
+          className="w-full px-4 py-3 pr-10 text-base outline-none transition-colors"
           style={{
             fontFamily: "var(--font-noto-sans-kr)",
             backgroundColor: "#E6E1D6",

@@ -28,7 +28,7 @@ export default function PasswordInput({ value, onChange, required, minLength }: 
         onChange={(e) => onChange(e.target.value)}
         required={required}
         minLength={minLength}
-        className="w-full px-4 py-3 text-sm outline-none transition-colors"
+        className="w-full px-4 py-3 text-base outline-none transition-colors"
         style={inputStyle}
         onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
         onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}

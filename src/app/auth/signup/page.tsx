@@ -204,7 +204,7 @@ function SignupInner() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-4 py-3 text-sm outline-none"
+              className="w-full px-4 py-3 text-base outline-none"
               style={inputStyle}
               onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -220,7 +220,7 @@ function SignupInner() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 text-sm outline-none"
+              className="w-full px-4 py-3 text-base outline-none"
               style={inputStyle}
               onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -290,14 +290,30 @@ function SignupInner() {
             </p>
           )}
 
+          {/* 왜 버튼이 안 눌리는지 미리 알려준다 — 예전에는 버튼이 채워진 채로 남아
+              눌러도 아무 반응이 없었다(디자인팀 진단 7번). */}
+          {!requiredChecked && (
+            <p
+              id="signup-consent-hint"
+              className="text-xs p-3"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", backgroundColor: "#E6E1D6" }}
+            >
+              [필수] 표시된 세 항목에 모두 동의하셔야 가입하실 수 있습니다.
+            </p>
+          )}
+
           <button
             type="submit"
             disabled={loading || !requiredChecked}
+            aria-describedby={!requiredChecked ? "signup-consent-hint" : undefined}
             className="w-full py-3 text-sm tracking-wider transition-colors mt-2"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
-              backgroundColor: loading || !requiredChecked ? "#5A4A3E" : "#0B5563",
-              color: "#F0EEE9",
+              // 비활성일 때는 채도를 빼서 "지금은 못 누른다"가 한눈에 보이게 한다.
+              // 투명도로 흐리면 크림 배경(#F0EEE9)에 글자가 묻혀 읽히지 않으므로
+              // 대비가 남는 무채색 조합(대비 약 5.4:1)을 쓴다.
+              backgroundColor: loading || !requiredChecked ? "#D4CFC1" : "#0B5563",
+              color: loading || !requiredChecked ? "#5A4A3E" : "#F0EEE9",
               cursor: loading || !requiredChecked ? "not-allowed" : "pointer",
             }}
             onMouseEnter={(e) => { if (!loading && requiredChecked) e.currentTarget.style.backgroundColor = "#2C7384"; }}

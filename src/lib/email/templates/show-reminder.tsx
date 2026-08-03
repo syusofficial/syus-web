@@ -75,7 +75,7 @@ const CARD_LABEL = {
   fontFamily: FONT_FAMILY,
   fontSize: "11px",
   letterSpacing: "0.2em",
-  color: "#274E9B",
+  color: "#0B5563",
   margin: "0 0 8px",
   fontWeight: 600,
 } as const;
@@ -103,8 +103,8 @@ const CTA_WRAP = {
 } as const;
 
 const CTA_BUTTON = {
-  backgroundColor: "#D6E58F",
-  color: "#4A3B33",
+  backgroundColor: "#5C2A42",
+  color: "#F0EEE9",
   fontFamily: FONT_FAMILY,
   fontSize: "14px",
   fontWeight: 600,
@@ -117,7 +117,7 @@ const CTA_BUTTON = {
 const SIGNATURE = {
   ...PARAGRAPH,
   marginTop: "32px",
-  color: "#274E9B",
+  color: "#0B5563",
   fontWeight: 500,
 } as const;
 
@@ -128,7 +128,7 @@ const SIGNOFF = {
 } as const;
 
 const LINK_STYLE = {
-  color: "#274E9B",
+  color: "#0B5563",
   textDecoration: "none",
 } as const;
 
@@ -169,7 +169,7 @@ export function ShowReminderEmail({ name, shows }: Props) {
           {sorted.map((s) => {
             const labelText = s.daysLeft === 1 ? "내일 막이 오릅니다" : "사흘 뒤 막이 오릅니다";
             const dateText = formatYmdWeek(s.schedule_start);
-            const showHref = `https://syus.co.kr/shows/${s.id}`;
+            const showHref = `https://syus.co.kr/muol/shows/${s.id}`;
             return (
               <Section key={s.id} style={CARD_WRAP}>
                 <Text style={CARD_LABEL}>{labelText}</Text>
