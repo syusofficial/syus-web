@@ -13,9 +13,29 @@ import {
   rejectPerformerApplication as rejectPerformerAction,
 } from "@/app/actions/performer";
 import { cancelReservationAction } from "@/app/actions/reservations";
+import { formatShowDate, formatShowPeriod } from "@/lib/showDate";
 import type { Show, Profile, Contact, Review, Reservation } from "@/types";
 
 type Tab = "stats" | "media-kit" | "shows" | "applications" | "members" | "contacts" | "reviews" | "reservations";
+
+const TAB_VALUES: readonly Tab[] = [
+  "stats", "media-kit", "shows", "applications", "members", "contacts", "reviews", "reservations",
+] as const;
+
+/**
+ * 주소의 ?tab= 값을 읽어 초기 탭을 정한다. 2026-08-03 신설.
+ *
+ * 배경: 관리자 아침 요약 메일이 "승인 대기 공연 2건" 같은 줄마다 /admin?tab=shows 링크를 건다.
+ * 그런데 탭이 순수 로컬 state라 쿼리를 무시해서, 링크를 눌러도 늘 기본 탭(shows)만 열렸다.
+ * 알림에서 한 번에 그 자리로 가지 못하면 알림의 가치가 절반으로 준다.
+ *
+ * 값이 없거나 목록에 없는 문자열이면 기존 기본값을 그대로 쓴다(잘못된 링크로 화면이 비지 않게).
+ */
+function initialTabFromSearch(): Tab {
+  if (typeof window === "undefined") return "shows";
+  const raw = new URLSearchParams(window.location.search).get("tab");
+  return TAB_VALUES.includes(raw as Tab) ? (raw as Tab) : "shows";
+}
 
 type AdminReviewRow = Review & {
   profiles?: { name: string | null } | null;
@@ -55,7 +75,10 @@ const StatusBadge = ({ status }: { status: string }) => {
 export default function AdminPage() {
   const router = useRouter();
   const [authState, setAuthState] = useState<"loading" | "unauthorized" | "ready">("loading");
-  const [tab, setTab] = useState<Tab>("shows");
+  // 초기값을 함수로 넘겨 최초 렌더 때만 주소를 읽는다(매 렌더 파싱 방지).
+  // 서버 렌더에서는 "shows"가 나오고 클라이언트에서 쿼리값으로 정정된다 — 이 페이지는
+  // "use client" + 로그인 가드가 걸린 관리자 전용이라 하이드레이션 불일치가 화면에 드러나지 않는다.
+  const [tab, setTab] = useState<Tab>(initialTabFromSearch);
 
   const [shows, setShows] = useState<Show[]>([]);
   const [members, setMembers] = useState<Profile[]>([]);
@@ -557,7 +580,8 @@ export default function AdminPage() {
                             {show.venue}
                           </td>
                           <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
-                            {show.schedule_start ?? "—"}
+                            {/* 날짜 표시는 사이트 공통 포맷 (2026-08-03). 목록이라 요일은 뺀다. */}
+                            {formatShowPeriod(show.schedule_start, show.schedule_end, { weekday: false }) || "—"}
                           </td>
                           <td className="py-4 px-3">
                             <StatusBadge status={show.status} />
@@ -1167,8 +1191,9 @@ function ShowReviewModal({
               <InfoRow label="구분" value={show.show_category} />
               <InfoRow label="지역" value={show.region} />
               <InfoRow label="대학·학과" value={show.school_department} />
-              <InfoRow label="공연 시작" value={show.schedule_start} />
-              <InfoRow label="공연 종료" value={show.schedule_end} />
+              {/* 공통 포맷 — 읽지 못하는 예전 값은 원문 그대로 보여준다(검토 시 원본 확인 필요) */}
+              <InfoRow label="공연 시작" value={formatShowDate(show.schedule_start)} />
+              <InfoRow label="공연 종료" value={formatShowDate(show.schedule_end)} />
               <InfoRow label="공연 시간" value={show.show_time} />
               <InfoRow label="러닝 타임" value={show.running_time} />
               <InfoRow label="관람 연령" value={show.age_rating} />
