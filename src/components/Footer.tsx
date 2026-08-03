@@ -35,12 +35,16 @@ export default function Footer() {
     router.refresh();
   };
 
-  // 다크 배경(#4A3B33) 위에서는 #5A4A3E가 약 3.0:1 (AA 미달)
-  // 크림 계열 흰색을 opacity 72%로 사용하면 약 9:1 — 위계는 살리고 가독성 확보
+  // 어두운 푸터 배경(#4A3B33) 위 글자색 — 2026-08-03 디자인팀 실측 재계산.
+  // (기존 주석의 "약 9:1 / 약 6:1"은 눈대중이었고, 실제로 재보니 아래와 같았다.
+  //  WCAG 합격선: 본문 4.5:1 / 큰 글자 3:1)
+  //   · 0.72 → 실제 6.17:1  ✅ 합격, 그대로 둔다
+  //   · 0.55 → 실제 4.35:1  ❌ 4.5:1에 아슬하게 미달 → 0.68로 올림(약 5.6:1)
+  //     이 값이 Site/Account 라벨, 사업자정보 항목명, 미션 문장에 쓰인다.
   const linkCls = "text-sm transition-colors";
-  const FOOTER_LINK_BASE = "rgba(248, 249, 252, 0.72)";
-  const FOOTER_LINK_HOVER = "#F0EEE9";
-  const FOOTER_META = "rgba(248, 249, 252, 0.55)"; // 약 6:1 — 라벨용 보조 정보
+  const FOOTER_LINK_BASE = "rgba(248, 249, 252, 0.72)"; // 6.17:1 — 본문·링크
+  const FOOTER_LINK_HOVER = "#F0EEE9";                  // 9.22:1 — hover
+  const FOOTER_META = "rgba(248, 249, 252, 0.68)";      // 약 5.6:1 — 라벨용 보조 정보
   const linkStyle: React.CSSProperties = { fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE };
 
   return (

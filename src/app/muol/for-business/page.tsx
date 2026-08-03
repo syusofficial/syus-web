@@ -103,7 +103,7 @@ export default function ForBusinessPage() {
           <SectionLabel no="01" label="Audience" />
           <h2
             className="text-3xl md:text-4xl font-bold mb-8 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛 */, wordBreak: "keep-all" }}
           >
             무대 옆에 머무는 사람들에게 닿습니다.
           </h2>
@@ -142,7 +142,7 @@ export default function ForBusinessPage() {
           <SectionLabel no="02" label="Why" />
           <h2
             className="text-3xl md:text-4xl font-bold mb-10 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛 */, wordBreak: "keep-all" }}
           >
             소음 없는 미디어,
             <br className="md:hidden" />
@@ -181,7 +181,7 @@ export default function ForBusinessPage() {
           <SectionLabel no="03" label="Placements" />
           <h2
             className="text-3xl md:text-4xl font-bold mb-10 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛 */, wordBreak: "keep-all" }}
           >
             게재 가능한 위치 6종.
           </h2>
@@ -327,7 +327,7 @@ function AudienceCard({ title, desc }: { title: string; desc: string }) {
     <div className="p-6" style={{ backgroundColor: "#F0EEE9", border: "1px solid #D4CFC1" }}>
       <p
         className="text-base font-bold mb-2"
-        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛. 청록은 누르는 것 전담 */ }}
       >
         {title}
       </p>
@@ -352,7 +352,7 @@ function ReasonCard({ n, t, d }: { n: string; t: string; d: string }) {
       </p>
       <p
         className="text-lg font-bold mb-3"
-        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛. 청록은 누르는 것 전담 */ }}
       >
         {t}
       </p>

@@ -22,6 +22,9 @@
  *
  * 2026-06-15 hover 안정화 (사장님 1차 미리보기 수정):
  *  - 자간(letter-spacing) 한 단계 더 벌림 (0.12em→0.2em, 0.1em→0.18em)
+ *    ※ 2026-08-03 정정: 한글 항목 8곳은 0.05em으로 되돌렸다(낱글자가 흩어져 단어로
+ *      안 읽히던 문제). 영문 대문자 라벨의 넓은 자간은 그대로 유지.
+ *      사유·대상 목록·되돌리는 법은 아래 style 블록 안 "한글 자간 조정" 주석 참고.
  *  - 좌측 메뉴 gap 36→48px, 우측 gap 22→32px
  *  - 마우스가 trigger→베이지 메가 패널로 이동 중 닫히지 않도록 close를 150ms 지연
  *    예약하고, wrapper 안으로 다시 들어오면 취소. (옵션 B: setTimeout + cancelClose)
@@ -795,6 +798,30 @@ export default function NavMega() {
           .navmega-left { gap: 88px; }
         }
         .navmega-item { position: relative; }
+
+        /* ══════════════════════════════════════════════════════════════
+         * 한글 자간(letter-spacing) 조정 — 2026-08-03 디자인팀
+         *
+         * 【사장님 원지시】 0.3em ("더욱 넓혀"). 그 의도는 존중한다.
+         * 【조정 이유】 한글은 글자 하나하나가 이미 정사각형 덩어리라
+         *   자체 여백을 갖고 있다. 0.3em(글자폭의 30%)을 더 주면
+         *   "공 연 정 보"처럼 낱글자가 따로 놀아 단어로 안 읽힌다.
+         *   한글 실무 상한은 대략 0.05em이다.
+         * 【넓은 여백감은 그대로 살아 있다】 영문 대문자 라벨
+         *   (.mega-col-heading 0.32em / .navmega-mobile-col-heading 0.3em /
+         *    .mega-subgroup-heading·.navmega-mobile-subgroup-heading 0.16em)
+         *   은 손대지 않았다. 넓은 트래킹이 원래 어울리는 쪽이다.
+         *
+         * 【되돌리는 법】 아래 "한글 자간" 표시가 붙은 8곳의 값만 되돌린다.
+         *   .navmega-trigger              0.05em → 0.3em
+         *   .navmega-side                 0.05em → 0.28em
+         *   .navmega-cta                  0.05em → 0.3em
+         *   .navmega-syus                 0.05em → 0.12em
+         *   .navmega-mobile-syus          0.05em → 0.12em
+         *   .navmega-mobile-chapter-btn   0.05em → 0.16em
+         *   .navmega-mobile-account > a   0.05em → 0.16em
+         *   .navmega-mobile-cta           0.05em → 0.2em
+         * ══════════════════════════════════════════════════════════════ */
         .navmega-trigger {
           appearance: none;
           background: transparent;
@@ -803,8 +830,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.95rem;
           font-weight: 500;
-          /* 글자 간격 더 벌림 0.2 → 0.3em — 사장님 지시 "더욱 넓혀" */
-          letter-spacing: 0.3em;
+          letter-spacing: 0.05em; /* 한글 자간 — 원지시 0.3em */
           color: #4A3B33;
           cursor: pointer;
           transition: color 0.15s ease;
@@ -868,8 +894,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.9rem;
           font-weight: 500;
-          /* 0.18 → 0.28em */
-          letter-spacing: 0.28em;
+          letter-spacing: 0.05em; /* 한글 자간 — 원지시 0.28em */
           color: #4A3B33;
           text-decoration: none;
           transition: color 0.15s ease;
@@ -883,8 +908,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.8rem;
           font-weight: 600;
-          /* 0.2 → 0.3em */
-          letter-spacing: 0.3em;
+          letter-spacing: 0.05em; /* 한글 자간 — 원지시 0.3em */
           background-color: #0B5563;
           color: #F0EEE9;
           cursor: pointer;
@@ -898,7 +922,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.82rem;
           font-weight: 600;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.05em; /* 한글 자간 — 원지시 0.12em */
           color: #241C18;
           text-decoration: none;
           padding: 7px 16px;
@@ -916,7 +940,7 @@ export default function NavMega() {
           color: #241C18;
           text-decoration: none;
           padding: 6px 0;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.05em; /* 한글 자간 — 원지시 0.12em */
         }
 
         /* ── 메가 패널 ── */
@@ -1033,7 +1057,7 @@ export default function NavMega() {
         .mega-item-row .mega-item-parent { flex: 1 1 auto; }
         .mega-item-caret {
           font-size: 0.6rem;
-          color: #8E8579;
+          color: #6B5C50; /* 2026-08-03 대비 보정: #8E8579(크림 위 3.13:1, AA 미달) → #6B5C50(5.54:1) */
           padding-right: 2px;
           transition: transform 0.18s ease, color 0.15s ease;
         }
@@ -1073,7 +1097,7 @@ export default function NavMega() {
           font-weight: 600;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #8E8579;
+          color: #6B5C50; /* 2026-08-03 대비 보정: #8E8579(크림 위 3.13:1, AA 미달) → #6B5C50(5.54:1) */
           margin-bottom: 2px;
         }
         .mega-subgroup-list { list-style: none; margin: 0; padding: 0; }
@@ -1205,7 +1229,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 1rem;
           font-weight: 500;
-          letter-spacing: 0.16em;
+          letter-spacing: 0.05em; /* 한글 자간 — 원지시 0.16em */
           color: #4A3B33;
           cursor: pointer;
         }
@@ -1265,7 +1289,7 @@ export default function NavMega() {
           align-items: center;
           justify-content: center;
           font-size: 0.7rem;
-          color: #8E8579;
+          color: #6B5C50; /* 2026-08-03 대비 보정: #8E8579(크림 위 3.13:1, AA 미달) → #6B5C50(5.54:1) */
           cursor: pointer;
           transition: transform 0.18s ease, color 0.15s ease;
         }
@@ -1284,7 +1308,7 @@ export default function NavMega() {
           font-weight: 600;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #8E8579;
+          color: #6B5C50; /* 2026-08-03 대비 보정: #8E8579(크림 위 3.13:1, AA 미달) → #6B5C50(5.54:1) */
           margin: 0 0 2px;
         }
         .navmega-mobile-subgroup-list { list-style: none; margin: 0; padding: 0; }
@@ -1357,7 +1381,7 @@ export default function NavMega() {
           color: #4A3B33;
           text-decoration: none;
           padding: 6px 0;
-          letter-spacing: 0.16em;
+          letter-spacing: 0.05em; /* 한글 자간 — 원지시 0.16em */
         }
         .navmega-mobile-cta {
           appearance: none;
@@ -1366,7 +1390,7 @@ export default function NavMega() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.85rem;
           font-weight: 600;
-          letter-spacing: 0.2em;
+          letter-spacing: 0.05em; /* 한글 자간 — 원지시 0.2em */
           background-color: #0B5563;
           color: #F0EEE9;
           text-decoration: none;

@@ -28,7 +28,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "소개 · 무대올림",
     description:
-      "한국 대학 무대예술의 진흥을 향해. 대학 무대예술 공연 플랫폼. 공연팀 게재료 없음. 16개 지역·8개 장르의 학생 공연을 한 곳에서.",
+      // 2026-08-03 사실 정정: 장르는 7개(기타 포함)다. "8개"는 무용을 잠깐 둘로 나눴던 구성의 잔재.
+      "한국 대학 무대예술의 진흥을 향해. 대학 무대예술 공연 플랫폼. 공연팀 게재료 없음. 연극·뮤지컬·무용·국악·음악·전통연희를 16개 지역에서.",
     images: ["/og-default.png"],
   },
 };
@@ -126,7 +127,7 @@ export default function AboutPage() {
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-8"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛. 청록은 누르는 것 전담 */ }}
           >
             우리가 존재하는 이유
           </h2>
@@ -162,7 +163,7 @@ export default function AboutPage() {
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-12"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛. 청록은 누르는 것 전담 */ }}
           >
             이름의 의미
           </h2>
@@ -263,7 +264,8 @@ export default function AboutPage() {
                   style={{
                     fontFamily: "var(--font-cormorant)",
                     color: "var(--color-damson-light)",
-                    opacity: 0.85,
+                    // 2026-08-03: opacity 0.85 제거. 투명도가 대비를 깎아
+                    // 어두운 청록 위에서 3.02:1까지 떨어졌다(토큰 보정만으로는 부족).
                   }}
                 >
                   {item.num}
@@ -309,7 +311,7 @@ export default function AboutPage() {
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-6"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛. 청록은 누르는 것 전담 */ }}
           >
             우리만의 자리
           </h2>
@@ -387,7 +389,7 @@ export default function AboutPage() {
           </p>
           <h2
             className="text-3xl md:text-4xl font-bold mb-4 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛 */, wordBreak: "keep-all" }}
           >
             관객으로,
             <br className="md:hidden" />
@@ -482,7 +484,7 @@ export default function AboutPage() {
           </p>
           <h2
             className="text-3xl md:text-4xl font-bold mb-4 leading-tight"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛 */, wordBreak: "keep-all" }}
           >
             공연자에게,
             <br className="md:hidden" />
@@ -597,7 +599,7 @@ export default function AboutPage() {
             <div>
               <p
                 className="text-sm tracking-[0.25em] uppercase mb-4"
-                style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", opacity: 0.85 }}
+                style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)" /* 2026-08-03: opacity 0.85 제거 — 투명도가 대비를 깎아 어두운 배경 위 3.02:1이었다 */ }}
               >
                 무대를 만드는 사람
               </p>
@@ -618,7 +620,7 @@ export default function AboutPage() {
             <div>
               <p
                 className="text-sm tracking-[0.25em] uppercase mb-4"
-                style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", opacity: 0.85 }}
+                style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)" /* 2026-08-03: opacity 0.85 제거 — 투명도가 대비를 깎아 어두운 배경 위 3.02:1이었다 */ }}
               >
                 무대를 만나는 사람
               </p>
@@ -653,7 +655,7 @@ export default function AboutPage() {
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold mb-10"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* 2026-08-03 B안: 소제목은 먹빛. 청록은 누르는 것 전담 */ }}
           >
             운영
           </h2>

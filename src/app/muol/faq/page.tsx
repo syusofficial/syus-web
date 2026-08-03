@@ -25,8 +25,16 @@ function renderAnswer(answer: string): React.ReactNode {
           key={`${lineIdx}-${match.index}`}
           href={match[2]}
           {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-          className="hover:underline"
-          style={{ color: "#0B5563", fontWeight: 500 }}
+          /* 답변 본문 속 링크 — 색만으로 링크임을 표시하지 않는다(WCAG 1.4.1).
+             폰에는 hover가 없어 hover:underline만으로는 끝내 밑줄을 못 본다.
+             밑줄은 옅게 깔아 사색적인 톤을 유지한다. */
+          style={{
+            color: "#0B5563",
+            fontWeight: 500,
+            textDecoration: "underline",
+            textDecorationColor: "rgba(11,85,99,0.35)",
+            textUnderlineOffset: "3px",
+          }}
         >
           {match[1]}
         </Link>
@@ -148,7 +156,9 @@ export default function FAQPage() {
           </p>
           <h1
             className="text-4xl md:text-5xl font-bold mb-3"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+            /* 2026-08-03 색 위계 B안 — 대제목은 먹빛(#2B211C, 13.55:1).
+               청록은 인기질문 버튼·카테고리 칩·답변 속 링크 같은 '누르는 것' 전담. */
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C" }}
           >
             자주 묻는 질문
           </h1>
@@ -168,7 +178,8 @@ export default function FAQPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="궁금한 내용을 검색해보세요"
-              className="w-full px-5 py-4 pr-12 text-sm outline-none transition-colors"
+              /* text-base(16px) 고정 — iOS Safari는 16px 미만 입력창을 탭하면 화면을 확대해버린다. */
+              className="w-full px-5 py-4 pr-12 text-base outline-none transition-colors"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 backgroundColor: "#E6E1D6",

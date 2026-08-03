@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { createClient } from "@/lib/supabase/server";
+import { formatShowPeriod } from "@/lib/showDate";
 
 export const runtime = "nodejs";
 export const alt = "무대올림 공연 (운영: 사유유사 SYUS)";
@@ -50,9 +51,9 @@ export default async function Image({ params }: { params: { id: string } }) {
   }
 
   const genreLabel = show.genre === "기타" && show.genre_custom ? show.genre_custom : show.genre;
-  const dateRange = show.schedule_start && show.schedule_end && show.schedule_start !== show.schedule_end
-    ? `${show.schedule_start} — ${show.schedule_end}`
-    : (show.schedule_start ?? "");
+  // 2026-08-03: 날짜 원문을 그대로 이어붙이던 것을 공통 포맷으로 통일.
+  // OG 이미지는 카톡·SNS 공유 카드에 그대로 박혀 캐시되므로 형식이 흔들리면 오래 남는다.
+  const dateRange = formatShowPeriod(show.schedule_start, show.schedule_end, { weekday: false });
 
   return new ImageResponse(
     (

@@ -11,6 +11,8 @@ import ReviewInput from "@/components/ReviewInput";
 import ReviewList from "@/components/ReviewList";
 import ShowCard from "@/components/ShowCard";
 import SeatReservationForm from "@/components/SeatReservationForm";
+import MobilePartnerStrip from "@/components/MobilePartnerStrip";
+import { formatShowPeriod, showDateKey } from "@/lib/showDate";
 import { isEnded, extractSchoolName, todayKey } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
@@ -83,9 +85,7 @@ export async function generateMetadata({
 
   // 공연 기간 — 시작만 있으면 시작일, 끝이 다르면 기간으로 표기
   const schedule = show.schedule_start
-    ? show.schedule_end && show.schedule_end !== show.schedule_start
-      ? `${show.schedule_start} — ${show.schedule_end}`
-      : show.schedule_start
+    ? formatShowPeriod(show.schedule_start, show.schedule_end, { weekday: false })
     : null;
 
   // 설명 = 작품 소개 앞부분 + 장소·일정. 소개가 비어 있으면 부제 → 소속·공연자 순으로 폴백.
@@ -272,7 +272,11 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
   }
 
   // JSON-LD 구조화 데이터 — Schema.org TheaterEvent (Google 검색 Rich Result)
-  const normalizeDate = (d?: string) => d?.replace(/\./g, "-") ?? undefined;
+  // 2026-08-03: 점만 하이픈으로 바꾸던 방식 폐기 → showDateKey로 통일.
+  // 구글 구조화 데이터는 startDate/endDate가 ISO 8601이어야 인식한다.
+  // "2026.5.10"(0 안 채운 값)은 이전 방식으로 "2026-5-10"이 되어 규격 위반이었고,
+  // 그러면 공연 리치 결과가 통째로 무시된다. 읽지 못하는 값은 undefined로 빼는 편이 안전하다.
+  const normalizeDate = (d?: string) => showDateKey(d) ?? undefined;
   const eventStructuredData = show.status === "approved" ? {
     "@context": "https://schema.org",
     "@type": "TheaterEvent",
@@ -377,9 +381,28 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   className="object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#5A4A3E" }}>
-                    포스터 없음
+                /* 포스터 미등록 — 빈 회색 사각형 대신 제목을 조판해 '타이포 포스터'로 세운다.
+                   ShowCard의 같은 자리와 규칙을 맞춘다(직각·무그림자 유지, 글자만 크게). */
+                <div
+                  className="w-full h-full flex flex-col justify-end p-6 md:p-8"
+                  style={{ background: "linear-gradient(160deg, #E6E1D6 0%, #D9D3C4 100%)" }}
+                >
+                  <span
+                    className="text-xs tracking-[0.25em] uppercase mb-3"
+                    style={{ fontFamily: "var(--font-inter)", color: "#5F5145" }}
+                  >
+                    {show.genre || "STAGE"}
+                  </span>
+                  <span
+                    className="text-2xl md:text-3xl leading-snug"
+                    style={{
+                      fontFamily: "var(--font-noto-serif-kr)",
+                      color: "#4A3B33",
+                      wordBreak: "keep-all",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {show.title}
                   </span>
                 </div>
               )}
@@ -401,7 +424,14 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               )}
               <h1
                 className="text-4xl md:text-5xl font-bold leading-tight mb-2"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+                style={{
+                  fontFamily: "var(--font-noto-serif-kr)",
+                  /* 2026-08-03 색 위계 B안 — 대제목은 먹빛(#2B211C, 13.55:1).
+                     청록은 아래 공연자·학교 링크 같은 '누르는 것' 전담으로 남긴다. */
+                  color: "#2B211C",
+                  /* 긴 공연 제목이 어절 중간에서 잘리지 않도록 (사이트 표준) */
+                  wordBreak: "keep-all",
+                }}
               >
                 {show.title}
               </h1>
@@ -411,8 +441,16 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   {show.organizer_id ? (
                     <Link
                       href={`/muol/performer/${show.organizer_id}`}
-                      className="hover:underline transition-colors"
-                      style={{ color: "#0B5563" }}
+                      className="transition-colors"
+                      /* 본문 속 링크는 색만으로 표시하지 않는다(WCAG 1.4.1).
+                         폰에는 hover가 없어 hover:underline만으로는 링크인지 영영 알 수 없다.
+                         밑줄은 옅게 깔아 사색적인 톤을 해치지 않는다. */
+                      style={{
+                        color: "#0B5563",
+                        textDecoration: "underline",
+                        textDecorationColor: "rgba(11,85,99,0.35)",
+                        textUnderlineOffset: "3px",
+                      }}
                     >
                       {show.performer_name}
                     </Link>
@@ -467,8 +505,13 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                         <>
                           <Link
                             href={`/muol/shows?school=${encodeURIComponent(schoolName)}`}
-                            className="hover:underline"
-                            style={{ color: "#0B5563" }}
+                            /* 본문 속 링크 — 위 공연자 링크와 같은 규칙(항상 옅은 밑줄) */
+                            style={{
+                              color: "#0B5563",
+                              textDecoration: "underline",
+                              textDecorationColor: "rgba(11,85,99,0.35)",
+                              textUnderlineOffset: "3px",
+                            }}
                           >
                             {schoolName}
                           </Link>
@@ -482,7 +525,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
 
               {[
                 show.schedule_start && show.schedule_end
-                  ? { label: "공연 기간", value: `${show.schedule_start} — ${show.schedule_end}` }
+                  ? { label: "공연 기간", value: formatShowPeriod(show.schedule_start, show.schedule_end) }
                   : null,
                 show.show_time ? { label: "공연 시간", value: show.show_time } : null,
                 show.running_time ? { label: "러닝 타임", value: show.running_time } : null,
@@ -567,7 +610,9 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-4 py-2 text-xs"
-                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#03C75A", color: "#F0EEE9" }}
+                      /* 네이버 초록(#03C75A) 위 흰 글씨는 1.94:1로 거의 안 읽힌다.
+                         짙은 글씨로 바꿔 9.4:1 확보 — 네이버 브랜드 가이드도 초록 위에는 짙은 글씨를 권한다. */
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#03C75A", color: "#1A1A1A" }}
                     >
                       네이버지도에서 보기 →
                     </a>
@@ -582,7 +627,8 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 <div className="flex items-baseline justify-between gap-3 flex-wrap mb-2">
                   <p
                     className="text-sm tracking-wide"
-                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", fontWeight: 600 }}
+                    /* B안 — 읽는 소제목은 먹빛(#3A2E27, 11.32:1) */
+                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27", fontWeight: 600 }}
                   >
                     관람하셨나요? 별점을 남겨주세요.
                   </p>
@@ -621,7 +667,8 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 <div className="flex items-baseline justify-between mb-2">
                   <p
                     className="text-sm tracking-wide"
-                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", fontWeight: 600 }}
+                    /* B안 — 읽는 소제목은 먹빛 */
+                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27", fontWeight: 600 }}
                   >
                     공연 후기
                   </p>
@@ -747,6 +794,13 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
           </div>
         </div>
 
+        {/* 제휴 · 광고 (모바일·태블릿 전용, 1280px 미만) — PC에서는 뜨지 않는다.
+            자리 규칙: 좌석 신청·문의 버튼보다 반드시 아래. 관객이 공연 정보를 다 읽고
+            행동한 뒤에 만나는 자리여야 한다. 추천 공연 위에 두는 이유는, 추천 카드가
+            길어서 그 아래로 내리면 대부분 도달하지 못하기 때문이다.
+            승인된 공연에서만 — 심사 중·반려 공연은 본인·관리자만 보는 화면이라 제외. */}
+        {show.status === "approved" && <MobilePartnerStrip />}
+
         {/* 추천 공연 — 매칭 결과 있을 때만 노출 */}
         {recommendations.length > 0 && (
           <section
@@ -762,7 +816,8 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               </p>
               <h2
                 className="text-2xl md:text-3xl font-bold"
-                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+                /* B안 — 섹션 제목은 먹빛 소제목 */
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" }}
               >
                 이런 공연도 어떠세요
               </h2>

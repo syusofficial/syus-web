@@ -89,7 +89,7 @@ export default function ContactPage() {
           <p className="text-xs tracking-[0.3em] uppercase mb-6" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             접수 완료
           </p>
-          <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
+          <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C" /* B안 — 이 화면의 대제목 */ }}>
             감사합니다.
           </h2>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
@@ -110,7 +110,8 @@ export default function ContactPage() {
           <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
             1:1 Contact
           </p>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
+          {/* 2026-08-03 색 위계 B안 — 대제목은 먹빛(#2B211C). 청록은 아래 버튼·링크 전담. */}
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C" }}>
             1:1 문의
           </h1>
           <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
@@ -134,7 +135,8 @@ export default function ContactPage() {
           </p>
           <p
             className="text-sm leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}
+            /* 안내 박스 본문 — 누르는 것이 아니라 읽는 글이므로 먹빛 본문색(#4A3B33, 9.22:1) */
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}
           >
             보내주신 문의는 영업일 기준 24시간 이내에 운영자가 직접 회신드립니다.
             <br />
@@ -176,6 +178,9 @@ export default function ContactPage() {
           </Link>
         </div>
 
+        {/* 입력칸 글자는 반드시 text-base(16px) 이상으로 둔다 —
+            iOS Safari는 16px 미만 입력창을 탭하면 화면을 자동으로 확대해버려서,
+            문의를 남기는 내내 칸마다 화면이 튄다 (2026-08-03 text-sm 14px에서 교체). */}
         <form onSubmit={handleSubmit} className="space-y-8" data-clarity-mask="True">
           {/* 카테고리 선택 */}
           <div>
@@ -215,7 +220,7 @@ export default function ContactPage() {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
-                className="w-full px-4 py-3 text-sm outline-none"
+                className="w-full px-4 py-3 text-base outline-none"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E6E1D6", color: "#4A3B33", border: "1px solid transparent" }}
                 onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -229,7 +234,7 @@ export default function ContactPage() {
                 type="tel"
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full px-4 py-3 text-sm outline-none"
+                className="w-full px-4 py-3 text-base outline-none"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E6E1D6", color: "#4A3B33", border: "1px solid transparent" }}
                 onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -246,7 +251,7 @@ export default function ContactPage() {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
-              className="w-full px-4 py-3 text-sm outline-none"
+              className="w-full px-4 py-3 text-base outline-none"
               style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E6E1D6", color: "#4A3B33", border: "1px solid transparent" }}
               onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
@@ -262,7 +267,7 @@ export default function ContactPage() {
               onChange={(e) => setForm({ ...form, message: e.target.value })}
               required
               rows={6}
-              className="w-full px-4 py-3 text-sm outline-none resize-none"
+              className="w-full px-4 py-3 text-base outline-none resize-none"
               style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E6E1D6", color: "#4A3B33", border: "1px solid transparent" }}
               onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
