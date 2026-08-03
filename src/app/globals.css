@@ -1,5 +1,20 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
-@import url("https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css");
+/* ──────────────────────────────────────────────────────────────
+ * 2026-08-03 디자인팀 — 폰트 CDN 2줄 제거 (Pretendard · Spoqa Han Sans Neo)
+ *
+ * 지웠던 줄:
+ *   @import url(".../pretendard@v1.3.9/.../pretendardvariable.min.css");
+ *   @import url("https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css");
+ *
+ * 이유 — 둘 다 "내려받기만 하고 화면에는 안 그려지던" 상태였다.
+ *   · Pretendard : --font-pretendard 스택에서 Spoqa가 맨 앞에 서 있어 순서가 영원히 안 왔음
+ *   · Spoqa      : body 기본 글꼴이었으나 /muol 거의 모든 요소가 각자
+ *                  fontFamily: var(--font-noto-sans-kr) 로 덮어써서 사실상 미사용
+ * 실제로 그려지던 글꼴은 Noto Sans KR / Noto Serif KR (layout.tsx의 next/font, 자체 호스팅)
+ * 뿐이므로 그쪽으로 통일한다. 화면 인상은 그대로이고 외부 CDN 왕복 2회만 사라진다.
+ * (layout.tsx의 preconnect / dns-prefetch 4줄도 같은 이유로 함께 제거)
+ *
+ * 되살리려면: 위 @import 2줄을 이 자리에 복원 + 아래 폰트 토큰 앞머리에 이름 재삽입.
+ * ────────────────────────────────────────────────────────────── */
 @import "tailwindcss";
 
 @theme inline {
@@ -26,7 +41,12 @@
   --color-accent-red: #D54545;     /* 포인트 빨강 (경고·삭제) — 유지 */
   --color-accent-yellow: #5C2A42;  /* CTA — Divine Damson (라임에서 자두빛 보라 전환) */
   --color-accent-yellow-hover: #6E3450;
-  --color-damson-light: #C99FB1;   /* Divine Damson 라이트 틴트 — 어두운 배경(Teal·Silhouette) 위 라벨·강조 전용.
+  --color-damson-light: #E2C3CF;   /* Divine Damson 라이트 틴트 — 어두운 배경(Teal·Silhouette) 위 라벨·강조 전용.
+                                       2026-08-03 대비 보정: 구 #C99FB1은 Teal(#0B5563) 위 3.64:1로 WCAG AA 미달이었다.
+                                       #E2C3CF = Teal 위 5.19:1 / Silhouette(#4A3B33) 위 6.59:1 → 둘 다 AA 통과.
+                                       사용처를 전수 확인한 결과 전부 어두운 배경 위였으므로 토큰 값만 올려 일괄 해소.
+                                       (밝은 배경 위 사용처 0건 — 값을 올려도 반대편이 깨지지 않음)
+                                       자두빛 결은 그대로. OG 이미지 2곳은 satori 렌더라 리터럴 hex를 따로 맞춰야 한다.
                                        2026-07-14 정식 토큰 승격(구 하드코딩 #C99FB1, 일부 파일 주석에 잘못 "페일 라임"으로 표기돼 있었음 — 명칭만 정정, 값은 그대로 유지해 기존 대비 가독성 보존). */
 
   /* SYUS 원 정체성 브라운 — 로고만 유지 (사장님 결정) */
@@ -46,15 +66,90 @@
   --color-syus-grey: #5A4A3E;
   --color-syus-light-grey: #D4CFC1;
 
-  /* Fonts — 마뗑킴 톤 (Spoqa Han Sans Neo Thin + Geist Thin)
-   * 토큰 이름은 유지(코드 영향 최소화), 값만 슬림 톤으로 교체
+  /* ══════════════════════════════════════════════════════════════
+   * 무대올림 색 위계 v2 (B안) — 2026-08-03 디자인팀, 사장님 지시로 확정
+   *
+   * 【왜 만들었나】
+   * 그전까지 Transformative Teal #0B5563 하나가 제목·링크·버튼·태그·칩·
+   * 섹션배경·아이콘까지 16가지 역할을 혼자 맡고 있어서, 화면에 위계가
+   * 생기지 않았다("무엇을 먼저 봐야 하는지"를 눈이 판단할 단서가 없음).
+   * 색을 바꾸는 게 아니라 색에게 역할을 나눠주는 것이 이 블록의 목적이다.
+   *
+   * 【3층 분리】
+   *   읽는 것    → 먹빛 (Ink — Silhouette #4A3B33 을 더 짙게 뽑은 파생)
+   *   누르는 것  → 청록 (Teal  #0B5563)
+   *   결심하는 것 → 자두 (Damson #5C2A42)
+   *
+   * 【잠금 4색은 하나도 폐기되지 않았다】
+   * Cloud Dancer #F0EEE9 / Transformative Teal #0B5563 /
+   * Silhouette #4A3B33 / Divine Damson #5C2A42 — 전부 그대로 살아 있다.
+   * 오히려 Teal이 제목·본문 자리에서 빠지면서 잠금 비율(70/20/7/3)이
+   * 회복된다. 그전에는 Teal 체감 점유가 30~40%였다.
+   *
+   * 【쓰는 법】
+   * 신규 코드는 여기 --c-* 를 쓴다. 위의 옛 토큰(--color-blue 등)은
+   * 아직 다른 파일 500여 곳이 참조 중이라 절대 지우지 않는다(지우면 조용히 깨짐).
+   * 페이지 파일은 이 저장소 관행대로 hex 직접 지정을 유지한다 —
+   * 이 블록은 "무슨 색을 어디에 쓰는지"의 정본·참조표다.
+   *
+   * 【대비】 주석의 숫자는 #F0EEE9 배경 기준 WCAG 실측 대비율.
+   *         본문 4.5:1 / 큰 글자 3:1 이 합격선이다.
+   * ══════════════════════════════════════════════════════════════ */
+
+  /* ① 배경 · 표면 (Cloud Dancer 축 — 화면의 70%) */
+  --c-bg:            #F0EEE9;  /* 페이지 배경 — 잠금 원본 (Pantone 2026 올해의 색) */
+  --c-surface:       #E6E1D6;  /* 카드 · 메타박스 · 입력칸 */
+  --c-surface-2:     #DDD7C9;  /* 한 겹 더 눌린 면 */
+  --c-line:          #D4CFC1;  /* 순수 장식 구분선 (대비 면제 대상) */
+  --c-line-strong:   #A0957D;  /* 입력창·칩 테두리 — 반드시 배경 채움과 함께 쓸 것 */
+
+  /* ② 읽는 것 (Silhouette 축 — 7%) */
+  --c-ink:           #2B211C;  /* 대제목 H1 · H2        · 13.55:1 */
+  --c-ink-2:         #3A2E27;  /* 소제목 H3            · 11.32:1 */
+  --c-text:          #4A3B33;  /* 본문 — 잠금 원본      ·  9.22:1 */
+  --c-text-muted:    #5F5145;  /* 보조 설명            ·  6.59:1 */
+  --c-text-faint:    #6B5C50;  /* 캡션·메타 (가장 옅은 한계선) · 5.54:1 */
+
+  /* ③ 누르는 것 (Teal 축 — 20%) */
+  --c-link:          #0B5563;  /* 링크 · 활성 칩 — 잠금 원본 ·  7.26:1 */
+  --c-link-hover:    #06333D;  /* 링크 hover · 눌림        · 11.69:1 */
+  --c-link-soft:     #0E6A7D;  /* 아이콘 · 보조 강조       ·  5.36:1 */
+  --c-teal-tint:     #DCE7E8;  /* 태그 배경 */
+  --c-teal-tint-ink: #084653;  /* 위 틴트 배경 전용 글자색 · 틴트 위 8.27:1 */
+
+  /* ④ 결심하는 것 (Damson 축 — 3%) */
+  --c-cta:           #5C2A42;  /* 주 버튼 — 잠금 원본     ·  9.71:1 */
+  --c-cta-hover:     #4A2135;  /* 주 버튼 hover          · 11.61:1 */
+  --c-cta-active:    #6E3450;  /* 주 버튼 눌림 */
+  --c-accent:        #5C2A42;  /* 별점 · 강조 마크 */
+  --c-onDark-label:  #E2C3CF;  /* 어두운 배경 위 자두 라벨 · Teal 위 5.19:1
+                                  (구 #C99FB1 은 Teal 위 3.64:1 로 미달이었음) */
+
+  /* ⑤ 상태색 — 기존 미달색 교체 (잠금 4색 대상 아님) */
+  --c-success:       #2F6B4F;  /* 구 #7BA86F (2.36:1 미달) 대체 → 5.43:1 */
+  --c-warn:          #7A5416;  /* 신설 (경고 · 대기)            → 5.83:1 */
+  --c-danger:        #A33025;  /* 구 #D54545 (3.80:1 미달) 대체 → 6.02:1 */
+  --c-danger-tint:   #F5E4E1;  /* 오류 안내 배경 */
+
+  /* ⑥ 어두운 면 위 (Teal · Silhouette 배경 섹션 안에서) */
+  --c-onDark:        #F0EEE9;                 /* 제목   · Teal 위 7.26:1 */
+  --c-onDark-body:   rgba(240,238,233,0.86);  /* 본문   · 약 6.0:1 */
+  --c-onDark-meta:   rgba(240,238,233,0.68);  /* 캡션   · 약 4.6:1 */
+  --c-onDark-line:   rgba(240,238,233,0.30);  /* 구분선 */
+
+  /* Fonts — 2026-08-03 디자인팀 정리
+   * 토큰 "이름"은 하나도 지우지 않는다(다른 파일들이 아직 옛 이름을 참조 중).
+   * 값에서만 더 이상 로드하지 않는 Spoqa Han Sans Neo / Pretendard 를 뺐다.
+   * 이제 한글은 전부 Noto Sans KR(본문) · Noto Serif KR(제목)로 수렴한다.
+   *   ※ --font-pretendard 는 HeroPosterStream.tsx(215,225)가 참조하므로 이름 유지.
+   *      값만 Noto 스택으로 바꿔 화면이 다른 요소와 같은 결로 그려지게 한다.
    */
-  --font-spoqa: "Spoqa Han Sans Neo", -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
-  --font-kr-serif: "Spoqa Han Sans Neo", var(--font-noto-serif-kr), serif;
-  --font-kr-sans: "Spoqa Han Sans Neo", var(--font-noto-sans-kr), sans-serif;
+  --font-spoqa: var(--font-noto-sans-kr), -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-kr-serif: var(--font-noto-serif-kr), serif;
+  --font-kr-sans: var(--font-noto-sans-kr), sans-serif;
   --font-display: var(--font-cormorant);
   --font-body: var(--font-inter); /* layout.tsx에서 Geist로 매핑됨 */
-  --font-pretendard: "Spoqa Han Sans Neo", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-pretendard: var(--font-noto-sans-kr), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
   /* ──────────────────────────────────────────────────
    * 시우스(SYUS) 커뮤니티 — 2026-06-30 3층 구조 신설
@@ -82,7 +177,10 @@ html {
 body {
   background-color: #F0EEE9;
   color: #4A3B33;
-  font-family: "Spoqa Han Sans Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* 2026-08-03: Spoqa Han Sans Neo(CDN) → Noto Sans KR(next/font 자체 호스팅).
+     원래도 /muol 요소 대부분이 var(--font-noto-sans-kr)로 덮어쓰고 있어서
+     실제로 보이던 글꼴이 Noto Sans KR이었다. 기본값을 실제와 일치시킨 것. */
+  font-family: var(--font-noto-sans-kr), -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   font-weight: 300; /* 마뗑킴 톤 — 슬림 weight 기본 */
 }
 
@@ -95,56 +193,38 @@ body {
   color: #F0EEE9;
 }
 
-/* ──────────────────────────────────────────────────
- * 다크 모드 (auto) — 사장님 결정 2026-06-08
- * prefers-color-scheme 만 감지. 토글 UI 없음.
- * Mineral Stage 팔레트 다크 변형:
- *   본문 배경 = 딥 네이비 #1B2842 (charcoal보다 한 단계 연한)
- *   본문 텍스트 = 크림 #FBF8F1
- *   카드 = 한 단계 짙은 #15203A
- *   CTA 라임 = 그대로 (보색이므로 다크에서도 유효)
- *   메인 코발트/슬레이트는 라이트 변형으로 가독성 보정
- * 인라인 스타일이 워낙 많아 :root 변수 + html 셀렉터 둘 다 안전망으로 둔다.
- * 기존 인라인 backgroundColor:"#FBF8F1" 류를 일괄 덮어쓰지 않고,
- * 점진적으로 컴포넌트별 토큰 전환할 때 사용한다.
- * ────────────────────────────────────────────────── */
-@media (prefers-color-scheme: dark) {
-  /* 다크 모드 — 4색 다크 변형
-   *   본문 배경 = Silhouette 다크 #1F1814
-   *   본문 텍스트 = Cloud Dancer #F0EEE9
-   *   카드 = 한 단계 짙은 #261D18
-   *   CTA Damson 라이트 = #8C4A65 (다크 위 가독성)
-   *   메인 Teal 라이트 = #4A98AA
-   */
-  :root {
-    --color-paper: #1F1814;
-    --color-paper-dark: #261D18;
-    --color-mist: #3C2F28;
-    --color-stone: #C9C0B2;
-    --color-charcoal: #F0EEE9;
-    --color-cream: #1F1814;
-    --color-cream-dark: #261D18;
-    --color-blue: #4A98AA;
-    --color-blue-light: #6BB0C0;
-    --color-navy: #F0EEE9;
-    --color-syus-brown: #4A98AA;
-    --color-syus-brown-light: #6BB0C0;
-    --color-syus-blue: #4A98AA;
-    --color-syus-navy: #F0EEE9;
-    --color-syus-charcoal: #F0EEE9;
-    --color-syus-grey: #C9C0B2;
-    --color-syus-light-grey: #3C2F28;
-    --color-accent-yellow: #8C4A65;
-    --color-accent-yellow-hover: #A35777;
-  }
-  body {
-    background-color: #1F1814;
-    color: #F0EEE9;
-  }
-  ::-webkit-scrollbar-track { background: #1F1814; }
-  ::-webkit-scrollbar-thumb { background: #4A98AA; }
-  ::selection { background: #4A98AA; color: #1F1814; }
-}
+/* ══════════════════════════════════════════════════════════════
+ * 다크 모드 — 2026-08-03 삭제됨. 되살리지 말 것 (읽고 나서 결정할 것).
+ *
+ * 여기에 @media (prefers-color-scheme: dark) 블록이 있었다.
+ * :root의 --color-paper / --color-charcoal / --color-blue 등을
+ * 어두운 값으로 뒤집는 방식이었다.
+ *
+ * 【왜 지웠나 — 실제로 버그였다】
+ * 이 사이트에서 색을 지정하는 방식이 두 갈래로 갈려 있었다.
+ *   · 거의 모든 파일  : "#0B5563" 처럼 hex를 직접 씀   → 다크에서 안 변함
+ *   · universities 1곳: var(--color-blue) 처럼 토큰을 씀 → 다크에서 뒤집힘
+ * 2026-08-03 실측: src/ 전체에서
+ *   var(--color-paper|paper-dark|charcoal|stone|mist|blue|navy|cream) 를
+ *   쓰는 파일은 src/app/muol/universities/page.tsx 단 1개, 19곳뿐이었다.
+ * 나머지 67개 파일 533곳은 전부 hex 직접 지정이다.
+ * 그래서 OS를 다크로 두면 학과 디렉토리 페이지 한 장만 갈색 어둠으로
+ * 바뀌고, 같은 화면의 헤더(NavMega)·푸터는 밝은 채로 남아 화면이
+ * 두 동강 났다. (universities 페이지도 이번에 hex로 되돌려 통일함)
+ *
+ * 【다시 켜려면 — 이 순서를 반드시 지킬 것】
+ *   1) src/ 전체 hex 직접 지정 533곳을 --c-* 토큰 참조로 전환
+ *      (위 @theme inline 의 "무대올림 색 위계 v2" 블록이 그 정본)
+ *   2) 그 다음에 다크 변형 값을 --c-* 기준으로 새로 작성
+ *   3) layout.tsx 의 colorScheme / themeColor 도 함께 다크 대응으로 복구
+ *   → 1)을 건너뛰고 이 블록만 되살리면 2026-08-03 이전과 똑같은
+ *      "한 페이지만 어두워지는" 버그가 그대로 재발한다.
+ *
+ * 관련 동시 수정: src/app/layout.tsx
+ *   colorScheme "light dark" → "light"  (다크에서 입력창·자동완성 같은
+ *   브라우저 기본 부품만 어두워져 밝은 폼 위에 얼룩지던 문제)
+ *   themeColor 다크 항목 제거 (폰 주소창만 짙어지던 문제)
+ * ══════════════════════════════════════════════════════════════ */
 
 /* ──────────────────────────────────────────────────
  * 그라데이션 + 그레인 효과 (사장님 요청)

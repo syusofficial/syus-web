@@ -109,32 +109,33 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  // 다크 모드 auto — 시스템 테마에 따라 브라우저 상단바 색이 갈린다.
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F0EEE9" },
-    { media: "(prefers-color-scheme: dark)", color: "#1F1814" },
-  ],
+  /* 2026-08-03 디자인팀 — 다크 모드 해제.
+   * 사이트가 색을 hex로 직접 지정하는 구조라(533곳) 다크 대응이 사실상
+   * 안 되어 있었는데, 아래 두 값만 다크를 켜두어 어긋남을 만들고 있었다.
+   *   · themeColor 다크값 #1F1814 → 폰에서 주소창만 짙은 갈색, 본문은 크림색
+   *   · colorScheme "light dark"  → 입력창·자동완성 등 브라우저 기본 부품만
+   *                                 어두워져 밝은 폼 위에 얼룩짐
+   * 자세한 배경과 "다시 켜는 순서"는 globals.css 다크모드 삭제 주석 참고. */
+  themeColor: "#F0EEE9",
   width: "device-width",
   initialScale: 1,
-  // OS 다크 모드일 때 네이티브 폼·스크롤바도 자동 톤 변환
-  colorScheme: "light dark",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  /* 2026-08-03 디자인팀 — 아래 <html> 안에 있던 <head> 블록을 통째로 제거했다.
+     그 안에는 폰트 CDN preconnect / dns-prefetch 4줄(cdn.jsdelivr.net, spoqa.github.io)만
+     들어 있었는데, globals.css에서 Pretendard·Spoqa CDN import 자체를 없앴으므로
+     더 이상 그 두 호스트에 접속하지 않는다(미리 연결을 여는 힌트만 남으면 낭비다).
+     이제 한글 글꼴은 Noto Sans KR / Noto Serif KR — next/font가 자체 호스팅한다.
+     <head>는 Next.js가 metadata 기준으로 자동 생성하므로 직접 둘 필요가 없다. */
   return (
     <html
       lang="ko"
       className={`${notoSerifKR.variable} ${notoSansKR.variable} ${cormorant.variable} ${geist.variable}`}
     >
-      <head>
-        {/* 폰트 CDN 안정화 — preconnect로 DNS·TLS 라운드트립 단축 (제작팀 진단 #3 부분 완화) */}
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://spoqa.github.io" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-        <link rel="dns-prefetch" href="https://spoqa.github.io" />
-      </head>
       <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: "#F0EEE9", color: "#4A3B33" }}>
         <LoadingScreen />
         <NavMega />
