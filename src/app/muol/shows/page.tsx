@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ShowCard from "@/components/ShowCard";
 import ShowsSearchBar from "@/components/ShowsSearchBar";
+import MobilePartnerStrip from "@/components/MobilePartnerStrip";
 import { createClient } from "@/lib/supabase/server";
 import { REGIONS, GENRES, SHOW_CATEGORIES } from "@/lib/constants";
-import { sanitizeSearchTerm } from "@/lib/showFilters";
+import { sanitizeSearchTerm, todayKey, isEnded } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
@@ -28,12 +29,17 @@ export const metadata: Metadata = {
     "지역 공연",
     "무대올림 공연",
   ],
-  alternates: { canonical: "https://syus.co.kr/shows" },
+  // 구 경로 /shows 는 next.config.ts에서 /muol/shows 로 308 영구 리다이렉트된다.
+  // 리다이렉트되는 URL을 canonical로 쓰면 구글이 그 canonical을 무효 처리하므로 현재 경로를 가리킨다. (2026-08-03)
+  alternates: { canonical: "https://syus.co.kr/muol/shows" },
   openGraph: {
     title: "공연 일정 · 무대올림",
+    // 2026-08-03 사실 정정: "8개 장르"는 무용을 순수/실용로 나눴던 잠깐의 구성(2026-07-28 오전)에서
+    // 남은 숫자다. 그날 오후 호버 메뉴 방식으로 되돌리며 장르는 7개(기타 포함)가 됐다.
+    // 숫자를 다시 박으면 또 어긋나므로 실제 장르를 나열한다.
     description:
-      "오늘 막이 오르는 대학 무대예술 공연. 16개 지역, 8개 장르의 학생 공연을 한 곳에서.",
-    url: "https://syus.co.kr/shows",
+      "오늘 막이 오르는 대학 무대예술 공연. 연극·뮤지컬·무용·국악·음악·전통연희를 16개 지역에서.",
+    url: "https://syus.co.kr/muol/shows",
     type: "website",
     images: [
       {
@@ -48,33 +54,16 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "공연 일정 · 무대올림",
     description:
-      "오늘 막이 오르는 대학 무대예술 공연. 16개 지역, 8개 장르의 학생 공연.",
+      "오늘 막이 오르는 대학 무대예술 공연. 연극·뮤지컬·무용·국악·음악·전통연희를 16개 지역에서.",
     images: ["/og-default.png"],
   },
 };
 
 const PAGE_SIZE = 12;
 
-/** 오늘 자정 기준 날짜 비교용 키 (YYYY-MM-DD) */
-function todayKey(): string {
-  const t = new Date();
-  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
-}
-
-/** schedule_end 또는 schedule_start를 비교 가능한 키로 정규화 */
-function showEndKey(show: Show): string | null {
-  const raw = (show.schedule_end || show.schedule_start || "").trim();
-  if (!raw) return null;
-  // "2026.05.10" → "2026-05-10"
-  return raw.replace(/\./g, "-");
-}
-
-/** 종료된 공연인지 (schedule_end < 오늘) */
-function isEnded(show: Show, today: string): boolean {
-  const key = showEndKey(show);
-  if (!key) return false; // 날짜 없으면 active로 간주
-  return key < today;
-}
+// 2026-08-03: todayKey·showEndKey·isEnded 로컬 사본 3벌 삭제 → @/lib/showFilters 공용본 사용.
+// 같은 판정 로직이 목록·아카이브·홈에 각각 복제돼 있어, 공용본만 고치면 화면끼리
+// 결론이 어긋나는 상태였다(한 화면에선 진행 중, 다른 화면에선 종료).
 
 export default async function ShowsPage({
   searchParams,
@@ -143,6 +132,13 @@ export default async function ShowsPage({
     (region && region !== "전체") || genre || detail || category || school || (q && q.trim())
   );
 
+  // 0건에는 성격이 다른 두 가지가 있다.
+  //  (a) 사이트에 승인된 공연이 아직 하나도 없음 → "첫 무대를 기다립니다" (안내)
+  //  (b) 사용자가 건 필터·검색의 결과가 0건    → "조건에 맞는 무대…" + 필터 지우기 (기존 문구 유지)
+  //  (c) 승인 공연은 있으나 전부 종료됨        → "지난 공연으로" (기존 문구 유지)
+  // showsRaw는 필터가 걸리면 그 필터 결과라서, (a) 판정은 필터가 없을 때만 유효하다.
+  const noShowsAtAll = !hasFilters && (showsRaw as Show[] ?? []).length === 0;
+
   // 등록된 학교 목록 자동 추출 (학과 텍스트가 같이 있어도 첫 단어로 그룹핑)
   // 예: "한양대학교 연극영화학과" → "한양대학교"
   const { data: allActiveForSchools } = await supabase
@@ -172,7 +168,9 @@ export default async function ShowsPage({
     if (q) params.set("q", q);
     if (p > 1) params.set("page", String(p));
     const qs = params.toString();
-    return `/shows${qs ? `?${qs}` : ""}`;
+    // 2026-08-03: 구 경로 `/shows`를 쓰면 next.config.ts의 308 리다이렉트를 매번 왕복한다
+    // (요청 → 308 → /muol/shows 재요청). 페이지를 넘길 때마다 한 박자 느려지던 원인.
+    return `/muol/shows${qs ? `?${qs}` : ""}`;
   };
 
   const breadcrumbData = buildBreadcrumbList([
@@ -203,7 +201,9 @@ export default async function ShowsPage({
               className="text-4xl md:text-5xl font-bold mb-3"
               style={{
                 fontFamily: "var(--font-noto-serif-kr)",
-                color: "#0B5563",
+                /* 2026-08-03 색 위계 B안 — 대제목은 먹빛(#2B211C, 13.55:1).
+                   청록은 링크·버튼·활성 필터칩 같은 '누르는 것' 전담으로 남긴다. */
+                color: "#2B211C",
                 wordBreak: "keep-all",
                 overflowWrap: "anywhere",
               }}
@@ -247,7 +247,10 @@ export default async function ShowsPage({
         {/* 검색창 */}
         <ShowsSearchBar />
 
-        {/* 지역 필터 */}
+        {/* 지역 필터 —
+            아래 네 필터(지역·장르·구분·학교)와 페이지네이션의 링크는 모두 현재 경로인
+            `/muol/shows`를 직접 가리킨다. 구 경로 `/shows`로 두면 누를 때마다
+            next.config.ts의 308 리다이렉트를 왕복해 반응이 한 박자 늦는다 (2026-08-03). */}
         <div className="mb-6 flex flex-wrap gap-2">
           {REGIONS.map((r) => {
             const isActive = activeRegion === r;
@@ -258,7 +261,7 @@ export default async function ShowsPage({
             if (category) params.set("category", category);
             if (school) params.set("school", school);
             if (q) params.set("q", q);
-            const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
+            const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
                 key={r}
@@ -299,7 +302,7 @@ export default async function ShowsPage({
             if (category) params.set("category", category);
             if (school) params.set("school", school);
             if (q) params.set("q", q);
-            const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
+            const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
                 key={g ?? "all"}
@@ -335,7 +338,7 @@ export default async function ShowsPage({
             if (c) params.set("category", c);
             if (school) params.set("school", school);
             if (q) params.set("q", q);
-            const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
+            const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
                 key={c ?? "all-cat"}
@@ -375,7 +378,7 @@ export default async function ShowsPage({
               if (category) params.set("category", category);
               if (sch) params.set("school", sch);
               if (q) params.set("q", q);
-              const href = `/shows${params.toString() ? `?${params.toString()}` : ""}`;
+              const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
               return (
                 <Link
                   key={sch ?? "all-schools"}
@@ -397,8 +400,44 @@ export default async function ShowsPage({
 
         {/* 공연 그리드 */}
         {list.length === 0 ? (
+          noShowsAtAll ? (
+            /* (a) 사이트 전체에 승인된 공연이 아직 0건 — 첫 무대를 기다리는 자리 */
+            <div className="text-center py-24 px-4">
+              <p
+                className="text-xl md:text-2xl mb-4"
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* B안 — 읽는 소제목 */, wordBreak: "keep-all" }}
+              >
+                첫 무대를 기다립니다
+              </p>
+              <p
+                className="text-sm leading-relaxed mb-2 max-w-md mx-auto"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+              >
+                어느 학과의 어떤 막이 이곳의 처음이 될지, 아직 알지 못합니다.
+                올려주시면 운영자가 한 번 더 다듬어 공연 페이지로 띄웁니다.
+              </p>
+              <p
+                className="text-xs leading-relaxed mb-6 max-w-md mx-auto"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+              >
+                무대를 올리는 쪽에 게재료를 받지 않습니다.
+              </p>
+              <Link
+                href="/muol/performer"
+                className="inline-block px-5 py-3 text-xs tracking-wide transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  backgroundColor: "#5C2A42",
+                  color: "#F0EEE9",
+                  fontWeight: 600,
+                }}
+              >
+                무대 올리러 가기 →
+              </Link>
+            </div>
+          ) : (
           <div className="text-center py-24">
-            <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
+            <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* B안 — 읽는 소제목 */ }}>
               {hasFilters ? "조건에 맞는 무대를 아직 찾지 못했습니다." : "곧 첫 무대가 오릅니다."}
             </p>
             <p className="text-xs mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
@@ -416,6 +455,7 @@ export default async function ShowsPage({
               {hasFilters ? "필터 모두 지우기" : "지난 공연으로 →"}
             </Link>
           </div>
+          )
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
@@ -477,6 +517,10 @@ export default async function ShowsPage({
             )}
           </>
         )}
+
+        {/* 제휴 · 광고 (모바일·태블릿 전용) — 목록·페이지네이션 아래.
+            위 삼항 바깥에 두는 이유: 검색 결과가 0건일 때도 지면이 살아있어야 한다. */}
+        <MobilePartnerStrip />
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import ShowCard from "@/components/ShowCard";
 import ShowsSearchBar from "@/components/ShowsSearchBar";
 import { createClient } from "@/lib/supabase/server";
 import { REGIONS, GENRES, SHOW_CATEGORIES } from "@/lib/constants";
-import { sanitizeSearchTerm } from "@/lib/showFilters";
+import { sanitizeSearchTerm, todayKey, showEndKey, isEnded } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
@@ -12,22 +12,10 @@ export const revalidate = 60;
 
 const PAGE_SIZE = 16;
 
-function todayKey(): string {
-  const t = new Date();
-  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
-}
-
-function showEndKey(show: Show): string | null {
-  const raw = (show.schedule_end || show.schedule_start || "").trim();
-  if (!raw) return null;
-  return raw.replace(/\./g, "-");
-}
-
-function isEnded(show: Show, today: string): boolean {
-  const key = showEndKey(show);
-  if (!key) return false;
-  return key < today;
-}
+// 2026-08-03: todayKey·showEndKey·isEnded 로컬 사본 3벌 삭제 → @/lib/showFilters 공용본 사용.
+// 사본이 남아 있으면 공용본만 고쳤을 때 이 페이지가 다르게 판정한다.
+// (실제로 공용 isEnded는 실제 날짜 비교로 고쳤는데 여기 사본은 글자 비교로 남아 있어,
+//  "2026.5.10"처럼 0을 안 채운 값에서 목록과 아카이브가 서로 반대 결론을 낼 수 있었다.)
 
 function extractYear(show: Show): number | null {
   const key = showEndKey(show);
@@ -108,6 +96,12 @@ export default async function ArchivePage({
     (region && region !== "전체") || genre || category || (q && q.trim()) || selectedYear
   );
 
+  // 0건에는 성격이 다른 두 가지가 있다.
+  //  (a) 사이트에 승인된 공연 자체가 하나도 없음 → "아직 오르지 않은 막" (안내)
+  //  (b) 필터·검색 결과가 0건 / 진행 중 공연만 있고 종료된 공연이 없음 → 기존 문구 유지
+  // showsRaw는 필터가 걸리면 그 필터 결과라서, (a) 판정은 필터가 없을 때만 유효하다.
+  const noShowsAtAll = !hasFilters && (showsRaw as Show[] ?? []).length === 0;
+
   // 페이지네이션 URL 생성기
   const buildPageUrl = (p: number) => {
     const params = new URLSearchParams();
@@ -118,7 +112,9 @@ export default async function ArchivePage({
     if (year) params.set("year", year);
     if (p > 1) params.set("page", String(p));
     const qs = params.toString();
-    return `/archive${qs ? `?${qs}` : ""}`;
+    // 2026-08-03: 구 경로 `/archive`는 next.config.ts에서 /muol/archive로 308 리다이렉트된다.
+    // 그대로 두면 필터·페이지를 누를 때마다 서버를 한 번 더 왕복한다.
+    return `/muol/archive${qs ? `?${qs}` : ""}`;
   };
 
   const breadcrumbData = buildBreadcrumbList([
@@ -147,7 +143,8 @@ export default async function ArchivePage({
             </p>
             <h1
               className="text-4xl md:text-5xl font-bold mb-3"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+              /* 2026-08-03 색 위계 B안 — 대제목은 먹빛(#2B211C, 13.55:1). 청록은 '누르는 것' 전담. */
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C" }}
             >
               지난 공연
             </h1>
@@ -180,7 +177,9 @@ export default async function ArchivePage({
         {/* 검색창 */}
         <ShowsSearchBar />
 
-        {/* 연도 필터 */}
+        {/* 연도 필터 —
+            아래 세 필터(연도·지역·장르·구분)와 페이지네이션 링크는 현재 경로 `/muol/archive`를
+            직접 가리킨다. 구 경로 `/archive`는 308 리다이렉트를 왕복한다 (2026-08-03). */}
         {availableYears.length > 0 && (
           <div className="mb-6 flex flex-wrap gap-2 items-center">
             <span
@@ -197,7 +196,7 @@ export default async function ArchivePage({
               if (category) params.set("category", category);
               if (q) params.set("q", q);
               if (y) params.set("year", String(y));
-              const href = `/archive${params.toString() ? `?${params.toString()}` : ""}`;
+              const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
               return (
                 <Link
                   key={y ?? "all"}
@@ -227,7 +226,7 @@ export default async function ArchivePage({
             if (category) params.set("category", category);
             if (q) params.set("q", q);
             if (year) params.set("year", year);
-            const href = `/archive${params.toString() ? `?${params.toString()}` : ""}`;
+            const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
                 key={r}
@@ -262,7 +261,7 @@ export default async function ArchivePage({
             if (category) params.set("category", category);
             if (q) params.set("q", q);
             if (year) params.set("year", year);
-            const href = `/archive${params.toString() ? `?${params.toString()}` : ""}`;
+            const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
                 key={g ?? "all"}
@@ -300,7 +299,7 @@ export default async function ArchivePage({
             if (c) params.set("category", c);
             if (q) params.set("q", q);
             if (year) params.set("year", year);
-            const href = `/archive${params.toString() ? `?${params.toString()}` : ""}`;
+            const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
             return (
               <Link
                 key={c ?? "all-cat"}
@@ -321,6 +320,42 @@ export default async function ArchivePage({
 
         {/* 기록 그리드 — 4열로 좀 더 빽빽하게 (갤러리 느낌) */}
         {list.length === 0 ? (
+          noShowsAtAll ? (
+            /* (a) 사이트 전체에 승인된 공연이 아직 0건 — 기록이 시작되기 전의 자리 */
+            <div className="text-center py-24 px-4">
+              <p
+                className="text-xl md:text-2xl mb-4"
+                style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* B안 — 읽는 소제목 */, wordBreak: "keep-all" }}
+              >
+                아직 오르지 않은 막
+              </p>
+              <p
+                className="text-sm leading-relaxed mb-2 max-w-md mx-auto"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+              >
+                기록은 막이 내린 다음에 남습니다.
+                아직 첫 막이 오르지 않아, 이곳도 비어 있습니다.
+              </p>
+              <p
+                className="text-xs leading-relaxed mb-6 max-w-md mx-auto"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+              >
+                비어 있는 자리를 감추지 않고 그대로 두었습니다.
+                무대가 지나가는 날, 이곳이 그 무대의 자리가 됩니다.
+              </p>
+              <Link
+                href="/muol/performer"
+                className="inline-block px-5 py-3 text-xs tracking-wide transition-colors"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  color: "#0B5563",
+                  border: "1px solid #0B5563",
+                }}
+              >
+                무대 올리러 가기 →
+              </Link>
+            </div>
+          ) : (
           <div className="text-center py-24">
             <p className="text-sm mb-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
               조건에 맞는 기록이 없습니다.
@@ -342,6 +377,7 @@ export default async function ArchivePage({
               {hasFilters ? "필터 모두 지우기" : "진행 중 공연으로 →"}
             </Link>
           </div>
+          )
         ) : (
           <>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">

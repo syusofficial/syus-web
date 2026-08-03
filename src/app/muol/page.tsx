@@ -6,6 +6,7 @@ import ShowCard, { type RatingSummary } from "@/components/ShowCard";
 import HeroPosterStream, { type StreamItem } from "@/components/HeroPosterStream";
 import { createClient } from "@/lib/supabase/server";
 import { InstitutionSidebar, PartnerAdSidebar } from "@/components/PartnerSidebars";
+import MobilePartnerStrip from "@/components/MobilePartnerStrip";
 import { isEnded, todayKey, showEndKey } from "@/lib/showFilters";
 import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
@@ -134,7 +135,9 @@ export default async function HomePage() {
               className="text-[0.7rem] tracking-[0.35em] uppercase"
               style={{
                 fontFamily: "var(--font-inter)",
-                color: "#0B5563",
+                // 2026-08-03 색 위계 B안: 청록은 '누르는 것' 전담으로 회수.
+                // 이 라벨은 누를 수 없는 설명이므로 먹빛 보조 텍스트(#5F5145, 6.59:1)로 내린다.
+                color: "#5F5145",
                 fontWeight: 600,
               }}
             >
@@ -145,22 +148,34 @@ export default async function HomePage() {
             <HeroPosterStream items={streamItems} />
           ) : (
             <div className="px-6 md:px-12 lg:px-20">
+              {/* 승인된 공연 0건일 때 TOP 5 자리에 들어가는 안내.
+                  좁은 슬롯이라 제목 1줄 + 본문 1줄로만 둔다(CTA는 바로 아래 히어로 버튼이 받는다). */}
               <div
-                className="py-10 text-center"
+                className="py-10 px-6 text-center"
                 style={{
                   border: "1px solid #D4CFC1",
                   backgroundColor: "rgba(255,255,255,0.5)",
                 }}
               >
                 <p
-                  className="text-sm"
+                  className="text-base mb-2"
                   style={{
                     fontFamily: "var(--font-noto-serif-kr)",
-                    color: "#0B5563",
+                    color: "#3A2E27" /* 색 위계 B안 — 읽는 소제목은 먹빛 (11.32:1) */,
                     wordBreak: "keep-all",
                   }}
                 >
-                  곧, 어느 대학의 첫 막이 오릅니다.
+                  아직 오르지 않은 막
+                </p>
+                <p
+                  className="text-xs leading-relaxed"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    color: "#5A4A3E",
+                    wordBreak: "keep-all",
+                  }}
+                >
+                  첫 무대가 오르면, 이 자리는 그 무대의 것이 됩니다.
                 </p>
               </div>
             </div>
@@ -187,7 +202,9 @@ export default async function HomePage() {
               style={{
                 fontFamily: "var(--font-noto-serif-kr)",
                 fontSize: "clamp(2.6rem, 6vw, 5.2rem)",
-                color: "#0B5563" /* Transformative Teal */,
+                /* 2026-08-03 색 위계 B안 — 대제목은 먹빛(Ink #2B211C, 13.55:1).
+                   청록은 '누를 수 있는 것'에만 남긴다. Silhouette 계열이라 잠금 4색은 유지. */
+                color: "#2B211C",
                 letterSpacing: "-0.04em",
                 lineHeight: "1.08",
                 wordBreak: "keep-all",
@@ -249,7 +266,8 @@ export default async function HomePage() {
             <div>
               <p
                 className="text-xs tracking-[0.4em] uppercase mb-6"
-                style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
+                /* 어두운 청록 위 자두 라벨 — 구 #C99FB1(3.64:1, AA 미달)에서 한 단계 밝게(5.19:1). */
+                style={{ fontFamily: "var(--font-inter)", color: "#E2C3CF", fontWeight: 600 }}
               >
                 About 무대올림
               </p>
@@ -297,8 +315,9 @@ export default async function HomePage() {
                     className="text-2xl"
                     style={{
                       fontFamily: "var(--font-cormorant)",
-                      color: "var(--color-damson-light)",
-                      opacity: 0.85,
+                      // 어두운 청록 위 01/02/03 번호. 구 #C99FB1 + opacity 0.85 = 3.02:1로 가장 낮았다.
+                      // 밝은 자두(#E2C3CF)로 올리고 opacity도 뺀다(투명도가 대비를 그대로 갉아먹는다).
+                      color: "#E2C3CF",
                       lineHeight: 1,
                     }}
                   >
@@ -370,12 +389,21 @@ export default async function HomePage() {
               )}
 
               {featured.length === 0 && upcoming.length === 0 && recent.length === 0 && (
-                <div className="text-center py-24">
-                  <p className="text-base mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
-                    곧 첫 무대가 오릅니다.
+                <div className="text-center py-24 px-4">
+                  {/* 메인에는 필터가 없다 — 이 자리는 언제나 "사이트 전체 0건" 상태다.
+                      등록·문의 버튼은 아래 CTA 섹션이 이미 받고 있어 여기서는 설명만 둔다. */}
+                  <p
+                    className="text-lg md:text-xl mb-3"
+                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" /* B안 — 읽는 소제목 */, wordBreak: "keep-all" }}
+                  >
+                    첫 무대를 기다립니다
                   </p>
-                  <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-                    공연자분들의 무대를 가장 먼저 만나보실 수 있도록 준비 중입니다.
+                  <p
+                    className="text-sm leading-relaxed max-w-md mx-auto"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+                  >
+                    어느 학과의 어떤 막이 이곳의 처음이 될지, 아직 알지 못합니다.
+                    올려주시면 운영자가 한 번 더 다듬어 공연 페이지로 띄웁니다.
                   </p>
                 </div>
               )}
@@ -393,6 +421,11 @@ export default async function HomePage() {
                   전체 공연 보기 →
                 </Link>
               </div>
+
+              {/* 제휴 · 광고 (모바일·태블릿 전용) — PC(1280px↑)는 우측 PartnerAdSidebar가 담당.
+                  className=""로 덮는 이유: 부모의 space-y-20이 이미 위 간격을 주므로
+                  기본값 mt-16을 두면 여백이 이중으로 겹친다. */}
+              <MobilePartnerStrip className="" />
             </div>
 
             <PartnerAdSidebar />
@@ -402,17 +435,22 @@ export default async function HomePage() {
 
       {/* ── CTA Section ──
           색 분리: Footer(Silhouette #4A3B33)와 묶이는 '갈색 밭' 방지.
-          CTA는 Transformative Teal 베이스(#0B5563), 위에서 살짝 밝게 시작해
-          아래쪽이 Teal 본 톤으로 안착 → Footer(Silhouette)와 자연스러운 색 경계가 생긴다. */}
+          CTA는 Transformative Teal 베이스(#0B5563), 아래로 갈수록 짙어져(#06333D)
+          Footer(Silhouette)와 자연스러운 색 경계가 생긴다.
+
+          2026-08-03 그라데이션 방향 반전: 예전에는 위가 밝은 #2C7384였는데,
+          그 위에 얹힌 본문 글자가 2.90:1까지 떨어져 거의 안 읽혔다(밝은 배경 + 반투명 흰 글자).
+          어두운 쪽을 위로 올려 글자가 앉는 자리를 항상 짙게 유지한다. */}
       <section
         className="px-6 md:px-12 lg:px-20 xl:px-24 py-24"
-        style={{ background: "linear-gradient(180deg, #2C7384 0%, #0B5563 100%)" }}
+        style={{ background: "linear-gradient(180deg, #0B5563 0%, #06333D 100%)" }}
       >
         {/* 본문(타이틀+카피)은 가독성 위해 좁게 유지(max-w-md), 컨테이너만 풀폭 */}
         <div className="max-w-[1800px] mx-auto text-center">
           <p
             className="text-xs tracking-[0.3em] uppercase mb-6"
-            style={{ fontFamily: "var(--font-inter)", color: "var(--color-damson-light)", fontWeight: 600 }}
+            /* 어두운 청록 위 자두 라벨 — 구 #C99FB1(3.64:1) → #E2C3CF(5.19:1) */
+            style={{ fontFamily: "var(--font-inter)", color: "#E2C3CF", fontWeight: 600 }}
           >
             Join 무대올림
           </p>
@@ -424,7 +462,8 @@ export default async function HomePage() {
           </h2>
           <p
             className="text-sm mb-10 max-w-md mx-auto leading-relaxed"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "rgba(248,249,252,0.6)", wordBreak: "keep-all" }}
+            /* 어두운 면 위 본문 — 0.6 알파(2.90:1)에서 0.86으로. 색도 Cloud Dancer 기준으로 통일. */
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "rgba(240,238,233,0.86)", wordBreak: "keep-all" }}
           >
             대학 무대예술 공연자라면 회원가입 후 무대를 올릴 수 있습니다.
             <br />
@@ -481,7 +520,9 @@ function SectionGroup({
             className="text-xs tracking-[0.3em] uppercase mb-2"
             style={{
               fontFamily: "var(--font-inter)",
-              color: accent ? "#0B5563" : "#5A4A3E",
+              // accent 배지(Editor's Pick)는 '누르는 것'이 아니라 편집 강조라 청록에서 뺀다.
+              // B안의 강조 역할 = Divine Damson(#5C2A42, 9.71:1). 일반 배지는 기존 먹빛 유지.
+              color: accent ? "#5C2A42" : "#5A4A3E",
               fontWeight: accent ? 600 : 400,
             }}
           >
@@ -489,7 +530,8 @@ function SectionGroup({
           </p>
           <h2
             className="text-2xl md:text-3xl font-bold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+            /* B안 — 섹션 제목은 먹빛 소제목(#3A2E27, 11.32:1) */
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" }}
           >
             {title}
           </h2>
