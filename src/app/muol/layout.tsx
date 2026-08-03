@@ -7,7 +7,6 @@ import type { Metadata } from "next";
  * 경로 기준 조건부로 계속 렌더하므로 여기서는 metadata + children 패스스루만 담당한다.
  */
 
-const SITE_URL = "https://syus.co.kr";
 const SITE_NAME = "무대올림";
 const SITE_TAGLINE = "운영: 사유유사 SYUS";
 const SITE_DESCRIPTION =
@@ -43,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${SITE_NAME} · ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
-    url: `${SITE_URL}/muol`,
+    url: "./",
     siteName: SITE_NAME,
     locale: "ko_KR",
     type: "website",
@@ -54,7 +53,19 @@ export const metadata: Metadata = {
     title: `${SITE_NAME} · ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
   },
-  alternates: { canonical: `${SITE_URL}/muol` },
+  /**
+   * 2026-08-03 SEO 수정 — 레이아웃 canonical이 하위 전체를 오염시키던 문제.
+   *
+   * 예전엔 "https://syus.co.kr/muol" 로 못박혀 있어, 자기 canonical이 없는 하위 페이지
+   * (/muol/contact, /muol/archive, /muol/shows/calendar, 그리고 공연 상세 전부)가
+   * "나는 /muol의 중복"이라고 선언했다.
+   *
+   * 그냥 지우면 루트 app/layout.tsx의 `canonical: "https://syus.co.kr"` 가 승계되어 더 나쁘므로
+   * (루트 layout은 이번 작업 범위 밖 파일), 현재 경로로 풀리는 상대 경로 "./" 를 쓴다.
+   * 자기 canonical을 선언한 페이지(about·faq·shows·universities·공연 상세)는 그 값이 우선한다.
+   * og:url도 같은 이유로 "./".
+   */
+  alternates: { canonical: "./" },
 };
 
 export default function MuolLayout({

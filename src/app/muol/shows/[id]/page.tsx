@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -32,6 +33,96 @@ type ReservationSummary = {
   /** 회차별 잔여석 — 예약 시스템 B1(2026-07-24). 마이그레이션 전이면 undefined. */
   sessions?: SessionReservationSummary[];
 };
+
+const SITE_URL = "https://syus.co.kr";
+
+/** 검색결과·SNS 카드용 한 줄 설명 — 줄바꿈·연속공백을 없애고 길이를 자른다. */
+function flatten(text: string | undefined, max: number): string | null {
+  if (!text) return null;
+  const flat = text.replace(/\s+/g, " ").trim();
+  if (!flat) return null;
+  return flat.length > max ? `${flat.slice(0, max - 1)}…` : flat;
+}
+
+/**
+ * 공연별 메타데이터 — 2026-08-03 SEO 수정.
+ *
+ * 이 함수가 없으면 muol/layout.tsx의 alternates.canonical(= /muol)을 그대로 상속해서
+ * 모든 공연 상세 페이지가 "나는 /muol의 중복이니 색인하지 말라"고 선언하게 된다.
+ * sitemap에는 넣어놓고 정작 페이지가 색인을 거부하던 상태를 여기서 끊는다.
+ * 제목·설명·og:url도 전 공연이 동일했던 문제를 함께 해결한다.
+ *
+ * 조회는 메타에 필요한 컬럼만 가볍게 가져온다(본문은 별도로 select("*") 수행).
+ * og:image는 같은 폴더의 opengraph-image.tsx(동적)가 자동으로 붙으므로 여기서 images를 지정하지 않는다.
+ * (openGraph에 images 키를 직접 넣는 순간 파일 기반 OG 이미지가 덮여버린다.)
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const { data: show } = await supabase
+    .from("shows")
+    .select("title, subtitle, description, performer_name, school_department, venue, schedule_start, schedule_end, status")
+    .eq("id", id)
+    .single();
+
+  const canonical = `${SITE_URL}/muol/shows/${id}`;
+
+  // 없는 공연 / 승인 전·반려 공연 — 소유자·관리자만 보는 화면이라 검색에 남기지 않는다.
+  if (!show || show.status !== "approved") {
+    return {
+      title: "공연",
+      robots: { index: false, follow: false },
+      alternates: { canonical },
+    };
+  }
+
+  // 공연 기간 — 시작만 있으면 시작일, 끝이 다르면 기간으로 표기
+  const schedule = show.schedule_start
+    ? show.schedule_end && show.schedule_end !== show.schedule_start
+      ? `${show.schedule_start} — ${show.schedule_end}`
+      : show.schedule_start
+    : null;
+
+  // 설명 = 작품 소개 앞부분 + 장소·일정. 소개가 비어 있으면 부제 → 소속·공연자 순으로 폴백.
+  const facts = [show.venue, schedule].filter(Boolean).join(" · ");
+  const intro =
+    flatten(show.description, 110) ??
+    flatten(show.subtitle, 110) ??
+    flatten([show.school_department, show.performer_name].filter(Boolean).join(" "), 110);
+  const description =
+    [intro, facts].filter(Boolean).join(" · ") ||
+    `${show.title} — 무대올림에 올라온 대학 무대예술 공연입니다.`;
+
+  // 제목은 muol/layout.tsx의 title.template("%s · 무대올림")을 타므로 공연명만 넘긴다.
+  // og:title은 템플릿이 적용되지 않아 전체 문자열을 직접 적는다(about 페이지와 같은 방식).
+  const ogTitle = `${show.title} · 무대올림`;
+
+  // ⚠ Next.js는 openGraph·twitter를 세그먼트 단위로 '통째로 교체'한다(부분 병합 아님).
+  //    그래서 layout에 있던 siteName·locale을 여기서 다시 적어주지 않으면 사라진다.
+  return {
+    title: show.title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title: ogTitle,
+      description,
+      url: canonical,
+      siteName: "무대올림",
+      locale: "ko_KR",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description,
+    },
+  };
+}
 
 export default async function ShowDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -277,7 +368,14 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
           <div className="relative w-full max-w-sm mx-auto md:max-w-none">
             <div className="aspect-[3/4] relative" style={{ backgroundColor: "#E6E1D6" }}>
               {show.poster_url ? (
-                <Image src={show.poster_url} alt={show.title} fill className="object-cover" />
+                <Image
+                  src={show.poster_url}
+                  alt={show.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                  className="object-cover"
+                />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <span className="text-sm" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#5A4A3E" }}>
@@ -419,7 +517,15 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                 작품 소개
               </p>
-              <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
+              <p
+                className="text-sm leading-relaxed"
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  color: "#4A3B33",
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "keep-all",
+                }}
+              >
                 {show.description}
               </p>
             </div>
@@ -431,7 +537,15 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   오시는 길
                 </p>
                 {show.directions && (
-                  <p className="text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
+                  <p
+                    className="text-sm leading-relaxed mb-4"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      color: "#4A3B33",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "keep-all",
+                    }}
+                  >
                     {show.directions}
                   </p>
                 )}
@@ -538,9 +652,9 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               </div>
             )}
 
-            {/* Share */}
+            {/* Share — 공유 링크는 308 리다이렉트되는 구 경로(/shows/…)가 아니라 현재 경로를 그대로 준다 (2026-08-03) */}
             {show.status === "approved" && (
-              <ShareButton url={`https://syus.co.kr/shows/${show.id}`} />
+              <ShareButton url={`${SITE_URL}/muol/shows/${show.id}`} />
             )}
 
             {/* CTA */}

@@ -6,12 +6,14 @@ export const metadata: Metadata = {
   title: "소개",
   description:
     "한국 대학 무대예술의 진흥을 향해 — 무대올림은 대학 무대예술 공연을 올리고, 지역 관객이 좌석을 예약하는 플랫폼입니다. 공연팀 게재료 없음. 연극·뮤지컬·무용·국악·음악·전통연희. 운영: 사유유사 SYUS.",
-  alternates: { canonical: "https://syus.co.kr/about" },
+  // 구 경로 /about 은 next.config.ts에서 /muol/about 으로 308 영구 리다이렉트된다.
+  // 리다이렉트되는 URL을 canonical로 쓰면 구글이 그 canonical을 무효 처리하므로 현재 경로를 가리킨다. (2026-08-03)
+  alternates: { canonical: "https://syus.co.kr/muol/about" },
   openGraph: {
     title: "소개 · 무대올림",
     description:
       "한국 대학 무대예술의 진흥을 향해 — 대학 무대예술 공연을 올리고, 지역 관객이 좌석을 예약하는 플랫폼. 공연팀 게재료 없음. 운영: 사유유사 SYUS.",
-    url: "https://syus.co.kr/about",
+    url: "https://syus.co.kr/muol/about",
     type: "website",
     images: [
       {

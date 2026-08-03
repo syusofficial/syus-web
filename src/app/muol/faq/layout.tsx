@@ -19,12 +19,14 @@ export const metadata: Metadata = {
     "회원 가입",
     "자주 묻는 질문",
   ],
-  alternates: { canonical: "https://syus.co.kr/faq" },
+  // 구 경로 /faq 는 next.config.ts에서 /muol/faq 로 308 영구 리다이렉트된다.
+  // 리다이렉트되는 URL을 canonical로 쓰면 구글이 그 canonical을 무효 처리하므로 현재 경로를 가리킨다. (2026-08-03)
+  alternates: { canonical: "https://syus.co.kr/muol/faq" },
   openGraph: {
     title: "자주 묻는 질문 · 무대올림",
     description:
       "회원·관람·공연자 등록·후기까지. 무대올림 이용 중 자주 묻는 질문을 카테고리별로 정리했습니다.",
-    url: "https://syus.co.kr/faq",
+    url: "https://syus.co.kr/muol/faq",
     type: "website",
     images: [
       {
