@@ -552,3 +552,24 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
   .syus-hdr-nav { gap: 13px; }
   .syus-hdr-nav a, .syus-hdr-nav .syus-hdr-btn { font-size: 0.74rem; letter-spacing: 0.02em; }
 }
+
+/* ──────────────────────────────────────────────────
+ * 무대올림 공연 등록 유도 카드 (MuolRegisterPrompt · 2026-08-06)
+ * 화면 구석에서 조용히 올라왔다 내려간다. 딤(어두운 막)은 쓰지 않는다 —
+ * 카드 하나만 fixed이므로 카드 밖 화면은 항상 그대로 클릭된다.
+ * ────────────────────────────────────────────────── */
+@keyframes muolPromptIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes muolPromptOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(8px); }
+}
+.muol-prompt-in  { animation: muolPromptIn 0.28s ease-out both; }
+.muol-prompt-out { animation: muolPromptOut 0.2s ease-in both; pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .muol-prompt-in, .muol-prompt-out { animation: none; }
+  .muol-prompt-out { opacity: 0; }
+}

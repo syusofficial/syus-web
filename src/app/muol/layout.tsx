@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import MuolRegisterPrompt from "@/components/MuolRegisterPrompt";
 
 /**
  * 무대올림 세그먼트 레이아웃.
@@ -71,5 +72,12 @@ export const metadata: Metadata = {
 export default function MuolLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      {/* 공연 등록 유도 카드 — 무대올림 안에서만, 등록 화면(/muol/performer*)은 제외.
+          노출·억제 판단은 컴포넌트 내부에서 한다(2026-08-06 사장님 지시). */}
+      <MuolRegisterPrompt />
+    </>
+  );
 }
