@@ -1,4 +1,16 @@
--- ⚠️ 아직 실행하지 않음 — 사장님 확인 후 실행
+-- ✅ 실행 완료 — 2026-08-06 사장님이 Supabase SQL Editor에서 실행.
+--    결과: 대상 5행 전부 "YYYY-MM-DD"로 변환, 형식 어긋난 행 0건,
+--          종료일 < 시작일 이상행 0건, 백업 테이블 5행 보존.
+--    실행 시 [1-b] 한 줄을 추가했다 — Supabase가 "RLS 없이 만든 테이블은
+--    anon/authenticated 키로 읽힐 수 있다"고 경고했기 때문. 백업 테이블에
+--    RLS를 켜고 정책은 만들지 않아 일반 사용자 접근을 차단했다(anon 조회 0행 확인).
+--    SQL Editor는 관리자 권한이라 RLS를 통과하므로 아래 [되돌리기]는 그대로 동작한다.
+--
+--    남은 후속 작업 (2주 이상 지켜본 뒤):
+--      · 백업 테이블 정리(drop) — 아래 [되돌리기] 절 참조
+--      · 형식 잠금 CHECK 제약 — 맨 아래 [선택] 절 참조. 지금은 4단계 결과가
+--        0건이고 등록 폼도 달력 입력으로 바뀌었으므로 걸 수 있는 조건은 충족됐다.
+--
 -- ┌──────────────────────────────────────────────────────────────────┐
 -- │ 공연 날짜 형식 통일 — shows.schedule_start / schedule_end (2026-08-03) │
 -- └──────────────────────────────────────────────────────────────────┘
@@ -67,6 +79,13 @@
 create table if not exists public.shows_schedule_backup_20260803 as
 select id, schedule_start, schedule_end, now() as backed_up_at
 from public.shows;
+
+-- [2-b] 백업 테이블 잠금 (2026-08-06 실행 시 추가)
+-- Supabase가 "RLS 없이 만든 public 테이블은 anon/authenticated 키로 접근될 수 있다"고
+-- 경고한다. 담기는 값이 공연 날짜뿐이라 새어도 피해는 없지만, 잠가도 잃을 게 없다.
+-- 정책을 하나도 만들지 않으므로 일반 사용자는 0행만 본다. SQL Editor(관리자 권한)는
+-- RLS를 통과하므로 복구 쿼리는 정상 동작한다.
+alter table public.shows_schedule_backup_20260803 enable row level security;
 
 -- 백업이 잘 됐는지 확인 (shows 건수와 같아야 합니다)
 -- select count(*) from public.shows_schedule_backup_20260803;
