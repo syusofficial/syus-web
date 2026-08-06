@@ -7,6 +7,7 @@
  * - 답장 안내: 운영자에게 곧장 전달된다는 약속(replyTo가 사장님 Gmail로 설정됨)
  */
 import { Hr, Section, Text, Link } from "../components";
+import { COMPANY } from "@/lib/company";
 
 const HR = { borderColor: "#E8E2D5", margin: "32px 0 20px" } as const;
 
@@ -34,18 +35,20 @@ export function EmailFooter() {
   return (
     <Section>
       <Hr style={HR} />
-      <Text style={META_TEXT}>사유유사 SYUS · 대표 이혁호</Text>
-      <Text style={META_TEXT}>사업자등록번호 168-05-03666</Text>
+      {/* 2026-08-03: 주소 하드코딩 폐기 → 단일 정본(@/lib/company).
+          여기 주소만 "220, 본동 … E-35호(엠타워)" 형식이라 사이트 푸터와 서로 달랐다. */}
+      <Text style={META_TEXT}>{COMPANY.name} SYUS · 대표 {COMPANY.representative}</Text>
+      <Text style={META_TEXT}>사업자등록번호 {COMPANY.bizNumber}</Text>
       <Text style={META_TEXT}>
-        경기도 남양주시 진접읍 해밀예당1로 220, 본동 7층 07호 E-35호(엠타워)
+        {COMPANY.address}
       </Text>
       <Text style={META_TEXT}>
-        문의: <Link href="mailto:syusflux@gmail.com" style={LINK_STYLE}>syusflux@gmail.com</Link>
+        문의: <Link href={`mailto:${COMPANY.email}`} style={LINK_STYLE}>{COMPANY.email}</Link>
       </Text>
       <Text style={META_TEXT}>
-        <Link href="https://syus.co.kr" style={LINK_STYLE}>syus.co.kr</Link>
+        <Link href={COMPANY.siteUrl} style={LINK_STYLE}>syus.co.kr</Link>
         {" · "}
-        <Link href="https://instagram.com/syus_official" style={LINK_STYLE}>instagram.com/syus_official</Link>
+        <Link href={COMPANY.instagramUrl} style={LINK_STYLE}>instagram.com/syus_official</Link>
       </Text>
       <Text style={REPLY_NOTE}>
         이 메일에 그대로 답장하시면 운영자에게 곧장 전달됩니다.

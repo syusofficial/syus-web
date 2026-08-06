@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { LAUNCH_PARTNERS } from "@/lib/partners";
+import { COMPANY_ROWS } from "@/lib/company";
 import type { User } from "@supabase/supabase-js";
 
 export default function Footer() {
@@ -228,12 +229,10 @@ export default function Footer() {
           className="pt-8 pb-8 mb-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-xs"
           style={{ borderTop: "1px solid #3A3631", fontFamily: "var(--font-noto-sans-kr)", color: FOOTER_LINK_BASE }}
         >
-          {[
-            { label: "상호", value: "사유유사" },
-            { label: "대표", value: "이혁호" },
-            { label: "사업자등록번호", value: "168-05-03666" },
-            { label: "이메일", value: "syusflux@gmail.com" },
-          ].map((item) => (
+          {/* 2026-08-03: 하드코딩 폐기 → 단일 정본(@/lib/company) 참조.
+              겸사 주소 행이 추가된다 — 시우스 푸터에는 주소가 있는데 여기만 없어서,
+              같은 사이트인데 페이지마다 사업자 정보가 달라 보이던 원인이었다. */}
+          {COMPANY_ROWS.map((item) => (
             <div key={item.label} className="flex gap-3">
               <span style={{ minWidth: "100px", color: FOOTER_META }}>{item.label}</span>
               <span>{item.value}</span>

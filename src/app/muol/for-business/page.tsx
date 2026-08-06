@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildBreadcrumbList } from "@/lib/structuredData";
+import { COMPANY, COMPANY_ONELINE } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "광고주를 위한 안내 · 무대올림",
@@ -282,9 +283,13 @@ export default function ForBusinessPage() {
             className="text-xs mt-10 leading-relaxed"
             style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", opacity: 0.78 }}
           >
-            운영: 사유유사 · 대표 이혁호 · 사업자등록번호 168-05-03666
+            {/* 2026-08-03: 단일 정본(@/lib/company) 참조 + 사업장 주소 추가.
+                광고주가 보는 페이지라 주소가 없으면 실체 확인이 안 된다. */}
+            운영: {COMPANY_ONELINE}
             <br />
-            syusflux@gmail.com
+            {COMPANY.address}
+            <br />
+            {COMPANY.email}
           </p>
         </div>
       </section>

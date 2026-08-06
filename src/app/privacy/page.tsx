@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { COMPANY } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침",
@@ -428,10 +429,14 @@ export default function PrivacyPage() {
             </p>
             <div className="mt-3 p-5" style={{ backgroundColor: "#E6E1D6" }}>
               <div className="grid grid-cols-[110px_1fr] gap-2 text-xs">
-                <span style={{ color: "#5A4A3E" }}>개인정보 보호 담당자</span><span>운영자 이혁호</span>
-                <span style={{ color: "#5A4A3E" }}>사업자등록번호</span><span>168-05-03666</span>
-                <span style={{ color: "#5A4A3E" }}>연락처</span><span>syusflux@gmail.com</span>
-                <span style={{ color: "#5A4A3E" }}>담당 부서</span><span>사유유사 운영팀</span>
+                {/* 2026-08-03: 사업자 정보를 단일 정본(@/lib/company)에서 가져온다.
+                    주소 행 신설 — 개인정보 열람·정정·삭제를 서면으로 청구하려면 주소가 필요한데
+                    방침 어디에도 적혀 있지 않았다. */}
+                <span style={{ color: "#5A4A3E" }}>개인정보 보호 담당자</span><span>운영자 {COMPANY.representative}</span>
+                <span style={{ color: "#5A4A3E" }}>사업자등록번호</span><span>{COMPANY.bizNumber}</span>
+                <span style={{ color: "#5A4A3E" }}>주소</span><span>{COMPANY.address}</span>
+                <span style={{ color: "#5A4A3E" }}>연락처</span><span>{COMPANY.email}</span>
+                <span style={{ color: "#5A4A3E" }}>담당 부서</span><span>{COMPANY.name} 운영팀</span>
               </div>
             </div>
             <p className="mt-3">

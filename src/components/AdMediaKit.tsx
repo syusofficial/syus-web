@@ -3,6 +3,7 @@
 import { useMemo, useEffect, useState } from "react";
 import type { Show, Profile } from "@/types";
 import { extractSchoolName, isEnded, todayKey } from "@/lib/showFilters";
+import { COMPANY, COMPANY_ONELINE } from "@/lib/company";
 
 type AdMediaKitProps = {
   shows: Show[];
@@ -385,9 +386,15 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
               https://syus.co.kr
             </a>
           </p>
+          {/* 2026-08-03: 단일 정본(@/lib/company) 참조 + 사업장 주소 행 추가.
+              광고주에게 건네는 문서라 사업자 정보가 페이지마다 다르면 신뢰가 깎인다. */}
           <p>
             <span style={{ opacity: 0.7, marginRight: 8 }}>운영사</span>
-            사유유사 · 대표 이혁호 · 사업자등록번호 168-05-03666
+            {COMPANY_ONELINE}
+          </p>
+          <p>
+            <span style={{ opacity: 0.7, marginRight: 8 }}>사업장</span>
+            {COMPANY.address}
           </p>
           <p>
             <span style={{ opacity: 0.7, marginRight: 8 }}>문서 발행일</span>

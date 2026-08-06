@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { COMPANY_ROWS } from "@/lib/company";
 
 /**
  * 시우스 전용 푸터 — 흰 캔버스 톤(무대올림의 다크 푸터와 분리).
@@ -14,13 +15,10 @@ const STAGES = [
   { href: "/syus/corridor", label: "책 서재" },
 ];
 
-const BIZ = [
-  { label: "상호", value: "사유유사" },
-  { label: "대표", value: "이혁호" },
-  { label: "사업자등록번호", value: "168-05-03666" },
-  { label: "주소", value: "경기 남양주시 진접읍 엠타워 E-35호" },
-  { label: "이메일", value: "syusflux@gmail.com" },
-];
+// 2026-08-03: 하드코딩 폐기 → 사업자 정보 단일 정본(@/lib/company) 참조.
+// 여기 주소가 "경기 남양주시 진접읍 엠타워 E-35호"로 도로명·층·호가 빠진 축약형이라
+// 메일 푸터에 적힌 주소와 서로 달랐다.
+const BIZ = COMPANY_ROWS;
 
 export default function SyusFooter() {
   return (
