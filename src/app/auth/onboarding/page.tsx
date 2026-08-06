@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
+import { triggerWelcomeEmail } from "@/app/auth/signup/actions";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -96,6 +97,19 @@ export default function OnboardingPage() {
       if (profileError) {
         console.warn("[onboarding] profiles name 업데이트 실패", profileError);
       }
+
+      // 환영 메일 — 2026-08-06 신설. 소셜 가입자에게는 이 자리가 유일한 발송 지점이다.
+      //
+      // 왜 여기인가: 카카오·구글 가입자는 /auth/callback → 이 온보딩 화면을 타는데,
+      // 두 경로 어디에도 환영 메일 호출이 없었다. triggerWelcomeEmail 호출은
+      // signup/page.tsx(이메일 가입 폼) 한 곳뿐이었고, 실측상 회원 14명 중 9명(64%)이
+      // 소셜 가입자다. 즉 다수가 처음부터 발송 경로 밖에 있었다.
+      // 온보딩 완료 = 필수 동의 3종을 마친 실제 가입 완료 시점이므로 여기가 맞다.
+      //
+      // await 하는 이유는 signup/page.tsx와 같다 — 기다리지 않으면 아래 router.push가
+      // 요청을 잘라먹는다. 중복 발송은 welcome-trigger.ts의 멱등 처리
+      // (welcome_email_sent_at + in-memory Set)가 막으므로, 웹훅 경로와 겹쳐도 안전하다.
+      await triggerWelcomeEmail(user.id);
     }
 
     router.push("/");

@@ -346,11 +346,14 @@ export default function MyPage() {
                 회원으로 누릴 수 있는 것
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                {/* 2026-08-06 정정 — 되돌리지 말 것. 찜과 좋아요는 likes 테이블 하나짜리
+                    같은 기능이라 두 줄로 셀 수 없고, "새 공연 알림"은 구현이 존재하지 않는다
+                    (marketing_opt_in을 읽는 코드 0줄). 실재하는 알림은 찜한 공연의 D-3/D-1뿐. */}
                 {[
                   { label: "공연 찜하기", desc: "관심 공연을 모아 두고 다시 보기" },
-                  { label: "공연 좋아요", desc: "응원을 남기고 알림 받기" },
-                  { label: "한 줄 후기", desc: "관람 인상을 짧게 (10~200자)" },
-                  { label: "새 공연 알림", desc: "D-3 · D-1 메일로 챙겨드림" },
+                  { label: "공연 알림", desc: "찜한 공연의 사흘 전 · 하루 전 메일" },
+                  { label: "한 줄 후기", desc: "별점과 함께 짧게 (10~200자)" },
+                  { label: "예약 내역", desc: "신청번호 없이 확인 · 취소" },
                 ].map((b) => (
                   <div key={b.label} className="flex items-baseline gap-2">
                     <span style={{ color: "#0B5563", fontWeight: 600 }}>✓</span>

@@ -116,12 +116,17 @@ function SignupInner() {
     // 2026-07-28: 이메일 컨펌 절차 제거 — 가입과 동시에 세션이 발급되는 것이 기본 동작.
     // data.session이 있으면 바로 로그인 처리하고, 환영 메일도 이 순간 직접 트리거한다
     // (Database Webhook 도착 여부와 무관하게 확실히 나가도록 — welcome-trigger.ts 참고).
-    // 메일 발송은 화면 전환을 막지 않도록 기다리지 않는다(best-effort, 실패해도 가입은 유효).
+    //
+    // 2026-08-06 수정 — 반드시 await 할 것. 되돌리지 말 것.
+    //   이전에는 화면 전환을 막지 않으려고 기다리지 않았는데(fire-and-forget), 그 결과
+    //   server action(POST)이 채 끝나기 전에 router.push + router.refresh가 렌더 트리를
+    //   갈아치우면서 진행 중이던 요청이 잘려나갔다. 실측: 회원 14명 전원
+    //   profiles.welcome_email_sent_at = null, Resend 발송 이력 0건.
+    //   triggerWelcomeEmail은 내부에서 모든 예외를 삼키므로(actions.ts) await해도
+    //   가입 흐름이 막히지 않는다. 늘어나는 대기는 1~2초이고, 그 값을 치를 만하다.
     if (data.session) {
       if (data.user?.id) {
-        triggerWelcomeEmail(data.user.id).catch((err) => {
-          console.warn("[signup] triggerWelcomeEmail 호출 실패:", err);
-        });
+        await triggerWelcomeEmail(data.user.id);
       }
       router.push(safeNext);
       router.refresh();
@@ -166,11 +171,17 @@ function SignupInner() {
             >
               일반 회원으로 누릴 수 있는 것
             </p>
+            {/* 2026-08-06 정정 — 코드에 없는 기능을 약속하고 있었다. 되돌리지 말 것.
+                · "새 공연 알림": marketing_opt_in을 읽는 코드가 한 줄도 없다(저장만 한다).
+                  실재하는 알림은 찜한 공연의 D-3/D-1뿐이므로 그렇게만 적는다.
+                · "찜하기"와 "좋아요"는 likes 테이블 하나·하트 하나짜리 같은 기능인데
+                  혜택 두 줄로 세고 있었다 → 한 줄로 합친다.
+                · 예약 내역 관리는 실재한다(mypage reservations 탭 + cancelReservationAction). */}
             {[
               "공연 찜하기 · 관심 공연 저장",
-              "공연 좋아요 · 응원 기록",
-              "한 줄 후기 작성 (10~200자, 한 공연당 1회)",
-              "새 공연 알림 · D-3 / D-1 메일 안내",
+              "찜해 둔 공연의 사흘 전 · 하루 전 메일 알림",
+              "한 줄 후기와 별점 (10~200자, 한 공연당 1회)",
+              "예약 내역을 마이페이지에서 확인 · 취소",
             ].map((text) => (
               <p key={text} className="text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563" }}>
                 ✓ {text}
