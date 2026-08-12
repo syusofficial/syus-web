@@ -113,6 +113,72 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── 두 문 ── Hero 직후 갈림길 (2026-08-12 사장님 결정)
+          소개가 길어졌으므로, 읽는 사람이 자기 자리로 바로 내려갈 수 있게 한다.
+          철학 섹션(00~03)을 지우거나 뒤로 미루지는 않는다 — 건너뛸 선택지만 얹는 것이다.
+          앵커 대상 섹션에는 scrollMarginTop 6rem을 준다(고정 Nav에 제목이 가리지 않도록,
+          faq/page.tsx의 기존 패턴과 동일). */}
+      <section className="px-6 md:px-12 lg:px-20 py-16" style={{ backgroundColor: "#F0EEE9" }}>
+        <div className="max-w-5xl mx-auto">
+          <p
+            className="text-xs tracking-[0.3em] uppercase mb-6"
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+          >
+            Where To Start
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              {
+                href: "#for-audience",
+                tag: "관객",
+                title: "공연을 보러 오셨나요",
+                body: "회원가입부터 좌석 신청, 관람하고 남기는 한 줄까지. 여섯 걸음으로 적어 두었습니다.",
+                cue: "관객 안내로 내려가기",
+              },
+              {
+                href: "#for-performer",
+                tag: "공연자",
+                title: "무대를 올리러 오셨나요",
+                body: "공연자 신청부터 사이트에 걸리기까지. 다섯 걸음과 걸리는 시간을 그대로 적어 두었습니다.",
+                cue: "공연자 안내로 내려가기",
+              },
+            ].map((d) => (
+              <a
+                key={d.href}
+                href={d.href}
+                className="block p-7 transition-transform duration-150 hover:opacity-85 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]"
+                style={{ backgroundColor: "#E6E1D6", borderTop: "3px solid #0B5563" }}
+              >
+                <p
+                  className="text-[0.65rem] tracking-[0.25em] uppercase mb-3"
+                  style={{ fontFamily: "var(--font-inter)", color: "#0B5563", fontWeight: 600 }}
+                >
+                  {d.tag}
+                </p>
+                <h3
+                  className="text-xl md:text-2xl font-bold mb-3"
+                  style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27", wordBreak: "keep-all" }}
+                >
+                  {d.title}
+                </h3>
+                <p
+                  className="text-sm leading-relaxed mb-5"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+                >
+                  {d.body}
+                </p>
+                <span
+                  className="text-xs tracking-wider"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5C2A42", fontWeight: 600 }}
+                >
+                  {d.cue} ↓
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── 00. 미션 ──
           2026-07-24 사장님 확정: "한국 대학 무대예술의 진흥"이 무대올림의 핵심 기조(왜 하는가).
           기존 "대학 공연을 올리고 좌석을 예약하는 플랫폼"이라는 기능 정체성 위에 얹는 문장 — 대체 아님.
@@ -375,10 +441,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── 관객에게 ── 일반 회원으로 누릴 수 있는 것 (찜·좋아요·후기·예약) */}
+      {/* ── 관객에게 ── 일반 회원으로 누릴 수 있는 것 (찜·좋아요·후기·예약)
+          2026-08-12 확장: 혜택 카드 4장만으로는 "그래서 나는 뭘 어떤 순서로 하면 되나"에
+          답하지 못했다 → 아래에 여섯 걸음 흐름 + 좌석 신청 상세 안내를 덧댄다. */}
       <section
+        id="for-audience"
         className="px-6 md:px-12 lg:px-20 py-24"
-        style={{ backgroundColor: "#F0EEE9" }}
+        style={{ backgroundColor: "#F0EEE9", scrollMarginTop: "6rem" }}
       >
         <div className="max-w-5xl mx-auto">
           <p
@@ -428,9 +497,13 @@ export default function AboutPage() {
                 body: "10~200자, 한 공연당 한 번. 별점과 함께 남깁니다. 다음 관객의 망설임을 덜어줍니다.",
               },
               {
+                /* 2026-08-12 사장님 지시로 강조 순서를 뒤집음 — "회원이 아니어도 된다"를 앞세우면
+                   가입을 권하는 자리에서 가입을 말리는 문장이 된다. 비회원도 신청할 수 있다는
+                   사실 자체는 지우지 않고, 바로 아래 '좌석 신청은 이렇게' 블록에서 더 정확히
+                   (받는 정보·받는 이유까지) 밝힌다. */
                 tag: "예약",
                 title: "지난 예약도 한자리에",
-                body: "좌석 신청은 회원이 아니어도 됩니다. 다만 가입해 두시면 신청번호를 따로 챙기지 않아도 마이페이지에서 확인하고 취소할 수 있습니다.",
+                body: "가입하고 신청하시면 신청번호를 따로 챙기지 않아도 마이페이지에서 확인하고 취소하실 수 있습니다. 지난 관람도 한자리에 남습니다.",
               },
             ].map((b) => (
               <div
@@ -460,6 +533,157 @@ export default function AboutPage() {
             ))}
           </div>
 
+          {/* ── 관객 여섯 걸음 ── 2026-08-12 신설.
+              카드가 "무엇을 누리는가"라면 이 목록은 "어떤 순서로 하는가"다.
+              모든 문장은 실제 구현과 맞춰 쓴다(없는 기능을 약속하지 않는다):
+              · 이메일 가입은 인증 절차 없이 즉시 이용 — 2026-07-28 컨펌 절차 폐지
+              · 찜(likes) 기준 D-3 / D-1 메일 — api/cron/show-reminders, 매일 03:00 KST
+              · 인원수 1~10명 — actions/reservations.ts 검증값
+              · 후기 10~200자 · 한 공연당 한 번 */}
+          <div className="mt-20">
+            <h3
+              className="text-xl md:text-2xl font-bold mb-10"
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27", wordBreak: "keep-all" }}
+            >
+              여섯 걸음이면 됩니다
+            </h3>
+
+            <div className="space-y-8">
+              {[
+                {
+                  num: "01",
+                  title: "회원으로 가입합니다",
+                  body: "이메일로 가입하시거나, 카카오·구글 계정으로 바로 시작하실 수 있습니다. 따로 인증 절차를 거치지 않아도 가입한 그 자리에서 이용하실 수 있습니다.",
+                },
+                {
+                  num: "02",
+                  title: "우리 동네 무대를 찾습니다",
+                  body: "지역 · 시기 · 장르 · 학교로 좁혀 찾습니다. 달력으로 이번 달 무대를 한눈에 보실 수도 있습니다. 전국에서 큰 공연을 고르는 자리가 아니라, 가까운 곳에서 이번 주말을 고르는 자리입니다.",
+                },
+                {
+                  num: "03",
+                  title: "마음이 간 무대에 하트를 남깁니다",
+                  body: "하트는 두 곳으로 갑니다. 마이페이지에 나만의 목록으로 모이고, 무대를 올린 사람에게는 관객이 기다리고 있다는 신호로 전해집니다.",
+                },
+                {
+                  num: "04",
+                  title: "좌석을 신청합니다",
+                  body: "관람하실 인원을 한 번에 열 명까지 신청하실 수 있습니다. 신청이 끝나면 신청번호를 드립니다. 자세한 안내는 바로 아래에 적어 두었습니다.",
+                },
+                {
+                  num: "05",
+                  title: "공연 전, 잊지 않도록 알려드립니다",
+                  body: "하트를 남기신 공연이 다가오면 사흘 전과 하루 전, 두 번 메일로 알려드립니다. 알림이 필요 없으시면 마이페이지에서 언제든 끄실 수 있습니다.",
+                },
+                {
+                  num: "06",
+                  title: "보고 나온 자리에 한 줄을 남깁니다",
+                  body: "열 자에서 이백 자까지, 한 공연에 한 번. 별점과 함께 남기실 수 있습니다. 길게 쓰실 필요는 없습니다. 그 한 줄이 다음 관객의 망설임을 덜어줍니다.",
+                },
+              ].map((s) => (
+                <div
+                  key={s.num}
+                  className="grid grid-cols-[44px_1fr] md:grid-cols-[64px_1fr] gap-4 md:gap-8 items-start pt-6"
+                  style={{ borderTop: "1px solid #D4CFC1" }}
+                >
+                  <span
+                    className="text-2xl md:text-3xl leading-none"
+                    style={{ fontFamily: "var(--font-cormorant)", color: "#0B5563", fontWeight: 600 }}
+                  >
+                    {s.num}
+                  </span>
+                  <div>
+                    <p
+                      className="text-base md:text-lg font-bold mb-2"
+                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+                    >
+                      {s.title}
+                    </p>
+                    <p
+                      className="text-sm md:text-base leading-[1.9]"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+                    >
+                      {s.body}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── 좌석 신청 상세 ── 2026-08-12 사장님 지시로 신설.
+              방침: "회원가입 후 이용을 권장하되, 비회원이면 공연팀에게 필요한 관객 정보
+              (성함·전화번호·관람 인원수)를 반드시 받는다."
+              실제 폼(components/SeatReservationForm.tsx)이 이미 이름·연락처·인원수를 필수로
+              받고 개인정보 제공 동의까지 받고 있으므로, 여기서는 그 사실과 이유를 설명한다.
+              폼 문구를 바꾸게 되면 이 섹션도 같이 손볼 것. */}
+          <div
+            className="mt-16 p-7 md:p-10"
+            style={{ backgroundColor: "#E6E1D6", borderLeft: "4px solid #5C2A42" }}
+          >
+            <p
+              className="text-xs tracking-[0.25em] uppercase mb-4"
+              style={{ fontFamily: "var(--font-inter)", color: "#0B5563", fontWeight: 600 }}
+            >
+              좌석 신청은 이렇게
+            </p>
+            <h3
+              className="text-xl md:text-2xl font-bold mb-6"
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27", wordBreak: "keep-all" }}
+            >
+              티켓을 사는 자리가 아니라,
+              <br className="md:hidden" />
+              자리를 미리 잡아두는 자리입니다.
+            </h3>
+            <p
+              className="text-sm md:text-base leading-[1.9] mb-8"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+            >
+              무대올림에는 결제 절차가 없습니다. 좌석 신청은 &ldquo;그날 가겠습니다&rdquo;라고 미리
+              알려 두는 일이고, 공연팀은 그 명단을 보고 객석을 준비합니다.
+            </p>
+
+            <div className="space-y-6">
+              {[
+                {
+                  q: "회원으로 신청하시길 권합니다",
+                  a: "가입하고 신청하시면 신청번호를 따로 적어 두지 않아도 됩니다. 마이페이지에서 신청한 공연을 모아 보고, 사정이 생기면 그 자리에서 취소하실 수 있습니다. 공연 전 알림도 회원에게만 갑니다.",
+                },
+                {
+                  q: "가입 없이도 신청하실 수 있습니다. 다만",
+                  a: "성함, 연락처(전화번호 또는 이메일), 관람 인원수를 받습니다. 이 세 가지는 신청을 받은 공연팀에게 전달되어 현장에서 명단을 확인하고 입장을 안내하는 데 쓰입니다. 그래서 신청하실 때 이 내용을 알려드리고 동의를 한 번 받습니다.",
+                },
+                {
+                  q: "신청하고 나면",
+                  a: "신청번호를 드립니다. 이메일로 신청하셨다면 확인 메일도 함께 보내드립니다. 가입하지 않고 신청하신 경우, 이 번호와 연락처가 본인 확인 열쇠가 되므로 잊지 말고 챙겨주세요.",
+                },
+                {
+                  q: "자리가 이미 찼다면",
+                  a: "대기로 접수해 드립니다. 앞서 신청한 분이 취소하면 순번대로 자동 확정되고, 이메일로 신청하신 분께는 확정 안내가 갑니다.",
+                },
+                {
+                  q: "못 가시게 되었다면",
+                  a: "공연 시작 전까지 언제든 취소하실 수 있습니다. 비워주신 자리는 기다리던 다음 분께 곧바로 넘어갑니다. 취소는 미안한 일이 아니라, 다음 사람을 위한 일입니다.",
+                },
+              ].map((r) => (
+                <div key={r.q} className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-2 md:gap-8">
+                  <p
+                    className="text-sm font-bold"
+                    style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563", wordBreak: "keep-all" }}
+                  >
+                    {r.q}
+                  </p>
+                  <p
+                    className="text-sm leading-[1.9]"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+                  >
+                    {r.a}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="mt-10 text-center">
             <Link
               href="/auth/signup"
@@ -477,10 +701,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── 공연자에게 ── 학생 공연자 입장에서 본 무대올림 (사장님 보완 요청) */}
+      {/* ── 공연자에게 ── 학생 공연자 입장에서 본 무대올림 (사장님 보완 요청)
+          2026-08-12 확장: "왜 좋은가" 3장 뒤에 "어떤 순서로, 얼마나 걸리는가"를 덧댄다.
+          그동안 이 절차는 FAQ(performer-1)에만 있어서 소개 페이지만 읽은 사람은
+          공연자 신청이라는 관문이 있다는 사실조차 모르고 지나갔다. */}
       <section
+        id="for-performer"
         className="px-6 md:px-12 lg:px-20 py-24"
-        style={{ backgroundColor: "#E6E1D6" }}
+        style={{ backgroundColor: "#E6E1D6", scrollMarginTop: "6rem" }}
       >
         <div className="max-w-5xl mx-auto">
           <p
@@ -564,6 +792,115 @@ export default function AboutPage() {
                 </p>
               </div>
             ))}
+          </div>
+
+          {/* ── 공연자 다섯 걸음 ── 2026-08-12 신설.
+              소요일(영업일 1~3일)은 FAQ performer-1·performer-4와 같은 값으로 맞춰둔 것이다.
+              운영 기준이 바뀌면 여기와 lib/faqs.ts를 함께 고칠 것.
+              단계 04의 항목은 muol/performer 등록 폼의 실제 필드에서 가져왔다. */}
+          <div className="mt-20">
+            <h3
+              className="text-xl md:text-2xl font-bold mb-3"
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27", wordBreak: "keep-all" }}
+            >
+              무대를 올리기까지, 다섯 걸음
+            </h3>
+            <p
+              className="text-sm md:text-base leading-relaxed mb-10 max-w-3xl"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+            >
+              공연자 자격은 신청하고 확인을 거쳐 드립니다. 한 번 받으시면 그 뒤로는 공연을 몇 번
+              올리시든 다시 신청하지 않으셔도 됩니다.
+            </p>
+
+            <div className="space-y-8">
+              {[
+                {
+                  num: "01",
+                  title: "회원으로 가입합니다",
+                  body: "먼저 일반 회원으로 가입해주세요. 이메일이나 카카오·구글 계정이면 됩니다.",
+                  meta: "바로",
+                },
+                {
+                  num: "02",
+                  title: "마이페이지에서 공연자 신청을 누릅니다",
+                  body: "마이페이지의 ‘공연자 신청’ 탭에 버튼이 하나 있습니다. 학과·동아리·극단 어느 이름으로 활동하시든 같은 자리에서 신청하십니다.",
+                  meta: "1분",
+                },
+                {
+                  num: "03",
+                  title: "운영자가 확인합니다",
+                  body: "소속과 활동을 확인한 뒤 공연자 자격을 드립니다. 승인되면 안내 메일이 갑니다. 진행 상황은 마이페이지에서 바로 보실 수 있습니다.",
+                  meta: "영업일 1~3일",
+                },
+                {
+                  num: "04",
+                  title: "공연을 등록합니다",
+                  body: "공연 제목과 포스터, 일정과 회차, 장소, 장르, 그리고 교내·외부·워크샵 중 어느 무대인지를 적습니다. 좌석 신청을 무대올림에서 받으실지도 이때 정하십니다. 미리 챙겨두시면 좋은 것은 포스터 이미지와 확정된 일정, 그리고 객석 규모입니다.",
+                  meta: "10~20분",
+                },
+                {
+                  num: "05",
+                  title: "확인을 거쳐 사이트에 걸립니다",
+                  body: "올려주신 내용을 운영자가 한 번 더 살펴본 뒤 게재합니다. 등록에도 게재에도 비용은 없습니다. 나중에 내용을 고치시면 다시 한 번 확인을 거치며, 그동안은 잠시 내려갑니다.",
+                  meta: "영업일 1~3일",
+                },
+              ].map((s) => (
+                <div
+                  key={s.num}
+                  className="grid grid-cols-[44px_1fr] md:grid-cols-[64px_1fr] gap-4 md:gap-8 items-start pt-6"
+                  style={{ borderTop: "1px solid #D4CFC1" }}
+                >
+                  <span
+                    className="text-2xl md:text-3xl leading-none"
+                    style={{ fontFamily: "var(--font-cormorant)", color: "#0B5563", fontWeight: 600 }}
+                  >
+                    {s.num}
+                  </span>
+                  <div>
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
+                      <p
+                        className="text-base md:text-lg font-bold"
+                        style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+                      >
+                        {s.title}
+                      </p>
+                      <span
+                        className="text-[0.7rem] px-2 py-0.5"
+                        style={{
+                          fontFamily: "var(--font-noto-sans-kr)",
+                          backgroundColor: "#F0EEE9",
+                          color: "#0B5563",
+                          border: "1px solid #D4CFC1",
+                          fontWeight: 600,
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {s.meta}
+                      </span>
+                    </div>
+                    <p
+                      className="text-sm md:text-base leading-[1.9]"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+                    >
+                      {s.body}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p
+              className="mt-10 text-sm leading-[1.9]"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+            >
+              신청이 반려되더라도 끝이 아닙니다. 내용을 고쳐 다시 신청하실 수 있고, 이유가
+              궁금하시면{" "}
+              <Link href="/muol/contact" className="underline" style={{ color: "#0B5563", fontWeight: 600 }}>
+                문의
+              </Link>
+              해주시면 확인해서 알려드립니다.
+            </p>
           </div>
 
           <div className="mt-10 text-center">
@@ -709,6 +1046,73 @@ export default function AboutPage() {
               그 결을 ‘무대올림’이라는 이름으로 풉니다.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* ── 06. 만든 사람의 말 ── 2026-08-12 신설.
+          ★ 이 섹션은 사장님이 직접 다듬으실 1인칭 초안이다(2026-08-12 결정: 초안은 내가,
+            문장은 사장님이). 브랜드 화자("무대올림은")가 아니라 사람의 목소리("저는")로
+            쓰는 유일한 자리이므로, 다른 섹션 톤에 맞춘다고 3인칭으로 되돌리지 말 것.
+          사실 근거: "대학 공연들이 티켓 예매 링크를 만들지 않아 홍보 효과가 미비하다"는
+            사장님 문제의식 + 사유유사 이름의 연기 서적 유래(05 섹션과 이어짐). */}
+      <section className="px-6 md:px-12 lg:px-20 py-24" style={{ backgroundColor: "#F0EEE9" }}>
+        <div className="max-w-3xl mx-auto">
+          <p
+            className="text-xs tracking-[0.3em] uppercase mb-3"
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+          >
+            06. A Note From the Maker
+          </p>
+          <h2
+            className="text-2xl md:text-3xl font-bold mb-12"
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" }}
+          >
+            만든 사람의 말
+          </h2>
+
+          <div
+            className="text-base md:text-lg leading-[2.1] space-y-6"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+          >
+            <p>
+              공연 포스터를 보고 검색해본 적이 있습니다. 무언가 나오기는 했습니다. 다만 늘 거기까지
+              였습니다. 날짜 한 줄, 사진 한 장. 그마저도 여기저기 흩어져 있어, 결국 그 무대에
+              가까이 가보지는 못했습니다.
+            </p>
+            <p>
+              대학의 무대를 한데 모아둔 자리가 있으면 좋겠다고 생각했습니다. 찾아보았지만
+              없었습니다.
+            </p>
+            <p>
+              아쉬움은 제 것만이 아니었습니다. 대학의 무대라 해도, 프로 무대와 나란히 놓아 부끄럽지
+              않을 사람과 단체가 어딘가에는 분명히 있습니다. 다만 그들이 거기 있다는 사실을 알 방법이
+              너무 적었습니다. 그래서 아쉬움이 더 짙었습니다.
+            </p>
+            <p>
+              그러다 이렇게 정리하게 되었습니다. 무대가 부족한 것이 아니라고. 무대와 가까워질 수
+              있는 공간이 부족했던 것이라고.
+            </p>
+            <p>
+              그래서 무대올림이 하는 일은 대단하지 않습니다. 흩어진 것을 한자리에 모으고, 가까이 사는
+              사람에게 조용히 알리고, 막이 내린 뒤에도 지우지 않고 남겨두는 것. 그게 전부입니다.
+            </p>
+            <p>
+              그 정도의 작은 통로면 충분하다고 생각합니다. 무대의 주인공은 언제나 그 위에 선
+              사람들이지, 이 사이트가 아니니까요.
+            </p>
+          </div>
+
+          {/* 서명 — 2026-08-12 사장님 지시로 실명 제외. 다시 넣지 말 것. */}
+          <p
+            className="mt-12 pt-6 text-sm"
+            style={{
+              fontFamily: "var(--font-noto-sans-kr)",
+              color: "#5A4A3E",
+              borderTop: "1px solid #D4CFC1",
+            }}
+          >
+            무대올림을 만들고 운영합니다 — 사유유사 SYUS
+          </p>
         </div>
       </section>
 

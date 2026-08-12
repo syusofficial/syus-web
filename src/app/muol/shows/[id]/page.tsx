@@ -714,6 +714,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   initialConfirmedTotal={reservationSummary?.confirmed_total ?? 0}
                   initialReservationClosed={reservationSummary?.reservation_closed ?? show.reservation_closed ?? false}
                   initialSessions={reservationSummary?.sessions ?? []}
+                  isLoggedIn={!!user}
                 />
                 <Link
                   href="/muol/contact"

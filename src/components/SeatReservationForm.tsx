@@ -22,6 +22,9 @@ type Props = {
   /** 회차 목록 — 예약 시스템 B1(회차별 정원 분리), 2026-07-24 신설.
    *  undefined/빈 배열이면 회차 기능 미사용(마이그레이션 전 또는 회차 없는 공연) — 기존 UX 그대로. */
   initialSessions?: SessionReservationSummary[];
+  /** 로그인 여부 — 비로그인일 때만 가입 권유 안내를 띄운다 (2026-08-12 사장님 지시).
+   *  게스트 신청을 막는 값이 아니다. 신청 자체는 로그인 여부와 무관하게 그대로 열려 있다. */
+  isLoggedIn?: boolean;
 };
 
 const POLL_INTERVAL_MS = 20000;
@@ -71,6 +74,7 @@ export default function SeatReservationForm({
   initialConfirmedTotal = 0,
   initialReservationClosed = false,
   initialSessions = [],
+  isLoggedIn = false,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [showWaitlistForm, setShowWaitlistForm] = useState(false);
@@ -249,6 +253,47 @@ export default function SeatReservationForm({
               </>
             )}
           </p>
+
+          {/* 가입 권유 — 2026-08-12 사장님 지시. 비로그인 방문자에게만 보인다.
+              원칙: 권유이지 관문이 아니다. 이 블록 때문에 게스트 신청이 한 걸음이라도
+              멀어지면 안 되므로 (1) 폼 위에 얹기만 하고 입력은 그대로 열어두며
+              (2) "지금 이대로 신청하셔도 괜찮습니다"를 반드시 남긴다.
+              가입·로그인 링크에는 next를 실어 이 공연 페이지로 되돌아오게 한다
+              (auth/signup·auth/login 모두 내부 경로만 허용하는 safeNext 검증이 있다). */}
+          {!isLoggedIn && (
+            <div
+              className="p-4"
+              style={{ backgroundColor: "#F0EEE9", borderLeft: "3px solid #0B5563" }}
+            >
+              <p className="text-xs font-bold mb-2" style={{ color: "#0B5563" }}>
+                회원으로 신청하시면 조금 더 수월합니다
+              </p>
+              <ul className="text-[11px] leading-relaxed space-y-1" style={{ color: "#4A3B33" }}>
+                <li>· 신청번호를 적어두지 않아도 마이페이지에서 확인하고 취소하실 수 있습니다.</li>
+                <li>· 공연 사흘 전과 하루 전, 잊지 않도록 메일로 알려드립니다.</li>
+                <li>· 마음이 간 무대를 모아두고, 보고 나서 한 줄 남기실 수 있습니다.</li>
+              </ul>
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+                <Link
+                  href={`/auth/signup?next=/muol/shows/${showId}`}
+                  className={`text-xs underline ${LINK_BTN_STATES}`}
+                  style={{ color: "#5C2A42", fontWeight: 600 }}
+                >
+                  가입하고 신청하기 →
+                </Link>
+                <Link
+                  href={`/auth/login?next=/muol/shows/${showId}`}
+                  className={`text-xs underline ${LINK_BTN_STATES}`}
+                  style={{ color: "#5A4A3E" }}
+                >
+                  이미 회원이시라면 로그인
+                </Link>
+              </div>
+              <p className="mt-2 text-[11px]" style={{ color: "#5A4A3E" }}>
+                물론 지금 이대로 신청하셔도 괜찮습니다.
+              </p>
+            </div>
+          )}
 
           {/* 회차 선택 — 회차가 2개 이상인 공연만 노출 (예약 시스템 B1) */}
           {multiSession && (
