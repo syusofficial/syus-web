@@ -434,6 +434,42 @@ export default async function ShowsPage({
               >
                 무대 올리러 가기 →
               </Link>
+
+              {/* 관객으로 오신 분께도 돌아갈 자리를 둔다.
+                  이 화면은 공연이 0건일 때 가장 많이 열리는 문이라,
+                  올릴 무대가 없는 사람에게 출구가 하나도 없으면 그대로 빈손으로 나간다. */}
+              <div className="mt-10 pt-8" style={{ borderTop: "1px solid #E2DDD2" }}>
+                <p
+                  className="text-xs leading-relaxed mb-4 max-w-md mx-auto"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+                >
+                  막이 오르기를 기다리는 동안, 읽어두실 글이 있습니다.
+                </p>
+                <div className="flex items-center justify-center gap-3 flex-wrap">
+                  <Link
+                    href="/syus/essays"
+                    className="inline-block px-4 py-2.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      color: "#0B5563",
+                      border: "1px solid #D4CFC1",
+                    }}
+                  >
+                    연기에 관한 글 →
+                  </Link>
+                  <Link
+                    href="/muol/archive"
+                    className="inline-block px-4 py-2.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      color: "#0B5563",
+                      border: "1px solid #D4CFC1",
+                    }}
+                  >
+                    지난 공연 →
+                  </Link>
+                </div>
+              </div>
             </div>
           ) : (
           <div className="text-center py-24">
