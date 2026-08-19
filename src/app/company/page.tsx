@@ -152,7 +152,13 @@ export default function CompanyPage() {
               letterSpacing: "0.18em",
             }}
           >
-            思惟流沙
+            {/* 보이는 것은 한자, 읽히는 것은 한글.
+                h1이 한자만이면 스크린리더 발음이 보장되지 않고, 검색엔진도 이 페이지의
+                대제목을 "思惟流沙"로만 읽어 "사유유사"로 찾는 사람과 이어지지 않는다. */}
+            <span aria-hidden="true">思惟流沙</span>
+            <span className="sr-only">
+              사유유사 SYUS — 두루 생각하여, 이를 무대 위에서 흘려보냅니다
+            </span>
           </h1>
           <p
             className="leading-[1.9] mb-4"

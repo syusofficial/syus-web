@@ -34,6 +34,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     { url: BASE_URL, changeFrequency: "daily", priority: 1.0 },
+    // 사유유사 (회사 소개·CI) — 게이트웨이 지붕 배지에서만 연결되므로 내부 링크가 하나뿐이다.
+    // 사이트맵에서 빠지면 검색엔진 발견이 늦어진다.
+    { url: `${BASE_URL}/company`, changeFrequency: "monthly", priority: 0.7 },
     // 무대올림 (/muol)
     { url: `${BASE_URL}/muol`, changeFrequency: "daily", priority: 0.9 },
     { url: `${BASE_URL}/muol/shows`, changeFrequency: "daily", priority: 0.9 },
