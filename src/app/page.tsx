@@ -18,9 +18,12 @@ export default function GatewayPage() {
   return (
     <>
     <div className="syus-gateway">
-      {/* 지붕 — 사유유사 (두 문을 덮는 배지). pointer-events-none로 클릭 통과 */}
+      {/* 지붕 — 사유유사 (두 문을 덮는 배지).
+          컨테이너(.gw-roof)는 pointer-events:none으로 두 문 클릭을 통과시키고,
+          배지에만 auto를 줘서 여기만 눌린다. 범위를 넓히면 두 문이 안 눌리니 건드리지 말 것.
+          2026-08-19: 배지가 /company(사유유사 소개·CI)로 들어가는 제3의 문이 됐다. */}
       <div className="gw-roof">
-        <div className="gw-roof-badge">
+        <Link href="/company" className="gw-roof-badge" aria-label="사유유사 SYUS 소개">
           <Image
             src="/sayuyusa-logo.png"
             alt="사유유사 SYUS"
@@ -30,7 +33,7 @@ export default function GatewayPage() {
             priority
           />
           <span className="gw-roof-name">사유유사 SYUS</span>
-        </div>
+        </Link>
       </div>
 
       {/* ── 왼쪽: 무대올림 (5, 청+버건디) ── */}
@@ -104,6 +107,10 @@ export default function GatewayPage() {
           pointer-events: none;
         }
         .gw-roof-badge {
+          pointer-events: auto;      /* 지붕 컨테이너는 none, 배지만 눌린다 */
+          text-decoration: none;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
           display: flex;
           align-items: center;
           gap: 12px;
@@ -122,6 +129,14 @@ export default function GatewayPage() {
           letter-spacing: 0.16em;
           color: #4A3B33;
           white-space: nowrap;
+        }
+        .gw-roof-badge:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 9px 26px rgba(36, 28, 24, 0.22);
+        }
+        .gw-roof-badge:focus-visible {
+          outline: 2px solid #0B5563;
+          outline-offset: 3px;
         }
 
         /* ── 문(패널) 공통 ── */

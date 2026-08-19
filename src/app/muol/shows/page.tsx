@@ -19,7 +19,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "공연 일정",
   description:
-    "오늘 막이 오르는 대학 무대예술 공연을 한 곳에서. 연극·뮤지컬·무용·국악·음악·전통연희 등 16개 지역의 학생 공연을 만나보세요.",
+    "오늘 막이 오르는 대학 무대예술 공연을 한 곳에서. 연극·뮤지컬·무용·국악·음악·전통연희 등 17개 지역의 학생 공연을 만나보세요.",
   keywords: [
     "대학 공연 일정",
     "대학 연극",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     // 남은 숫자다. 그날 오후 호버 메뉴 방식으로 되돌리며 장르는 7개(기타 포함)가 됐다.
     // 숫자를 다시 박으면 또 어긋나므로 실제 장르를 나열한다.
     description:
-      "오늘 막이 오르는 대학 무대예술 공연. 연극·뮤지컬·무용·국악·음악·전통연희를 16개 지역에서.",
+      "오늘 막이 오르는 대학 무대예술 공연. 연극·뮤지컬·무용·국악·음악·전통연희를 17개 지역에서.",
     url: "https://syus.co.kr/muol/shows",
     type: "website",
     images: [
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "공연 일정 · 무대올림",
     description:
-      "오늘 막이 오르는 대학 무대예술 공연. 연극·뮤지컬·무용·국악·음악·전통연희를 16개 지역에서.",
+      "오늘 막이 오르는 대학 무대예술 공연. 연극·뮤지컬·무용·국악·음악·전통연희를 17개 지역에서.",
     images: ["/og-default.png"],
   },
 };
