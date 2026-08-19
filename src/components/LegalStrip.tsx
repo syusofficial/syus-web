@@ -42,7 +42,7 @@ export default function LegalStrip() {
             <Link href="/privacy" className="gwl-link is-strong">개인정보처리방침</Link>
             <Link href="/muol/contact" className="gwl-link">1:1 문의</Link>
           </div>
-          <p className="gwl-copy">© 2026 {COMPANY.name} SYUS. 깊이 머물고, 가볍게 흘려보냅니다.</p>
+          <p className="gwl-copy">© 2026 {COMPANY.name} SYUS. 두루 생각하여, 이를 무대 위에서 흘려보냅니다.</p>
         </div>
       </div>
 

@@ -64,7 +64,7 @@ export default function SyusFooter() {
             <Link href="/terms" className="syf-policy-link">이용약관</Link>
             <Link href="/privacy" className="syf-policy-link is-strong">개인정보처리방침</Link>
           </div>
-          <p className="syf-copy">© 2026 시우스 · 운영: 사유유사 SYUS. 깊이 머물고, 가볍게 흘려보냅니다.</p>
+          <p className="syf-copy">© 2026 시우스 · 운영: 사유유사 SYUS. 두루 생각하여, 이를 무대 위에서 흘려보냅니다.</p>
         </div>
       </div>
 

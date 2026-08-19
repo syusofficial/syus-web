@@ -129,7 +129,7 @@ export function NewSignupPrivacyNotice20260802Email({ name }: Props) {
             안내드리는 것입니다.
           </Text>
 
-          <Text style={SIGNATURE}>깊이 머물고, 가볍게 흘려보내겠습니다.</Text>
+          <Text style={SIGNATURE}>두루 생각하여, 이를 무대 위에서 흘려보내겠습니다.</Text>
           <Text style={SIGNOFF}>사유유사 SYUS · 이혁호 드림</Text>
 
           <EmailFooter />

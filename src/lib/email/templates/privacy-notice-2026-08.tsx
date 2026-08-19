@@ -130,7 +130,7 @@ export function PrivacyNotice20260802Email({ name }: Props) {
             제12조에 따른 개별 통지입니다.
           </Text>
 
-          <Text style={SIGNATURE}>깊이 머물고, 가볍게 흘려보내겠습니다.</Text>
+          <Text style={SIGNATURE}>두루 생각하여, 이를 무대 위에서 흘려보내겠습니다.</Text>
           <Text style={SIGNOFF}>사유유사 SYUS · 이혁호 드림</Text>
 
           <EmailFooter />

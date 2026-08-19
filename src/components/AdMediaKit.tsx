@@ -408,7 +408,7 @@ export default function AdMediaKit({ shows, members }: AdMediaKitProps) {
         className="text-xs text-center mt-8"
         style={{ fontFamily: "var(--font-cormorant)", color: "#5A4A3E", letterSpacing: "0.2em" }}
       >
-        SYUS · 思惟流沙 — 깊이 머물고, 가볍게 흘려보냅니다.
+        SYUS · 思惟流沙 — 두루 생각하여, 이를 무대 위에서 흘려보냅니다.
       </p>
     </div>
   );
