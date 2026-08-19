@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import LegalStrip from "@/components/LegalStrip";
 
 /**
  * 게이트웨이 (루트 /) — 3층 구조. (2026-06-30 3차: 색 반전 + 워터마크 + 문구 정리)
@@ -15,6 +16,7 @@ import Image from "next/image";
  */
 export default function GatewayPage() {
   return (
+    <>
     <div className="syus-gateway">
       {/* 지붕 — 사유유사 (두 문을 덮는 배지). pointer-events-none로 클릭 통과 */}
       <div className="gw-roof">
@@ -278,5 +280,10 @@ export default function GatewayPage() {
         }
       `}</style>
     </div>
+
+      {/* 전자상거래법 §10 사업자 정보 — 게이트웨이에는 푸터가 없어 여기서 표시한다.
+          두 문(100svh)의 구도는 건드리지 않고 그 아래에 얇은 띠로만 덧붙였다. */}
+      <LegalStrip />
+    </>
   );
 }
