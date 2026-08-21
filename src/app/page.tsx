@@ -9,7 +9,7 @@ import LegalStrip from "@/components/LegalStrip";
  *   - 시우스   = 밝은 화이트톤 + SYUS 붓터치색 유지, 뒷배경에 Afterimage 사진 워터마크
  *   - 지붕 배지 밑 흰색 슬로건이 안 보이던 문제 → 슬로건 제거(배지에 로고+이름만)
  *   - "관람료 없이" 등 관객 대상 단언 문구 제외(학과가 관람료를 받을 여지)
- * 워터마크: /wm-muol.png(심볼 PNG), /wm-syus.jpg(사진 JPG) — public에 배치 완료, 자동 노출.
+ * 워터마크: /wm-muol-v2.png(2026-08-21 한글 로고타입으로 교체, 가로 2.2:1이라 크기 상향), /wm-syus.jpg(사진 JPG).
  *
  * 안전: 서버 컴포넌트 + CSS group-hover만(클라이언트 JS 0), 레이어 pointer-events:none. reduced-motion 존중.
  * metadata는 루트 layout.tsx(사유유사)가 제공.
@@ -169,8 +169,8 @@ export default function GatewayPage() {
           min-height: 50svh;
         }
         .gw-muol-watermark {
-          background: url('/wm-muol.png') no-repeat center 46%;
-          background-size: min(82%, 600px) auto;
+          background: url('/wm-muol-v2.png') no-repeat center 46%;
+          background-size: min(88%, 760px) auto;
           opacity: 0.09;
           filter: brightness(0) invert(1); /* 심볼을 밝은 선으로 반전 → 진한 배경 위 은은 */
           transition: opacity 0.5s ease;
