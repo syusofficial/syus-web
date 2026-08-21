@@ -39,8 +39,6 @@ export default function GatewayPage() {
       {/* ── 왼쪽: 무대올림 (5, 청+버건디) ── */}
       <Link href="/muol" className="gw-door gw-door--muol group" aria-label="무대올림으로 들어가기">
         <span className="gw-layer gw-muol-watermark" aria-hidden="true" />
-        <span className="gw-layer gw-muol-l1" aria-hidden="true" />
-        <span className="gw-layer gw-muol-l2" aria-hidden="true" />
         <span className="gw-layer gw-muol-l3" aria-hidden="true" />
         <span className="gw-overlay gw-overlay--muol" aria-hidden="true" />
         <div className="gw-door-inner">
@@ -169,7 +167,13 @@ export default function GatewayPage() {
 
         /* ── 무대올림 — 청+버건디, 워터마크 ── */
         .gw-door--muol {
-          background: linear-gradient(150deg, #0B5563 0%, #34324C 52%, #5C2A42 100%);
+          /* 2026-08-21: 대각 그라디언트(청→보라) + 세로 줄무늬 조합이 오른쪽 시우스의
+             따뜻한 크림과 싸운다는 지적에 따라 사진 배경으로 교체. 빈 극장의 무대 뒤
+             윙 — FLUX 생성 후 브랜드 4색 듀오톤(#061317→#2E767C)으로 재도색하고,
+             글자가 앉는 하단 절반에 행별 휘도 상한을 걸어 흰 글자 대비를 확보했다.
+             배경색은 이미지 로딩 전·실패 시의 바탕. */
+          background: #0B1518 url('/muol-bg-backstage.jpg') no-repeat center center;
+          background-size: cover;
           min-height: 50svh;
         }
         .gw-muol-watermark {
@@ -184,8 +188,6 @@ export default function GatewayPage() {
           filter: brightness(0) invert(1); /* 심볼을 밝은 선으로 반전 → 진한 배경 위 은은 */
           transition: opacity 0.5s ease;
         }
-        .gw-muol-l1 { background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 46%, rgba(255,255,255,0.04) 100%); }
-        .gw-muol-l2 { background: repeating-linear-gradient(90deg, transparent 0 38px, rgba(0,0,0,0.06) 38px 40px); }
         .gw-muol-l3 { background: linear-gradient(180deg, transparent 58%, rgba(0,0,0,0.18) 100%); }
         .gw-overlay--muol { background: radial-gradient(ellipse at 32% 42%, rgba(255,255,255,0.10), transparent 66%); }
         .gw-door--muol:hover .gw-overlay--muol,
@@ -303,10 +305,12 @@ export default function GatewayPage() {
              쓰면 문이 자라 시우스 "들어가기"가 첫 화면 밖으로 나간다. 텍스트는
              7vh로 되돌리고, 대신 워터마크를 줄여 문 위쪽에 올려 겹침을 피한다.
              터치엔 hover가 없어 기본 투명도를 데스크톱보다 올린다. */
-          .gw-door-inner { margin-top: 7vh; }
+          .gw-door-inner { margin-top: 9vh; }
           .gw-muol-watermark {
-            background-position: center 12%;
-            background-size: min(42%, 26svh) auto;
+            /* 12%는 상단 중앙 사유유사 배지(y 30~88) 뒤로 로고가 들어가 가려졌다.
+               배지 아래로 내리고 크기를 줄여 설명글과도 안 겹치게 한다. */
+            background-position: center 27%;
+            background-size: min(36%, 22svh) auto;
             opacity: 0.20;
           }
           .gw-syus-watermark {
