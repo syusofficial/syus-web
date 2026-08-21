@@ -153,7 +153,11 @@ export default function GatewayPage() {
           position: relative;
           z-index: 5;
           max-width: 30rem;
-          margin-top: 7vh;
+          /* 2026-08-21: 7vh → 23vh. 워터마크(로고)를 중앙에 두고 설명글을 그 아래로
+             내린다. 좌우 두 문에 같은 값이 적용되므로 텍스트 높이 정렬은 그대로 유지된다.
+             모바일은 문이 각 50svh(합 100svh)로 여유가 0이라 아래 미디어쿼리에서
+             7vh로 되돌리고, 대신 워터마크를 작게 줄여 문 위쪽에 올린다. */
+          margin-top: 23vh;
         }
         .gw-layer, .gw-overlay {
           position: absolute;
@@ -169,14 +173,12 @@ export default function GatewayPage() {
           min-height: 50svh;
         }
         .gw-muol-watermark {
-          /* 2026-08-21: center 46% → 바닥. 로고 PNG는 위 40%가 빈 천장(잉크 2.8%)이고
-             네 글자와 바닥선은 아래 60%(맨 아래 10%가 17.6%)에 몰려 있다. 46%에 두면
-             빈 천장이 문 윗공간을 차지하고 글자가 정확히 설명글 위에 얹혔다.
-             바닥에 앉히면 ① 아래쪽 l3(검정 0.18)가 배경을 어둡게 해 흰 선 대비가
-             2배가 되고(체감 0.24→0.63) ② 설명글이 길어져도 빈 천장부터 먹혀 안전하게
-             무너지며 ③ 바닥선이 있는 공연장 단면도가 땅 위에 선다.
+          /* 2026-08-21 사장님 지시: 로고는 중앙, 설명글이 아래로 내려간다.
+             42%인 것은 정중앙(50%)이 아니라 "글자가 정중앙"이 되게 맞춘 값이다.
+             로고 PNG는 위 40%가 빈 천장(잉크 2.8%)이고 네 글자는 아래 60%에 몰려
+             있어서, 이미지를 정중앙에 두면 글자가 중앙보다 아래로 처진다.
              68svh는 화면이 낮을 때만 작동하는 안전장치(1080p·1440p에선 760px 유지). */
-          background: url('/wm-muol-v2.png') no-repeat center calc(100% - 3svh);
+          background: url('/wm-muol-v2.png') no-repeat center 42%;
           background-size: min(88%, 760px, 68svh) auto;
           opacity: 0.17; /* 잉크 8.7%짜리 가는 선화라 0.09는 지각 한계선이었다. 상한 0.20 */
           filter: brightness(0) invert(1); /* 심볼을 밝은 선으로 반전 → 진한 배경 위 은은 */
@@ -198,15 +200,11 @@ export default function GatewayPage() {
           border-top: 1px solid #E0DBD0;
         }
         .gw-syus-watermark {
-          /* 2026-08-21: 무대올림 워터마크를 바닥으로 내리면서 함께 내렸다. wm-syus.jpg는
-             2281x940 가로 띠라 무대올림 로고와 크기가 비슷해, 한쪽만 옮기면 두 띠가
-             세로로 300px 어긋나 실수처럼 보인다. 색·투명도는 그대로(사장님 지시).
-             transform-origin이 없으면 아래 hover scale(1.03)의 확대분 절반이 문 밖으로
-             밀려 overflow:hidden에 잘린다 — center bottom이면 위로만 커진다. */
-          background: url('/wm-syus.jpg') no-repeat center calc(100% - 3svh);
+          /* transform-origin: hover scale(1.03)의 확대분이 문 밖으로 밀려 잘리지 않게. */
+          background: url('/wm-syus.jpg') no-repeat center center;
           background-size: min(96%, 860px, 74svh) auto;
           opacity: 0.12;
-          transform-origin: center bottom;
+          transform-origin: center center;
           transition: opacity 0.5s ease, transform 0.5s ease;
         }
         .gw-syus-glow { background: radial-gradient(ellipse at 64% 42%, rgba(59,130,196,0.10), transparent 62%); }
@@ -301,16 +299,21 @@ export default function GatewayPage() {
         @media (max-width: 1023px) {
           .gw-strokes { right: 20px; gap: 9px; }
           .gw-strokes > span { height: 34px; }
-          /* 문이 각각 50svh(합 100svh)라 세로 여유가 0이다. 설명글 블록이 문 높이의
-             56%를 차지하므로 데스크톱 크기를 그대로 쓰면 로고 글자 구간이 먹힌다.
-             문 높이·margin-top은 건드리지 않고 워터마크만 줄여 바닥에 붙인다.
+          /* 문이 각각 50svh(합 100svh)라 세로 여유가 0이다. 데스크톱의 23vh를 그대로
+             쓰면 문이 자라 시우스 "들어가기"가 첫 화면 밖으로 나간다. 텍스트는
+             7vh로 되돌리고, 대신 워터마크를 줄여 문 위쪽에 올려 겹침을 피한다.
              터치엔 hover가 없어 기본 투명도를 데스크톱보다 올린다. */
+          .gw-door-inner { margin-top: 7vh; }
           .gw-muol-watermark {
-            background-position: center 100%;
-            background-size: min(56%, 34svh) auto;
+            background-position: center 12%;
+            background-size: min(42%, 26svh) auto;
             opacity: 0.20;
           }
-          .gw-syus-watermark { background-position: center 100%; opacity: 0.15; }
+          .gw-syus-watermark {
+            background-position: center 14%;
+            background-size: min(62%, 30svh) auto;
+            opacity: 0.15;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
