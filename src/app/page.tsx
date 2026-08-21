@@ -155,7 +155,7 @@ export default function GatewayPage() {
              내린다. 좌우 두 문에 같은 값이 적용되므로 텍스트 높이 정렬은 그대로 유지된다.
              모바일은 문이 각 50svh(합 100svh)로 여유가 0이라 아래 미디어쿼리에서
              7vh로 되돌리고, 대신 워터마크를 작게 줄여 문 위쪽에 올린다. */
-          margin-top: 23vh;
+          margin-top: 36vh;
         }
         .gw-layer, .gw-overlay {
           position: absolute;
@@ -182,8 +182,8 @@ export default function GatewayPage() {
              로고 PNG는 위 40%가 빈 천장(잉크 2.8%)이고 네 글자는 아래 60%에 몰려
              있어서, 이미지를 정중앙에 두면 글자가 중앙보다 아래로 처진다.
              68svh는 화면이 낮을 때만 작동하는 안전장치(1080p·1440p에선 760px 유지). */
-          background: url('/wm-muol-v2.png') no-repeat center 42%;
-          background-size: min(88%, 760px, 68svh) auto;
+          background: url('/wm-muol-v2.png') no-repeat center 28%;
+          background-size: min(88%, 760px, 60svh) auto;
           opacity: 0.17; /* 잉크 8.7%짜리 가는 선화라 0.09는 지각 한계선이었다. 상한 0.20 */
           filter: brightness(0) invert(1); /* 심볼을 밝은 선으로 반전 → 진한 배경 위 은은 */
           transition: opacity 0.5s ease;
@@ -203,8 +203,8 @@ export default function GatewayPage() {
         }
         .gw-syus-watermark {
           /* transform-origin: hover scale(1.03)의 확대분이 문 밖으로 밀려 잘리지 않게. */
-          background: url('/wm-syus.jpg') no-repeat center center;
-          background-size: min(96%, 860px, 74svh) auto;
+          background: url('/wm-syus.jpg') no-repeat center 28%;
+          background-size: min(96%, 860px, 62svh) auto;
           opacity: 0.12;
           transform-origin: center center;
           transition: opacity 0.5s ease, transform 0.5s ease;
@@ -305,12 +305,12 @@ export default function GatewayPage() {
              쓰면 문이 자라 시우스 "들어가기"가 첫 화면 밖으로 나간다. 텍스트는
              7vh로 되돌리고, 대신 워터마크를 줄여 문 위쪽에 올려 겹침을 피한다.
              터치엔 hover가 없어 기본 투명도를 데스크톱보다 올린다. */
-          .gw-door-inner { margin-top: 9vh; }
+          .gw-door-inner { margin-top: 16vh; }
           .gw-muol-watermark {
             /* 12%는 상단 중앙 사유유사 배지(y 30~88) 뒤로 로고가 들어가 가려졌다.
                배지 아래로 내리고 크기를 줄여 설명글과도 안 겹치게 한다. */
             background-position: center 27%;
-            background-size: min(36%, 22svh) auto;
+            background-size: min(32%, 20svh) auto;
             opacity: 0.20;
           }
           .gw-syus-watermark {
@@ -318,6 +318,17 @@ export default function GatewayPage() {
             background-size: min(62%, 30svh) auto;
             opacity: 0.15;
           }
+        }
+
+        /* 세로가 짧은 폰(iPhone SE급, 높이 ~780px). 상단 배지 + 워터마크 + 설명글
+           세 덩어리가 50svh 문 안에 물리적으로 다 못 들어간다. 셋을 다 넣으려고
+           margin-top을 키우면 문이 자라 두 번째 문(시우스)의 "들어가기"가 화면 밖으로
+           밀린다(360x740에서 24px 잘림 실측). 갈림길의 핵심은 두 문의 진입 링크이므로
+           장식인 워터마크를 포기한다. 무대올림은 배경 사진이, 시우스는 4색 스트로크가
+           남아 허전하지 않다. */
+        @media (max-width: 1023px) and (max-height: 780px) {
+          .gw-door-inner { margin-top: 8vh; }
+          .gw-muol-watermark, .gw-syus-watermark { opacity: 0; }
         }
 
         @media (prefers-reduced-motion: reduce) {
