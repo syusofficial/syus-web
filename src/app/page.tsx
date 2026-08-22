@@ -9,7 +9,7 @@ import LegalStrip from "@/components/LegalStrip";
  *   - 시우스   = 밝은 화이트톤 + SYUS 붓터치색 유지, 뒷배경에 Afterimage 사진 워터마크
  *   - 지붕 배지 밑 흰색 슬로건이 안 보이던 문제 → 슬로건 제거(배지에 로고+이름만)
  *   - "관람료 없이" 등 관객 대상 단언 문구 제외(학과가 관람료를 받을 여지)
- * 워터마크: /wm-muol-v3.png(한글 로고타입 + 확정 배색), /wm-syus-v2.jpg(흰 배경을 문 배경색으로 구운 판).
+ * 워터마크: /wm-muol-v3.png(한글 로고타입 + 확정 배색), /wm-syus-v3.png(알파 누끼 — 배경 무관).
  *
  * 안전: 서버 컴포넌트 + CSS group-hover만(클라이언트 JS 0), 레이어 pointer-events:none. reduced-motion 존중.
  * metadata는 루트 layout.tsx(사유유사)가 제공.
@@ -207,11 +207,13 @@ export default function GatewayPage() {
         }
         .gw-syus-watermark {
           /* transform-origin: hover scale(1.03)의 확대분이 문 밖으로 밀려 잘리지 않게.
-             v2: 원본 wm-syus.jpg는 순백(255,255,255) 배경이라 불투명도를 0.12에서
-             올리는 순간 문 배경(#F4F2ED)보다 밝은 흰 사각형이 드러났다. 전 픽셀에
-             244/242/237을 곱해(=multiply) 흰 배경이 정확히 문 배경색이 되게 구운 판.
-             경계가 사라지고 붓결의 색만 남는다. */
-          background: url('/wm-syus-v2.jpg') no-repeat center 28%;
+             v3: 알파 누끼. v2는 흰 배경을 문 배경색(#F4F2ED)으로 곱해 사각형을 감춘
+             판이었는데, 그건 배경이 그 단색일 때만 통한다 — 문 배경을 사진으로 바꾸면
+             사각형이 다시 드러난다. v3는 흰 배경 위 합성을 역산해(A = 1 - min(R,G,B)/255,
+             F = (C - (1-A)*255) / A) 알파 채널을 복원한 판이라 어떤 배경 위에서도
+             글자만 얹힌다. 화면의 64.8%가 완전 투명. 붓결이 수채라 대부분 반투명이고
+             완전 불투명은 0.3%뿐이라, 배경 질감이 글자 안쪽까지 비쳐 보인다. */
+          background: url('/wm-syus-v3.png') no-repeat center 28%;
           background-size: min(96%, 860px, 62svh) auto;
           opacity: 0.22; /* 0.12는 밝은 크림 위에서 색이 날아가 흐릿했다 */
           transform-origin: center center;
