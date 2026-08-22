@@ -9,7 +9,7 @@ import LegalStrip from "@/components/LegalStrip";
  *   - 시우스   = 밝은 화이트톤 + SYUS 붓터치색 유지, 뒷배경에 Afterimage 사진 워터마크
  *   - 지붕 배지 밑 흰색 슬로건이 안 보이던 문제 → 슬로건 제거(배지에 로고+이름만)
  *   - "관람료 없이" 등 관객 대상 단언 문구 제외(학과가 관람료를 받을 여지)
- * 워터마크: /wm-muol-v2.png(2026-08-21 한글 로고타입으로 교체, 가로 2.2:1이라 크기 상향), /wm-syus.jpg(사진 JPG).
+ * 워터마크: /wm-muol-v3.png(한글 로고타입 + 확정 배색), /wm-syus-v2.jpg(흰 배경을 문 배경색으로 구운 판).
  *
  * 안전: 서버 컴포넌트 + CSS group-hover만(클라이언트 JS 0), 레이어 pointer-events:none. reduced-motion 존중.
  * metadata는 루트 layout.tsx(사유유사)가 제공.
@@ -177,15 +177,19 @@ export default function GatewayPage() {
           min-height: 50svh;
         }
         .gw-muol-watermark {
-          /* 2026-08-21 사장님 지시: 로고는 중앙, 설명글이 아래로 내려간다.
-             42%인 것은 정중앙(50%)이 아니라 "글자가 정중앙"이 되게 맞춘 값이다.
+          /* 2026-08-21 사장님 지시: 로고는 중앙, 설명글이 그 아래.
+             28%는 라벨("STAGE · 무대올림")과 완전히 떼어놓기 위해 42%에서 올린 값이다.
              로고 PNG는 위 40%가 빈 천장(잉크 2.8%)이고 네 글자는 아래 60%에 몰려
-             있어서, 이미지를 정중앙에 두면 글자가 중앙보다 아래로 처진다.
-             68svh는 화면이 낮을 때만 작동하는 안전장치(1080p·1440p에선 760px 유지). */
-          background: url('/wm-muol-v2.png') no-repeat center 28%;
+             있어, 이미지 위치와 글자가 보이는 위치가 다르다는 점에 주의.
+             60svh는 화면이 낮을 때만 작동하는 안전장치(1080p·1440p에선 760px 유지). */
+          background: url('/wm-muol-v3.png') no-repeat center 28%;
           background-size: min(88%, 760px, 60svh) auto;
-          opacity: 0.17; /* 잉크 8.7%짜리 가는 선화라 0.09는 지각 한계선이었다. 상한 0.20 */
-          filter: brightness(0) invert(1); /* 심볼을 밝은 선으로 반전 → 진한 배경 위 은은 */
+          opacity: 0.30;
+          /* 2026-08-21: 순백 단색(brightness(0) invert(1)) → 확정 배색으로 되돌림.
+             filter가 두 겹(글자/단면 지시선)을 한 색으로 납작하게 만들고 있었다.
+             v3는 어두운 배경용 배색을 파일 자체에 구워넣은 판이다:
+             글자·바닥선 = Cloud Dancer #F0EEE9 / 단면 지시선 2개 = 밝은 Teal #7FB5C0.
+             filter가 빠졌으므로 투명도를 올려야 같은 존재감이 난다(순백 0.17 ≒ 이 판 0.30). */
           transition: opacity 0.5s ease;
         }
         .gw-muol-l3 { background: linear-gradient(180deg, transparent 58%, rgba(0,0,0,0.18) 100%); }
@@ -193,7 +197,7 @@ export default function GatewayPage() {
         .gw-door--muol:hover .gw-overlay--muol,
         .gw-door--muol:focus-visible .gw-overlay--muol { opacity: 1; }
         .gw-door--muol:hover .gw-muol-watermark,
-        .gw-door--muol:focus-visible .gw-muol-watermark { opacity: 0.21; }
+        .gw-door--muol:focus-visible .gw-muol-watermark { opacity: 0.38; }
 
         /* ── 시우스 — 화이트톤 + SYUS색, 워터마크 ── */
         .gw-door--syus {
@@ -202,10 +206,14 @@ export default function GatewayPage() {
           border-top: 1px solid #E0DBD0;
         }
         .gw-syus-watermark {
-          /* transform-origin: hover scale(1.03)의 확대분이 문 밖으로 밀려 잘리지 않게. */
-          background: url('/wm-syus.jpg') no-repeat center 28%;
+          /* transform-origin: hover scale(1.03)의 확대분이 문 밖으로 밀려 잘리지 않게.
+             v2: 원본 wm-syus.jpg는 순백(255,255,255) 배경이라 불투명도를 0.12에서
+             올리는 순간 문 배경(#F4F2ED)보다 밝은 흰 사각형이 드러났다. 전 픽셀에
+             244/242/237을 곱해(=multiply) 흰 배경이 정확히 문 배경색이 되게 구운 판.
+             경계가 사라지고 붓결의 색만 남는다. */
+          background: url('/wm-syus-v2.jpg') no-repeat center 28%;
           background-size: min(96%, 860px, 62svh) auto;
-          opacity: 0.12;
+          opacity: 0.22; /* 0.12는 밝은 크림 위에서 색이 날아가 흐릿했다 */
           transform-origin: center center;
           transition: opacity 0.5s ease, transform 0.5s ease;
         }
@@ -214,7 +222,7 @@ export default function GatewayPage() {
         .gw-door--syus:hover .gw-overlay--syus,
         .gw-door--syus:focus-visible .gw-overlay--syus { opacity: 1; }
         .gw-door--syus:hover .gw-syus-watermark,
-        .gw-door--syus:focus-visible .gw-syus-watermark { opacity: 0.18; transform: scale(1.03); }
+        .gw-door--syus:focus-visible .gw-syus-watermark { opacity: 0.30; transform: scale(1.03); }
 
         @media (min-width: 1024px) {
           .syus-gateway { flex-direction: row; }
