@@ -184,7 +184,11 @@ export default function GatewayPage() {
              60svh는 화면이 낮을 때만 작동하는 안전장치(1080p·1440p에선 760px 유지). */
           background: url('/wm-muol-v3.png') no-repeat center 28%;
           background-size: min(88%, 760px, 60svh) auto;
-          opacity: 0.30;
+          opacity: 0.55; /* 2026-08-23 사장님: "너무 옅다" → 0.30에서 상향.
+             워터마크는 문 위쪽(28%)에, 글자는 아래에 있어 서로 겹치지 않는다.
+             실측 결과 0.30/0.42/0.55 어느 값에서도 글자 자리 대비가 동일했다
+             (무대올림 라벨 10.57 / 헤드라인 17.70). 즉 여기서는 선명도와 가독성이
+             상충하지 않으므로 눈에 보이는 쪽으로 올렸다. */
           /* 2026-08-21: 순백 단색(brightness(0) invert(1)) → 확정 배색으로 되돌림.
              filter가 두 겹(글자/단면 지시선)을 한 색으로 납작하게 만들고 있었다.
              v3는 어두운 배경용 배색을 파일 자체에 구워넣은 판이다:
@@ -197,11 +201,19 @@ export default function GatewayPage() {
         .gw-door--muol:hover .gw-overlay--muol,
         .gw-door--muol:focus-visible .gw-overlay--muol { opacity: 1; }
         .gw-door--muol:hover .gw-muol-watermark,
-        .gw-door--muol:focus-visible .gw-muol-watermark { opacity: 0.38; }
+        .gw-door--muol:focus-visible .gw-muol-watermark { opacity: 0.66; }
 
         /* ── 시우스 — 화이트톤 + SYUS색, 워터마크 ── */
         .gw-door--syus {
-          background-color: #F4F2ED;
+          /* 2026-08-23: 단색 크림 → 고스트라이트 사진. 빈 극장에 홀로 켜두는 등 하나와
+             나머지 전부 여백. cover + center로 두면 등이 두 문의 경계선 바로 옆에 서서
+             왼쪽 어둠과 오른쪽 빛 사이에 놓인다. 등이 거의 검정이라 밝기 하한을 전면에
+             걸면 지워지므로, 그레이딩 단계에서 등이 선 좌측 띠를 마스크로 제외했다
+             (output/brand/갈림길_배경/ghostlight/grade_ghostlight.py).
+             background-position은 center 고정 — 20%로 당기면 등이 글자 쪽으로 들어와
+             라벨 대비가 4.47로 기준(4.5) 아래로 떨어진다. */
+          background: #F4F2ED url('/syus-bg-ghostlight.jpg') no-repeat center center;
+          background-size: cover;
           min-height: 50svh;
           border-top: 1px solid #E0DBD0;
         }
@@ -215,7 +227,8 @@ export default function GatewayPage() {
              완전 불투명은 0.3%뿐이라, 배경 질감이 글자 안쪽까지 비쳐 보인다. */
           background: url('/wm-syus-v3.png') no-repeat center 28%;
           background-size: min(96%, 860px, 62svh) auto;
-          opacity: 0.22; /* 0.12는 밝은 크림 위에서 색이 날아가 흐릿했다 */
+          opacity: 0.46; /* 0.12는 색이 날아갔고 0.22도 옅다는 지적(2026-08-23).
+             글자와 세로로 분리돼 있어 올려도 대비가 안 떨어진다(라벨 5.12 유지). */
           transform-origin: center center;
           transition: opacity 0.5s ease, transform 0.5s ease;
         }
@@ -224,7 +237,7 @@ export default function GatewayPage() {
         .gw-door--syus:hover .gw-overlay--syus,
         .gw-door--syus:focus-visible .gw-overlay--syus { opacity: 1; }
         .gw-door--syus:hover .gw-syus-watermark,
-        .gw-door--syus:focus-visible .gw-syus-watermark { opacity: 0.30; transform: scale(1.03); }
+        .gw-door--syus:focus-visible .gw-syus-watermark { opacity: 0.56; transform: scale(1.03); }
 
         @media (min-width: 1024px) {
           .syus-gateway { flex-direction: row; }
@@ -314,19 +327,29 @@ export default function GatewayPage() {
           /* 문이 각각 50svh(합 100svh)라 세로 여유가 0이다. 데스크톱의 23vh를 그대로
              쓰면 문이 자라 시우스 "들어가기"가 첫 화면 밖으로 나간다. 텍스트는
              7vh로 되돌리고, 대신 워터마크를 줄여 문 위쪽에 올려 겹침을 피한다.
-             터치엔 hover가 없어 기본 투명도를 데스크톱보다 올린다. */
+             투명도는 데스크톱과 같은 값(0.55 / 0.46) — 터치엔 hover가 없어 기본값이
+             곧 최종 인상이다. */
           .gw-door-inner { margin-top: 16vh; }
           .gw-muol-watermark {
             /* 12%는 상단 중앙 사유유사 배지(y 30~88) 뒤로 로고가 들어가 가려졌다.
                배지 아래로 내리고 크기를 줄여 설명글과도 안 겹치게 한다. */
             background-position: center 27%;
             background-size: min(32%, 20svh) auto;
-            opacity: 0.20;
+            opacity: 0.55;
           }
           .gw-syus-watermark {
             background-position: center 14%;
             background-size: min(62%, 30svh) auto;
-            opacity: 0.15;
+            opacity: 0.46;
+          }
+          /* 모바일에선 문이 화면 전폭이라, 데스크톱에서 두 문 경계에 서 있던
+             고스트라이트가 글자 위로 들어온다. 등 폭이 50px인데 글자 좌측 여백은
+             36px뿐이라 둘을 나란히 둘 방법이 없다 — 배치를 어떻게 옮겨도 겹치거나
+             잘린다. 겹침을 피하는 쪽을 택해 배경을 키워 등을 화면 밖으로 보낸다.
+             빛의 그라데이션과 바닥선은 남아 빈 화면이 되지 않는다. */
+          .gw-door--syus {
+            background-size: auto 160%;
+            background-position: 72% center;
           }
         }
 
