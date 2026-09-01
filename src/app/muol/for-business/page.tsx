@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { COMPANY, COMPANY_ONELINE } from "@/lib/company";
+import { OG_MUOL } from "@/lib/ogCards";
 
 export const metadata: Metadata = {
   title: "광고주를 위한 안내 · 무대올림",
@@ -10,6 +11,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "광고주를 위한 안내 · 무대올림",
     description: "공연·문화 인접 브랜드를 위한 광고 안내. 1:1 견적 문의 환영합니다.",
+    // openGraph를 선언하면 muol/layout.tsx의 images까지 통째로 갈린다.
+    // 2026-09-01 이전에는 이 줄이 없어 이 페이지만 공유 카드가 비어 있었다.
+    images: [OG_MUOL],
   },
 };
 

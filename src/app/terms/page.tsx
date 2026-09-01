@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { OG_MUOL } from "@/lib/ogCards";
 
 export const metadata: Metadata = {
   title: "이용약관",
@@ -12,20 +13,13 @@ export const metadata: Metadata = {
       "무대올림 서비스 이용약관 — 회원·공연자·관리자의 권리·의무, 후기·환불·면책 조항.",
     url: "https://syus.co.kr/terms",
     type: "article",
-    images: [
-      {
-        url: "/og-default.png",
-        width: 1200,
-        height: 630,
-        alt: "무대올림 이용약관",
-      },
-    ],
+    images: [OG_MUOL],
   },
   twitter: {
     card: "summary_large_image",
     title: "이용약관 · 무대올림",
     description: "무대올림 서비스 이용약관 — 회원·공연자·관리자 권리와 의무.",
-    images: ["/og-default.png"],
+    images: [OG_MUOL.url],
   },
 };
 

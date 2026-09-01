@@ -4,6 +4,7 @@ import Image from "next/image";
 import SyusAuthLink from "@/components/SyusAuthLink";
 import SyusAdminLink from "@/components/SyusAdminLink";
 import SyusFooter from "@/components/SyusFooter";
+import { OG_SYUS } from "@/lib/ogCards";
 
 /**
  * 시우스(SYUS) 세그먼트 레이아웃 — 2026-06-30 3층 구조.
@@ -43,6 +44,15 @@ export const metadata: Metadata = {
     siteName: "사유유사 SYUS",
     locale: "ko_KR",
     type: "website",
+    // 2026-09-01 신설. 그 전에는 시우스 층에 자기 카드가 없어, 견해글을 공유하면
+    // 루트(게이트웨이) 카드가 대신 떴다. 시우스 글은 시우스 카드로 나가야 한다.
+    images: [OG_SYUS],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "시우스 SYUS — 연기를 깊게 들여다보다",
+    description: "연기를 기록하고, 고민을 나누고, 무대를 오래 들여다보는 커뮤니티.",
+    images: [OG_SYUS.url],
   },
 };
 

@@ -9,6 +9,7 @@ import { sanitizeSearchTerm, todayKey, isEnded } from "@/lib/showFilters";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
+import { OG_MUOL } from "@/lib/ogCards";
 
 export const revalidate = 60;
 
@@ -41,21 +42,14 @@ export const metadata: Metadata = {
       "오늘 막이 오르는 대학 무대예술 공연. 연극·뮤지컬·무용·국악·음악·전통연희를 17개 지역에서.",
     url: "https://syus.co.kr/muol/shows",
     type: "website",
-    images: [
-      {
-        url: "/og-default.png",
-        width: 1200,
-        height: 630,
-        alt: "무대올림 공연 일정",
-      },
-    ],
+    images: [OG_MUOL],
   },
   twitter: {
     card: "summary_large_image",
     title: "공연 일정 · 무대올림",
     description:
       "오늘 막이 오르는 대학 무대예술 공연. 연극·뮤지컬·무용·국악·음악·전통연희를 17개 지역에서.",
-    images: ["/og-default.png"],
+    images: [OG_MUOL.url],
   },
 };
 

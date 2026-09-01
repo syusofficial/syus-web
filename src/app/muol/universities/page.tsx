@@ -22,6 +22,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { REGIONS_EXCLUDE_ALL } from "@/lib/constants";
 import type { Metadata } from "next";
+import { OG_MUOL } from "@/lib/ogCards";
 
 export const revalidate = 600;
 
@@ -35,6 +36,9 @@ export const metadata: Metadata = {
     description:
       "무대올림에 공연을 올린 학과만 모아 둔 디렉토리. 지역별로 정리되어 있습니다.",
     url: "https://syus.co.kr/universities",
+    // openGraph를 선언하면 muol/layout.tsx의 images까지 통째로 갈린다.
+    // 2026-09-01 이전에는 이 줄이 없어 이 페이지만 공유 카드가 비어 있었다.
+    images: [OG_MUOL],
   },
 };
 

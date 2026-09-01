@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { COMPANY, COMPANY_ROWS } from "@/lib/company";
+import { OG_GATEWAY } from "@/lib/ogCards";
 
 /**
  * /company — 사유유사(모회사) 소개 · CI 페이지. 2026-08-19 신설.
@@ -31,21 +32,14 @@ export const metadata: Metadata = {
       "사유유사(思惟流沙)는 한국 대학 무대예술을 기록하고 연결하고 알리는 작은 통로입니다. 무대올림과 시우스를 운영합니다.",
     url: "https://syus.co.kr/company",
     type: "website",
-    images: [
-      {
-        url: "/og-default.png",
-        width: 1200,
-        height: 630,
-        alt: "사유유사 SYUS — 두루 생각하여, 이를 무대 위에서 흘려보냅니다.",
-      },
-    ],
+    images: [OG_GATEWAY],
   },
   twitter: {
     card: "summary_large_image",
     title: "사유유사 SYUS",
     description:
       "한국 대학 무대예술을 기록하고 연결하고 알리는 작은 통로. 무대올림과 시우스를 운영합니다.",
-    images: ["/og-default.png"],
+    images: [OG_GATEWAY.url],
   },
 };
 

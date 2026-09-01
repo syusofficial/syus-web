@@ -9,6 +9,7 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import SessionManager from "@/components/SessionManager";
 import PageViewTracker from "@/components/PageViewTracker";
 import RealtimePresence from "@/components/RealtimePresence";
+import { OG_GATEWAY } from "@/lib/ogCards";
 
 const notoSerifKR = Noto_Serif_KR({
   variable: "--font-noto-serif-kr",
@@ -74,20 +75,13 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     locale: "ko_KR",
     type: "website",
-    images: [
-      {
-        url: "/og-default.png",
-        width: 1200,
-        height: 630,
-        alt: "사유유사 SYUS — 무대올림과 시우스, 두 개의 문.",
-      },
-    ],
+    images: [OG_GATEWAY],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} — ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
-    images: ["/og-default.png"],
+    images: [OG_GATEWAY.url],
   },
   robots: {
     index: true,

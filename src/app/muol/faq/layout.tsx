@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { buildBreadcrumbList } from "@/lib/structuredData";
+import { OG_MUOL } from "@/lib/ogCards";
 
 /**
  * /faq 메타데이터 — 자주 묻는 질문 페이지.
@@ -28,21 +29,14 @@ export const metadata: Metadata = {
       "회원·관람·공연자 등록·후기까지. 무대올림 이용 중 자주 묻는 질문을 카테고리별로 정리했습니다.",
     url: "https://syus.co.kr/muol/faq",
     type: "website",
-    images: [
-      {
-        url: "/og-default.png",
-        width: 1200,
-        height: 630,
-        alt: "무대올림 자주 묻는 질문",
-      },
-    ],
+    images: [OG_MUOL],
   },
   twitter: {
     card: "summary_large_image",
     title: "자주 묻는 질문 · 무대올림",
     description:
       "회원·관람·공연자 등록·후기까지. 무대올림 이용 중 자주 묻는 질문 모음.",
-    images: ["/og-default.png"],
+    images: [OG_MUOL.url],
   },
 };
 

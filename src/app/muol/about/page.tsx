@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildBreadcrumbList } from "@/lib/structuredData";
+import { OG_MUOL } from "@/lib/ogCards";
 
 export const metadata: Metadata = {
   title: "소개",
@@ -15,14 +16,7 @@ export const metadata: Metadata = {
       "한국 대학 무대예술의 진흥을 향해 — 대학 무대예술 공연을 올리고, 지역 관객이 좌석을 예약하는 플랫폼. 공연팀 게재료 없음. 운영: 사유유사 SYUS.",
     url: "https://syus.co.kr/muol/about",
     type: "website",
-    images: [
-      {
-        url: "/og-default.png",
-        width: 1200,
-        height: 630,
-        alt: "무대올림 — 흩어진 무대를, 같은 흐름 위에.",
-      },
-    ],
+    images: [OG_MUOL],
   },
   twitter: {
     card: "summary_large_image",
@@ -30,7 +24,7 @@ export const metadata: Metadata = {
     description:
       // 2026-08-03 사실 정정: 장르는 7개(기타 포함)다. "8개"는 무용을 잠깐 둘로 나눴던 구성의 잔재.
       "한국 대학 무대예술의 진흥을 향해. 대학 무대예술 공연 플랫폼. 공연팀 게재료 없음. 연극·뮤지컬·무용·국악·음악·전통연희를 17개 지역에서.",
-    images: ["/og-default.png"],
+    images: [OG_MUOL.url],
   },
 };
 

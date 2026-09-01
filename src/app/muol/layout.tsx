@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import MuolRegisterPrompt from "@/components/MuolRegisterPrompt";
+import { OG_MUOL } from "@/lib/ogCards";
 
 /**
  * 무대올림 세그먼트 레이아웃.
@@ -47,12 +48,15 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     locale: "ko_KR",
     type: "website",
-    // og:image는 muol/opengraph-image.tsx(동적)가 자동 생성 — 여기 images 중복 지정 안 함
+    // 2026-09-01: 동적 생성(muol/opengraph-image.tsx)을 접고 한글 로고타입 카드(정적 PNG)로 통일.
+    // 하위 페이지가 openGraph를 선언하면 이 값이 통째로 갈리므로, 그 페이지들도 각자 OG_MUOL을 적는다.
+    images: [OG_MUOL],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} · ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
+    images: [OG_MUOL.url],
   },
   /**
    * 2026-08-03 SEO 수정 — 레이아웃 canonical이 하위 전체를 오염시키던 문제.
