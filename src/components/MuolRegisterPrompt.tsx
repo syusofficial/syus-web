@@ -118,10 +118,12 @@ export default function MuolRegisterPrompt() {
 
   /** 공연자 문의 착지점 — 로그인 상태에 따라 최단 경로로 보낸다.
    *  비로그인을 곧장 /muol/performer로 보내면 로그인 벽을 만난다(승인 공연 0건의 유력한 원인). */
+  //  2026-09-10 점검 — 목적지에 ?tab=performer 를 붙였다. 마이페이지가 탭 딥링크를 읽게 되기
+  //  전까지는 첫 탭(회원 정보)에 착지해, 신청 버튼을 다섯 번째 탭에서 스스로 찾아야 했다.
   const performerHref =
     viewer === "guest"
-      ? `/auth/signup?next=${encodeURIComponent("/mypage")}`
-      : "/mypage";
+      ? `/auth/signup?next=${encodeURIComponent("/mypage?tab=performer")}`
+      : "/mypage?tab=performer";
 
   const close = useCallback((muteMs: number, countsAsDismissal: boolean) => {
     setLeaving(true);

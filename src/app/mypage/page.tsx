@@ -14,6 +14,18 @@ import type { Profile, Show, Reservation } from "@/types";
 
 type Tab = "info" | "likes" | "recent" | "performer" | "reservations";
 
+const TAB_VALUES: readonly Tab[] = ["info", "likes", "recent", "performer", "reservations"];
+
+/** 주소의 ?tab= 을 읽어 첫 탭을 정한다 — admin/page.tsx:34의 같은 함수를 그대로 따랐다.
+ *  2026-09-10 점검 전에는 이 페이지만 탭 딥링크를 못 읽어서, "공연자 신청하러 가기"류 링크가
+ *  전부 첫 탭(회원 정보)에 착지했다. 신청 버튼은 다섯 번째 탭에 있어서 스스로 찾아야 했다.
+ *  useSearchParams 대신 window.location을 읽는 이유도 admin과 같다 — Suspense 경계가 필요 없다. */
+function initialTabFromSearch(): Tab {
+  if (typeof window === "undefined") return "info";
+  const raw = new URLSearchParams(window.location.search).get("tab");
+  return TAB_VALUES.includes(raw as Tab) ? (raw as Tab) : "info";
+}
+
 // 버튼 4상태 공통 클래스(디자인팀 2026-07-20 진단 3번 반영)
 const LINK_BTN_STATES =
   "transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]";
@@ -51,7 +63,7 @@ export default function MyPage() {
   const [waitlistPositions, setWaitlistPositions] = useState<Record<string, number>>({});
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [pendingConfirm, setPendingConfirm] = useState<PendingConfirm>(null);
-  const [tab, setTab] = useState<Tab>("info");
+  const [tab, setTab] = useState<Tab>(initialTabFromSearch);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
   const [authProvider, setAuthProvider] = useState<string>("email");

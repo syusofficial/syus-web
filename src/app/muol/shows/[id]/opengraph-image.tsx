@@ -13,12 +13,18 @@ export const contentType = "image/png";
  *
  * 1200x630 (Facebook/카카오톡 권장 OG 사이즈)
  */
-export default async function Image({ params }: { params: { id: string } }) {
+/* 2026-09-10 점검 — params를 동기 객체로 받고 있었다.
+ * Next 16의 메타데이터 이미지 핸들러는 params를 Promise로 넘긴다(같은 폴더 page.tsx:127은 이미 그렇다).
+ * 그래서 params.id가 undefined였고, .eq("id", undefined)가 조용히 빈 결과를 돌려주어
+ * 어느 공연을 공유해도 항상 아래의 기본 카드가 나갔다. 에러가 나지 않아 드러나지 않던 문제다.
+ * 공유는 이 사이트의 거의 유일한 바이럴 경로이므로, 첫 공연이 올라오기 전에 고쳐 둔다. */
+export default async function Image({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient();
   const { data: show } = await supabase
     .from("shows")
     .select("title, subtitle, performer_name, venue, region, genre, genre_custom, schedule_start, schedule_end, status")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   // 공연 데이터 없거나 미승인 — 기본 무대올림 카드

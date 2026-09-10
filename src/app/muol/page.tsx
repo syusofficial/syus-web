@@ -7,7 +7,8 @@ import HeroPosterStream, { type StreamItem } from "@/components/HeroPosterStream
 import { createClient } from "@/lib/supabase/server";
 import { InstitutionSidebar, PartnerAdSidebar } from "@/components/PartnerSidebars";
 import MobilePartnerStrip from "@/components/MobilePartnerStrip";
-import { isEnded, todayKey, showEndKey } from "@/lib/showFilters";
+import { isEnded, todayKey } from "@/lib/showFilters";
+import { showDateKey } from "@/lib/showDate";
 import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
 
@@ -67,13 +68,21 @@ export default async function HomePage() {
   const featured = active.filter((s) => s.featured).slice(0, 6);
   const featuredIds = new Set(featured.map((s) => s.id));
 
-  // 곧 시작하는 공연
+  /* 곧 시작하는 공연
+   * 2026-09-10 점검 — 여기가 showEndKey(종료일) 기준이라 이름과 정반대로 동작했다.
+   * 두 달 전 시작해 내일 끝나는 공연이 "곧 시작하는 공연" 첫 자리에 오고,
+   * 오늘 막을 올려 한 달 가는 공연은 아래로 밀렸다. 홈 첫 화면 6칸이 이름과 다른 기준으로 채워진 셈이다.
+   * 이제 시작일을 본다. 아직 막이 안 오른 공연을 임박한 순으로 앞에 두고,
+   * 이미 진행 중인 공연은 최근 시작한 것부터 그 뒤에 붙인다. (showDate.ts의 함수만 쓴다) */
   const upcoming = active
     .filter((s) => !featuredIds.has(s.id))
     .sort((a, b) => {
-      const ka = showEndKey(a) ?? "9999";
-      const kb = showEndKey(b) ?? "9999";
-      return ka.localeCompare(kb);
+      const ka = showDateKey(a.schedule_start) ?? "9999-99-99";
+      const kb = showDateKey(b.schedule_start) ?? "9999-99-99";
+      const notYetA = ka >= today ? 0 : 1;
+      const notYetB = kb >= today ? 0 : 1;
+      if (notYetA !== notYetB) return notYetA - notYetB;
+      return notYetA === 0 ? ka.localeCompare(kb) : kb.localeCompare(ka);
     })
     .slice(0, 6);
 
@@ -238,8 +247,11 @@ export default async function HomePage() {
               >
                 공연 둘러보기 →
               </Link>
+              {/* 2026-09-10 점검 — next가 없어서 가입을 마친 사람이 갈림길("/")에 떨어졌다.
+                  방금 "무대 올리기"를 누른 사람은 의도가 가장 뚜렷한 상태인데, 그 순간 목적지를 잃었다.
+                  이제 가입 직후 공연자 신청 탭으로 곧장 이어진다. */}
               <Link
-                href="/auth/signup"
+                href="/auth/signup?next=%2Fmypage%3Ftab%3Dperformer"
                 className="inline-block px-7 py-4 text-sm tracking-wider transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
@@ -471,7 +483,7 @@ export default async function HomePage() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
-              href="/auth/signup"
+              href="/auth/signup?next=%2Fmypage%3Ftab%3Dperformer"
               className="px-8 py-3 text-sm tracking-wider transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",

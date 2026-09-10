@@ -6,6 +6,7 @@ import MobilePartnerStrip from "@/components/MobilePartnerStrip";
 import { createClient } from "@/lib/supabase/server";
 import { REGIONS, GENRES, SHOW_CATEGORIES } from "@/lib/constants";
 import { sanitizeSearchTerm, todayKey, isEnded } from "@/lib/showFilters";
+import { showDateKey } from "@/lib/showDate";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
@@ -110,9 +111,24 @@ export default async function ShowsPage({
 
   const ratingMap = buildRatingMap(ratingsRaw as { show_id: string; score: number }[] | null);
 
-  // 진행 중·예정 공연만 필터 (종료된 건 /archive로)
+  /* 진행 중·예정 공연만 필터 (종료된 건 /archive로)
+   * 2026-09-10 점검 — 정렬이 등록 역순(created_at desc) 하나뿐이었다. 화면 제목은
+   * "진행 중 · 예정 공연"인데, 맨 위에는 오늘 등록된 반년 뒤 공연이 오고 내일 막이 오르는 공연은
+   * 뒷장으로 밀렸다. 관객이 이 목록에 오는 이유는 "지금 볼 수 있는 무대"를 찾기 위해서다.
+   * 그래서 기본 정렬을 임박순으로 바꾼다 — 아직 시작 안 한 공연을 가까운 순으로 먼저,
+   * 이미 막이 오른 공연은 최근 시작한 것부터 뒤에. 홈의 "곧 시작하는 공연"과 같은 규칙이다.
+   * (정렬 선택 UI는 두지 않았다 — 이 화면은 이미 필터 칩이 첫 포스터를 밀어내고 있다.) */
   const today = todayKey();
-  const activeShows = (showsRaw as Show[] ?? []).filter((s) => !isEnded(s, today));
+  const activeShows = (showsRaw as Show[] ?? [])
+    .filter((s) => !isEnded(s, today))
+    .sort((a, b) => {
+      const ka = showDateKey(a.schedule_start) ?? "9999-99-99";
+      const kb = showDateKey(b.schedule_start) ?? "9999-99-99";
+      const notYetA = ka >= today ? 0 : 1;
+      const notYetB = kb >= today ? 0 : 1;
+      if (notYetA !== notYetB) return notYetA - notYetB;
+      return notYetA === 0 ? ka.localeCompare(kb) : kb.localeCompare(ka);
+    });
 
   const totalCount = activeShows.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
@@ -441,7 +457,11 @@ export default async function ShowsPage({
                 </p>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
                   <Link
-                    href="/syus/essays"
+                    // 2026-09-10 점검 — 여기가 "/syus/essays" 였는데 그 라우트에는 page.tsx가 없어
+                    // 라이브에서 404였다(실측 확인). 즉 공연 0건 화면에서 관객에게 내준 출구 두 개 중
+                    // 하나가 막힌 문이었다. 견해글 목록의 실제 주소는 /syus/proscenium(주인장 견해글 허브)이고
+                    // 현재 28편이 발행돼 있다. 사이트 전체에서 "/syus/essays"를 링크하던 곳은 이 한 줄뿐이었다.
+                    href="/syus/proscenium"
                     className="inline-block px-4 py-2.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                     style={{
                       fontFamily: "var(--font-noto-sans-kr)",

@@ -80,7 +80,15 @@ export default function PerformerPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [authState, setAuthState] = useState<"loading" | "denied" | "ready">("loading");
+  /* 2026-09-10 점검 — "guest"·"pending"을 새로 둔다.
+   * 그전에는 비로그인이면 곧장 /auth/login 으로 튕겼고, 로그인했어도 공연자가 아니면 403 화면이었다.
+   * 그런데 사이트 안에서 이 페이지로 보내는 링크는 7곳(NavMega·Footer·학과 디렉토리 2곳·공연 목록·
+   * 아카이브·about)이고, 라벨은 "공연자 안내"처럼 안내를 약속한다. 처음 온 학생·조교가 그 문을 열면
+   * 읽을 것 없이 벽부터 만났다 — MuolRegisterPrompt.tsx:119가 이미 "승인 공연 0건의 유력한 원인"이라고
+   * 적어둔 그 벽이다. 그때는 팝업 한 곳만 우회시켰고 나머지 7곳은 그대로였다.
+   * 이제 이 페이지가 상태에 따라 문을 갈라 연다: 손님에게는 안내를, 신청자에게는 진행 상황을,
+   * 공연자에게는 지금까지의 대시보드를 그대로. 링크 7곳은 하나도 고치지 않아도 된다. */
+  const [authState, setAuthState] = useState<"loading" | "guest" | "pending" | "denied" | "ready">("loading");
   const [myShows, setMyShows] = useState<Show[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -183,16 +191,18 @@ export default function PerformerPage() {
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user) { router.push("/auth/login"); return; }
+      // 비로그인은 튕기지 않는다 — 아래 guest 화면에서 무엇을 하는 곳인지 먼저 읽게 한다.
+      if (!data.user) { setAuthState("guest"); return; }
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("role, name")
+        .select("role, name, performer_status")
         .eq("id", data.user.id)
         .single();
 
       if (profile?.role !== "performer" && profile?.role !== "admin") {
-        setAuthState("denied");
+        // 이미 신청해 검토를 기다리는 사람과, 아직 신청조차 못 한 사람은 다음 할 일이 다르다.
+        setAuthState(profile?.performer_status === "pending" ? "pending" : "denied");
         return;
       }
 
@@ -604,10 +614,35 @@ export default function PerformerPage() {
     let savedShowId: string | null = null;
 
     if (editingId) {
-      // 수정 모드 — 상태는 다시 pending으로 (관리자 재검토)
+      /* 2026-09-10 점검 — 그전에는 무엇을 고치든 무조건 status를 pending으로 되돌렸다.
+       * 그래서 공연 당일 "19:30 → 19:00" 한 줄을 정정하면 그 공연이 목록·홈·캘린더·검색에서
+       * 즉시 사라졌고, 다시 걸리는 건 운영자가 승인한 뒤였다. 운영자 업무 창은 평일 12:30~17:00뿐이라
+       * 금요일 저녁에 고친 주말 공연은 주말 내내 사라진 채로 있었다. 공연팀 입장에서 수정이
+       * 위험한 행동이 되면, 결국 틀린 정보가 그대로 걸린다 — 홍보 사이트로서는 최악이다.
+       *
+       * 그렇다고 승인된 공연을 무조건 게시 유지하면 심사를 우회해 내용을 바꿔치기할 수 있다.
+       * 그래서 필드를 나눈다. 사람이 읽는 내용(제목·소개·포스터·출연진·장소명 등)이 바뀌면 재심사하고,
+       * 날짜·시간·러닝타임·정원처럼 값이 정해진 사실 정정만 바뀐 경우에는 게시를 유지한 채 즉시 반영한다.
+       * 장르·지역·공연 구분은 선택지에서 고르는 값이라 임의 문구가 들어갈 수 없어 후자에 둔다. */
+      const REVIEW_TRIGGERS = [
+        "title", "subtitle", "description", "poster_url", "cast_members", "performer_name",
+        "genre_custom", "school_department", "venue", "venue_address", "directions",
+        "reservation_url", "ticket_url",
+      ] as const;
+
+      const current = myShows.find((s) => s.id === editingId);
+      const norm = (v: unknown) => JSON.stringify(v ?? null);
+      const contentChanged =
+        !current ||
+        REVIEW_TRIGGERS.some(
+          (k) => norm((payload as Record<string, unknown>)[k]) !== norm((current as unknown as Record<string, unknown>)[k])
+        );
+      // 이미 게시 중인 공연이고 사실 정정만 한 경우에만 게시를 유지한다.
+      const keepApproved = current?.status === "approved" && !contentChanged;
+
       const { data: updated, error: updateError } = await supabase
         .from("shows")
-        .update({ ...payload, status: "pending" })
+        .update(keepApproved ? payload : { ...payload, status: "pending" })
         .eq("id", editingId)
         .select()
         .single();
@@ -714,27 +749,156 @@ export default function PerformerPage() {
     );
   }
 
-  if (authState === "denied") {
+  /* 손님 · 신청 대기 · 아직 신청 안 한 회원 — 셋 다 "읽을 것"이 먼저다.
+   * 세 화면의 뼈대는 같고 맨 위 인사말과 맨 아래 다음 걸음만 다르다. */
+  if (authState === "guest" || authState === "pending" || authState === "denied") {
+    const intro =
+      authState === "pending"
+        ? {
+            eyebrow: "신청을 받았습니다",
+            title: "확인하고 있습니다",
+            body: "보내주신 신청을 운영자가 살펴보고 있습니다. 영업일 기준 1~3일 안에 결과를 알려드립니다. 자격이 열리면 이 자리가 바로 공연 등록 화면으로 바뀝니다.",
+          }
+        : {
+            eyebrow: "무대를 올리는 분께",
+            title: "올려주시면, 저희가 걸어 두겠습니다",
+            body: "무대올림은 한국 대학 무대예술의 오늘을 한데 모아 기록하고 알리는 곳입니다. 공연을 올리는 데에도, 사이트에 걸리는 데에도 비용을 받지 않습니다.",
+          };
+
+    /* 다음 걸음 — 지금 서 계신 자리에서 가장 가까운 문 하나만 크게 연다. */
+    const cta =
+      authState === "guest"
+        ? { href: "/auth/signup?next=%2Fmypage%3Ftab%3Dperformer", label: "가입하고 시작하기 →" }
+        : authState === "denied"
+          ? { href: "/mypage?tab=performer", label: "공연자 신청하러 가기 →" }
+          : { href: "/mypage?tab=performer", label: "신청 상황 보기 →" };
+
+    const steps = [
+      { num: "01", title: "회원으로 가입합니다", meta: "바로", body: "이메일이나 카카오·구글 계정이면 됩니다." },
+      { num: "02", title: "마이페이지에서 공연자 신청을 누릅니다", meta: "1분", body: "학과·동아리·극단 어느 이름으로 활동하시든 같은 자리에서 신청하십니다." },
+      { num: "03", title: "운영자가 확인합니다", meta: "영업일 1~3일", body: "확인이 끝나면 안내 메일이 갑니다. 진행 상황은 마이페이지에서 보실 수 있습니다." },
+      { num: "04", title: "공연을 등록합니다", meta: "10~20분", body: "제목과 포스터, 일정과 회차, 장소, 장르를 적습니다. 포스터 이미지와 확정된 일정, 객석 규모를 미리 챙겨두시면 수월합니다." },
+      { num: "05", title: "확인을 거쳐 사이트에 걸립니다", meta: "영업일 1~3일", body: "올려주신 내용을 한 번 더 살펴본 뒤 게재합니다. 좌석 신청도 무대올림에서 받으실 수 있습니다." },
+    ];
+
+    const focusRing =
+      "transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]";
+
     return (
-      <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F0EEE9" }}>
-        <div className="text-center max-w-sm space-y-5">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
-            403
-          </p>
-          <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
-            공연자 권한이 필요합니다
-          </h1>
-          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-            공연을 등록하려면 마이페이지에서 공연자 신청을 먼저 진행해주세요.
-            관리자 검토 후 권한이 부여됩니다.
-          </p>
-          <Link
-            href="/mypage"
-            className="inline-block px-8 py-3 text-sm tracking-wider"
-            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#0B5563", color: "#F0EEE9" }}
+      <div className="pt-24 md:pt-36 min-h-screen" style={{ backgroundColor: "#F0EEE9" }}>
+        <div className="max-w-2xl mx-auto px-5 sm:px-8 pb-20">
+          <p
+            className="text-xs tracking-[0.3em] uppercase mb-4"
+            style={{ fontFamily: "var(--font-inter)", color: "#5F5145" }}
           >
-            마이페이지로
-          </Link>
+            {intro.eyebrow}
+          </p>
+          <h1
+            className="text-2xl md:text-3xl font-bold mb-5 leading-snug"
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C", wordBreak: "keep-all" }}
+          >
+            {intro.title}
+          </h1>
+          <p
+            className="text-sm md:text-base leading-[1.9] mb-10"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+          >
+            {intro.body}
+          </p>
+
+          <div className="space-y-6 mb-12">
+            {steps.map((s) => (
+              <div
+                key={s.num}
+                className="grid grid-cols-[38px_1fr] md:grid-cols-[56px_1fr] gap-4 md:gap-6 items-start pt-5"
+                style={{ borderTop: "1px solid #D4CFC1" }}
+              >
+                <span
+                  className="text-xl md:text-2xl leading-none"
+                  style={{ fontFamily: "var(--font-cormorant)", color: "#0B5563", fontWeight: 600 }}
+                >
+                  {s.num}
+                </span>
+                <div>
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-1.5">
+                    <p
+                      className="text-sm md:text-base font-bold"
+                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27", wordBreak: "keep-all" }}
+                    >
+                      {s.title}
+                    </p>
+                    <span
+                      className="text-[0.7rem] px-2 py-0.5"
+                      style={{
+                        fontFamily: "var(--font-noto-sans-kr)",
+                        backgroundColor: "#E6E1D6",
+                        color: "#5F5145",
+                        border: "1px solid #A0957D",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {s.meta}
+                    </span>
+                  </div>
+                  <p
+                    className="text-sm leading-[1.9]"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F5145", wordBreak: "keep-all" }}
+                  >
+                    {s.body}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href={cta.href}
+              className={`inline-flex items-center px-6 text-sm tracking-wide ${focusRing}`}
+              style={{
+                fontFamily: "var(--font-noto-sans-kr)",
+                backgroundColor: "#5C2A42",
+                color: "#F0EEE9",
+                fontWeight: 600,
+                minHeight: 48,
+              }}
+            >
+              {cta.label}
+            </Link>
+            {authState === "guest" && (
+              <Link
+                href="/auth/login?next=%2Fmuol%2Fperformer"
+                className={`inline-flex items-center px-5 text-sm ${focusRing}`}
+                style={{
+                  fontFamily: "var(--font-noto-sans-kr)",
+                  color: "#0B5563",
+                  border: "1px solid #A0957D",
+                  minHeight: 48,
+                }}
+              >
+                이미 계정이 있습니다
+              </Link>
+            )}
+          </div>
+
+          <p
+            className="text-xs leading-relaxed mt-8"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F5145", wordBreak: "keep-all" }}
+          >
+            더 자세한 내용은{" "}
+            <Link href="/muol/about#for-performer" className="underline" style={{ color: "#0B5563" }}>
+              무대올림 소개
+            </Link>
+            와{" "}
+            <Link href="/muol/faq" className="underline" style={{ color: "#0B5563" }}>
+              자주 묻는 질문
+            </Link>
+            에 적어두었습니다. 막히는 곳이 있으시면{" "}
+            <Link href="/muol/contact" className="underline" style={{ color: "#0B5563" }}>
+              문의
+            </Link>
+            로 알려주십시오.
+          </p>
         </div>
       </div>
     );
@@ -800,9 +964,20 @@ export default function PerformerPage() {
               <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
                 {editingId ? "공연 수정" : "새 공연 등록"}
               </h2>
+              {/* 2026-09-10 — 배지가 "무조건 재승인"이라고만 알렸다. 이제 게시 중인 공연은
+                  날짜·시간 같은 사실 정정이면 내려가지 않으므로, 그 사실을 먼저 말해준다. */}
               {editingId && (
-                <span className="text-xs px-2 py-1" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#A63D2F", backgroundColor: "#EDD4D4" }}>
-                  수정 시 다시 관리자 승인 필요
+                <span
+                  className="text-xs px-2 py-1"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    color: myShows.find((s) => s.id === editingId)?.status === "approved" ? "#2F6B4F" : "#A63D2F",
+                    backgroundColor: myShows.find((s) => s.id === editingId)?.status === "approved" ? "#D9E8DF" : "#EDD4D4",
+                  }}
+                >
+                  {myShows.find((s) => s.id === editingId)?.status === "approved"
+                    ? "일정·시간 정정은 게시된 채로 반영"
+                    : "수정 후 관리자 검토를 거쳐 게시"}
                 </span>
               )}
             </div>
@@ -1333,20 +1508,29 @@ export default function PerformerPage() {
                 </h3>
                 <div className="space-y-5">
                   <div>
+                    {/* 2026-09-10 점검 — 필수에서 선택으로 내렸다. 세 가지가 겹쳐 있었다.
+                        ① 캐스팅이 아직 안 정해진 워크샵·수업 공연은 등록 자체가 불가능했다
+                           (공연 구분 선택지에 그 유형이 버젓이 있는데도).
+                        ② 학교·포스터·주소·러닝타임은 전부 선택인데, 손이 가장 많이 가는 항목만 필수라
+                           폼을 끝까지 채우기 전에 나가는 자리가 됐다.
+                        ③ 등록자가 '본인이 아닌 사람들'의 실명을 필수로 적게 되어 있었고,
+                           그 이름이 공개 페이지와 검색 결과에 그대로 실렸다. */}
                     <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
-                      출연진 * (쉼표로 구분)
+                      출연진 (선택 · 쉼표로 구분)
                     </label>
                     <input
                       type="text"
                       value={form.cast_members}
                       onChange={(e) => setForm({ ...form, cast_members: e.target.value })}
-                      required
-                      placeholder="예: 홍길동(배역명), 김철수(배역명), 박영희(배역명)"
+                      placeholder="예: 홍길동(배역명), 김철수(배역명) — 나중에 채우셔도 됩니다"
                       className="w-full px-4 py-3 text-base outline-none"
                       style={inputStyle}
                       onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
                       onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
                     />
+                    <p className="text-xs mt-2" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5F5145", wordBreak: "keep-all" }}>
+                      본인의 동의를 받은 이름만 적어주십시오. 배역명만 쓰셔도 됩니다.
+                    </p>
                   </div>
                   <div>
                     <label className="block text-xs tracking-wider uppercase mb-2" style={labelStyle}>
@@ -1373,7 +1557,12 @@ export default function PerformerPage() {
               )}
 
               <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-                ※ {editingId ? "수정한 공연은 다시 관리자 검토 후 게시됩니다." : "등록 후 관리자 검토를 거쳐 게시됩니다."} (1~3일 소요)
+                ※{" "}
+                {!editingId
+                  ? "등록 후 관리자 검토를 거쳐 게시됩니다. (1~3일 소요)"
+                  : myShows.find((s) => s.id === editingId)?.status === "approved"
+                    ? "공연 일정·시간·러닝타임·정원처럼 사실을 바로잡는 수정은 게시된 상태 그대로 반영됩니다. 제목·소개·포스터·출연진처럼 내용이 바뀌면 다시 검토를 거칩니다. (1~3일 소요)"
+                    : "수정한 공연은 다시 관리자 검토 후 게시됩니다. (1~3일 소요)"}
               </p>
 
               <div className="pt-4 flex flex-col sm:flex-row gap-3">

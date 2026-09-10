@@ -30,12 +30,17 @@ export const metadata: Metadata = {
   title: "학과 디렉토리",
   description:
     "무대올림에 공연을 올린 적이 있는 한국 대학 무대예술 학과 목록입니다. 학과별 누적 공연과 가장 최근 무대를 한눈에 볼 수 있습니다.",
-  alternates: { canonical: "https://syus.co.kr/universities" },
+  // 2026-09-10 점검 — 구 경로 "/universities"를 가리키고 있었다.
+  // next.config.ts:46이 /universities → /muol/universities 로 308 영구 리다이렉트하므로,
+  // 리다이렉트되는 URL을 정본(canonical)으로 선언하면 구글이 그 선언을 무효 처리한다.
+  // 즉 이 페이지는 색인 정본이 없는 상태였다. shows/page.tsx:35는 이미 실제 경로를 쓰고 있었고
+  // 3층 구조 재편(2026-06-30) 때 이 파일만 함께 옮겨지지 않았다.
+  alternates: { canonical: "https://syus.co.kr/muol/universities" },
   openGraph: {
     title: "학과 디렉토리 · 무대올림",
     description:
       "무대올림에 공연을 올린 학과만 모아 둔 디렉토리. 지역별로 정리되어 있습니다.",
-    url: "https://syus.co.kr/universities",
+    url: "https://syus.co.kr/muol/universities",
     // openGraph를 선언하면 muol/layout.tsx의 images까지 통째로 갈린다.
     // 2026-09-01 이전에는 이 줄이 없어 이 페이지만 공유 카드가 비어 있었다.
     images: [OG_MUOL],

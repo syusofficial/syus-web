@@ -155,9 +155,16 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
     if (!isOwner && !isAdmin) notFound();
   }
 
+  /* 2026-09-10 점검 — 이미 막을 내린 공연인지 여기서 한 번 판정해 아래 예매 블록에서 쓴다.
+   * 그전에는 isEnded가 이 파일에서 추천 공연을 거르는 데에만 쓰였고 예매 조건에는 빠져 있어서,
+   * 아카이브나 검색으로 들어온 사람이 지난 공연에 좌석을 신청할 수 있었다 —
+   * 신청번호가 발급되고 확인 메일까지 나갔다. 관객은 갈 수 없는 공연을 예약했다고 믿고,
+   * 공연팀 명단에는 유령 신청이 쌓인다. 첫 공연이 끝나는 순간부터 바로 일어나는 일이다. */
+  const ended = isEnded(show as Show, todayKey());
+
   // 좌석 신청 확정 합계·정원·마감여부 — 매진 표시 판단용 (개별 신청자 정보는 노출 안 함)
   let reservationSummary: ReservationSummary | null = null;
-  if (show.status === "approved" && show.use_inhouse_reservation !== false) {
+  if (show.status === "approved" && !ended && show.use_inhouse_reservation !== false) {
     const { data: summaryData } = await supabase.rpc("get_show_reservation_summary", { p_show_id: id });
     reservationSummary = summaryData as ReservationSummary | null;
   }
@@ -704,8 +711,24 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
               <ShareButton url={`${SITE_URL}/muol/shows/${show.id}`} />
             )}
 
+            {/* 막을 내린 공연 — 신청 자리에 관람 후 남길 자리를 대신 둔다.
+                별점·후기 블록은 이 위에 이미 있으므로 그리로 시선을 넘긴다. */}
+            {show.status === "approved" && ended && (
+              <div
+                className="pt-2 px-4 py-4"
+                style={{ backgroundColor: "#E6E1D6" }}
+              >
+                <p
+                  className="text-sm leading-relaxed"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", wordBreak: "keep-all" }}
+                >
+                  이미 막을 내린 공연입니다. 보셨다면 별점과 후기를 남겨주십시오 — 다음에 이 무대를 찾는 분께 남습니다.
+                </p>
+              </div>
+            )}
+
             {/* CTA */}
-            {show.status === "approved" && show.use_inhouse_reservation !== false && (
+            {show.status === "approved" && !ended && show.use_inhouse_reservation !== false && (
               <div className="pt-2 flex flex-col sm:flex-row gap-3 items-start">
                 <SeatReservationForm
                   showId={show.id}
@@ -725,7 +748,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                 </Link>
               </div>
             )}
-            {show.status === "approved" && show.use_inhouse_reservation !== false && (
+            {show.status === "approved" && !ended && show.use_inhouse_reservation !== false && (
               <p
                 className="text-xs leading-relaxed pt-2"
                 style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
@@ -736,7 +759,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* 자체 예약 미사용 공연 — 기존 외부 링크 방식 (전환기 호환) */}
-            {show.status === "approved" && show.use_inhouse_reservation === false && (
+            {show.status === "approved" && !ended && show.use_inhouse_reservation === false && (
               <div className="pt-2 flex flex-col sm:flex-row gap-3">
                 {show.reservation_url ? (
                   <a
