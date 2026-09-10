@@ -17,29 +17,15 @@
  */
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { assertAdmin } from "@/lib/adminGuard";
 import { sendMail } from "@/lib/email/send";
 import { PerformerApprovedEmail } from "@/lib/email/templates/performer-approved";
 
 type ActionResult = { ok: boolean; message: string };
 
-async function assertAdmin() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { supabase, error: "로그인이 필요합니다." } as const;
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { supabase, error: "관리자만 가능합니다." } as const;
-  }
-
-  return { supabase, error: null } as const;
-}
+/* 관리자 검증(assertAdmin)은 2026-09-10에 `@/lib/adminGuard`로 옮겼다.
+ * 공연 승인·반려·대리 등록(app/actions/shows.ts)에서도 같은 검사가 필요해졌는데,
+ * 권한 검사를 복사해 두면 한쪽만 고쳐지는 순간 조용히 뚫리기 때문이다. */
 
 /**
  * 공연자 신청 승인 — role을 performer로, status를 approved로,

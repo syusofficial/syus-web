@@ -15,9 +15,12 @@ export function InstitutionSidebar() {
           >
             Related Institutions
           </p>
+          {/* 2026-09-10 — 청록(#0B5563)은 이 사이트에서 '누를 수 있는 것' 전담 색인데,
+              이 제목은 누를 수 없는 구역 이름이다. 바로 아래 기관 링크들과 같은 색이라
+              어느 쪽이 눌리는지가 색으로는 구분되지 않았다. 먹빛 소제목으로 내린다. */}
           <h3
             className="text-sm font-bold"
-            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+            style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" }}
           >
             연관 기관
           </h3>
@@ -87,9 +90,10 @@ export function PartnerAdSidebar() {
             >
               Recommended
             </p>
+            {/* 위 '연관 기관'과 같은 이유 — 누를 수 없는 구역 이름은 청록에서 뺀다. */}
             <h3
               className="text-sm font-bold"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" }}
             >
               제휴 · 추천
             </h3>

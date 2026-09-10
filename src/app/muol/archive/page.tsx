@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import ShowCard from "@/components/ShowCard";
 import ShowsSearchBar from "@/components/ShowsSearchBar";
@@ -11,6 +12,63 @@ import type { Show } from "@/types";
 export const revalidate = 60;
 
 const PAGE_SIZE = 16;
+
+/* ── 필터 칩 공통 규칙 (2026-09-10 모바일 점검) ──────────────────────────────
+ * /muol/shows 와 같은 규칙이다. 두 화면의 칩이 어긋나면 안 되므로
+ * 한쪽을 고치면 다른 쪽도 같이 고친다. (공용 컴포넌트로 뽑는 건 제작팀 몫)
+ *
+ * (1) 터치 타깃 44px — <a>는 기본이 inline이라 minHeight가 먹지 않으므로 inline-flex로 세운다.
+ * (2) 비활성 칩 테두리 #D4CFC1(1.34:1)을 --c-line-strong(#8C837C)로 올리고,
+ *     그 토큰 주석대로 면 채움(--c-surface #E6E1D6)과 함께 쓴다. (WCAG 1.4.11)
+ * (3) 지역 줄만 청록이던 것을 네 줄 모두 먹빛으로 통일. 청록은 활성 칩·링크 전담.
+ * (4) hover · active · focus. 포커스 링을 currentColor로 두면 활성 칩(흰 글자)에서
+ *     링이 페이지 배경과 같은 색이 되어 사라지므로 청록으로 고정한다.
+ */
+const CHIP_CLASS =
+  "inline-flex items-center px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]";
+
+function chipStyle(
+  isActive: boolean,
+  fontFamily = "var(--font-noto-sans-kr)"
+): CSSProperties {
+  return {
+    fontFamily,
+    minHeight: 44,
+    backgroundColor: isActive ? "#0B5563" : "#E6E1D6",
+    color: isActive ? "#F0EEE9" : "#5A4A3E",
+    border: `1px solid ${isActive ? "#0B5563" : "#8C837C"}`,
+  };
+}
+
+/* 페이지네이션 버튼 — 칩과 같은 규칙을 따르되 글자색은 청록으로 남긴다(이동 링크). */
+const PAGE_BTN_CLASS = `${CHIP_CLASS} justify-center`;
+
+function pageBtnStyle(
+  isCurrent: boolean,
+  fontFamily = "var(--font-noto-sans-kr)"
+): CSSProperties {
+  return {
+    fontFamily,
+    minHeight: 44,
+    minWidth: 44,
+    backgroundColor: isCurrent ? "#0B5563" : "#E6E1D6",
+    color: isCurrent ? "#F0EEE9" : "#0B5563",
+    border: `1px solid ${isCurrent ? "#0B5563" : "#8C837C"}`,
+    textAlign: "center",
+  };
+}
+
+/* 못 누르는 상태 — 버튼 4상태 중 disabled. 면 채움 없이 옅은 테두리만 두어
+   눌리는 버튼과 구분하고, 글자는 #D4CFC1(1.34:1)에서 #8C837C로 올려 읽히게 한다. */
+const PAGE_BTN_OFF_CLASS =
+  "inline-flex items-center justify-center px-3 py-2.5 text-xs cursor-not-allowed";
+const PAGE_BTN_OFF_STYLE: CSSProperties = {
+  fontFamily: "var(--font-noto-sans-kr)",
+  minHeight: 44,
+  minWidth: 44,
+  color: "#8C837C",
+  border: "1px solid #D4CFC1",
+};
 
 // 2026-08-03: todayKey·showEndKey·isEnded 로컬 사본 3벌 삭제 → @/lib/showFilters 공용본 사용.
 // 사본이 남아 있으면 공용본만 고쳤을 때 이 페이지가 다르게 판정한다.
@@ -122,6 +180,153 @@ export default async function ArchivePage({
     { name: "아카이브" },
   ]);
 
+  /* 걸어둔 조건 한 줄 — 폰에서 필터를 접어두면 "무엇으로 좁혀져 있는지"가 화면에서 사라진다.
+     접힌 채로도 그 답이 보이도록 요약 줄을 만든다. 검색어(q)는 바로 위 검색창이 이미 보여준다. */
+  const appliedFilterLabels = [
+    selectedYear ? `${selectedYear}년` : null,
+    region && region !== "전체" ? region : null,
+    genre,
+    category,
+  ].filter((v): v is string => Boolean(v));
+  const filterSummary =
+    appliedFilterLabels.length > 0
+      ? appliedFilterLabels.join(" · ")
+      : availableYears.length > 0
+      ? "연도 · 지역 · 장르 · 구분으로 좁히기"
+      : "지역 · 장르 · 구분으로 좁히기";
+
+  /* 필터 네 줄 —
+     아래 필터(연도·지역·장르·구분)와 페이지네이션 링크는 현재 경로 `/muol/archive`를
+     직접 가리킨다. 구 경로 `/archive`는 308 리다이렉트를 왕복한다 (2026-08-03).
+
+     2026-09-10 — 같은 JSX를 폰(접힘)과 PC(펼침) 두 자리에서 함께 쓴다. */
+  const filterRows = (
+    <>
+      {/* 연도 */}
+      {availableYears.length > 0 && (
+        <div className="mb-6 flex flex-wrap gap-2 items-center">
+          <span
+            className="text-xs tracking-wider uppercase mr-2"
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+          >
+            연도
+          </span>
+          {[null, ...availableYears].map((y) => {
+            const isActive = (y === null && !selectedYear) || y === selectedYear;
+            const params = new URLSearchParams();
+            if (region) params.set("region", region);
+            if (genre) params.set("genre", genre);
+            if (category) params.set("category", category);
+            if (q) params.set("q", q);
+            if (y) params.set("year", String(y));
+            const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
+            return (
+              <Link
+                key={y ?? "all"}
+                href={href}
+                className={CHIP_CLASS}
+                style={chipStyle(isActive, "var(--font-inter)")}
+                aria-current={isActive ? "true" : undefined}
+              >
+                {y ?? "전체"}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
+      {/* 지역 */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {REGIONS.map((r) => {
+          const isActive = activeRegion === r;
+          const params = new URLSearchParams();
+          if (r !== "전체") params.set("region", r);
+          if (genre) params.set("genre", genre);
+          if (category) params.set("category", category);
+          if (q) params.set("q", q);
+          if (year) params.set("year", year);
+          const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
+          return (
+            <Link
+              key={r}
+              href={href}
+              className={CHIP_CLASS}
+              style={chipStyle(isActive)}
+              aria-current={isActive ? "true" : undefined}
+            >
+              {r}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* 장르 */}
+      <div className="mb-6 flex flex-wrap gap-2 items-center">
+        <span
+          className="text-xs tracking-wider uppercase mr-2"
+          style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+        >
+          장르
+        </span>
+        {[null, ...GENRES].map((g) => {
+          const isActive = (g === null && !genre) || genre === g;
+          const params = new URLSearchParams();
+          if (region) params.set("region", region);
+          if (g) params.set("genre", g);
+          if (category) params.set("category", category);
+          if (q) params.set("q", q);
+          if (year) params.set("year", year);
+          const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
+          return (
+            <Link
+              key={g ?? "all"}
+              href={href}
+              className={CHIP_CLASS}
+              style={chipStyle(isActive)}
+              aria-current={isActive ? "true" : undefined}
+            >
+              {g ?? "전체"}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* 공연 구분 */}
+      <div
+        className="mb-12 pb-6 flex flex-wrap gap-2 items-center"
+        style={{ borderBottom: "1px solid #D4CFC1" }}
+      >
+        <span
+          className="text-xs tracking-wider uppercase mr-2"
+          style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+        >
+          구분
+        </span>
+        {[null, ...SHOW_CATEGORIES].map((c) => {
+          const isActive = (c === null && !category) || c === category;
+          const params = new URLSearchParams();
+          if (region) params.set("region", region);
+          if (genre) params.set("genre", genre);
+          if (c) params.set("category", c);
+          if (q) params.set("q", q);
+          if (year) params.set("year", year);
+          const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
+          return (
+            <Link
+              key={c ?? "all-cat"}
+              href={href}
+              className={CHIP_CLASS}
+              style={chipStyle(isActive)}
+              aria-current={isActive ? "true" : undefined}
+            >
+              {c ?? "전체"}
+            </Link>
+          );
+        })}
+      </div>
+    </>
+  );
+
   return (
     <div
       className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-16"
@@ -161,13 +366,17 @@ export default async function ArchivePage({
               {totalCount}개의 기록
             </p>
           </div>
+          {/* 2026-09-10 — 이 화면의 링크들은 transition-colors만 걸려 있고
+              hover·active·focus 어느 것도 반응이 없었다(색이 바뀌는 규칙 자체가 없어
+              transition이 걸 대상도 없는 상태). /muol/shows가 쓰는 4상태 규칙으로 맞춘다. */}
           <Link
             href="/muol/shows"
-            className="px-4 py-2 text-xs tracking-wide transition-colors"
+            className="inline-flex items-center px-4 py-2 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
             style={{
               fontFamily: "var(--font-noto-sans-kr)",
               color: "#0B5563",
               border: "1px solid #D4CFC1",
+              minHeight: 44,
             }}
           >
             진행 중 공연으로
@@ -177,146 +386,44 @@ export default async function ArchivePage({
         {/* 검색창 */}
         <ShowsSearchBar />
 
-        {/* 연도 필터 —
-            아래 세 필터(연도·지역·장르·구분)와 페이지네이션 링크는 현재 경로 `/muol/archive`를
-            직접 가리킨다. 구 경로 `/archive`는 308 리다이렉트를 왕복한다 (2026-08-03). */}
-        {availableYears.length > 0 && (
-          <div className="mb-6 flex flex-wrap gap-2 items-center">
-            <span
-              className="text-xs tracking-wider uppercase mr-2"
-              style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
-            >
-              연도
+        {/* ── 필터 ──
+            2026-09-10 모바일 점검 — 폰에서 네 줄(연도·지역 17·장르 8·구분)이 화면을 가득 채워
+            지난 공연 기록을 보러 와도 첫 기록이 보이지 않았다.
+            폰에서는 접어두고 걸린 조건만 한 줄로 알린다. PC는 지금 그대로 펼쳐 둔다. */}
+
+        {/* 폰 — 접어둔다 */}
+        <details className="md:hidden group mb-12 open:mb-0">
+          <summary
+            className="flex items-center gap-3 px-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden transition-transform duration-150 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]"
+            style={{
+              minHeight: 44,
+              fontFamily: "var(--font-noto-sans-kr)",
+              backgroundColor: "#E6E1D6",
+              border: "1px solid #8C837C",
+            }}
+          >
+            <span className="text-xs tracking-wider shrink-0" style={{ color: "#5F5145" }}>
+              필터
             </span>
-            {[null, ...availableYears].map((y) => {
-              const isActive = (y === null && !selectedYear) || y === selectedYear;
-              const params = new URLSearchParams();
-              if (region) params.set("region", region);
-              if (genre) params.set("genre", genre);
-              if (category) params.set("category", category);
-              if (q) params.set("q", q);
-              if (y) params.set("year", String(y));
-              const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
-              return (
-                <Link
-                  key={y ?? "all"}
-                  href={href}
-                  className="px-3 py-2.5 text-xs"
-                  style={{
-                    fontFamily: "var(--font-inter)",
-                    backgroundColor: isActive ? "#0B5563" : "transparent",
-                    color: isActive ? "#F0EEE9" : "#5A4A3E",
-                    border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
-                  }}
-                >
-                  {y ?? "전체"}
-                </Link>
-              );
-            })}
-          </div>
-        )}
+            <span
+              className="text-xs min-w-0 flex-1 truncate text-right"
+              style={{ color: "#4A3B33" }}
+            >
+              {filterSummary}
+            </span>
+            <span
+              aria-hidden="true"
+              className="text-[10px] shrink-0 transition-transform duration-150 group-open:rotate-180"
+              style={{ color: "#5F5145" }}
+            >
+              ▼
+            </span>
+          </summary>
+          <div className="pt-5">{filterRows}</div>
+        </details>
 
-        {/* 지역 필터 */}
-        <div className="mb-6 flex flex-wrap gap-2">
-          {REGIONS.map((r) => {
-            const isActive = activeRegion === r;
-            const params = new URLSearchParams();
-            if (r !== "전체") params.set("region", r);
-            if (genre) params.set("genre", genre);
-            if (category) params.set("category", category);
-            if (q) params.set("q", q);
-            if (year) params.set("year", year);
-            const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
-            return (
-              <Link
-                key={r}
-                href={href}
-                className="px-3 py-2.5 text-xs tracking-wide transition-colors"
-                style={{
-                  fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#0B5563",
-                  border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
-                }}
-              >
-                {r}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* 장르 필터 */}
-        <div className="mb-6 flex flex-wrap gap-2 items-center">
-          <span
-            className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
-          >
-            장르
-          </span>
-          {[null, ...GENRES].map((g) => {
-            const isActive = (g === null && !genre) || genre === g;
-            const params = new URLSearchParams();
-            if (region) params.set("region", region);
-            if (g) params.set("genre", g);
-            if (category) params.set("category", category);
-            if (q) params.set("q", q);
-            if (year) params.set("year", year);
-            const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
-            return (
-              <Link
-                key={g ?? "all"}
-                href={href}
-                className="px-3 py-2.5 text-xs"
-                style={{
-                  fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#5A4A3E",
-                  border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
-                }}
-              >
-                {g ?? "전체"}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* 공연 구분 필터 */}
-        <div
-          className="mb-12 pb-6 flex flex-wrap gap-2 items-center"
-          style={{ borderBottom: "1px solid #D4CFC1" }}
-        >
-          <span
-            className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
-          >
-            구분
-          </span>
-          {[null, ...SHOW_CATEGORIES].map((c) => {
-            const isActive = (c === null && !category) || c === category;
-            const params = new URLSearchParams();
-            if (region) params.set("region", region);
-            if (genre) params.set("genre", genre);
-            if (c) params.set("category", c);
-            if (q) params.set("q", q);
-            if (year) params.set("year", year);
-            const href = `/muol/archive${params.toString() ? `?${params.toString()}` : ""}`;
-            return (
-              <Link
-                key={c ?? "all-cat"}
-                href={href}
-                className="px-3 py-2.5 text-xs"
-                style={{
-                  fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#5A4A3E",
-                  border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
-                }}
-              >
-                {c ?? "전체"}
-              </Link>
-            );
-          })}
-        </div>
+        {/* PC — 펼친 채로 */}
+        <div className="hidden md:block">{filterRows}</div>
 
         {/* 기록 그리드 — 4열로 좀 더 빽빽하게 (갤러리 느낌) */}
         {list.length === 0 ? (
@@ -345,11 +452,12 @@ export default async function ArchivePage({
               </p>
               <Link
                 href="/muol/performer"
-                className="inline-block px-5 py-3 text-xs tracking-wide transition-colors"
+                className="inline-flex items-center px-5 py-3 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   color: "#0B5563",
                   border: "1px solid #0B5563",
+                  minHeight: 44,
                 }}
               >
                 무대 올리러 가기 →
@@ -367,11 +475,12 @@ export default async function ArchivePage({
             </p>
             <Link
               href={hasFilters ? "/muol/archive" : "/muol/shows"}
-              className="inline-block px-4 py-2.5 text-xs tracking-wide transition-colors"
+              className="inline-flex items-center px-4 py-2.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 color: "#0B5563",
                 border: "1px solid #D4CFC1",
+                minHeight: 44,
               }}
             >
               {hasFilters ? "필터 모두 지우기" : "진행 중 공연으로 →"}
@@ -390,15 +499,11 @@ export default async function ArchivePage({
             {totalPages > 1 && (
               <div className="mt-16 flex items-center justify-center gap-2 flex-wrap">
                 {currentPage > 1 ? (
-                  <Link
-                    href={buildPageUrl(currentPage - 1)}
-                    className="px-3 py-2.5 text-xs"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
-                  >
+                  <Link href={buildPageUrl(currentPage - 1)} className={PAGE_BTN_CLASS} style={pageBtnStyle(false)}>
                     ← 이전
                   </Link>
                 ) : (
-                  <span className="px-3 py-2.5 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>← 이전</span>
+                  <span className={PAGE_BTN_OFF_CLASS} style={PAGE_BTN_OFF_STYLE} aria-disabled="true">← 이전</span>
                 )}
 
                 {generatePageNumbers(currentPage, totalPages).map((p, i) =>
@@ -408,15 +513,9 @@ export default async function ArchivePage({
                     <Link
                       key={p}
                       href={buildPageUrl(p as number)}
-                      className="px-3 py-2.5 text-xs"
-                      style={{
-                        fontFamily: "var(--font-inter)",
-                        backgroundColor: p === currentPage ? "#0B5563" : "transparent",
-                        color: p === currentPage ? "#F0EEE9" : "#0B5563",
-                        border: `1px solid ${p === currentPage ? "#0B5563" : "#D4CFC1"}`,
-                        minWidth: "36px",
-                        textAlign: "center",
-                      }}
+                      className={PAGE_BTN_CLASS}
+                      style={pageBtnStyle(p === currentPage, "var(--font-inter)")}
+                      aria-current={p === currentPage ? "page" : undefined}
                     >
                       {p}
                     </Link>
@@ -424,15 +523,11 @@ export default async function ArchivePage({
                 )}
 
                 {currentPage < totalPages ? (
-                  <Link
-                    href={buildPageUrl(currentPage + 1)}
-                    className="px-3 py-2.5 text-xs"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
-                  >
+                  <Link href={buildPageUrl(currentPage + 1)} className={PAGE_BTN_CLASS} style={pageBtnStyle(false)}>
                     다음 →
                   </Link>
                 ) : (
-                  <span className="px-3 py-2.5 text-xs" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }}>다음 →</span>
+                  <span className={PAGE_BTN_OFF_CLASS} style={PAGE_BTN_OFF_STYLE} aria-disabled="true">다음 →</span>
                 )}
               </div>
             )}

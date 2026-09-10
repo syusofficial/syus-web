@@ -13,6 +13,12 @@ import {
   rejectPerformerApplication as rejectPerformerAction,
 } from "@/app/actions/performer";
 import { cancelReservationAction } from "@/app/actions/reservations";
+import {
+  approveShow as approveShowAction,
+  rejectShow as rejectShowAction,
+  reassignShowOrganizer,
+} from "@/app/actions/shows";
+import { AdminShowCreateModal, OrganizerReassignModal } from "@/components/admin/AdminShowModals";
 import { formatShowDate, formatShowPeriod } from "@/lib/showDate";
 import type { Show, Profile, Contact, Review, Reservation } from "@/types";
 
@@ -94,6 +100,17 @@ export default function AdminPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [cancellingReservationId, setCancellingReservationId] = useState<string | null>(null);
   const [reviewFilter, setReviewFilter] = useState<"hidden" | "public" | "all">("hidden");
+
+  // ── 공연 탭 전용 상태 (2026-09-10 신설) ──
+  /** 로그인한 관리자 본인 id — 대리 등록 시 기본 등록자로 쓴다. */
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  /** 승인·반려·대리 등록 결과 한 줄. 메일이 나갔는지까지 여기서 알려 준다. */
+  const [showsNotice, setShowsNotice] = useState<string | null>(null);
+  /** 처리 중인 공연 id — 같은 버튼 두 번 누르는 것을 막는다. */
+  const [busyShowId, setBusyShowId] = useState<string | null>(null);
+  const [createShowOpen, setCreateShowOpen] = useState(false);
+  /** 공연자를 넘길 대상 공연. null이면 모달 닫힘. */
+  const [reassignTarget, setReassignTarget] = useState<Show | null>(null);
 
   const fetchAll = useCallback(async () => {
     const supabase = createClient();
@@ -198,20 +215,76 @@ export default function AdminPage() {
       }
 
       setAuthState("ready");
+      setCurrentUserId(data.user.id);
       fetchAll();
     });
   }, [router, fetchAll]);
 
-  const updateShowStatus = async (id: string, status: "approved" | "rejected") => {
-    const supabase = createClient();
-    const { error } = await supabase.from("shows").update({ status }).eq("id", id);
-    if (error) {
-      console.error("[admin/updateShowStatus]", error);
-      alert(`공연 상태 변경 중 오류가 발생했습니다.\n${error.message}`);
+  /**
+   * 공연 승인 — 2026-09-10부터 server action으로 위임.
+   *
+   * 그전에는 여기서 `shows.update({ status })` 한 줄만 실행했다. 상태는 바뀌지만
+   * 공연팀에게는 아무 통보가 없어서, 자기 무대가 걸렸는지 알려면 다시 로그인해
+   * 확인해야 했다 — 언제부터 홍보해도 되는지 아무도 알려 주지 않은 셈이다.
+   * 이제 서버에서 상태 변경 + 공연 주소가 담긴 안내 메일이 한 흐름으로 처리된다.
+   */
+  const approveShow = async (id: string) => {
+    setBusyShowId(id);
+    const result = await approveShowAction(id);
+    setBusyShowId(null);
+    if (!result.ok) {
+      alert(result.message);
       return;
     }
-    setShows((prev) => prev.map((s) => s.id === id ? { ...s, status } : s));
-    setReviewShow((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
+    setShows((prev) => prev.map((s) => s.id === id ? { ...s, status: "approved" } : s));
+    // 상세 모달에서 눌렀다면 닫는다 — 메일이 나갔는지 알려 주는 안내줄이 모달 뒤에 가려지기 때문.
+    setReviewShow(null);
+    setShowsNotice(result.message);
+  };
+
+  /**
+   * 공연 반려 — 사유를 한 줄 받아 server action으로 넘긴다.
+   *
+   * 취소를 누르면 아무 일도 일어나지 않는다(실수로 반려되는 것을 막는다).
+   * 사유를 비운 채로 진행하면 상태만 바뀌고 메일은 나가지 않는다 — 무엇을 고쳐야
+   * 하는지 모르는 반려 통보는 받는 쪽에 도움이 되지 않기 때문이다. 그래서 그 경우엔
+   * 한 번 더 확인을 받는다.
+   */
+  const rejectShow = async (id: string, title: string) => {
+    const input = window.prompt(
+      `「${title}」을 반려합니다.\n\n어떤 점을 다시 살펴봐야 하는지 한 줄로 적어 주세요.\n이 문장이 그대로 공연팀에게 메일로 전해집니다.`,
+      ""
+    );
+    if (input === null) return; // 취소
+    const reason = input.trim();
+    if (!reason) {
+      const proceed = window.confirm(
+        "사유가 비어 있습니다.\n이대로 진행하면 상태만 반려로 바뀌고 안내 메일은 나가지 않습니다.\n그래도 진행할까요?"
+      );
+      if (!proceed) return;
+    }
+
+    setBusyShowId(id);
+    const result = await rejectShowAction(id, reason);
+    setBusyShowId(null);
+    if (!result.ok) {
+      alert(result.message);
+      return;
+    }
+    setShows((prev) => prev.map((s) => s.id === id ? { ...s, status: "rejected" } : s));
+    setReviewShow(null);
+    setShowsNotice(result.message);
+  };
+
+  /** 공연자 재지정 — 대리 등록한 공연을 나중에 그 학과 계정으로 넘긴다. */
+  const handleReassign = async (showId: string, newOrganizerId: string) => {
+    const result = await reassignShowOrganizer(showId, newOrganizerId);
+    if (result.ok) {
+      setShows((prev) => prev.map((s) => s.id === showId ? { ...s, organizer_id: newOrganizerId } : s));
+      setReassignTarget(null);
+      setShowsNotice(result.message);
+    }
+    return result;
   };
 
   /** 운영자 픽 토글 — 메인 페이지 노출 여부 */
@@ -460,6 +533,14 @@ export default function AdminPage() {
   const pendingContacts = contacts.filter((c) => c.status === "pending").length;
   const pendingApplications = members.filter((m) => m.performer_status === "pending").length;
 
+  /** organizer_id → 화면에 보여 줄 이름. 회원 목록에 없으면 id 앞자리만 보여 준다. */
+  const memberLabel = (id?: string | null): string => {
+    if (!id) return "없음";
+    const m = members.find((x) => x.id === id);
+    const base = m?.name || m?.email || `${id.slice(0, 8)}…`;
+    return id === currentUserId ? `${base} (운영자 본인)` : base;
+  };
+
   return (
     <div className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-20" style={{ backgroundColor: "#F0EEE9" }}>
       <div className="max-w-6xl mx-auto">
@@ -543,7 +624,55 @@ export default function AdminPage() {
 
             {/* ── 공연 승인 탭 ── */}
             {tab === "shows" && (
-              <div className="overflow-x-auto">
+              <div>
+                {/* 처리 결과 한 줄 — 메일이 나갔는지까지 여기서 알려 준다 */}
+                {showsNotice && (
+                  <div
+                    className="mb-6 px-4 py-3 text-xs flex items-start justify-between gap-3"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      backgroundColor: "#E6E1D6",
+                      color: "#3A2E27",
+                      border: "1px solid #D4CFC1",
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    <span>{showsNotice}</span>
+                    <button
+                      type="button"
+                      onClick={() => setShowsNotice(null)}
+                      aria-label="알림 닫기"
+                      className="shrink-0"
+                      style={{ color: "#5A4A3E" }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+
+                {/* 대리 등록 — 대면·메일로 이미 받은 공연을 그 자리에서 올린다 */}
+                <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+                  <p className="text-xs max-w-xl" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", lineHeight: 1.8 }}>
+                    미팅이나 메일로 포스터·일정을 이미 받으셨다면, 상대를 가입 절차로 돌려보내지 않고
+                    여기서 대신 올릴 수 있습니다. 나중에 그 학과가 가입하면 각 행의 &lsquo;공연자 변경&rsquo;으로 넘겨주시면 됩니다.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setCreateShowOpen(true)}
+                    className="text-xs px-5 py-2.5 tracking-wide transition-opacity shrink-0"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#5C2A42", color: "#F0EEE9" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                    onFocus={(e) => { e.currentTarget.style.boxShadow = "0 0 0 2px #F0EEE9, 0 0 0 4px #5C2A42"; }}
+                    onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
+                    onMouseDown={(e) => { e.currentTarget.style.opacity = "0.7"; }}
+                    onMouseUp={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                  >
+                    + 공연 대리 등록
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
                 {shows.length === 0 ? (
                   <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                     등록된 공연이 없습니다.
@@ -575,6 +704,10 @@ export default function AdminPage() {
                           </td>
                           <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                             {show.performer_name ?? "—"}
+                            {/* 어느 계정에 매여 있는 공연인지 — 대리 등록분을 넘길 때 필요한 정보 */}
+                            <span className="block mt-1" style={{ color: "#8A8278" }}>
+                              계정: {memberLabel(show.organizer_id)}
+                            </span>
                           </td>
                           <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
                             {show.venue}
@@ -590,19 +723,21 @@ export default function AdminPage() {
                             <div className="flex gap-2 flex-wrap">
                               {show.status !== "approved" && (
                                 <button
-                                  onClick={() => updateShowStatus(show.id, "approved")}
-                                  className="text-xs px-3 py-1 transition-colors"
+                                  onClick={() => approveShow(show.id)}
+                                  disabled={busyShowId === show.id}
+                                  className="text-xs px-3 py-1 transition-colors disabled:opacity-50"
                                   style={{ color: "#3A5E42", border: "1px solid #3A5E42" }}
                                   onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D4EDD4"; }}
                                   onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
                                 >
-                                  승인
+                                  {busyShowId === show.id ? "처리 중" : "승인"}
                                 </button>
                               )}
                               {show.status !== "rejected" && (
                                 <button
-                                  onClick={() => updateShowStatus(show.id, "rejected")}
-                                  className="text-xs px-3 py-1 transition-colors"
+                                  onClick={() => rejectShow(show.id, show.title)}
+                                  disabled={busyShowId === show.id}
+                                  className="text-xs px-3 py-1 transition-colors disabled:opacity-50"
                                   style={{ color: "#A63D2F", border: "1px solid #A63D2F" }}
                                   onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#EDD4D4"; }}
                                   onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
@@ -610,6 +745,16 @@ export default function AdminPage() {
                                   반려
                                 </button>
                               )}
+                              {/* 공연자 변경 — 대리 등록분을 나중에 그 학과 계정으로 넘기는 자리 */}
+                              <button
+                                onClick={() => setReassignTarget(show)}
+                                className="text-xs px-3 py-1 transition-colors"
+                                style={{ color: "#0B5563", border: "1px solid #0B5563" }}
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#E6E1D6"; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+                              >
+                                공연자 변경
+                              </button>
                               <button
                                 onClick={() => deleteShow(show)}
                                 className="text-xs px-3 py-1 transition-colors"
@@ -626,6 +771,7 @@ export default function AdminPage() {
                     </tbody>
                   </table>
                 )}
+                </div>
               </div>
             )}
 
@@ -1066,10 +1212,35 @@ export default function AdminPage() {
         <ShowReviewModal
           show={reviewShow}
           onClose={() => setReviewShow(null)}
-          onApprove={() => updateShowStatus(reviewShow.id, "approved")}
-          onReject={() => updateShowStatus(reviewShow.id, "rejected")}
+          onApprove={() => approveShow(reviewShow.id)}
+          onReject={() => rejectShow(reviewShow.id, reviewShow.title)}
           onDelete={() => deleteShow(reviewShow)}
           onToggleFeatured={() => toggleFeatured(reviewShow.id, !reviewShow.featured)}
+        />
+      )}
+
+      {/* ── 공연 대리 등록 모달 ── */}
+      {createShowOpen && (
+        <AdminShowCreateModal
+          members={members}
+          adminUserId={currentUserId}
+          onClose={() => setCreateShowOpen(false)}
+          onCreated={(created, message) => {
+            setShows((prev) => [created, ...prev]);
+            setShowsNotice(message);
+            setCreateShowOpen(false);
+          }}
+        />
+      )}
+
+      {/* ── 공연자 변경 모달 ── */}
+      {reassignTarget && (
+        <OrganizerReassignModal
+          show={reassignTarget}
+          members={members}
+          currentLabel={memberLabel(reassignTarget.organizer_id)}
+          onClose={() => setReassignTarget(null)}
+          onSubmit={(newOrganizerId) => handleReassign(reassignTarget.id, newOrganizerId)}
         />
       )}
     </div>

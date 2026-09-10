@@ -54,7 +54,9 @@ const SCROLL_RATIO = 0.4;
 // 색 — 2026-08-03 위계 B안 (읽는 것=먹빛 / 누르는 것=청록 / 결심하는 것=자두)
 const PAPER = "#F0EEE9";
 const SURFACE = "#E6E1D6";
-const BORDER = "#8C837C"; // 신규 파생 — 기존 #D4CFC1은 배경 대비 1.34:1로 미달이었다
+// 2026-09-10 — 이 값이 globals.css의 --c-line-strong 정본이 되었다.
+// 여기서만 쓰던 파생값(3.20:1)이 정작 토큰(#A0957D, 2.56:1)보다 규격에 맞아서, 토큰을 이 값으로 내렸다.
+const BORDER = "#8C837C"; // = --c-line-strong · 배경 대비 3.20:1 (WCAG 1.4.11 통과)
 const LINE = "#D4CFC1"; // 장식선(대비 면제)
 const TEAL = "#0B5563";
 const INK = "#2B211C";

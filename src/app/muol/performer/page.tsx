@@ -8,6 +8,7 @@ import PageLoader from "@/components/PageLoader";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { REGIONS_EXCLUDE_ALL, GENRES, SHOW_CATEGORIES, GENRE_DETAILS, GENRE_DETAIL_GROUPS, hasGenreDetails } from "@/lib/constants";
 import { isValidUrl, normalizeUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
+import { DEPARTMENTS, DEPARTMENT_COUNT, fullName, findByFullName } from "@/lib/universities";
 import {
   parseShowDate,
   toDateInputValue,
@@ -833,7 +834,7 @@ export default function PerformerPage() {
                         fontFamily: "var(--font-noto-sans-kr)",
                         backgroundColor: "#E6E1D6",
                         color: "#5F5145",
-                        border: "1px solid #A0957D",
+                        border: "1px solid #8C837C",
                         whiteSpace: "nowrap",
                       }}
                     >
@@ -872,7 +873,7 @@ export default function PerformerPage() {
                 style={{
                   fontFamily: "var(--font-noto-sans-kr)",
                   color: "#0B5563",
-                  border: "1px solid #A0957D",
+                  border: "1px solid #8C837C",
                   minHeight: 48,
                 }}
               >
@@ -1229,14 +1230,27 @@ export default function PerformerPage() {
                 <h3 className="text-sm font-bold mb-2" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}>
                   기본 정보
                 </h3>
-                <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-                  학교/학과는 <strong style={{ color: "#0B5563" }}>‘○○대학교 ○○학과(과/학부)’</strong> 형식으로 적어주시면 지역 관객이 더 쉽게 찾습니다.
+                <p className="text-xs leading-relaxed mb-4" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}>
+                  학교/학과 칸에 학교 이름을 치시면 <strong style={{ color: "#4A3B33" }}>{DEPARTMENT_COUNT}개 학과 명부</strong>에서 자동으로 찾아 보여드립니다.
+                  목록에서 고르시면 표기가 통일되어 지역 관객이 더 쉽게 찾습니다. 목록에 없으면 그대로 적으셔도 됩니다.
                 </p>
+
+                {/* 학과 명부 자동완성 — 브라우저가 그리는 목록이라 자유 입력을 막지 않는다.
+                    목록에 없는 동아리·극단·개인도 그대로 적을 수 있어야 하기 때문이다. */}
+                <datalist id="dept-directory">
+                  {DEPARTMENTS.map((d) => (
+                    <option key={fullName(d)} value={fullName(d)} />
+                  ))}
+                </datalist>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {[
                     { label: "공연명 *", key: "title", required: true, span: "sm:col-span-2" },
                     { label: "영문 제목 (선택)", key: "subtitle", required: false },
-                    { label: "학교/학과 (선택)", key: "school_department", required: false, placeholder: "예: 한양대학교 연극영화학과 / 동국대학교 연극학부" },
+                    // 2026-09-10 — 명부(lib/universities.ts) 기반 자동완성을 붙였다.
+                    // 그전에는 자유 텍스트라 "동덕여대 공연예술학과"와 "동덕여자대학교 공연예술학과"가
+                    // 별개 학과로 쌓였고, 그 정규화를 코드 주석이 사람 손에 넘기고 있었다.
+                    // 필수로 올리지는 않는다 — 학과에 속하지 않은 동아리·극단·개인이 막히면 안 된다.
+                    { label: "학교/학과 (권장)", key: "school_department", required: false, list: "dept-directory", placeholder: "학교 이름을 입력하면 목록이 뜹니다" },
                     // 공연 기간은 달력 입력(2026-08-03) — 자유 텍스트를 받으면 사이트 곳곳에서
                     // 종료 판정·리마인더·캘린더가 조용히 어긋난다.
                     { label: "공연 시작일 *", key: "schedule_start", required: true, type: "date" },
@@ -1259,8 +1273,18 @@ export default function PerformerPage() {
                         <input
                           type={useDatePicker ? "date" : "text"}
                           value={form[field.key as keyof typeof form]}
-                          onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setForm({ ...form, [field.key]: value });
+                            // 명부에 있는 학과를 고르면 지역을 대신 채워준다(이미 고른 지역은 건드리지 않는다 —
+                            // 학과 소재지와 공연장 지역이 다를 수 있고, 여기서 묻는 것은 공연 지역이다).
+                            if (field.key === "school_department" && !region) {
+                              const matched = findByFullName(value);
+                              if (matched) setRegion(matched.region);
+                            }
+                          }}
                           required={field.required}
+                          list={field.list}
                           placeholder={field.placeholder}
                           min={dateMin}
                           className="w-full px-4 py-3 text-base outline-none"

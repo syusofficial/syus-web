@@ -4,6 +4,7 @@ import Link from "next/link";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { COMPANY, COMPANY_ROWS } from "@/lib/company";
 import { OG_GATEWAY } from "@/lib/ogCards";
+import { DEPARTMENT_COUNT, SCHOOL_COUNT } from "@/lib/universities";
 
 /**
  * /company — 사유유사(모회사) 소개 · CI 페이지. 2026-08-19 신설.
@@ -397,9 +398,10 @@ export default function CompanyPage() {
       {/* ══ 04. 방향 ══
           수치는 2026-08-14 실측 확정분이다. 장르 7개(발레는 무용 하위)·지역 17개·113개 학과/77개 대학.
           "8개 장르·16개 지역·200여 개"는 과거 오기이니 되살리지 말 것.
-          ★학과/대학 수만 하드코딩이다 — /muol/universities는 같은 값을 DB에서 실시간 계산하므로,
-            데이터가 늘면 이 숫자가 먼저 낡는다. 아래 링크로 실시간 목록을 함께 걸어 둔 이유다.
-            장르(GENRES 7)·지역(REGIONS 17)은 src/lib/constants.ts가 정본이라 그쪽이 바뀔 때만 손대면 된다. */}
+          2026-09-10 갱신 — 학과/대학 수 하드코딩을 없앴다. 이제 셋 다 정본에서 가져온다.
+            학과·대학 = src/lib/universities.ts (원본은 Content_Report/data/universities.md)
+            장르(GENRES 7)·지역(REGIONS 17) = src/lib/constants.ts
+            /muol/universities도 같은 명부를 쓰므로 두 화면이 어긋날 수 없다. */}
       <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28">
         <div className="max-w-4xl mx-auto">
           <p
@@ -454,7 +456,10 @@ export default function CompanyPage() {
             {[
               { n: "7", label: "무대예술 장르" },
               { n: "17", label: "지역" },
-              { n: "113", label: "관련 학과 · 77개 대학" },
+              // 2026-09-10 — 숫자를 손으로 적지 않고 학과 명부(lib/universities.ts)에서 가져온다.
+              // 위 주석이 "이 숫자가 먼저 낡는다"고 경고하던 자리인데, 이제 명부가 정본이므로
+              // 명부만 고치면 이 화면과 학과 디렉토리가 같은 값을 말한다.
+              { n: String(DEPARTMENT_COUNT), label: `관련 학과 · ${SCHOOL_COUNT}개 대학` },
             ].map((s) => (
               <div
                 key={s.label}

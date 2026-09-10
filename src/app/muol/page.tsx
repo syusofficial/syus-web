@@ -137,9 +137,14 @@ export default async function HomePage() {
         className="relative"
         style={{ backgroundColor: "#F0EEE9" /* Cloud Dancer */ }}
       >
-        {/* (A) 포스터 흐름 — nav 밑에 크게 */}
-        <div className="pt-24 md:pt-32 pb-8 md:pb-12">
-          <div className="px-6 md:px-12 lg:px-20 mb-4">
+        {/* (A) 포스터 흐름 — nav 밑에 크게
+          * 2026-09-10 모바일 점검 — 폰에서 첫 화면에 포스터 띠만 들어차고
+          * H1("오늘도 우리들의 막이 오릅니다")도 CTA도 한 번 더 스크롤해야 나왔다.
+          * 처음 열었을 때 이 사이트가 무엇인지 말해주는 문장이 화면 밖에 있던 셈이다.
+          * 폰에서만 위·아래 여백을 줄여 H1 첫 줄과 CTA 상단이 첫 화면에 걸치게 한다.
+          * 768px 이상(md:)은 가로·세로가 모두 넉넉하므로 지금 그대로 둔다. */}
+        <div className="pt-20 md:pt-32 pb-4 md:pb-12">
+          <div className="px-6 md:px-12 lg:px-20 mb-2 md:mb-4">
             <p
               className="text-[0.7rem] tracking-[0.35em] uppercase"
               style={{
@@ -192,12 +197,12 @@ export default async function HomePage() {
         </div>
 
         {/* (B) 텍스트 + CTA */}
-        <div className="px-6 md:px-12 lg:px-20 pt-6 md:pt-10 pb-20 md:pb-28">
+        <div className="px-6 md:px-12 lg:px-20 pt-2 md:pt-10 pb-20 md:pb-28">
           <div className="max-w-[1800px] mx-auto">
             {/* 미션 eyebrow — 2026-07-24 신설. "한국 대학 무대예술의 진흥" 확정 문구.
                 (A)의 Top5 라벨(Teal)과 색을 구분해 다른 성격의 캡션임을 시각적으로 알림. */}
             <p
-              className="text-[0.7rem] tracking-[0.35em] uppercase mb-4"
+              className="text-[0.7rem] tracking-[0.35em] uppercase mb-3 md:mb-4"
               style={{
                 fontFamily: "var(--font-inter)",
                 color: "#5C2A42" /* Divine Damson */,
@@ -207,7 +212,7 @@ export default async function HomePage() {
               한국 대학 무대예술의 진흥
             </p>
             <h1
-              className="font-bold mb-7"
+              className="font-bold mb-5 md:mb-7"
               style={{
                 fontFamily: "var(--font-noto-serif-kr)",
                 fontSize: "clamp(2.6rem, 6vw, 5.2rem)",
@@ -223,7 +228,7 @@ export default async function HomePage() {
               오늘도 우리들의 막이 오릅니다
             </h1>
             <p
-              className="leading-relaxed mb-9 max-w-2xl"
+              className="leading-relaxed mb-6 md:mb-9 max-w-2xl"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
                 fontSize: "clamp(1rem, 1.6vw, 1.25rem)",

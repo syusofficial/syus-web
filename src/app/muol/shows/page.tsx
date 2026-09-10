@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import ShowCard from "@/components/ShowCard";
 import ShowsSearchBar from "@/components/ShowsSearchBar";
@@ -55,6 +56,75 @@ export const metadata: Metadata = {
 };
 
 const PAGE_SIZE = 12;
+
+/* ── 필터 칩 공통 규칙 (2026-09-10 모바일 점검) ──────────────────────────────
+ * 네 줄(지역·장르·구분·학교)이 각자 조금씩 다른 스타일을 들고 있었다. 한 규칙으로 모은다.
+ *
+ * (1) 터치 타깃 — 칩 높이가 36px이라 손끝 권장치(44px)에 못 미쳤다. minHeight 44px.
+ *     <a>는 기본이 inline이라 minHeight가 먹지 않으므로 inline-flex로 세운다.
+ *     패딩·글자 크기·색은 건드리지 않는다.
+ * (2) 경계 — 비활성 칩 테두리(#D4CFC1)가 배경(#F0EEE9) 대비 1.34:1로 사실상 보이지 않았다.
+ *     칩이 몇 개인지, 어디까지가 한 칩인지 눈으로 셀 수 없는 상태. WCAG 1.4.11(3:1)에 맞춰
+ *     globals.css의 --c-line-strong(#8C837C)로 올리고, 그 토큰 주석이 요구하는 대로
+ *     면 채움(--c-surface #E6E1D6)과 함께 쓴다.
+ * (3) 색 — 지역 줄만 청록(#0B5563), 나머지 세 줄은 먹빛(#5A4A3E)이었다. 성격이 같은 칩이
+ *     화면 안에서 두 가지 색으로 갈려 있었다. 네 줄 모두 먹빛으로 통일한다.
+ *     (청록은 이 사이트에서 '지금 켜진 것'과 링크 전담이라, 활성 칩에만 남는다.)
+ * (4) 버튼 4상태 — hover(흐려짐) · active(눌림) · focus(링) · 비활성은 aria-current 대신
+ *     활성 칩 자체가 상태를 나타낸다. 링 색을 currentColor로 두면 활성 칩(흰 글자)에서
+ *     링이 페이지 배경과 같은 색이 되어 사라지므로 청록으로 고정한다.
+ *
+ * ※ 같은 규칙이 /muol/archive 에도 한 벌 있다. 두 화면의 칩이 어긋나면 안 되므로
+ *   한쪽을 고치면 다른 쪽도 같이 고친다. (공용 컴포넌트로 뽑는 건 제작팀 몫)
+ */
+const CHIP_CLASS =
+  "inline-flex items-center px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]";
+
+function chipStyle(
+  isActive: boolean,
+  fontFamily = "var(--font-noto-sans-kr)"
+): CSSProperties {
+  return {
+    fontFamily,
+    minHeight: 44,
+    backgroundColor: isActive ? "#0B5563" : "#E6E1D6",
+    color: isActive ? "#F0EEE9" : "#5A4A3E",
+    border: `1px solid ${isActive ? "#0B5563" : "#8C837C"}`,
+  };
+}
+
+/* 페이지네이션 버튼 — 칩과 같은 규칙(44px · 보이는 테두리 · 4상태)을 따르되
+   글자색은 청록으로 남긴다. 조건을 켜고 끄는 칩이 아니라 '다른 장으로 가는 링크'이기 때문이다. */
+const PAGE_BTN_CLASS = `${CHIP_CLASS} justify-center`;
+
+function pageBtnStyle(
+  isCurrent: boolean,
+  fontFamily = "var(--font-noto-sans-kr)"
+): CSSProperties {
+  return {
+    fontFamily,
+    minHeight: 44,
+    minWidth: 44,
+    backgroundColor: isCurrent ? "#0B5563" : "#E6E1D6",
+    color: isCurrent ? "#F0EEE9" : "#0B5563",
+    border: `1px solid ${isCurrent ? "#0B5563" : "#8C837C"}`,
+    textAlign: "center",
+  };
+}
+
+/* 못 누르는 상태(첫 장의 '이전', 마지막 장의 '다음') — 버튼 4상태 중 disabled.
+   눌리는 버튼과 확실히 달라 보이도록 면 채움 없이 옅은 테두리만 두되,
+   글자는 #D4CFC1(배경 대비 1.34:1 — 사실상 안 보였다)에서 #8C837C로 올려
+   '있지만 지금은 못 누른다'가 읽히게 한다. */
+const PAGE_BTN_OFF_CLASS =
+  "inline-flex items-center justify-center px-3 py-2.5 text-xs cursor-not-allowed";
+const PAGE_BTN_OFF_STYLE: CSSProperties = {
+  fontFamily: "var(--font-noto-sans-kr)",
+  minHeight: 44,
+  minWidth: 44,
+  color: "#8C837C",
+  border: "1px solid #D4CFC1",
+};
 
 // 2026-08-03: todayKey·showEndKey·isEnded 로컬 사본 3벌 삭제 → @/lib/showFilters 공용본 사용.
 // 같은 판정 로직이 목록·아카이브·홈에 각각 복제돼 있어, 공용본만 고치면 화면끼리
@@ -188,6 +258,165 @@ export default async function ShowsPage({
     { name: "공연" },
   ]);
 
+  /* 걸어둔 조건 한 줄 — 폰에서 필터를 접어두면 "무엇으로 좁혀져 있는지"가 화면에서 사라진다.
+     접힌 채로도 그 답이 보이도록 요약 줄을 만든다. 검색어(q)는 바로 위 검색창이 이미 보여주므로 뺀다. */
+  const appliedFilterLabels = [
+    region && region !== "전체" ? region : null,
+    genre,
+    detail,
+    category,
+    school,
+  ].filter((v): v is string => Boolean(v));
+  const filterSummary =
+    appliedFilterLabels.length > 0
+      ? appliedFilterLabels.join(" · ")
+      : availableSchools.length > 0
+      ? "지역 · 장르 · 구분 · 학교로 좁히기"
+      : "지역 · 장르 · 구분으로 좁히기";
+
+  /* 필터 네 줄 —
+     아래 네 필터(지역·장르·구분·학교)와 페이지네이션의 링크는 모두 현재 경로인
+     `/muol/shows`를 직접 가리킨다. 구 경로 `/shows`로 두면 누를 때마다
+     next.config.ts의 308 리다이렉트를 왕복해 반응이 한 박자 늦는다 (2026-08-03).
+
+     2026-09-10 — 같은 JSX를 폰(접힘)과 PC(펼침) 두 자리에서 함께 쓴다.
+     칩 목록을 두 번 적으면 한쪽만 고쳐지는 날이 반드시 오므로 여기 한 벌만 둔다. */
+  const filterRows = (
+    <>
+      {/* 지역 */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {REGIONS.map((r) => {
+          const isActive = activeRegion === r;
+          const params = new URLSearchParams();
+          if (r !== "전체") params.set("region", r);
+          if (genre) params.set("genre", genre);
+          if (detail) params.set("detail", detail);
+          if (category) params.set("category", category);
+          if (school) params.set("school", school);
+          if (q) params.set("q", q);
+          const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
+          return (
+            <Link
+              key={r}
+              href={href}
+              className={CHIP_CLASS}
+              style={chipStyle(isActive)}
+              aria-current={isActive ? "true" : undefined}
+            >
+              {r}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* 장르 */}
+      <div
+        className={`${availableSchools.length > 0 ? "mb-6" : "mb-10 pb-6"} flex flex-wrap gap-2 items-center`}
+        style={availableSchools.length > 0 ? undefined : { borderBottom: "1px solid #D4CFC1" }}
+      >
+        <span
+          className="text-xs tracking-wider uppercase mr-2"
+          style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+        >
+          장르
+        </span>
+        {[null, ...GENRES].map((g) => {
+          const isActive = (g === null && !genre) || genre === g;
+          const params = new URLSearchParams();
+          if (region) params.set("region", region);
+          if (g) params.set("genre", g);
+          // 여기서는 detail을 의도적으로 실어보내지 않는다 — 장르 칩을 다시 누르면
+          // "그 장르 전체 보기"로 되돌아가야 하고, detail은 이전 장르에 속했던 값이라
+          // 새 장르와 맞지 않을 수 있다(NavMega 호버 하위 항목 클릭 시에만 detail이 실린다).
+          if (category) params.set("category", category);
+          if (school) params.set("school", school);
+          if (q) params.set("q", q);
+          const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
+          return (
+            <Link
+              key={g ?? "all"}
+              href={href}
+              className={CHIP_CLASS}
+              style={chipStyle(isActive)}
+              aria-current={isActive ? "true" : undefined}
+            >
+              {g ?? "전체"}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* 공연 구분 */}
+      <div className="mb-6 flex flex-wrap gap-2 items-center">
+        <span
+          className="text-xs tracking-wider uppercase mr-2"
+          style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+        >
+          구분
+        </span>
+        {[null, ...SHOW_CATEGORIES].map((c) => {
+          const isActive = (c === null && !category) || c === category;
+          const params = new URLSearchParams();
+          if (region) params.set("region", region);
+          if (genre) params.set("genre", genre);
+          if (detail) params.set("detail", detail);
+          if (c) params.set("category", c);
+          if (school) params.set("school", school);
+          if (q) params.set("q", q);
+          const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
+          return (
+            <Link
+              key={c ?? "all-cat"}
+              href={href}
+              className={CHIP_CLASS}
+              style={chipStyle(isActive)}
+              aria-current={isActive ? "true" : undefined}
+            >
+              {c ?? "전체"}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* 학교 — 등록된 학교가 있을 때만 노출 */}
+      {availableSchools.length > 0 && (
+        <div
+          className="mb-10 pb-6 flex flex-wrap gap-2 items-center"
+          style={{ borderBottom: "1px solid #D4CFC1" }}
+        >
+          <span
+            className="text-xs tracking-wider uppercase mr-2"
+            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+          >
+            학교
+          </span>
+          {[null, ...availableSchools].map((sch) => {
+            const isActive = (sch === null && !school) || sch === school;
+            const params = new URLSearchParams();
+            if (region) params.set("region", region);
+            if (genre) params.set("genre", genre);
+            if (detail) params.set("detail", detail);
+            if (category) params.set("category", category);
+            if (sch) params.set("school", sch);
+            if (q) params.set("q", q);
+            const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
+            return (
+              <Link
+                key={sch ?? "all-schools"}
+                href={href}
+                className={CHIP_CLASS}
+                style={chipStyle(isActive)}
+                aria-current={isActive ? "true" : undefined}
+              >
+                {sch ?? "전체"}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
+
   return (
     <div
       className="pt-24 md:pt-36 min-h-screen px-6 md:px-12 lg:px-20 py-16"
@@ -257,156 +486,46 @@ export default async function ShowsPage({
         {/* 검색창 */}
         <ShowsSearchBar />
 
-        {/* 지역 필터 —
-            아래 네 필터(지역·장르·구분·학교)와 페이지네이션의 링크는 모두 현재 경로인
-            `/muol/shows`를 직접 가리킨다. 구 경로 `/shows`로 두면 누를 때마다
-            next.config.ts의 308 리다이렉트를 왕복해 반응이 한 박자 늦는다 (2026-08-03). */}
-        <div className="mb-6 flex flex-wrap gap-2">
-          {REGIONS.map((r) => {
-            const isActive = activeRegion === r;
-            const params = new URLSearchParams();
-            if (r !== "전체") params.set("region", r);
-            if (genre) params.set("genre", genre);
-            if (detail) params.set("detail", detail);
-            if (category) params.set("category", category);
-            if (school) params.set("school", school);
-            if (q) params.set("q", q);
-            const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
-            return (
-              <Link
-                key={r}
-                href={href}
-                className="px-3 py-2.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
-                style={{
-                  fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#0B5563",
-                  border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
-                }}
-              >
-                {r}
-              </Link>
-            );
-          })}
-        </div>
+        {/* ── 필터 ──
+            2026-09-10 모바일 점검 — 폰에서 이 네 줄(지역 17 + 장르 8 + 구분 + 학교)이
+            화면 두 개 분량을 차지해, 공연 목록에 들어와도 첫 포스터가 보이지 않았다.
+            무대를 보러 온 사람이 조건부터 고르게 만드는 구조였다.
+            폰에서는 접어두고 걸린 조건만 한 줄로 알린다. PC는 가로가 남으므로 지금 그대로 펼쳐 둔다.
+            (같은 filterRows를 두 자리에서 함께 쓴다 — 목록이 어긋날 일이 없다.) */}
 
-        {/* 장르 필터 */}
-        <div
-          className={`${availableSchools.length > 0 ? "mb-6" : "mb-10 pb-6"} flex flex-wrap gap-2 items-center`}
-          style={availableSchools.length > 0 ? undefined : { borderBottom: "1px solid #D4CFC1" }}
-        >
-          <span
-            className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
+        {/* 폰 — 접어둔다 */}
+        <details className="md:hidden group mb-10 open:mb-0">
+          <summary
+            className="flex items-center gap-3 px-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden transition-transform duration-150 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]"
+            style={{
+              minHeight: 44,
+              fontFamily: "var(--font-noto-sans-kr)",
+              backgroundColor: "#E6E1D6",
+              border: "1px solid #8C837C",
+            }}
           >
-            장르
-          </span>
-          {[null, ...GENRES].map((g) => {
-            const isActive = (g === null && !genre) || genre === g;
-            const params = new URLSearchParams();
-            if (region) params.set("region", region);
-            if (g) params.set("genre", g);
-            // 여기서는 detail을 의도적으로 실어보내지 않는다 — 장르 칩을 다시 누르면
-            // "그 장르 전체 보기"로 되돌아가야 하고, detail은 이전 장르에 속했던 값이라
-            // 새 장르와 맞지 않을 수 있다(NavMega 호버 하위 항목 클릭 시에만 detail이 실린다).
-            if (category) params.set("category", category);
-            if (school) params.set("school", school);
-            if (q) params.set("q", q);
-            const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
-            return (
-              <Link
-                key={g ?? "all"}
-                href={href}
-                className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
-                style={{
-                  fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#5A4A3E",
-                  border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
-                }}
-              >
-                {g ?? "전체"}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* 공연 구분 필터 */}
-        <div className="mb-6 flex flex-wrap gap-2 items-center">
-          <span
-            className="text-xs tracking-wider uppercase mr-2"
-            style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
-          >
-            구분
-          </span>
-          {[null, ...SHOW_CATEGORIES].map((c) => {
-            const isActive = (c === null && !category) || c === category;
-            const params = new URLSearchParams();
-            if (region) params.set("region", region);
-            if (genre) params.set("genre", genre);
-            if (detail) params.set("detail", detail);
-            if (c) params.set("category", c);
-            if (school) params.set("school", school);
-            if (q) params.set("q", q);
-            const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
-            return (
-              <Link
-                key={c ?? "all-cat"}
-                href={href}
-                className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
-                style={{
-                  fontFamily: "var(--font-noto-sans-kr)",
-                  backgroundColor: isActive ? "#0B5563" : "transparent",
-                  color: isActive ? "#F0EEE9" : "#5A4A3E",
-                  border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
-                }}
-              >
-                {c ?? "전체"}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* 학교 필터 — 등록된 학교가 있을 때만 노출 */}
-        {availableSchools.length > 0 && (
-          <div
-            className="mb-10 pb-6 flex flex-wrap gap-2 items-center"
-            style={{ borderBottom: "1px solid #D4CFC1" }}
-          >
-            <span
-              className="text-xs tracking-wider uppercase mr-2"
-              style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}
-            >
-              학교
+            <span className="text-xs tracking-wider shrink-0" style={{ color: "#5F5145" }}>
+              필터
             </span>
-            {[null, ...availableSchools].map((sch) => {
-              const isActive = (sch === null && !school) || sch === school;
-              const params = new URLSearchParams();
-              if (region) params.set("region", region);
-              if (genre) params.set("genre", genre);
-              if (detail) params.set("detail", detail);
-              if (category) params.set("category", category);
-              if (sch) params.set("school", sch);
-              if (q) params.set("q", q);
-              const href = `/muol/shows${params.toString() ? `?${params.toString()}` : ""}`;
-              return (
-                <Link
-                  key={sch ?? "all-schools"}
-                  href={href}
-                  className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
-                  style={{
-                    fontFamily: "var(--font-noto-sans-kr)",
-                    backgroundColor: isActive ? "#0B5563" : "transparent",
-                    color: isActive ? "#F0EEE9" : "#5A4A3E",
-                    border: `1px solid ${isActive ? "#0B5563" : "#D4CFC1"}`,
-                  }}
-                >
-                  {sch ?? "전체"}
-                </Link>
-              );
-            })}
-          </div>
-        )}
+            <span
+              className="text-xs min-w-0 flex-1 truncate text-right"
+              style={{ color: "#4A3B33" }}
+            >
+              {filterSummary}
+            </span>
+            <span
+              aria-hidden="true"
+              className="text-[10px] shrink-0 transition-transform duration-150 group-open:rotate-180"
+              style={{ color: "#5F5145" }}
+            >
+              ▼
+            </span>
+          </summary>
+          <div className="pt-5">{filterRows}</div>
+        </details>
+
+        {/* PC — 펼친 채로 */}
+        <div className="hidden md:block">{filterRows}</div>
 
         {/* 공연 그리드 */}
         {list.length === 0 ? (
@@ -518,15 +637,11 @@ export default async function ShowsPage({
             {totalPages > 1 && (
               <div className="mt-16 flex items-center justify-center gap-2 flex-wrap">
                 {currentPage > 1 ? (
-                  <Link
-                    href={buildPageUrl(currentPage - 1)}
-                    className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
-                  >
+                  <Link href={buildPageUrl(currentPage - 1)} className={PAGE_BTN_CLASS} style={pageBtnStyle(false)}>
                     ← 이전
                   </Link>
                 ) : (
-                  <span className="px-3 py-2.5 text-xs cursor-not-allowed" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }} aria-disabled="true">← 이전</span>
+                  <span className={PAGE_BTN_OFF_CLASS} style={PAGE_BTN_OFF_STYLE} aria-disabled="true">← 이전</span>
                 )}
 
                 {/* 페이지 번호 */}
@@ -537,15 +652,9 @@ export default async function ShowsPage({
                     <Link
                       key={p}
                       href={buildPageUrl(p as number)}
-                      className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
-                      style={{
-                        fontFamily: "var(--font-inter)",
-                        backgroundColor: p === currentPage ? "#0B5563" : "transparent",
-                        color: p === currentPage ? "#F0EEE9" : "#0B5563",
-                        border: `1px solid ${p === currentPage ? "#0B5563" : "#D4CFC1"}`,
-                        minWidth: "36px",
-                        textAlign: "center",
-                      }}
+                      className={PAGE_BTN_CLASS}
+                      style={pageBtnStyle(p === currentPage, "var(--font-inter)")}
+                      aria-current={p === currentPage ? "page" : undefined}
                     >
                       {p}
                     </Link>
@@ -553,15 +662,11 @@ export default async function ShowsPage({
                 )}
 
                 {currentPage < totalPages ? (
-                  <Link
-                    href={buildPageUrl(currentPage + 1)}
-                    className="px-3 py-2.5 text-xs transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
-                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #D4CFC1" }}
-                  >
+                  <Link href={buildPageUrl(currentPage + 1)} className={PAGE_BTN_CLASS} style={pageBtnStyle(false)}>
                     다음 →
                   </Link>
                 ) : (
-                  <span className="px-3 py-2.5 text-xs cursor-not-allowed" style={{ color: "#D4CFC1", border: "1px solid #D4CFC1" }} aria-disabled="true">다음 →</span>
+                  <span className={PAGE_BTN_OFF_CLASS} style={PAGE_BTN_OFF_STYLE} aria-disabled="true">다음 →</span>
                 )}
               </div>
             )}

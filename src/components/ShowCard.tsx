@@ -19,7 +19,14 @@ export default function ShowCard({
   return (
     <div className="group block">
       <div className="relative">
-        <Link href={`/muol/shows/${show.id}`}>
+        {/* 2026-09-10 — 카드의 두 링크(포스터·제목)에 focus 표시가 없었다.
+            키보드나 스위치로 넘길 때 지금 어느 카드에 서 있는지 화면에 나타나지 않는다.
+            hover·active는 이미 group-hover(포스터 확대 · 제목 흐려짐)가 맡고 있으므로
+            여기서는 focus 링만 더한다. 링 색은 청록 — 페이지 배경(#F0EEE9) 위에서 확실히 보인다. */}
+        <Link
+          href={`/muol/shows/${show.id}`}
+          className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]"
+        >
           <div
             className="aspect-[3/4] overflow-hidden mb-4 relative"
             style={{ backgroundColor: "#E6E1D6" }}
@@ -89,11 +96,16 @@ export default function ShowCard({
         )}
       </div>
 
-      <Link href={`/muol/shows/${show.id}`} className="block">
+      <Link
+        href={`/muol/shows/${show.id}`}
+        className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]"
+      >
         <div className="space-y-1.5">
           <div className="flex items-start justify-between gap-2">
             <h3
-              className="text-base font-semibold leading-snug transition-colors group-hover:opacity-70 min-w-0 line-clamp-2"
+              /* transition-colors → transition-opacity: 여기서 변하는 건 색이 아니라 투명도라
+                 지금까지 hover 시 제목이 부드럽게가 아니라 툭 하고 흐려졌다. */
+              className="text-base font-semibold leading-snug transition-opacity duration-150 group-hover:opacity-70 min-w-0 line-clamp-2"
               /* 2026-08-03 색 위계 B안 — 카드 제목은 본문 먹빛(#4A3B33, 9.22:1).
                  청록 제목은 포스터보다 튀어서 포스터가 주인공이 되지 못했다. */
               style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33", wordBreak: "keep-all" }}

@@ -86,9 +86,15 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
                       src={item.poster_url}
                       alt={item.title}
                       fill
-                      sizes="(max-width: 768px) 260px, 320px"
+                      sizes="(max-width: 767px) 220px, (max-width: 1279px) 280px, 320px"
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                      unoptimized
+                      /* 2026-09-10 모바일 점검 — 여기만 unoptimized였다.
+                         홈 첫 화면에서 원본 포스터 5장(복제 포함 10칸)을 그대로 내려받고 있었고,
+                         폰에서 첫 화면이 뜨는 데 가장 오래 걸리는 자리가 바로 이 띠였다.
+                         폐기된 HeroUnveilScroll도 같은 이유(5장 동시 로드)로 렉을 겪었다는 기록이 있다.
+                         이제 Next 이미지 최적화를 그대로 태우고(=위 sizes만큼만 내려받음),
+                         눈에 처음 걸리는 두 장만 priority로 먼저 부른다. */
+                      priority={idx < 2}
                     />
                   ) : (
                     <div className="hero-stream-placeholder">
@@ -133,7 +139,13 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           width: 100%;
           mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
           -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-          padding: 28px 0 36px;
+          /* 2026-09-10 모바일 점검 — 폰에서 첫 화면에 H1·CTA가 들어오지 않았다.
+             띠의 위아래 패딩이 64px를 먹고 있어 그만큼 아래 글이 밀려났다.
+             폰에서만 줄이고, 가로가 남는 768px 이상은 원래대로 둔다. */
+          padding: 8px 0 14px;
+        }
+        @media (min-width: 768px) {
+          .hero-stream-wrapper { padding: 28px 0 36px; }
         }
         .hero-stream-track {
           display: flex;
@@ -180,7 +192,9 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
         .hero-stream-poster {
           position: relative;
           width: 100%;
-          aspect-ratio: 4 / 5;
+          /* 2026-09-10 — 사이트의 다른 포스터(ShowCard)는 전부 3:4인데 여기만 4:5였다.
+             같은 포스터가 홈 첫 화면과 목록에서 다른 비율로 잘려 보였다. 사이트 표준으로 맞춘다. */
+          aspect-ratio: 3 / 4;
           overflow: hidden;
           background: #4A3B33;
           box-shadow:
@@ -212,13 +226,16 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
           line-height: 1;
         }
         .hero-stream-caption {
-          padding-top: 18px;
+          padding-top: 10px;
         }
         .hero-stream-title {
           font-family: var(--font-pretendard);
           font-size: 1rem;
           font-weight: 600;
-          color: #0B5563;
+          /* 2026-09-10 — 청록(#0B5563)이던 것을 ShowCard 카드 제목과 같은 먹빛으로.
+             목록에서는 먹빛, 홈 히어로에서는 청록이라 같은 공연 제목이 화면마다 달랐다.
+             포스터가 주인공이어야 하는 자리에서 제목이 먼저 튀던 문제도 함께 가라앉는다. */
+          color: #4A3B33;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -227,12 +244,19 @@ export default function HeroPosterStream({ items }: { items: StreamItem[] }) {
         .hero-stream-meta {
           font-family: var(--font-pretendard);
           font-size: 0.75rem;
-          color: rgba(74, 59, 51, 0.65);
-          margin-top: 8px;
+          /* 구 rgba(74,59,51,0.65) — 배경 위 실효 3.61:1로 본문 최소선(4.5:1) 미달이었다.
+             투명도가 대비를 그대로 갉아먹던 자리라, globals.css의 캡션 한계선 토큰
+             --c-text-faint(#6B5C50, 5.54:1)로 올린다. */
+          color: #6B5C50;
+          margin-top: 6px;
           letter-spacing: 0.02em;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+        }
+        @media (min-width: 768px) {
+          .hero-stream-caption { padding-top: 18px; }
+          .hero-stream-meta { margin-top: 8px; }
         }
         @keyframes hero-stream-flow {
           0%   { transform: translateX(0); }

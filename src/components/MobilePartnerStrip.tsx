@@ -60,9 +60,11 @@ export default function MobilePartnerStrip({
             >
               Recommended
             </p>
+            {/* 2026-09-10 — 청록은 '누를 수 있는 것' 전담 색이다.
+                이 제목은 누를 수 없는 구역 이름이라 먹빛 소제목으로 내린다(PC 사이드바와 동일). */}
             <h3
               className="text-sm font-bold"
-              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#0B5563" }}
+              style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#3A2E27" }}
             >
               제휴 · 추천
             </h3>
