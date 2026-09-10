@@ -23,9 +23,12 @@
  * 기존 공연의 school_department가 명부와 정확히 일치하지 않을 수 있다(과거 자유 입력분).
  * 그런 학과는 지역별 섹션 아래 "명부에 아직 없는 학과"로 따로 세운다. 데이터를 잃지 않기 위해서다.
  *
- * 【링크 정책】 2026-09-10 사장님 결정
- * 원본에서 `[운영자 확인 필요]` 마커가 붙은 주소는 링크로 걸지 않는다(lib/universities.ts 주석 참조).
- * 죽은 링크는 방문자·검색엔진 양쪽에 손해이고, 그 학과 담당자가 봤을 때 가장 나쁜 인상을 준다.
+ * 【링크 정책】 2026-09-10 사장님 지시 — 외부 링크를 걸지 않는다
+ * 처음에는 "확인된 URL만 링크로 건다"로 잡았다가, 같은 날 걷어냈다.
+ * 확인이 불분명한 주소가 섞여 있고, 무엇보다 우리가 임의로 남의 학과 주소를 걸어 두는 것 자체가
+ * 위험 부담이라는 판단이다. 링크가 하나도 없으면 이 페이지는 "각 대학이 스스로 공개한 학과 이름을
+ * 모아 적은 명부"에 그치고 그 이상 아무것도 주장하지 않는다.
+ * lib/universities.ts의 url 필드는 지우지 않는다 — 학과와 연락이 닿아 확인되면 그때 쓴다.
  *
  * 【개별 학과 페이지는 만들지 않는다】
  * /muol/universities/[학과] 113개를 지금 열면 각 페이지에 담을 것이 학과명·지역·링크뿐이라
@@ -260,8 +263,15 @@ export default async function UniversitiesPage() {
                       );
                     }
 
-                    /* 아직 무대가 올라오지 않은 학과 — 명부로서 자리는 지키되 눌러도 갈 곳이 없으므로
-                       카드 전체를 링크로 만들지 않는다. 확인된 홈페이지가 있을 때만 그 한 줄을 링크로 준다. */
+                    /* 아직 무대가 올라오지 않은 학과 — 이름만 텍스트로 둔다.
+                     *
+                     * 2026-09-10 사장님 지시 — 외부 링크를 전부 걷어냈다.
+                     * 그전에는 "확인된 URL만 링크로 건다"였는데, 확인이 불분명한 주소가 섞여 있는 데다
+                     * 우리가 임의로 남의 학과 주소를 걸어 두는 것 자체가 위험 부담이라는 판단이다.
+                     * 링크가 하나도 없으면 이 페이지는 "각 대학이 스스로 공개한 학과 이름을 모아 적은 명부"에
+                     * 그치고, 그 이상 아무것도 주장하지 않는다.
+                     * 데이터(lib/universities.ts)의 url 필드는 지우지 않고 남겨 둔다 — 나중에 학과와
+                     * 연락이 닿아 확인되면 그때 쓸 수 있고, 지금은 화면에서 쓰지 않을 뿐이다. */
                     return (
                       <li
                         key={name}
@@ -274,31 +284,11 @@ export default async function UniversitiesPage() {
                         >
                           {d.school} {d.dept}
                         </p>
-                        <div className="flex items-baseline justify-between gap-2">
-                          {d.genre ? (
-                            <span className="text-xs" style={{ color: "#6B5C50" }}>
-                              {d.genre}
-                            </span>
-                          ) : (
-                            <span />
-                          )}
-                          {d.url ? (
-                            <a
-                              href={d.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`text-xs shrink-0 ${FOCUS_STATES}`}
-                              style={{
-                                color: "#0B5563",
-                                textDecoration: "underline",
-                                textDecorationColor: "rgba(11,85,99,0.35)",
-                                textUnderlineOffset: "3px",
-                              }}
-                            >
-                              학과 홈페이지 ↗
-                            </a>
-                          ) : null}
-                        </div>
+                        {d.genre ? (
+                          <span className="text-xs" style={{ color: "#6B5C50" }}>
+                            {d.genre}
+                          </span>
+                        ) : null}
                       </li>
                     );
                   })}
@@ -360,7 +350,7 @@ export default async function UniversitiesPage() {
           style={{ borderTop: "1px solid #D4CFC1", color: "#6B5C50" }}
         >
           <p className="mb-3" style={{ wordBreak: "keep-all" }}>
-            이 명부에는 각 대학이 공개한 학과명·소재지·홈페이지 주소만 싣습니다. 담당자 성함이나 연락처는 싣지 않습니다.
+            이 명부에는 각 대학이 공개한 학과 이름과 소재지만 싣습니다. 담당자 성함·연락처는 물론, 학과 홈페이지 주소도 싣지 않습니다.
             내용이 실제와 다르거나 표시를 원하지 않으시면{" "}
             <Link
               href="/muol/contact"
