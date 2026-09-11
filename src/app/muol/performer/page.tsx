@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import ShowSamplePreview from "@/components/ShowSamplePreview";
 import { REGIONS_EXCLUDE_ALL, GENRES, SHOW_CATEGORIES, GENRE_DETAILS, GENRE_DETAIL_GROUPS, hasGenreDetails } from "@/lib/constants";
 import { isValidUrl, normalizeUrl, KAKAO_MAP_HOSTS, NAVER_MAP_HOSTS } from "@/lib/validators";
 import { DEPARTMENTS, DEPARTMENT_COUNT, fullName, findByFullName } from "@/lib/universities";
@@ -761,9 +762,13 @@ export default function PerformerPage() {
             body: "보내주신 신청을 운영자가 살펴보고 있습니다. 영업일 기준 1~3일 안에 결과를 알려드립니다. 자격이 열리면 이 자리가 바로 공연 등록 화면으로 바뀝니다.",
           }
         : {
+            /* 2026-09-11 — 앞 문구는 "올려주시면, 저희가 걸어 두겠습니다"였다.
+               운영자를 거치는 과정이 먼저 읽혀서, 올리는 쪽에는 맡기고 기다리는 일로 보였다.
+               확인 단계 자체는 아래 5단계에 그대로 있으므로(03·05) 여기서 감추지 않는다.
+               첫 문장이 말할 것은 심사가 아니라 "준비할 게 적다"는 사실이다. */
             eyebrow: "무대를 올리는 분께",
-            title: "올려주시면, 저희가 걸어 두겠습니다",
-            body: "무대올림은 한국 대학 무대예술의 오늘을 한데 모아 기록하고 알리는 곳입니다. 공연을 올리는 데에도, 사이트에 걸리는 데에도 비용을 받지 않습니다.",
+            title: "포스터 한 장이면 충분합니다",
+            body: "제목과 포스터, 일정. 이 세 가지면 됩니다. 채우시는 데 10분이면 끝나고, 무대를 올리는 데에도 사이트에 걸리는 데에도 비용을 받지 않습니다.",
           };
 
     /* 다음 걸음 — 지금 서 계신 자리에서 가장 가까운 문 하나만 크게 연다. */
@@ -806,6 +811,10 @@ export default function PerformerPage() {
           >
             {intro.body}
           </p>
+
+          {/* 2026-09-11 — 절차를 글로 읽기 전에, 결과물을 먼저 눈으로 보게 한다.
+              확인하러 들어온 담당자가 알고 싶은 건 "내 공연이 걸리면 어떤 모양인가"다. */}
+          <ShowSamplePreview />
 
           <div className="space-y-6 mb-12">
             {steps.map((s) => (

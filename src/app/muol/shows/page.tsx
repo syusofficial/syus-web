@@ -10,6 +10,7 @@ import { sanitizeSearchTerm, todayKey, isEnded } from "@/lib/showFilters";
 import { showDateKey } from "@/lib/showDate";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
+import { DEPARTMENT_COUNT } from "@/lib/universities";
 import type { Show } from "@/types";
 import { OG_MUOL } from "@/lib/ogCards";
 
@@ -572,9 +573,23 @@ export default async function ShowsPage({
                   className="text-xs leading-relaxed mb-4 max-w-md mx-auto"
                   style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
                 >
-                  막이 오르기를 기다리는 동안, 읽어두실 글이 있습니다.
+                  {/* 2026-09-11 — 출구가 '읽을 것' 둘뿐이었다. 지금 이 사이트에서 유일하게
+                      꽉 차 있는 실물은 학과 명부이고, 확인하러 들어온 담당자가 자기 학과를
+                      찾아볼 수 있는 자리도 거기다. 그래서 명부를 첫 문으로 올린다. */}
+                  막이 오르기를 기다리는 동안, 둘러보실 자리가 있습니다.
                 </p>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
+                  <Link
+                    href="/muol/universities"
+                    className="inline-block px-4 py-2.5 text-xs tracking-wide transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                    style={{
+                      fontFamily: "var(--font-noto-sans-kr)",
+                      color: "#0B5563",
+                      border: "1px solid #D4CFC1",
+                    }}
+                  >
+                    학과 명부 {DEPARTMENT_COUNT}곳 →
+                  </Link>
                   <Link
                     // 2026-09-10 점검 — 여기가 "/syus/essays" 였는데 그 라우트에는 page.tsx가 없어
                     // 라이브에서 404였다(실측 확인). 즉 공연 0건 화면에서 관객에게 내준 출구 두 개 중
