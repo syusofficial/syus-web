@@ -26,6 +26,9 @@ const REASON_MESSAGES: Record<string, string> = {
   // 예약 시스템 B1(회차별 정원 분리, 2026-07-24) — 마이그레이션 이후에만 발생 가능
   session_required: "관람 회차를 선택해주세요.",
   session_not_found: "선택하신 회차를 찾을 수 없습니다. 새로고침 후 다시 시도해주세요.",
+  // 종료일 가드(2026-09-11) — 폼을 열어둔 채 날이 바뀐 경우에 여기로 온다
+  show_ended: "이미 끝난 공연입니다. 다음 무대에서 만나뵐 수 있기를 바랍니다.",
+  session_ended: "이미 지난 회차입니다. 다른 회차를 선택해주세요.",
 };
 
 export async function submitReservation(formData: FormData): Promise<SubmitReservationState> {
