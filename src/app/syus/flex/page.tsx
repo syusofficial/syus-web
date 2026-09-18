@@ -54,6 +54,10 @@ export default async function FlexHub() {
       <p className="syc-tagline">변형 무대 · 형태가 계속 바뀌는, 끝없이 새로 지어지는 무대</p>
       <p className="syc-lead">원하는 결의 독백을 요청하면, AI가 기존 작품을 베끼지 않은 창작 독백을 요청 즉시 지어 바로 전달합니다. 동의하면 서고에 쌓여 다른 사람도 둘러봅니다.</p>
 
+      <p className="syc-note" style={{ marginTop: 0, marginBottom: 18 }}>
+        이 기능은 <strong>생성형 인공지능을 기반으로 제공되는 서비스</strong>입니다. 여기 쌓인 독백은 모두 인공지능이 생성한 결과물이며, 각 독백에 그 표시가 함께 붙습니다.
+      </p>
+
       <div className="syc-cta-row syc-rule">
         <SyusWriteCta stage="flex" label="독백 요청하기" color="var(--color-syus-stage-flex)" writeHref="/syus/monologues/request" />
         <Link href="/syus/mypage" className="syc-btn-ghost">내 요청 보기</Link>
@@ -66,7 +70,7 @@ export default async function FlexHub() {
           <div className="syc-cards">
             {items.map((m) => (
               <Link key={m.id} href={`/syus/monologues/${m.id}`} className="syc-card">
-                <span className="syc-card-meta">{[m.char_type, m.emotion, m.tone].filter(Boolean).join(" · ") || "창작 독백"}</span>
+                <span className="syc-card-meta">AI 생성 · {[m.char_type, m.emotion, m.tone].filter(Boolean).join(" · ") || "창작 독백"}</span>
                 <p className="syc-card-body" style={{ display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{m.generated_text}</p>
               </Link>
             ))}
@@ -84,7 +88,7 @@ export default async function FlexHub() {
             </article>
           </>
         )}
-        <p className="syc-note">※ 모든 독백은 AI가 지은 창작 원본입니다. 요청 즉시 지어져 곧바로 전달되며(하루 3건까지), 연습·오디션에 자유롭게 쓸 수 있어요.</p>
+        <p className="syc-note">※ 모든 독백은 인공지능이 생성한 창작 원본입니다. 요청 즉시 지어져 곧바로 전달되며(하루 3건까지), 연습·오디션에 자유롭게 쓸 수 있어요.</p>
       </div>
 
       <nav className="syc-bridge">

@@ -66,6 +66,10 @@ export default function MonologueRequest() {
       <h1 className="syc-title">독백 요청하기</h1>
       <p className="syc-tagline">원하는 결을 적어 주시면, 요청 즉시 AI가 새 독백을 지어 곧바로 전달합니다.</p>
 
+      <p className="syc-note" style={{ marginTop: 14, marginBottom: 0 }}>
+        이 기능은 <strong>생성형 인공지능을 기반으로 제공되는 서비스</strong>입니다. 요청하시면 인공지능이 독백을 생성하며, 전달되는 독백에는 인공지능 생성물 표시가 함께 붙습니다.
+      </p>
+
       <form onSubmit={submit} className="syc-form" style={{ marginTop: "12px" }}>
         <label className="syc-label">인물 유형
           <input className="syc-input" value={f.char_type} onChange={(e) => up("char_type", e.target.value)} placeholder="예: 20대 후반, 오래 준비한 무대를 포기하려는 사람" required />
@@ -97,7 +101,7 @@ export default function MonologueRequest() {
           완성된 독백을 서고에 공개하는 데 동의합니다 (다른 사람도 둘러볼 수 있어요)
         </label>
         {error && <p className="syc-error">{error}</p>}
-        <p className="syc-note">※ 요청을 접수하면 AI가 즉시 독백을 지어 곧바로 전달합니다(하루 3건까지). 접수 후 마이페이지·상세에서 상태를 볼 수 있어요.</p>
+        <p className="syc-note">※ 요청을 접수하면 인공지능이 즉시 독백을 지어 곧바로 전달합니다(하루 3건까지). 접수 후 마이페이지·상세에서 상태를 볼 수 있어요.</p>
         <div className="syc-actions">
           <button type="submit" className="syc-btn" disabled={saving}>{saving ? "독백을 짓는 중… (최대 1분)" : "요청 접수"}</button>
           <Link href="/syus/flex" className="syc-cancel">취소</Link>

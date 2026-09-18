@@ -76,8 +76,11 @@ export default function MonologueDetail() {
 
         {revealed ? (
           <>
-            <span className="syc-badge syc-badge--static" style={{ color: "var(--color-syus-stage-flex)", marginBottom: 12 }}>AI 창작 원본</span>
+            <span className="syc-badge syc-badge--static" style={{ color: "var(--color-syus-stage-flex)", marginBottom: 12 }}>인공지능(AI) 생성물</span>
             <p className="syc-detail-body" style={{ fontSize: "1.05rem", lineHeight: 1.9 }}>{m.generated_text}</p>
+            <p className="syc-note" style={{ marginTop: 16, marginBottom: 0 }}>
+              이 독백은 생성형 인공지능이 지은 창작 원본입니다. 기존 작품을 복제·각색하지 않으나, 표현이 우연히 유사할 가능성을 완전히 배제할 수는 없습니다.
+            </p>
           </>
         ) : (
           <div className="syc-empty" style={{ textAlign: "left" }}>
