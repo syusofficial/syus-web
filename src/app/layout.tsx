@@ -4,6 +4,7 @@ import { Noto_Serif_KR, Noto_Sans_KR, Cormorant_Garamond, Geist } from "next/fon
 import "./globals.css";
 import NavMega from "@/components/NavMega";
 import Footer from "@/components/Footer";
+import ChuseokGreeting from "@/components/ChuseokGreeting";
 import LoadingScreen from "@/components/LoadingScreen";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import SessionManager from "@/components/SessionManager";
@@ -135,6 +136,7 @@ export default function RootLayout({
         <NavMega />
         <main className="flex-1">{children}</main>
         <Footer />
+        <ChuseokGreeting />
         <GoogleAnalytics />
         <SessionManager />
         <PageViewTracker />

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { isChuseokWindow } from "@/lib/chuseok";
 
 /**
  * 무대올림 — 두 문(門) 선택형 안내 카드
@@ -210,6 +211,9 @@ export default function MuolRegisterPrompt() {
   // 등장 판단
   useEffect(() => {
     if (suppressedByPath) return;
+    // 명절 인사 배너가 걸린 동안에는 이 카드가 쉰다 — 한 화면에 카드 둘은 둘 다 잡음이 된다.
+    // 기간 정의는 src/lib/chuseok.ts 한 곳뿐이다(지나면 저절로 원래대로 돌아온다).
+    if (isChuseokWindow()) return;
     if (viewer === "loading" || viewer === "skip") return;
     if (visible) return;
 

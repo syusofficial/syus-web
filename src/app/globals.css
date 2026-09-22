@@ -576,6 +576,19 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 .muol-prompt-in  { animation: muolPromptIn 0.28s ease-out both; }
 .muol-prompt-out { animation: muolPromptOut 0.2s ease-in both; pointer-events: none; }
 
+/* 추석 인사 팝업(ChuseokGreeting) — 딤은 옅게 들어오고 카드는 살짝 올라온다.
+   기간이 지나면 컴포넌트가 스스로 렌더를 멈추므로 이 클래스도 함께 잠든다. */
+@keyframes chuseokDim { from { opacity: 0; } to { opacity: 1; } }
+@keyframes chuseokPop {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+.chuseok-dim { animation: chuseokDim 0.22s ease-out both; }
+.chuseok-pop { animation: chuseokPop 0.28s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .chuseok-dim, .chuseok-pop { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .muol-prompt-in, .muol-prompt-out { animation: none; }
   .muol-prompt-out { opacity: 0; }
