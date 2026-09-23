@@ -225,17 +225,17 @@ export default function ChuseokGreeting() {
           </h2>
 
           <p className="text-[14px] leading-relaxed mb-5" style={{ color: INK_2 }}>
-            무대가 쉬는 동안 저희도 잠깐 쉽니다.
-            연휴가 끝나면 다시 자리로 돌아오겠습니다.
+            무대를 올리는 분에게도, 객석에 앉는 분에게도
+            넉넉하고 편안한 한가위가 되기를 바랍니다.
           </p>
 
-          {/* 실용 안내 — 이 팝업이 존재하는 이유. 늦는다는 말을 먼저 한다. */}
+          {/* 실용 안내 — 이 팝업이 존재하는 이유. 늦는다는 말로 끝내지 않고 답변 약속까지 적는다. */}
           <div
             className="px-4 py-3.5 rounded text-[12.5px] leading-relaxed"
             style={{ color: INK_3, backgroundColor: "#E6E1D6" }}
           >
             <span style={{ color: TEAL, fontWeight: 700 }}>{CHUSEOK_HOLIDAY_LABEL}</span>
-            {" "}문의와 공연 등록 승인 답변이 늦어질 수 있습니다.
+            {" "}문의와 공연 등록 승인 답변이 조금 늦어질 수 있습니다. 연휴가 끝나는 대로 하나씩 답변드리겠습니다.
           </div>
 
           <p className="mt-4 text-[11.5px]" style={{ color: INK_3 }}>
