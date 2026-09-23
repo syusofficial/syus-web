@@ -576,17 +576,125 @@ a.syc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36,2
 .muol-prompt-in  { animation: muolPromptIn 0.28s ease-out both; }
 .muol-prompt-out { animation: muolPromptOut 0.2s ease-in both; pointer-events: none; }
 
-/* 추석 인사 팝업(ChuseokGreeting) — 딤은 옅게 들어오고 카드는 살짝 올라온다.
-   기간이 지나면 컴포넌트가 스스로 렌더를 멈추므로 이 클래스도 함께 잠든다. */
-@keyframes chuseokDim { from { opacity: 0; } to { opacity: 1; } }
+/* 추석 인사 팝업(ChuseokGreeting) — 네이티브 <dialog> 기반.
+   KRDS 모달 규격(radius 12 / 푸터 액션 / 우상단 닫기) + W3C APG Dialog 패턴.
+   기간이 지나면 컴포넌트가 스스로 렌더를 멈추므로 이 블록도 함께 잠든다.
+   색은 전부 위 :root의 --c-* 토큰과 같은 값이다(새 색 0개). */
+
+dialog.chuseok-dialog {
+  /* 화면 전체를 덮되 투명하다 — 이 16px 여백이 「바깥 클릭」 판정 영역이 된다 */
+  box-sizing: border-box;                /* padding이 100%를 넘기지 않게 (preflight와 중복이어도 명시) */
+  width: 100%; max-width: none; height: 100%; max-height: none;
+  margin: auto; padding: 16px; border: 0; background: transparent; overflow: visible;
+  display: flex; align-items: center; justify-content: center;
+}
+dialog.chuseok-dialog:not([open]) { display: none; }
+dialog.chuseok-dialog::backdrop { background: rgba(43, 33, 28, 0.62); }
+
+.cg-card {
+  position: relative; width: 100%; max-width: 440px; max-height: 88dvh;
+  display: flex; flex-direction: column;
+  background: #F0EEE9;                   /* --c-bg */
+  border: 1px solid #8C837C;             /* --c-line-strong · 배경 대비 3.20:1 */
+  border-radius: 12px;                   /* KRDS 모달 radius */
+  box-shadow: 0 18px 50px rgba(23, 18, 15, 0.38);
+  overflow: hidden; overscroll-behavior: contain;
+}
+
+.cg-band { position: relative; height: 150px; flex: none; background: #2B211C; }
+.cg-band img { width: 100%; height: 100%; object-fit: cover; object-position: center 52%; display: block; }
+.cg-ai {
+  position: absolute; right: 10px; bottom: 8px;
+  font-size: 10px; letter-spacing: 0.04em; line-height: 1.6;
+  color: #F0EEE9; background: rgba(23, 18, 15, 0.72); padding: 2px 7px; border-radius: 4px;
+}
+
+.cg-close {
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  width: 40px; height: 40px; border-radius: 999px; border: 0; cursor: pointer;
+  background: rgba(23, 18, 15, 0.62); color: #F0EEE9;
+  display: flex; align-items: center; justify-content: center;
+  transition: background-color 0.16s ease, transform 0.1s ease;
+}
+.cg-close svg { width: 16px; height: 16px; display: block; }
+.cg-close:hover { background: rgba(23, 18, 15, 0.82); }
+.cg-close:active { transform: scale(0.94); }
+.cg-close:focus-visible { outline: 2px solid #F0EEE9; outline-offset: 2px; }
+
+.cg-scroll { overflow-y: auto; flex: 1 1 auto; -webkit-overflow-scrolling: touch; }
+.cg-body { padding: 26px 32px 22px; }
+.cg-over { margin: 0 0 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: #0B5563; }
+.cg-title { margin: 0 0 12px; font-family: var(--font-noto-serif-kr); font-size: 20px; font-weight: 700; line-height: 1.45; color: #2B211C; outline: none; }
+.cg-lead { margin: 0; font-size: 15px; line-height: 1.8; color: #3A2E27; }
+
+.cg-notice {
+  margin: 20px 0 0; padding: 14px 16px;
+  background: #DCE7E8;                   /* --c-teal-tint */
+  border-left: 3px solid #0B5563;
+  border-radius: 0 6px 6px 0;
+  font-size: 13.5px; line-height: 1.75;
+  color: #084653;                        /* --c-teal-tint-ink · 틴트 위 8.27:1 */
+}
+.cg-notice b { font-weight: 700; }
+.cg-sign { margin: 16px 0 0; font-size: 12px; color: #5F5145; }
+
+.cg-foot {
+  flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 16px 10px 20px;
+  background: #E6E1D6;                   /* --c-surface */
+  border-top: 1px solid #D4CFC1;         /* --c-line */
+}
+.cg-check {
+  display: inline-flex; align-items: center; gap: 9px;
+  min-height: 44px; cursor: pointer; padding: 0 4px; border-radius: 4px;
+  font-size: 13px; line-height: 1.4; color: #5F5145;   /* surface 위 5.86:1 */
+}
+.cg-check input { width: 18px; height: 18px; margin: 0; flex: none; cursor: pointer; accent-color: #0B5563; }
+.cg-check:hover { color: #4A3B33; }
+.cg-check:focus-within { outline: 2px solid #0B5563; outline-offset: 2px; }
+
+.cg-btn {
+  flex: none; min-width: 104px; height: 48px; padding: 0 24px;   /* KRDS 버튼 medium 48px */
+  border: 1px solid #0B5563; border-radius: 6px; cursor: pointer;
+  background: #0B5563; color: #F0EEE9;                           /* 7.26:1 */
+  font-family: inherit; font-size: 14px; font-weight: 700; letter-spacing: 0.02em;
+  transition: background-color 0.16s ease, transform 0.1s ease;
+}
+.cg-btn:hover { background: #06333D; border-color: #06333D; }
+.cg-btn:active { transform: translateY(1px); }
+.cg-btn:focus-visible { outline: 2px solid #0B5563; outline-offset: 2px; }
+.cg-btn:disabled { background: #8C837C; border-color: #8C837C; cursor: not-allowed; opacity: 0.7; }
+
+@media (max-width: 440px) {
+  .cg-band { height: 118px; }
+  .cg-body { padding: 22px 20px 18px; }
+  .cg-title { font-size: 19px; }
+  .cg-lead { font-size: 14.5px; line-height: 1.78; }
+  .cg-notice { font-size: 13px; padding: 13px 14px; }
+  .cg-foot { padding: 8px 12px 8px 14px; }
+  .cg-btn { min-width: 92px; padding: 0 18px; }
+  .cg-check { font-size: 12.5px; gap: 8px; }
+}
+
+/* Windows 고대비 모드 — 사진 위에 얹힌 반투명 원이 지워져도 X가 배경에 묻히지 않게.
+   이 블록은 고대비 모드에서만 적용되므로 일반 화면에는 아무 영향이 없다. */
+@media (forced-colors: active) {
+  .cg-card { border: 1px solid CanvasText; }
+  .cg-close { background: ButtonFace; color: ButtonText; border: 1px solid ButtonBorder; }
+  .cg-notice { border-left-color: CanvasText; }
+}
+
+/* 등장 — transform · opacity 만 (transition-all 금지) */
 @keyframes chuseokPop {
   from { opacity: 0; transform: translateY(10px) scale(0.985); }
   to   { opacity: 1; transform: none; }
 }
-.chuseok-dim { animation: chuseokDim 0.22s ease-out both; }
-.chuseok-pop { animation: chuseokPop 0.28s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+@keyframes chuseokDim { from { opacity: 0; } to { opacity: 1; } }
+dialog.chuseok-dialog[open] .cg-card { animation: chuseokPop 0.28s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+dialog.chuseok-dialog[open]::backdrop { animation: chuseokDim 0.22s ease-out both; }
 @media (prefers-reduced-motion: reduce) {
-  .chuseok-dim, .chuseok-pop { animation: none; }
+  dialog.chuseok-dialog[open] .cg-card,
+  dialog.chuseok-dialog[open]::backdrop { animation: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
