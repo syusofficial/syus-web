@@ -12,13 +12,13 @@ import {
   approvePerformerApplication as approvePerformerAction,
   rejectPerformerApplication as rejectPerformerAction,
 } from "@/app/actions/performer";
-import { cancelReservationAction } from "@/app/actions/reservations";
+import AdminReservationsPanel from "@/components/admin/AdminReservationsPanel";
 import {
   approveShow as approveShowAction,
   rejectShow as rejectShowAction,
   reassignShowOrganizer,
 } from "@/app/actions/shows";
-import { AdminShowCreateModal, OrganizerReassignModal } from "@/components/admin/AdminShowModals";
+import { AdminShowCreateModal, AdminShowEditModal, OrganizerReassignModal } from "@/components/admin/AdminShowModals";
 import { formatShowDate, formatShowPeriod } from "@/lib/showDate";
 import type { Show, Profile, Contact, Review, Reservation } from "@/types";
 
@@ -98,7 +98,6 @@ export default function AdminPage() {
   const [reviewShow, setReviewShow] = useState<Show | null>(null);
   const [adminReviews, setAdminReviews] = useState<AdminReviewRow[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [cancellingReservationId, setCancellingReservationId] = useState<string | null>(null);
   const [reviewFilter, setReviewFilter] = useState<"hidden" | "public" | "all">("hidden");
 
   // ── 공연 탭 전용 상태 (2026-09-10 신설) ──
@@ -111,6 +110,16 @@ export default function AdminPage() {
   const [createShowOpen, setCreateShowOpen] = useState(false);
   /** 공연자를 넘길 대상 공연. null이면 모달 닫힘. */
   const [reassignTarget, setReassignTarget] = useState<Show | null>(null);
+  /** 정보를 고칠 공연. null이면 수정 모달 닫힘. (2026-09-28) */
+  const [editTarget, setEditTarget] = useState<Show | null>(null);
+  /** 공연 탭 필터·검색 — 공연이 쌓이면 승인 대기 건이 목록 아래로 묻힌다. (2026-09-28) */
+  const [showStatusFilter, setShowStatusFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
+  const [showQuery, setShowQuery] = useState("");
+  /** 회원 탭 검색·역할 필터 (2026-09-28) */
+  const [memberQuery, setMemberQuery] = useState("");
+  const [memberRoleFilter, setMemberRoleFilter] = useState<"all" | "member" | "performer" | "admin">("all");
+  /** 회원·문의 탭 처리 결과 한 줄 — alert 대신 화면에 남겨 둔다. */
+  const [membersNotice, setMembersNotice] = useState<string | null>(null);
 
   const fetchAll = useCallback(async () => {
     const supabase = createClient();
@@ -171,17 +180,28 @@ export default function AdminPage() {
     setDataLoading(false);
   }, []);
 
-  const cancelReservationAsAdmin = async (reservation: Reservation) => {
-    if (!window.confirm(`"${reservation.guest_name ?? "신청자"}"님의 좌석 신청을 취소하시겠습니까?`)) return;
-    setCancellingReservationId(reservation.id);
-    const res = await cancelReservationAction(reservation.reservation_code, reservation.guest_contact ?? "");
-    if (res.ok) {
-      setReservations((prev) => prev.map((r) => (r.id === reservation.id ? { ...r, status: "cancelled" } : r)));
-    } else {
-      alert(res.message);
-    }
-    setCancellingReservationId(null);
-  };
+  /**
+   * 예약 목록만 다시 읽는다 — 2026-09-28.
+   * fetchAll은 탭 전체를 로딩 화면으로 바꿔 예약 패널을 내렸다 올리므로(처리 결과 한 줄이
+   * 사라진다), 예약 패널의 새로고침은 이 가벼운 경로를 쓴다. 탭 옆 숫자도 여기서 맞춰진다.
+   */
+  const refreshReservations = useCallback(async () => {
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("syus_reservations")
+      .select("*, shows(title, schedule_start, schedule_end)")
+      .order("created_at", { ascending: false })
+      .limit(500);
+    if (!Array.isArray(data)) return;
+    setReservations(
+      (data as (Reservation & { shows?: { title?: string; schedule_start?: string; schedule_end?: string } | null })[]).map((r) => ({
+        ...r,
+        show_title: r.shows?.title,
+        schedule_start: r.shows?.schedule_start,
+        schedule_end: r.shows?.schedule_end,
+      }))
+    );
+  }, []);
 
   // 모달 ESC 닫기 + body 스크롤 잠금
   useEffect(() => {
@@ -302,8 +322,18 @@ export default function AdminPage() {
 
   /** 관리자 강제 탈퇴 — Storage 포스터 + auth.users + CASCADE 데이터 삭제 */
   const forceDeleteMember = async (member: Profile) => {
+    if (member.id === currentUserId) {
+      alert("운영자 본인 계정은 여기서 탈퇴시킬 수 없습니다.");
+      return;
+    }
+    // 무엇이 함께 사라지는지 숫자로 보여 준다 — "모든 공연"이라는 말만으로는 무게가 전해지지 않는다.
+    const ownedShows = shows.filter((s) => s.organizer_id === member.id);
+    const showLine = ownedShows.length
+      ? `이 회원이 등록한 공연 ${ownedShows.length}건(${ownedShows.slice(0, 3).map((s) => `「${s.title}」`).join(", ")}${ownedShows.length > 3 ? " 외" : ""})도 함께 삭제됩니다.\n다른 계정으로 옮겨 두려면 먼저 공연 탭의 '공연자 변경'을 쓰세요.\n\n`
+      : "";
     const confirmed = window.confirm(
       `정말로 "${member.name ?? member.email ?? member.id}" 회원을 강제 탈퇴시키겠습니까?\n\n` +
+      showLine +
       `이 작업은 되돌릴 수 없으며, 해당 회원이 등록한 모든 공연·좋아요·문의 등이 영구 삭제됩니다.`
     );
     if (!confirmed) return;
@@ -414,6 +444,21 @@ export default function AdminPage() {
   };
 
   const updateMemberRole = async (id: string, role: "member" | "performer" | "admin") => {
+    // 2026-09-28: 선택 상자를 바꾸는 즉시 저장되던 것을 한 번 확인받도록 바꿨다.
+    // 스크롤하다 잘못 건드리면 그 자리에서 누군가 '관리자'가 되고, 되돌릴 때까지
+    // 회원 개인정보·공연 삭제 권한이 열려 있었다. 선택 상자는 제어 컴포넌트라
+    // 취소하면 원래 값으로 그대로 돌아간다.
+    const target = members.find((m) => m.id === id);
+    const who = target?.name || target?.email || "이 회원";
+    const roleLabel = { member: "일반", performer: "공연자", admin: "관리자" }[role];
+    const warning =
+      role === "admin"
+        ? "\n\n관리자는 모든 회원 정보·공연·문의를 보고 지울 수 있습니다. 운영진이 맞는지 다시 확인해 주세요."
+        : id === currentUserId
+          ? "\n\n본인 계정입니다. 관리자 권한을 내려놓으면 이 화면에 다시 들어올 수 없습니다."
+          : "";
+    if (!window.confirm(`${who}님의 역할을 '${roleLabel}'(으)로 바꿀까요?${warning}`)) return;
+
     // profiles RLS 강화로 브라우저(anon)에서는 타인 row update 불가
     // → server API + service role로 처리 (admin 검증 후 RLS 우회)
     try {
@@ -429,6 +474,7 @@ export default function AdminPage() {
         return;
       }
       setMembers((prev) => prev.map((m) => m.id === id ? { ...m, role } : m));
+      setMembersNotice(`${who}님의 역할을 '${roleLabel}'(으)로 바꿨습니다.`);
     } catch (err) {
       console.error("[admin/updateMemberRole]", err);
       alert("회원 역할 변경 중 네트워크 오류가 발생했습니다.");
@@ -444,6 +490,22 @@ export default function AdminPage() {
       return;
     }
     setContacts((prev) => prev.map((c) => c.id === id ? { ...c, status: "resolved" } : c));
+  };
+
+  /**
+   * 처리완료를 되돌린다 — 2026-09-28 신설.
+   * 처리완료는 한 번 누르면 되돌릴 길이 없어서, 잘못 누른 문의는 '미처리' 숫자에서
+   * 빠진 채 잊혔다. 답장을 기다리는 문의가 조용히 사라지지 않게 대기로 되돌릴 수 있게 한다.
+   */
+  const reopenContact = async (id: string) => {
+    const supabase = createClient();
+    const { error } = await supabase.from("contacts").update({ status: "pending" }).eq("id", id);
+    if (error) {
+      console.error("[admin/reopenContact]", error);
+      alert(`되돌리는 중 오류가 발생했습니다.\n${error.message}`);
+      return;
+    }
+    setContacts((prev) => prev.map((c) => c.id === id ? { ...c, status: "pending" } : c));
   };
 
   /** 공연 영구 삭제 — Storage 포스터 + DB row 제거 */
@@ -532,6 +594,30 @@ export default function AdminPage() {
   const pendingShows = shows.filter((s) => s.status === "pending").length;
   const pendingContacts = contacts.filter((c) => c.status === "pending").length;
   const pendingApplications = members.filter((m) => m.performer_status === "pending").length;
+
+  // 공연 탭 — 상태 필터 + 검색(공연명·공연자·학과·공연장)
+  const showNeedle = showQuery.trim().toLowerCase();
+  const filteredShows = shows.filter((s) => {
+    if (showStatusFilter !== "all" && s.status !== showStatusFilter) return false;
+    if (!showNeedle) return true;
+    // 등록 계정의 이름·이메일도 함께 찾는다 — 회원 탭의 '등록 공연 N건'에서 넘어올 때 쓰인다.
+    const owner = members.find((m) => m.id === s.organizer_id);
+    return [s.title, s.performer_name, s.school_department, s.venue, owner?.name, owner?.email]
+      .some((v) => (v ?? "").toLowerCase().includes(showNeedle));
+  });
+
+  // 회원 탭 — 역할 필터 + 검색(이름·이메일)
+  const memberNeedle = memberQuery.trim().toLowerCase();
+  const filteredMembers = members.filter((m) => {
+    if (memberRoleFilter !== "all" && m.role !== memberRoleFilter) return false;
+    if (!memberNeedle) return true;
+    return `${m.name ?? ""} ${m.email ?? ""}`.toLowerCase().includes(memberNeedle);
+  });
+  /** 회원별 등록 공연 수 — 강제 탈퇴 전에 무엇이 함께 지워지는지 보여 주기 위해 */
+  const showCountByOrganizer = shows.reduce<Record<string, number>>((acc, s) => {
+    if (s.organizer_id) acc[s.organizer_id] = (acc[s.organizer_id] ?? 0) + 1;
+    return acc;
+  }, {});
 
   /** organizer_id → 화면에 보여 줄 이름. 회원 목록에 없으면 id 앞자리만 보여 준다. */
   const memberLabel = (id?: string | null): string => {
@@ -672,10 +758,48 @@ export default function AdminPage() {
                   </button>
                 </div>
 
+                {/* 상태 필터 + 검색 */}
+                <div className="mb-5 flex flex-wrap items-center gap-2">
+                  {([
+                    { key: "all", label: "전체", count: shows.length },
+                    { key: "pending", label: "승인 대기", count: shows.filter((s) => s.status === "pending").length },
+                    { key: "approved", label: "게시 중", count: shows.filter((s) => s.status === "approved").length },
+                    { key: "rejected", label: "반려", count: shows.filter((s) => s.status === "rejected").length },
+                  ] as const).map((f) => {
+                    const active = showStatusFilter === f.key;
+                    return (
+                      <button
+                        key={f.key}
+                        type="button"
+                        onClick={() => setShowStatusFilter(f.key)}
+                        aria-pressed={active}
+                        className="px-3 py-1.5 text-xs tracking-wide transition-colors"
+                        style={{
+                          fontFamily: "var(--font-noto-sans-kr)",
+                          backgroundColor: active ? "#0B5563" : "transparent",
+                          color: active ? "#F0EEE9" : "#0B5563",
+                          border: `1px solid ${active ? "#0B5563" : "#D4CFC1"}`,
+                        }}
+                      >
+                        {f.label} <span style={{ opacity: 0.7 }}>({f.count})</span>
+                      </button>
+                    );
+                  })}
+                  <input
+                    type="search"
+                    value={showQuery}
+                    onChange={(e) => setShowQuery(e.target.value)}
+                    placeholder="공연명·공연자·학과·공연장·등록 계정"
+                    aria-label="공연 검색"
+                    className="px-3 py-1.5 text-xs flex-1 min-w-[180px] outline-none"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#FFFFFF", color: "#3A2E27", border: "1px solid #D4CFC1" }}
+                  />
+                </div>
+
                 <div className="overflow-x-auto">
-                {shows.length === 0 ? (
+                {filteredShows.length === 0 ? (
                   <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-                    등록된 공연이 없습니다.
+                    {shows.length === 0 ? "등록된 공연이 없습니다." : "조건에 맞는 공연이 없습니다. 필터나 검색어를 바꿔 보세요."}
                   </p>
                 ) : (
                   <table className="w-full text-sm">
@@ -689,7 +813,7 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {shows.map((show) => (
+                      {filteredShows.map((show) => (
                         <tr key={show.id} style={{ borderBottom: "1px solid #E6E1D6" }}>
                           <td className="py-4 px-3 font-medium" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}>
                             <button
@@ -744,6 +868,27 @@ export default function AdminPage() {
                                 >
                                   반려
                                 </button>
+                              )}
+                              {/* 정보 수정 — 공연자 계정이 없는 공연도 운영자가 바로 고칠 수 있게 (2026-09-28) */}
+                              <button
+                                onClick={() => setEditTarget(show)}
+                                className="text-xs px-3 py-1 transition-colors"
+                                style={{ color: "#0B5563", border: "1px solid #0B5563" }}
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#E6E1D6"; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+                              >
+                                수정
+                              </button>
+                              {show.status === "approved" && (
+                                <a
+                                  href={`/muol/shows/${show.id}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs px-3 py-1 transition-colors"
+                                  style={{ color: "#5A4A3E", border: "1px solid #D4CFC1" }}
+                                >
+                                  공연 보기 ↗
+                                </a>
                               )}
                               {/* 공연자 변경 — 대리 등록분을 나중에 그 학과 계정으로 넘기는 자리 */}
                               <button
@@ -843,16 +988,68 @@ export default function AdminPage() {
 
             {/* ── 회원 관리 탭 ── */}
             {tab === "members" && (
-              <div className="overflow-x-auto">
-                {members.length === 0 ? (
+              <div>
+                {membersNotice && (
+                  <div
+                    className="mb-5 px-4 py-3 text-xs flex items-start justify-between gap-3"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#E6E1D6", color: "#3A2E27", border: "1px solid #D4CFC1", lineHeight: 1.7 }}
+                  >
+                    <span>{membersNotice}</span>
+                    <button type="button" onClick={() => setMembersNotice(null)} aria-label="알림 닫기" className="shrink-0" style={{ color: "#5A4A3E" }}>
+                      ✕
+                    </button>
+                  </div>
+                )}
+
+                {/* 역할 필터 + 검색 */}
+                <div className="mb-5 flex flex-wrap items-center gap-2">
+                  {([
+                    { key: "all", label: "전체" },
+                    { key: "member", label: "일반" },
+                    { key: "performer", label: "공연자" },
+                    { key: "admin", label: "관리자" },
+                  ] as const).map((f) => {
+                    const active = memberRoleFilter === f.key;
+                    const count = f.key === "all" ? members.length : members.filter((m) => m.role === f.key).length;
+                    return (
+                      <button
+                        key={f.key}
+                        type="button"
+                        onClick={() => setMemberRoleFilter(f.key)}
+                        aria-pressed={active}
+                        className="px-3 py-1.5 text-xs tracking-wide transition-colors"
+                        style={{
+                          fontFamily: "var(--font-noto-sans-kr)",
+                          backgroundColor: active ? "#0B5563" : "transparent",
+                          color: active ? "#F0EEE9" : "#0B5563",
+                          border: `1px solid ${active ? "#0B5563" : "#D4CFC1"}`,
+                        }}
+                      >
+                        {f.label} <span style={{ opacity: 0.7 }}>({count})</span>
+                      </button>
+                    );
+                  })}
+                  <input
+                    type="search"
+                    value={memberQuery}
+                    onChange={(e) => setMemberQuery(e.target.value)}
+                    placeholder="이름·이메일"
+                    aria-label="회원 검색"
+                    className="px-3 py-1.5 text-xs flex-1 min-w-[160px] outline-none"
+                    style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#FFFFFF", color: "#3A2E27", border: "1px solid #D4CFC1" }}
+                  />
+                </div>
+
+              <div className="overflow-x-auto" data-clarity-mask="True">
+                {filteredMembers.length === 0 ? (
                   <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-                    가입된 회원이 없습니다.
+                    {members.length === 0 ? "가입된 회원이 없습니다." : "조건에 맞는 회원이 없습니다."}
                   </p>
                 ) : (
                   <table className="w-full text-sm">
                     <thead>
                       <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
-                        {["이름", "이메일", "역할", "가입일", "역할 변경", "관리"].map((h) => (
+                        {["이름", "이메일", "역할", "가입일", "등록 공연", "역할 변경", "관리"].map((h) => (
                           <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                             {h}
                           </th>
@@ -860,19 +1057,44 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {members.map((m) => (
+                      {filteredMembers.map((m) => (
                         <tr key={m.id} style={{ borderBottom: "1px solid #E6E1D6" }}>
                           <td className="py-4 px-3 font-medium" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
                             {m.name ?? "—"}
+                            {m.id === currentUserId && (
+                              <span className="block text-xs font-normal" style={{ color: "#8A8278" }}>운영자 본인</span>
+                            )}
                           </td>
                           <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
-                            {m.email ?? <span style={{ fontStyle: "italic" }}>이메일 없음</span>}
+                            {m.email ? (
+                              <a href={`mailto:${m.email}`} className="hover:underline" style={{ color: "#0B5563" }}>{m.email}</a>
+                            ) : (
+                              <span style={{ fontStyle: "italic" }}>이메일 없음</span>
+                            )}
                           </td>
                           <td className="py-4 px-3">
                             <StatusBadge status={m.role} />
+                            {m.performer_status === "pending" && (
+                              <span className="block text-xs mt-1" style={{ color: "#0B5563" }}>공연자 신청 대기</span>
+                            )}
                           </td>
                           <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
                             {m.created_at.slice(0, 10)}
+                          </td>
+                          <td className="py-4 px-3 text-xs" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
+                            {showCountByOrganizer[m.id] ? (
+                              <button
+                                type="button"
+                                onClick={() => { setShowStatusFilter("all"); setShowQuery(m.email || m.name || ""); setTab("shows"); }}
+                                className="underline"
+                                style={{ color: "#0B5563" }}
+                                title="공연 탭에서 이 회원 이름으로 찾아봅니다"
+                              >
+                                {showCountByOrganizer[m.id]}건
+                              </button>
+                            ) : (
+                              "—"
+                            )}
                           </td>
                           <td className="py-4 px-3">
                             <select
@@ -902,6 +1124,7 @@ export default function AdminPage() {
                     </tbody>
                   </table>
                 )}
+              </div>
               </div>
             )}
 
@@ -1021,6 +1244,27 @@ export default function AdminPage() {
                                     onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
                                   >
                                     처리완료
+                                  </button>
+                                )}
+                                {/* 답장 — 메일 앱이 받는 사람·제목을 채운 채로 열린다 */}
+                                {c.email && (
+                                  <a
+                                    href={`mailto:${c.email}?subject=${encodeURIComponent(`[사유유사 SYUS] ${cat} 문의에 답장드립니다`)}`}
+                                    className="text-xs px-3 py-1 transition-colors"
+                                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#0B5563", border: "1px solid #0B5563" }}
+                                  >
+                                    메일로 답장
+                                  </a>
+                                )}
+                                {c.status === "resolved" && (
+                                  <button
+                                    onClick={() => reopenContact(c.id)}
+                                    className="text-xs px-3 py-1 transition-colors"
+                                    style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", border: "1px solid #D4CFC1" }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F0EEE9"; }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+                                  >
+                                    다시 대기로
                                   </button>
                                 )}
                                 {c.status === "resolved" && (
@@ -1143,65 +1387,14 @@ export default function AdminPage() {
               />
             )}
 
-            {/* ── 예약 관리 탭 ── */}
+            {/* ── 예약 관리 탭 ── (2026-09-28: 표 하나 → 공연별 현황·회차·전화 접수·신청 처리 패널) */}
             {tab === "reservations" && (
-              <div className="overflow-x-auto">
-                {reservations.length === 0 ? (
-                  <p className="text-center py-20 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
-                    아직 접수된 좌석 신청이 없습니다.
-                  </p>
-                ) : (
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr style={{ borderBottom: "1px solid #D4CFC1" }}>
-                        {["공연명", "신청자", "연락처", "인원", "신청번호", "상태", "관리"].map((h) => (
-                          <th key={h} className="text-left py-3 px-3 text-xs tracking-wider" style={{ fontFamily: "var(--font-inter)", color: "#5A4A3E" }}>
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {reservations.map((r) => {
-                        const statusMap: Record<string, { label: string; bg: string; color: string }> = {
-                          confirmed: { label: "확정", bg: "#D4EDD4", color: "#3A5E42" },
-                          waitlisted: { label: "대기", bg: "#E6E1D6", color: "#0B5563" },
-                          cancelled: { label: "취소됨", bg: "#EDD4D4", color: "#5A4A3E" },
-                        };
-                        const s = statusMap[r.status] ?? statusMap.confirmed;
-                        return (
-                          <tr key={r.id} style={{ borderBottom: "1px solid #E6E1D6" }}>
-                            <td className="py-3 px-3" style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#4A3B33" }}>
-                              {r.show_title ?? "(공연 정보 없음)"}
-                            </td>
-                            <td className="py-3 px-3" style={{ color: "#4A3B33" }}>{r.guest_name ?? "-"}</td>
-                            <td className="py-3 px-3" style={{ color: "#5A4A3E" }}>{r.guest_contact ?? "-"}</td>
-                            <td className="py-3 px-3" style={{ color: "#4A3B33" }}>{r.party_size}명</td>
-                            <td className="py-3 px-3 text-xs" style={{ color: "#5A4A3E" }}>{r.reservation_code}</td>
-                            <td className="py-3 px-3">
-                              <span className="px-2 py-0.5 text-xs" style={{ backgroundColor: s.bg, color: s.color }}>
-                                {s.label}
-                              </span>
-                            </td>
-                            <td className="py-3 px-3">
-                              {r.status !== "cancelled" && (
-                                <button
-                                  onClick={() => cancelReservationAsAdmin(r)}
-                                  disabled={cancellingReservationId === r.id}
-                                  className="text-xs underline"
-                                  style={{ color: "#D54545" }}
-                                >
-                                  취소
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+              <AdminReservationsPanel
+                shows={shows}
+                reservations={reservations}
+                onRefresh={refreshReservations}
+                onShowPatched={(id, patch) => setShows((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)))}
+              />
             )}
           </>
         )}
@@ -1216,6 +1409,7 @@ export default function AdminPage() {
           onReject={() => rejectShow(reviewShow.id, reviewShow.title)}
           onDelete={() => deleteShow(reviewShow)}
           onToggleFeatured={() => toggleFeatured(reviewShow.id, !reviewShow.featured)}
+          onEdit={() => { setEditTarget(reviewShow); setReviewShow(null); }}
         />
       )}
 
@@ -1229,6 +1423,20 @@ export default function AdminPage() {
             setShows((prev) => [created, ...prev]);
             setShowsNotice(message);
             setCreateShowOpen(false);
+          }}
+        />
+      )}
+
+      {/* ── 공연 정보 수정 모달 ── */}
+      {editTarget && (
+        <AdminShowEditModal
+          show={editTarget}
+          adminUserId={currentUserId}
+          onClose={() => setEditTarget(null)}
+          onSaved={(updated, message) => {
+            setShows((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+            setEditTarget(null);
+            setShowsNotice(message);
           }}
         />
       )}
@@ -1257,6 +1465,7 @@ function ShowReviewModal({
   onReject,
   onDelete,
   onToggleFeatured,
+  onEdit,
 }: {
   show: Show;
   onClose: () => void;
@@ -1264,6 +1473,7 @@ function ShowReviewModal({
   onReject: () => void;
   onDelete: () => void;
   onToggleFeatured: () => void;
+  onEdit: () => void;
 }) {
   const genreLabel = show.genre === "기타" ? (show.genre_custom || "기타") : (show.genre ?? "—");
 
@@ -1469,6 +1679,16 @@ function ShowReviewModal({
                 반려하기
               </button>
             )}
+            <button
+              type="button"
+              onClick={onEdit}
+              className="px-6 py-3 text-sm tracking-wider transition-colors"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "transparent", color: "#0B5563", border: "1px solid #0B5563" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#E6E1D6"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+            >
+              정보 수정
+            </button>
             <button
               type="button"
               onClick={onDelete}

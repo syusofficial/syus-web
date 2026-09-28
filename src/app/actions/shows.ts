@@ -259,21 +259,34 @@ type AdminShowInput = {
   posterUrl?: string | null;
 };
 
-/**
- * 관리자가 공연을 대신 등록한다.
- *
- * status를 approved로 주면 바로 게시된다. 단 그때는 작품 소개를 비워 둘 수 없다 —
- * 소개가 빈 채로 목록에 걸리면 그 자리가 그대로 사이트의 얼굴이 되기 때문이다.
- * 소개를 아직 못 받았다면 pending으로 저장해 두고 나중에 승인하면 된다.
- */
-export async function createShowAsAdmin(input: AdminShowInput): Promise<CreateResult> {
-  const guard = await assertAdmin();
-  if (guard.error || !guard.userId) {
-    return { ok: false, message: guard.error ?? "관리자만 가능합니다." };
-  }
-  const { supabase } = guard;
+type CoreShowFields = Pick<
+  AdminShowInput,
+  "title" | "performerName" | "genre" | "genreDetail" | "genreCustom" | "region" | "venue" |
+  "scheduleStart" | "scheduleEnd" | "showCategory" | "description"
+>;
 
-  // ── 입력 검증 ────────────────────────────────────────────
+type NormalizedCoreShowFields = {
+  ok: true;
+  title: string;
+  performerName: string;
+  venue: string;
+  description: string;
+  genreCustom: string;
+  genreDetail: string | null;
+  showCategory: string;
+  scheduleStart: string;
+  scheduleEnd: string;
+};
+
+/**
+ * 대리 등록과 관리자 수정이 함께 쓰는 필수 항목 검증 — 2026-09-28 분리.
+ *
+ * 등록 때만 검증하고 수정 때 빠뜨리면, 수정 화면이 장르·날짜 형식을 깨뜨리는
+ * 뒷문이 된다. 두 곳에 복사해 두면 한쪽만 고쳐지는 순간 어긋나므로 한 함수로 둔다.
+ */
+function normalizeCoreShowFields(
+  input: CoreShowFields
+): NormalizedCoreShowFields | { ok: false; message: string } {
   const title = (input.title ?? "").trim();
   const performerName = (input.performerName ?? "").trim();
   const venue = (input.venue ?? "").trim();
@@ -322,6 +335,31 @@ export async function createShowAsAdmin(input: AdminShowInput): Promise<CreateRe
   if (scheduleEnd < scheduleStart) {
     return { ok: false, message: "종료일이 시작일보다 앞섭니다. 날짜를 다시 확인해 주세요." };
   }
+
+  return {
+    ok: true, title, performerName, venue, description,
+    genreCustom, genreDetail, showCategory, scheduleStart, scheduleEnd,
+  };
+}
+
+/**
+ * 관리자가 공연을 대신 등록한다.
+ *
+ * status를 approved로 주면 바로 게시된다. 단 그때는 작품 소개를 비워 둘 수 없다 —
+ * 소개가 빈 채로 목록에 걸리면 그 자리가 그대로 사이트의 얼굴이 되기 때문이다.
+ * 소개를 아직 못 받았다면 pending으로 저장해 두고 나중에 승인하면 된다.
+ */
+export async function createShowAsAdmin(input: AdminShowInput): Promise<CreateResult> {
+  const guard = await assertAdmin();
+  if (guard.error || !guard.userId) {
+    return { ok: false, message: guard.error ?? "관리자만 가능합니다." };
+  }
+  const { supabase } = guard;
+
+  // ── 입력 검증 ────────────────────────────────────────────
+  const core = normalizeCoreShowFields(input);
+  if (!core.ok) return { ok: false, message: core.message };
+  const { title, performerName, venue, description, genreCustom, genreDetail, showCategory, scheduleStart, scheduleEnd } = core;
 
   if (input.status !== "pending" && input.status !== "approved") {
     return { ok: false, message: "저장 상태 값이 올바르지 않습니다." };
@@ -467,4 +505,138 @@ export async function reassignShowOrganizer(
     ok: true,
     message: `「${show.title}」의 공연자를 ${label}(으)로 넘겼습니다. 이제 그 계정의 공연자 페이지에서 직접 수정할 수 있습니다.`,
   };
+}
+
+/**
+ * 관리자 공연 정보 수정 입력값 — 2026-09-28 신설.
+ *
+ * 대리 등록(최소 항목)과 달리 공연 상세에 보이는 글자 항목을 모두 받는다.
+ * 수정은 "이미 걸린 공연의 틀린 글자를 바로잡는" 자리라, 공연자 페이지에서
+ * 채우는 항목까지 운영자가 손댈 수 있어야 한다. (예: 학과 조교가 메일로 학과명
+ * 정정을 요청했는데 공연자 계정이 없을 때 — 그동안은 코드를 고쳐 반영했다.)
+ *
+ * 정원·좌석 신청 설정은 여기서 받지 않는다 — 대기자 승격·안내 메일이 얽혀 있어
+ * 예약 관리 탭에서만 다룬다. 게시 상태도 승인·반려 버튼(메일 발송)으로만 바꾼다.
+ */
+type AdminShowUpdateInput = CoreShowFields & {
+  subtitle?: string | null;
+  schoolDepartment?: string | null;
+  venueAddress?: string | null;
+  directions?: string | null;
+  showTime?: string | null;
+  runningTime?: string | null;
+  ageRating?: string | null;
+  /** 쉼표로 나눈 출연진 목록 */
+  castMembers?: string[] | null;
+  mapKakaoUrl?: string | null;
+  mapNaverUrl?: string | null;
+  reservationUrl?: string | null;
+  /** 새 포스터를 올렸을 때만 값이 있다. 없으면 기존 포스터를 유지한다. */
+  posterUrl?: string | null;
+};
+
+type UpdateResult = ActionResult & { show?: Show };
+
+/** 링크 칸 — 비우면 null, 값이 있으면 http(s)로 시작해야 한다(잘못된 링크가 공연 상세에 걸리지 않게). */
+function normalizeLink(value: string | null | undefined): { ok: true; value: string | null } | { ok: false } {
+  const v = (value ?? "").trim();
+  if (!v) return { ok: true, value: null };
+  return /^https?:\/\//i.test(v) ? { ok: true, value: v } : { ok: false };
+}
+
+/**
+ * 관리자가 공연 정보를 고친다.
+ *
+ * 게시 중인 공연의 작품 소개를 비우는 것은 막는다 — 대리 등록에서 소개 없이는
+ * 바로 게시하지 못하게 한 것과 같은 이유다(빈 소개가 그대로 사이트의 얼굴이 된다).
+ * 포스터를 바꾸면 예전 파일은 Storage에서 지운다(주인 없는 파일이 쌓이지 않게).
+ * 관리자 세션은 shows update 정책("관리자 공연 상태 변경")으로 통과한다.
+ */
+export async function updateShowAsAdmin(
+  showId: string,
+  input: AdminShowUpdateInput
+): Promise<UpdateResult> {
+  if (!showId) return { ok: false, message: "잘못된 요청입니다." };
+
+  const guard = await assertAdmin();
+  if (guard.error || !guard.userId) {
+    return { ok: false, message: guard.error ?? "관리자만 가능합니다." };
+  }
+  const { supabase } = guard;
+
+  const core = normalizeCoreShowFields(input);
+  if (!core.ok) return { ok: false, message: core.message };
+
+  const { data: before } = await supabase
+    .from("shows")
+    .select("id, status, poster_url")
+    .eq("id", showId)
+    .maybeSingle();
+  if (!before) return { ok: false, message: "공연을 찾을 수 없습니다. 목록을 새로고침해 주세요." };
+
+  if (before.status === "approved" && !core.description) {
+    return { ok: false, message: "게시 중인 공연은 작품 소개를 비워 둘 수 없습니다." };
+  }
+
+  const links: Record<string, string | null> = {};
+  for (const [key, label, raw] of [
+    ["map_kakao_url", "카카오맵", input.mapKakaoUrl],
+    ["map_naver_url", "네이버지도", input.mapNaverUrl],
+    ["reservation_url", "예매·좌석 신청", input.reservationUrl],
+  ] as const) {
+    const link = normalizeLink(raw);
+    if (!link.ok) return { ok: false, message: `${label} 링크는 http:// 또는 https:// 로 시작해야 합니다.` };
+    links[key] = link.value;
+  }
+
+  const text = (v: string | null | undefined) => (v ?? "").trim() || null;
+  const cast = (input.castMembers ?? []).map((c) => c.trim()).filter(Boolean);
+  const newPoster = text(input.posterUrl);
+
+  const { data: updated, error } = await supabase
+    .from("shows")
+    .update({
+      title: core.title,
+      subtitle: text(input.subtitle),
+      performer_name: core.performerName,
+      description: core.description,
+      venue: core.venue,
+      venue_address: text(input.venueAddress),
+      directions: text(input.directions),
+      schedule_start: core.scheduleStart,
+      schedule_end: core.scheduleEnd,
+      show_time: text(input.showTime),
+      running_time: text(input.runningTime),
+      age_rating: text(input.ageRating),
+      genre: input.genre,
+      genre_detail: core.genreDetail,
+      genre_custom: input.genre === "기타" ? core.genreCustom : null,
+      show_category: core.showCategory || null,
+      region: input.region,
+      school_department: text(input.schoolDepartment),
+      cast_members: cast,
+      ...links,
+      ...(newPoster ? { poster_url: newPoster } : {}),
+    })
+    .eq("id", showId)
+    .select()
+    .maybeSingle();
+
+  if (error || !updated) {
+    console.error("[updateShowAsAdmin] update 실패:", error);
+    return { ok: false, message: `수정 중 오류가 발생했습니다${error ? `: ${error.message}` : "."}` };
+  }
+
+  // 포스터를 바꿨다면 예전 파일 정리 — 실패해도 수정 자체는 되돌리지 않는다.
+  const oldPoster = before.poster_url as string | null;
+  if (newPoster && oldPoster && oldPoster !== newPoster) {
+    const filename = oldPoster.split("/posters/").pop();
+    if (filename) {
+      const { error: removeError } = await supabase.storage.from("posters").remove([filename]);
+      if (removeError) console.warn("[updateShowAsAdmin] 예전 포스터 삭제 실패:", removeError);
+    }
+  }
+
+  revalidateShowSurfaces(showId);
+  return { ok: true, show: updated as Show, message: `「${core.title}」 정보를 고쳤습니다. 공연 상세에 바로 반영됩니다.` };
 }
