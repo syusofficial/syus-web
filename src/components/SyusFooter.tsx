@@ -45,6 +45,9 @@ export default function SyusFooter() {
             <Link href="/syus/mypage" className="syf-link">내 시우스</Link>
             <Link href="/muol" className="syf-link">무대올림</Link>
             <Link href="/" className="syf-link">사유유사 갈림길</Link>
+            {/* 2026-09-28 CS팀: 시우스에는 NavMega·Footer가 렌더되지 않아 문의로 가는 길이 0개였다.
+                견해글을 읽고 말을 걸고 싶어진 사람이 갈 곳 — 문의 폼은 하나이므로 무대올림 폼을 함께 쓴다. */}
+            <Link href="/muol/contact" className="syf-link">1:1 문의</Link>
             <a href="https://www.instagram.com/syus_official" target="_blank" rel="noopener noreferrer" className="syf-link">Instagram @syus_official</a>
             <a href="https://pf.kakao.com/_xkPVTX" target="_blank" rel="noopener noreferrer" className="syf-link">카카오톡 채널</a>
           </nav>
