@@ -159,7 +159,7 @@ export const DEPARTMENTS: readonly Department[] = [
   { region: "경기", school: "중부대학교", dept: "연극영화학전공 (고양캠퍼스)", genre: "연극·영화", url: null },
   { region: "경기", school: "중앙대학교 (안성)", dept: "공연영상창작학부", genre: "연극·영화", url: null },
   { region: "경기", school: "청강문화산업대학교", dept: "공연예술스쿨 (뮤지컬/연기)", genre: "연극·뮤지컬", url: null },
-  { region: "경기", school: "평택대학교", dept: "공연예술학과", genre: "연극·뮤지컬", url: null },
+  { region: "경기", school: "평택대학교", dept: "연극영화과", genre: "연극·영화", url: null },
   { region: "경기", school: "평택대학교", dept: "음악학부", genre: "음악", url: null },
   { region: "경기", school: "한세대학교", dept: "예술학부", genre: "연극·음악", url: null },
   { region: "강원", school: "강원대학교", dept: "무용학과", genre: "무용", url: null },
