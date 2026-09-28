@@ -8,7 +8,7 @@ import SyusLikeButton from "@/components/SyusLikeButton";
 import SyusComments from "@/components/SyusComments";
 import SyusReportButton from "@/components/SyusReportButton";
 
-type Book = { id: string; user_id: string; title: string; author: string | null; topic: string | null; rating: number | null; note: string | null; cover_url: string | null; created_at: string };
+type Book = { id: string; user_id: string; title: string; author: string | null; topic: string | null; rating: number | null; note: string | null; intro?: string | null; cover_url: string | null; created_at: string };
 
 function fmt(iso: string) { const d = new Date(iso); return isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`; }
 function Stars({ n }: { n: number }) { return <span className="syc-stars">{"★".repeat(n)}<span className="off">{"★".repeat(5 - n)}</span></span>; }
@@ -27,7 +27,7 @@ export default function BookDetail() {
     const supabase = createClient();
     const { data: me } = await supabase.auth.getUser();
     setUid(me.user?.id ?? null);
-    const { data } = await supabase.from("syus_books").select("id, user_id, title, author, topic, rating, note, cover_url, created_at").eq("id", id).maybeSingle();
+    const { data } = await supabase.from("syus_books").select("*").eq("id", id).maybeSingle();
     if (data) {
       setBook(data as Book);
       const { data: p } = await supabase.from("profiles").select("name").eq("id", (data as Book).user_id).maybeSingle();
@@ -66,7 +66,19 @@ export default function BookDetail() {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={book.cover_url} alt={book.title} className="syc-media" style={{ maxWidth: "260px" }} />
         )}
-        {book.note && <p className="syc-detail-body">{book.note}</p>}
+        {/* intro = 서가 소개(AI 초안·사실만), note = 등록자 본인의 한 줄 후기. 둘을 섞지 않는다 — 소개가 후기처럼 읽히면 안 된다. */}
+        {book.intro && (
+          <div className="syc-detail-body">
+            <span className="syc-hint">책 소개 · AI 생성 초안, 운영자 검토</span>
+            <p>{book.intro}</p>
+          </div>
+        )}
+        {book.note && (
+          <div className="syc-detail-body">
+            {book.intro && <span className="syc-hint">등록자의 한 줄</span>}
+            <p>{book.note}</p>
+          </div>
+        )}
         <div className="syc-detail-foot">
           <SyusLikeButton targetType="book" targetId={book.id} />
           <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>

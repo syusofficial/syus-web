@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://syus.co.kr/syus/corridor" },
 };
 
-type Row = { id: string; title: string; author: string | null; topic: string | null; rating: number | null; note: string | null; created_at: string };
+type Row = { id: string; title: string; author: string | null; topic: string | null; rating: number | null; note: string | null; intro?: string | null; created_at: string };
 
 // 별점은 "읽은 책만" 원칙 — 등록자가 별점을 고르지 않으면 rating이 null이고, 그때는 별을 아예 그리지 않는다(아래 b.rating ? … 분기).
 function Stars({ n }: { n: number }) {
@@ -23,7 +23,7 @@ export default async function CorridorHub() {
   let books: Row[] = [];
   try {
     const supabase = await createClient();
-    const { data } = await supabase.from("syus_books").select("id, title, author, topic, rating, note, created_at").order("created_at", { ascending: false }).limit(40);
+    const { data } = await supabase.from("syus_books").select("*").order("created_at", { ascending: false }).limit(40);
     books = (data as Row[] | null) ?? [];
   } catch { books = []; }
 
@@ -50,7 +50,10 @@ export default async function CorridorHub() {
                 </div>
                 <h3 className="syc-card-title">{b.title}</h3>
                 {b.author && <span className="syc-card-meta" style={{ color: "#5A4A3E" }}>{b.author}</span>}
-                {b.note && <p className="syc-card-body">{b.note}</p>}
+                {/* 등록자 한 줄이 있으면 그것을, 없으면 서가 소개(AI 초안)를 보이고 그렇다고 밝힌다. */}
+                {b.note ? <p className="syc-card-body">{b.note}</p> : b.intro ? (
+                  <><p className="syc-card-body">{b.intro}</p><span className="syc-hint">책 소개 · AI 생성 초안</span></>
+                ) : null}
               </Link>
             ))}
           </div>
