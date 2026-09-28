@@ -61,7 +61,7 @@ export default async function FlexHub() {
       <div className="syc-cta-row syc-rule">
         <SyusWriteCta stage="flex" label="독백 요청하기" color="var(--color-syus-stage-flex)" writeHref="/syus/monologues/request" />
         <Link href="/syus/mypage" className="syc-btn-ghost">내 요청 보기</Link>
-        {isAdmin && <Link href="/syus/monologues/review" className="syc-btn-ghost">독백 검수·재처리{pendingCount > 0 ? ` · ${pendingCount}` : ""}</Link>}
+        {isAdmin && <Link href="/syus/monologues/review" className="syc-btn-ghost">독백 관리{pendingCount > 0 ? ` · 예외 ${pendingCount}` : ""}</Link>}
       </div>
 
       <div className="syc-block">
