@@ -21,6 +21,7 @@ import { MONOLOGUE_DAILY_CAP, summarizeMonologues, nearCapUsers, type MonologueS
  *
  * RLS 한계(supabase/syus_community_full.sql): 운영자는 남의 자유 글·질문·답변·후기·책·댓글을
  * "지울" 수는 있지만 "고치거나 숨길" 수는 없다(update는 작성자 본인만). 그래서 콘텐츠 탭은 삭제만 둔다.
+ * 2026-09-28 사장님 판단: 숨기기(가리기)는 두지 않는다 — 문제 글은 삭제로 충분하고, 이를 위한 SQL 권한 확장은 하지 않는다.
  * 숨김 기능이 필요해지면 SQL(운영자 update 정책 또는 hidden 컬럼)부터 추가해야 한다.
  */
 
@@ -546,7 +547,7 @@ export default function SyusAdminPage() {
             <button type="submit" className="syc-btn-ghost">찾기</button>
           </form>
           <p className="syc-note" style={{ margin: "0 0 16px" }}>
-            최신 50건까지 보입니다. 운영자는 남의 글을 고치거나 숨길 수 없고 삭제만 할 수 있습니다(보안 규칙).
+            최신 50건까지 보입니다.
           </p>
           {contentLoading ? <p className="syc-loading">불러오는 중…</p>
           : contentRows.length === 0 ? (

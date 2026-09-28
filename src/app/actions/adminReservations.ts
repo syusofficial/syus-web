@@ -31,8 +31,9 @@
  * 여기서는 잡을 수 없으므로, 관객 신청과 정확히 같은 순간에 겹치면 정원 계산이
  * 한 명쯤 어긋날 수 있다. 관리자가 한 건씩 눈으로 보고 누르는 조작이고, 정원 초과는
  * 어차피 "알고 넘기는" 경고를 거치므로 받아들일 수 있는 수준으로 보았다.
- * 같은 이유로 인원을 줄여 자리가 나도 대기자를 자동으로 올리지 않는다 — 잠금 없이
- * 여러 행을 연달아 바꾸는 것은 위험하고, 누구를 올릴지 운영자가 보고 정하는 편이 낫다.
+ * (2026-09-28 사장님 판단: 지금 신청량에서 이 겹침은 사실상 생기지 않으므로 SQL로 막지 않는다.)
+ * 인원을 줄여 자리가 나면 대기자를 신청 순서대로 자동 확정한다(promoteWaitlistInUnit) —
+ * 빈 좌석 옆에서 관객이 대기로 남는 손해가 위 겹침 위험보다 크다고 보았다.
  */
 
 import { revalidatePath } from "next/cache";
@@ -175,6 +176,55 @@ async function waitlistedCountInUnit(supabase: SupabaseClient, row: Pick<RowLite
   query = row.session_id ? query.eq("session_id", row.session_id) : query.eq("show_id", row.show_id).is("session_id", null);
   const { count } = await query;
   return count ?? 0;
+}
+
+/**
+ * 같은 정원 단위의 대기자를 신청 순서대로, 남은 자리만큼 확정하고 확정 메일을 보낸다.
+ * 인원 수정으로 자리가 났을 때 쓴다 — 2026-09-28 사장님 판단으로 자동화.
+ *
+ * 빈 좌석 옆에서 관객이 계속 대기로 남는 것은 관객이 직접 겪는 손해라, 운영자 손을
+ * 기다리지 않고 올린다. 규칙은 DB의 cancel_reservation()과 같다: 오래된 신청부터,
+ * 다음 사람이 자리에 안 들어가면 거기서 멈춘다(뒷사람이 새치기하지 않게).
+ * 마감 중인 공연은 올리지 않는다(정원 변경 트리거와 같은 규칙).
+ * 각 행은 status='waitlisted' 조건으로 바꿔, 그 사이 누가 먼저 처리했으면 건너뛴다.
+ */
+async function promoteWaitlistInUnit(
+  supabase: SupabaseClient,
+  row: Pick<RowLite, "show_id" | "session_id">
+): Promise<{ promoted: number; mailed: number; unmailed: number }> {
+  const result = { promoted: 0, mailed: 0, unmailed: 0 };
+  const unit = await seatUnit(supabase, row);
+  if (unit.closed) return result;
+
+  let query = supabase
+    .from("syus_reservations")
+    .select(ROW_COLUMNS)
+    .eq("status", "waitlisted")
+    .order("created_at", { ascending: true });
+  query = row.session_id ? query.eq("session_id", row.session_id) : query.eq("show_id", row.show_id).is("session_id", null);
+  const { data } = await query;
+  const waiting = (data ?? []) as RowLite[];
+  if (waiting.length === 0) return result;
+
+  const showTitle = await fetchShowTitle(supabase, row.show_id);
+  let confirmed = unit.confirmed;
+  for (const w of waiting) {
+    if (unit.capacity !== null && confirmed + w.party_size > unit.capacity) break;
+    const { data: updated } = await supabase
+      .from("syus_reservations")
+      .update({ status: "confirmed" })
+      .eq("id", w.id)
+      .eq("status", "waitlisted")
+      .select("id")
+      .maybeSingle();
+    if (!updated) continue;
+    confirmed += w.party_size;
+    result.promoted += 1;
+    const mail = await mailConfirmed(w, showTitle, "대기하시던 좌석이 확정되었습니다");
+    if (mail === "sent") result.mailed += 1;
+    else result.unmailed += 1;
+  }
+  return result;
 }
 
 /** 확정 메일 한 통. 이메일 연락처가 아니면 보내지 않고 "skipped"를 돌려준다. */
@@ -581,7 +631,7 @@ export async function adminRestoreReservation(reservationId: string): Promise<Ad
 /**
  * 인원 수정(1~10).
  * 확정 신청의 인원을 늘려 정원을 넘기게 되면 override 확인을 거친다.
- * 줄여서 자리가 나도 대기자는 자동으로 올리지 않는다(파일 머리 주석 참고) — 결과 문장으로 알린다.
+ * 줄여서 자리가 나면 같은 회차 대기자를 신청 순서대로 자동 확정하고 확정 메일을 보낸다.
  * 인원이 바뀌었다는 메일은 자동으로 보내지 않는다. 필요하면 '확정 메일 다시 보내기'가
  * 바뀐 인원이 적힌 확정 메일을 보낸다.
  */
@@ -631,9 +681,14 @@ export async function adminUpdatePartySize(
 
   let note = "";
   if (row.status === "confirmed" && !increasing) {
-    const waiting = await waitlistedCountInUnit(supabase, row);
-    if (waiting > 0) {
-      note = ` ${row.party_size - partySize}석이 비었고 같은 회차에 대기 ${waiting}건이 있습니다. 대기자 확정은 신청 목록에서 직접 눌러 주세요.`;
+    const p = await promoteWaitlistInUnit(supabase, row);
+    if (p.promoted > 0) {
+      note = ` 빈자리로 대기 ${p.promoted}건을 신청 순서대로 확정했습니다.`;
+      if (p.mailed > 0) note += ` ${p.mailed}건에 확정 메일을 보냈습니다.`;
+      if (p.unmailed > 0) note += ` ${p.unmailed}건은 메일을 못 보냈으니 직접 연락해 주세요.`;
+    } else {
+      const waiting = await waitlistedCountInUnit(supabase, row);
+      if (waiting > 0) note = ` 대기 ${waiting}건이 있지만 맨 앞 신청이 빈자리보다 많아 그대로 두었습니다.`;
     }
   }
   return {
