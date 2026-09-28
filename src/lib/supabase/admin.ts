@@ -12,15 +12,26 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 let cached: SupabaseClient | null = null;
 
+/**
+ * 서버 전용 비밀 키 — 2026-09-28 새 키 이전 준비.
+ * 새 SUPABASE_SECRET_KEY(sb_secret_...) 우선, 없으면 기존 SUPABASE_SERVICE_ROLE_KEY.
+ * 레거시 service_role 키는 2026년 말 폐기 예정. 지금 배포엔 새 변수가 없으므로 동작 변화 없음.
+ * NEXT_PUBLIC_ 이 아니므로 브라우저 번들에 값이 실리지 않는다 — 그래도 서버 코드에서만 부른다.
+ * (공개 키 쪽은 src/lib/supabase/keys.ts)
+ */
+export function getSupabaseSecretKey(): string | undefined {
+  return process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+}
+
 export function createAdminClient(): SupabaseClient {
   if (cached) return cached;
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = getSupabaseSecretKey();
 
   if (!url || !key) {
     throw new Error(
-      "[supabase/admin] NEXT_PUBLIC_SUPABASE_URL 또는 SUPABASE_SERVICE_ROLE_KEY가 설정되지 않았습니다."
+      "[supabase/admin] NEXT_PUBLIC_SUPABASE_URL 또는 SUPABASE_SECRET_KEY(/옛 SUPABASE_SERVICE_ROLE_KEY)가 설정되지 않았습니다."
     );
   }
 

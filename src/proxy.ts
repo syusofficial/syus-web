@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { supabasePublishableKey } from "@/lib/supabase/keys";
 
 /**
  * Supabase SSR 세션 자동 갱신용 미들웨어 (Next.js 표준).
@@ -24,7 +25,7 @@ export async function proxy(request: NextRequest) {
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabasePublishableKey()!,
     {
       cookies: {
         getAll() {

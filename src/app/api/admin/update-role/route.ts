@@ -2,6 +2,8 @@ import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { supabasePublishableKey } from "@/lib/supabase/keys";
+import { getSupabaseSecretKey } from "@/lib/supabase/admin";
 
 /**
  * 관리자 역할 변경 API
@@ -28,7 +30,7 @@ export async function POST(req: Request) {
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabasePublishableKey()!,
     {
       cookies: {
         getAll() { return cookieStore.getAll(); },
@@ -76,7 +78,7 @@ export async function POST(req: Request) {
   }
 
   // 4) service role 클라이언트로 RLS 우회 update
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceKey = getSupabaseSecretKey();
   if (!serviceKey) {
     return NextResponse.json(
       { error: "서버 설정 오류 (SERVICE_KEY 미설정)" },

@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { supabasePublishableKey } from "@/lib/supabase/keys";
 
 /**
  * 창작 독백 생성 백엔드 (가이드북 §6.3 — B안 큐 기반)
@@ -63,7 +64,7 @@ export async function POST(req: Request) {
   const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabasePublishableKey()!,
     {
       cookies: {
         getAll() { return cookieStore.getAll(); },

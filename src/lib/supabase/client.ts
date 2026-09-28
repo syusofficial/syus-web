@@ -1,5 +1,6 @@
 import { createBrowserClient } from "@supabase/ssr";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { supabasePublishableKey } from "@/lib/supabase/keys";
 
 /**
  * 브라우저용 Supabase 클라이언트.
@@ -34,13 +35,14 @@ export function createClient() {
   if (cachedBrowserClient) return cachedBrowserClient;
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // 2026-09-28: 새 공개 키(NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) 우선, 없으면 기존 anon 키 (keys.ts)
+  const anonKey = supabasePublishableKey();
 
   if (!url || !anonKey) {
     // 콘솔에 정확한 누락 원인을 남긴다 (값은 절대 출력하지 않음)
     console.error(
       "[supabase] 환경변수 누락 — NEXT_PUBLIC_SUPABASE_URL 또는 " +
-        "NEXT_PUBLIC_SUPABASE_ANON_KEY 가 비어 있습니다. Vercel 환경변수를 확인하세요."
+        "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY(/옛 NEXT_PUBLIC_SUPABASE_ANON_KEY) 가 비어 있습니다. Vercel 환경변수를 확인하세요."
     );
     throw new Error("Supabase 환경변수가 설정되지 않았습니다.");
   }
