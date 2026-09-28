@@ -1,112 +1,177 @@
-"use client";
-
-import { useState, useEffect, useCallback } from "react";
-import { useParams } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-import SyusLikeButton from "@/components/SyusLikeButton";
+import { cache } from "react";
+import { createClient } from "@/lib/supabase/server";
+import SyusMonologueView, {
+  MONOLOGUE_IN_PROGRESS,
+  type SyusMonologue,
+} from "@/components/SyusMonologueView";
+import SyusMonologueLive from "@/components/SyusMonologueLive";
+import { MONOLOGUE_SEO } from "@/lib/seo/syusSeo";
+import { OG_SYUS } from "@/lib/ogCards";
+import { buildBreadcrumbList } from "@/lib/structuredData";
 
-type Mono = {
-  id: string; user_id: string; char_type: string | null; emotion: string | null; length_spec: string | null;
-  tone: string | null; purpose: string | null; gender: string | null; age_range: string | null;
-  generated_text: string | null; status: string; is_public: boolean; created_at: string;
-};
+/**
+ * 창작 독백 상세 (/syus/monologues/[id]) — 2026-09-28 서버 렌더링 전환 (제작팀).
+ *
+ * 왜 바꿨나: 예전 "use client" 페이지는 크롤러에게 "불러오는 중…"만 보였고 <title>도 전부 같았다.
+ * 이제 서버에서 독백을 읽어 본문을 HTML에 싣고, 독백마다 제목·설명·OG·canonical을 만든다.
+ *
+ * 노출 기준은 예전과 같다(RLS "syus_m read": is_public = true 또는 요청자 본인 또는 운영자).
+ * 쿠키 세션을 싣는 서버 클라이언트로 읽으므로 요청자 본인은 자기 비공개 요청도 그대로 본다.
+ * 검색 색인은 공개 처리된 완성 독백(is_public + generated_text)만 허용한다.
+ *
+ * 요청자 본인이 "생성 중" 화면을 볼 때만 클라이언트 컴포넌트(SyusMonologueLive)가
+ * 몇 초마다 다시 읽어 완성되면 화면을 바꾼다 — 예전 폴링 동작 유지.
+ *
+ * 제목: 독백 테이블엔 제목 칸이 없어 char_type 앞머리에 「제목」이 들어 있다(시드 2026-09-09 주석).
+ * 검색용 제목·설명은 src/lib/seo/syusSeo.ts 의 MONOLOGUE_SEO에서 읽는다 — 키는 id 또는 char_type.
+ * 항목이 없으면 char_type·감정 조합으로 되돌아간다.
+ */
 
-const STATUS_LABEL: Record<string, string> = {
-  pending: "접수됨 · 생성 대기", reviewing: "생성 중", delivered: "전달 완료", rejected: "반려됨",
-};
+const SITE_URL = "https://syus.co.kr";
 
-// 소유자에게 보여줄 상태별 안내 문구. status마다 실제로 무슨 일이 벌어지고 있는지 정확히 구분한다
-// (2026-07-29 사고: rejected여도 "짓고 있어요"가 뜨던 버그 수정 — pending/reviewing/rejected 각각 분기).
-const OWNER_STATUS_MESSAGE: Record<string, string> = {
-  pending: "요청이 접수됐어요. 곧 AI가 독백을 짓기 시작해요. 완료되면 바로 이 자리에 나타납니다.",
-  reviewing: "지금 AI가 독백을 짓고 있어요. 완료되면 바로 이 자리에 독백이 나타납니다.",
-  rejected: "이 요청은 반려됐어요. 다른 결로 다시 청해 주세요.",
-};
-// 생성이 아직 진행 중인 상태(폴링 대상). 이 상태를 벗어나면(delivered/rejected) 자동 갱신을 멈춘다.
-const IN_PROGRESS_STATUSES = new Set(["pending", "reviewing"]);
-// 백그라운드 자동 재조회 간격(ms). 5~10초 사이.
-const POLL_INTERVAL_MS = 7000;
+/** 검색결과·SNS 카드용 한 줄 설명 — 줄바꿈·연속공백을 없애고 길이를 자른다. */
+function flatten(text: string | null | undefined, max: number): string | null {
+  if (!text) return null;
+  const flat = text.replace(/\s+/g, " ").trim();
+  if (!flat) return null;
+  return flat.length > max ? `${flat.slice(0, max - 1)}…` : flat;
+}
 
-function fmt(iso: string) { const d = new Date(iso); return isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`; }
+/** 검색에 내보내도 되는 독백인가 — 운영자가 공개 처리했고 본문이 있는 것만 */
+function isIndexable(m: SyusMonologue) {
+  return m.is_public && !!m.generated_text;
+}
 
-export default function MonologueDetail() {
-  const params = useParams();
-  const id = String(params.id);
-  const [loading, setLoading] = useState(true);
-  const [m, setM] = useState<Mono | null>(null);
-  const [uid, setUid] = useState<string | null>(null);
+/**
+ * 검색용 제목·설명.
+ * 같은 인물(char_type)로 1분판·2분판 두 벌이 있는 경우가 있어, char_type으로 찾은 제목에는
+ * 길이 표기(length_spec 앞머리, 예: "1분판")를 덧붙여 두 페이지 제목이 겹치지 않게 한다.
+ */
+function seoOf(m: SyusMonologue): { title: string; description: string } {
+  const lengthLabel = m.length_spec?.split("·")[0].trim() || null;
+  const byId = MONOLOGUE_SEO[m.id];
+  const byChar = m.char_type ? MONOLOGUE_SEO[m.char_type] : undefined;
+  const entry = byId ?? byChar;
 
-  // silent=true면 전체화면 "불러오는 중…" 스피너를 다시 띄우지 않고 데이터만 조용히 갱신한다(폴링용).
-  const load = useCallback(async (opts?: { silent?: boolean }) => {
-    const supabase = createClient();
-    const { data: me } = await supabase.auth.getUser();
-    setUid(me.user?.id ?? null);
-    const { data } = await supabase.from("syus_monologues").select("*").eq("id", id).maybeSingle();
-    setM((data as Mono | null) ?? null);
-    if (!opts?.silent) setLoading(false);
-  }, [id]);
+  let title: string;
+  if (entry) {
+    title = byId || !lengthLabel || entry.title.includes(lengthLabel) ? entry.title : `${entry.title} (${lengthLabel})`;
+  } else {
+    const base = [m.char_type, m.emotion].filter(Boolean).join(" · ") || "창작 독백";
+    title = `${base}${lengthLabel ? ` (${lengthLabel})` : ""} — 창작 독백`;
+  }
 
-  useEffect(() => { load(); }, [load]);
+  // AI 기본법 §31 — 검색결과 설명에서도 AI 생성물임이 드러나도록 폴백 설명 앞에 표시한다.
+  const description =
+    entry?.description ??
+    [`AI가 지은 창작 독백`, flatten(m.generated_text, 100)].filter(Boolean).join(" · ");
 
-  // 생성 진행 중(pending/reviewing)에는 새로고침 없이도 완료 시 자동으로 반영되도록 주기적으로 조용히 재조회.
-  // delivered·rejected로 바뀌면(또는 아직 데이터가 없으면) 폴링하지 않는다 — 불필요한 요청 방지.
-  const status = m?.status;
-  useEffect(() => {
-    if (!status || !IN_PROGRESS_STATUSES.has(status)) return;
-    const timer = setInterval(() => { load({ silent: true }); }, POLL_INTERVAL_MS);
-    return () => clearInterval(timer);
-  }, [status, load]);
+  return { title, description };
+}
 
-  if (loading) return <main className="syc-wrap"><p className="syc-loading">불러오는 중…</p></main>;
-  if (!m) return <main className="syc-wrap"><p className="syc-loading">독백을 찾을 수 없거나 비공개입니다.</p><Link href="/syus/flex" className="syc-back" style={{ marginTop: 16 }}>← 창작 독백 아카이브</Link></main>;
+/** generateMetadata와 본문이 한 요청 안에서 두 번 조회하지 않도록 React cache로 묶는다. */
+const getMonologue = cache(async (id: string): Promise<{ m: SyusMonologue | null; uid: string | null }> => {
+  try {
+    const supabase = await createClient();
+    const [{ data: me }, { data }] = await Promise.all([
+      supabase.auth.getUser(),
+      supabase.from("syus_monologues").select("*").eq("id", id).maybeSingle(),
+    ]);
+    return { m: (data as SyusMonologue | null) ?? null, uid: me.user?.id ?? null };
+  } catch {
+    return { m: null, uid: null };
+  }
+});
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const { m } = await getMonologue(id);
+  const canonical = `${SITE_URL}/syus/monologues/${id}`;
+
+  // 없는 독백 / 비공개 요청 — 본인·운영자만 보는 화면이라 검색에 남기지 않는다.
+  if (!m || !isIndexable(m)) {
+    return {
+      title: "창작 독백",
+      robots: { index: false, follow: false },
+      alternates: { canonical },
+    };
+  }
+
+  const { title, description } = seoOf(m);
+  const ogTitle = `${title} · 시우스 SYUS`;
+
+  // ⚠ openGraph·twitter는 세그먼트 단위로 통째로 교체되므로 layout의 siteName·locale·images를 다시 적는다.
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title: ogTitle,
+      description,
+      url: canonical,
+      siteName: "사유유사 SYUS",
+      locale: "ko_KR",
+      type: "article",
+      publishedTime: m.created_at,
+      images: [OG_SYUS],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description,
+      images: [OG_SYUS.url],
+    },
+  };
+}
+
+/** JSON-LD를 <script> 안에 넣을 때 본문 속 "<" 가 태그로 해석되지 않도록 이스케이프 */
+function jsonLd(data: unknown) {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+export default async function MonologueDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const { m, uid } = await getMonologue(id);
+
+  if (!m) {
+    return (
+      <main className="syc-wrap">
+        <p className="syc-loading">독백을 찾을 수 없거나 비공개입니다.</p>
+        <Link href="/syus/flex" className="syc-back" style={{ marginTop: 16 }}>← 창작 독백 아카이브</Link>
+      </main>
+    );
+  }
 
   const isOwner = uid === m.user_id;
-  const reqLine = [m.char_type, m.emotion, m.tone, m.purpose].filter(Boolean).join(" · ");
-  // 전달 게이트: AI 생성 즉시 delivered(2026-07-29~, 운영자 수동 승인 없음) 또는 공개 처리된 뒤에만 본문 노출.
-  // 과거 reviewing 잔여 건은 운영자가 /syus/monologues/review 에서 수동 승인해야 delivered가 됨. pending/rejected는 상태만.
-  const revealed = !!m.generated_text && (m.status === "delivered" || m.is_public);
+
+  // 요청자 본인이 생성 중 화면을 보는 경우에만 자동 갱신 컴포넌트를 쓴다.
+  if (isOwner && MONOLOGUE_IN_PROGRESS.has(m.status)) {
+    return <SyusMonologueLive initial={m} isOwner />;
+  }
+
+  // 경로(BreadcrumbList) — 공개 독백에만. 독백은 기사(Article)라기보다 AI 생성 창작물이라
+  // Article 구조화 데이터는 붙이지 않고, 경로만 알린다.
+  const breadcrumbData = isIndexable(m)
+    ? buildBreadcrumbList([
+        { name: "홈", path: "/" },
+        { name: "시우스", path: "/syus" },
+        { name: "창작 독백 아카이브", path: "/syus/flex" },
+        { name: seoOf(m).title },
+      ])
+    : null;
 
   return (
-    <main className="syc-wrap" style={{ ["--c" as string]: "var(--color-syus-stage-flex)" } as React.CSSProperties}>
-      <Link href="/syus/flex" className="syc-back">← 창작 독백 아카이브</Link>
-      <article className="syc-detail">
-        <span className="syc-card-meta">{reqLine || "창작 독백"}</span>
-        <p className="syc-detail-meta">요청 {fmt(m.created_at)}{isOwner ? ` · ${STATUS_LABEL[m.status] ?? m.status}` : ""}</p>
-
-        {revealed ? (
-          <>
-            <span className="syc-badge syc-badge--static" style={{ color: "var(--color-syus-stage-flex)", marginBottom: 12 }}>인공지능(AI) 생성물</span>
-            <p className="syc-detail-body" style={{ fontSize: "1.05rem", lineHeight: 1.9 }}>{m.generated_text}</p>
-            <p className="syc-note" style={{ marginTop: 16, marginBottom: 0 }}>
-              이 독백은 생성형 인공지능이 지은 창작 원본입니다. 기존 작품을 복제·각색하지 않으나, 표현이 우연히 유사할 가능성을 완전히 배제할 수는 없습니다.
-            </p>
-          </>
-        ) : (
-          <div className="syc-empty" style={{ textAlign: "left" }}>
-            <p className="syc-empty-h">{STATUS_LABEL[m.status] ?? "처리 중"}</p>
-            <p className="syc-empty-b" style={{ marginBottom: isOwner && m.status === "rejected" ? 10 : 0 }}>
-              {isOwner
-                ? (OWNER_STATUS_MESSAGE[m.status] ?? "요청이 접수되었어요. 지금 AI가 독백을 짓고 있어요. 완료되면 바로 이 자리에 독백이 나타납니다.")
-                : "아직 전달·공개되지 않은 요청입니다."}
-            </p>
-            {isOwner && m.status === "rejected" && (
-              <Link href="/syus/monologues/request" className="syc-empty-link">새로 요청하기 →</Link>
-            )}
-          </div>
-        )}
-
-        {revealed && (
-          <div className="syc-detail-foot" style={{ marginTop: 18 }}>
-            <SyusLikeButton targetType="monologue" targetId={m.id} />
-          </div>
-        )}
-      </article>
-
-      <nav className="syc-bridge">
-        <Link href="/syus/flex" className="syc-bridge-link">← 창작 독백 아카이브</Link>
-        <Link href="/syus/mypage" className="syc-bridge-link is-muted">내 요청 보기</Link>
-      </nav>
-    </main>
+    <>
+      {breadcrumbData && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbData) }} />
+      )}
+      <SyusMonologueView m={m} isOwner={isOwner} />
+    </>
   );
 }

@@ -32,6 +32,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // 시우스 창작 독백 — 2026-09-28 추가. 그 전엔 개별 독백 URL이 sitemap에 0개였다.
+  // 공개 조건은 /syus/flex 목록과 같다: 운영자 공개 처리(is_public) + 본문 있음(generated_text).
+  // (RLS "syus_m read"도 비로그인에겐 is_public = true 만 보여준다)
+  const { data: monologues } = await supabase
+    .from("syus_monologues")
+    .select("id, updated_at")
+    .eq("is_public", true)
+    .not("generated_text", "is", null);
+
+  const monologueEntries: MetadataRoute.Sitemap = (monologues ?? []).map((m) => ({
+    url: `${BASE_URL}/syus/monologues/${m.id}`,
+    lastModified: new Date(m.updated_at),
+    changeFrequency: "yearly",
+    priority: 0.5,
+  }));
+
   return [
     { url: BASE_URL, changeFrequency: "daily", priority: 1.0 },
     // 사유유사 (회사 소개·CI) — 게이트웨이 지붕 배지에서만 연결되므로 내부 링크가 하나뿐이다.
@@ -63,5 +79,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
     ...showEntries,
     ...essayEntries,
+    ...monologueEntries,
   ];
 }
