@@ -25,7 +25,7 @@ import { buildBreadcrumbList } from "@/lib/structuredData";
  * 몇 초마다 다시 읽어 완성되면 화면을 바꾼다 — 예전 폴링 동작 유지.
  *
  * 제목: 독백 테이블엔 제목 칸이 없어 char_type 앞머리에 「제목」이 들어 있다(시드 2026-09-09 주석).
- * 검색용 제목·설명은 src/lib/seo/syusSeo.ts 의 MONOLOGUE_SEO에서 읽는다 — 키는 id 또는 char_type.
+ * 검색용 제목·설명은 src/lib/seo/syusSeo.ts 의 MONOLOGUE_SEO에서 읽는다 — 키는 `${char_type} · ${length_spec}`.
  * 항목이 없으면 char_type·감정 조합으로 되돌아간다.
  */
 
@@ -45,20 +45,26 @@ function isIndexable(m: SyusMonologue) {
 }
 
 /**
- * 검색용 제목·설명.
- * 같은 인물(char_type)로 1분판·2분판 두 벌이 있는 경우가 있어, char_type으로 찾은 제목에는
- * 길이 표기(length_spec 앞머리, 예: "1분판")를 덧붙여 두 페이지 제목이 겹치지 않게 한다.
+ * MONOLOGUE_SEO 조회 키 — 기록팀과 맞춘 형식 `${char_type} · ${length_spec}`.
+ * 같은 인물(char_type)로 1분판·2분판 두 벌이 있어 char_type만으로는 행이 갈리지 않는다.
+ * (예: "「봉투」 여성 18~20세 · 1분판 · 272자"). length_spec이 비어 있으면 char_type만 쓴다.
  */
+function seoKey(m: SyusMonologue): string | null {
+  if (!m.char_type) return null;
+  return m.length_spec ? `${m.char_type} · ${m.length_spec}` : m.char_type;
+}
+
+/** 검색용 제목·설명 — 기록팀 문구가 없으면 char_type·감정·길이 조합으로 폴백 */
 function seoOf(m: SyusMonologue): { title: string; description: string } {
-  const lengthLabel = m.length_spec?.split("·")[0].trim() || null;
-  const byId = MONOLOGUE_SEO[m.id];
-  const byChar = m.char_type ? MONOLOGUE_SEO[m.char_type] : undefined;
-  const entry = byId ?? byChar;
+  const key = seoKey(m);
+  const entry = key ? MONOLOGUE_SEO[key] : undefined;
 
   let title: string;
   if (entry) {
-    title = byId || !lengthLabel || entry.title.includes(lengthLabel) ? entry.title : `${entry.title} (${lengthLabel})`;
+    title = entry.title;
   } else {
+    // 폴백 제목에도 길이 표기(length_spec 앞머리, 예: "1분판")를 붙여 1분판·2분판 제목이 겹치지 않게 한다.
+    const lengthLabel = m.length_spec?.split("·")[0].trim() || null;
     const base = [m.char_type, m.emotion].filter(Boolean).join(" · ") || "창작 독백";
     title = `${base}${lengthLabel ? ` (${lengthLabel})` : ""} — 창작 독백`;
   }
