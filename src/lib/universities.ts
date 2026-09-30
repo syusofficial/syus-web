@@ -20,7 +20,7 @@
  * **화면에 링크를 되살리려면 사장님 확인을 먼저 받을 것.**
  *
  * 【실측 수치 — 대외 문서에 쓸 때 이 줄을 기준으로】
- * 학과 161개 · 대학 103개 · 지역 17개
+ * 학과 162개 · 대학 103개 · 지역 17개
  * ("92개 학과"·"16개 지역"·"200여개"는 전부 낡은 오류값이다)
  */
 
@@ -163,6 +163,7 @@ export const DEPARTMENTS: readonly Department[] = [
   { region: "경기", school: "평택대학교", dept: "음악학부", genre: "음악", url: null },
   { region: "경기", school: "한세대학교", dept: "예술학부", genre: "연극·음악", url: null },
   { region: "강원", school: "강원대학교", dept: "무용학과", genre: "무용", url: null },
+  { region: "강원", school: "강원대학교", dept: "음악학과", genre: "음악", url: null },
   { region: "강원", school: "송호대학교", dept: "연기과", genre: "연극", url: null },
   { region: "강원", school: "한림대학교", dept: "영상학교 (영화영상학)", genre: "영화", url: null },
   { region: "충북", school: "극동대학교", dept: "연극연기학과", genre: "연극", url: null },
@@ -172,7 +173,7 @@ export const DEPARTMENTS: readonly Department[] = [
   { region: "충북", school: "충청대학교", dept: "실용음악과", genre: "음악", url: null },
   { region: "충남", school: "공주대학교", dept: "무용학과", genre: "무용", url: null },
   { region: "충남", school: "공주대학교", dept: "영상학과", genre: "영화", url: null },
-  { region: "충남", school: "백석대학교", dept: "공연예술학부", genre: "연극·뮤지컬", url: null },
+  { region: "충남", school: "백석대학교", dept: "문화예술학부 (피아노/뮤지컬/실용음악/연기예술)", genre: "연극·뮤지컬·음악", url: null },
   { region: "충남", school: "상명대학교 (천안캠퍼스)", dept: "공연영상·문화예술학부", genre: "연극·영화", url: null },
   { region: "충남", school: "순천향대학교", dept: "공연영상학과", genre: "연극·영화", url: null },
   { region: "충남", school: "청운대학교", dept: "연극예술학과", genre: "연극", url: null },
@@ -205,8 +206,8 @@ export const DEPARTMENTS: readonly Department[] = [
 /** 지역 표시 순서 — 서울부터, 광역시·도 관례 순 */
 export const REGION_ORDER: readonly string[] = ["서울","부산","대구","인천","광주","대전","울산","세종","경기","강원","충북","충남","전북","전남","경북","경남","제주"];
 
-/** 학과 161 · 대학 103 · 지역 17 — 화면 문구에 쓰는 실측 수치 */
-export const DEPARTMENT_COUNT = 161;
+/** 학과 162 · 대학 103 · 지역 17 — 화면 문구에 쓰는 실측 수치 */
+export const DEPARTMENT_COUNT = 162;
 export const SCHOOL_COUNT = 103;
 
 /** 지역별 학과 수 (0인 지역은 화면에서 칩을 흐리게 처리하는 데 쓴다) */
