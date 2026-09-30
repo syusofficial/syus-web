@@ -20,7 +20,9 @@ import { createClient } from "@/lib/supabase/client";
 const STORAGE_KEY = "syus-pv-session";
 const SESSION_TTL_MS = 30 * 60 * 1000;       // 30분
 const DEDUPE_WINDOW_MS = 5 * 1000;            // 같은 경로 5초 내 중복 무시
-const BOT_REGEX = /bot|crawler|spider|crawling|slurp|baidu|yandex|duckduckgo|googlebot|bingbot|facebookexternalhit|whatsapp|telegrambot|preview/i;
+// 2026-09-30 — 「GoogleOther」는 이름에 bot이 없어 빠져나갔다(8/6~8/8 공연목록 419세션 → 「92% 즉시 이탈」 오판의 원인).
+// Google 수집기 계열과 헤드리스 브라우저·성능 측정기를 함께 막는다.
+const BOT_REGEX = /bot|crawler|spider|crawling|slurp|baidu|yandex|duckduckgo|googlebot|bingbot|facebookexternalhit|whatsapp|telegrambot|preview|googleother|google-inspectiontool|google-extended|headlesschrome|lighthouse|bytespider|petalsearch/i;
 
 type SessionPayload = { id: string; expiresAt: number };
 
