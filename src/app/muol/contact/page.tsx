@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { CONTACT_CATEGORIES, type ContactCategory } from "@/lib/constants";
+import { CONTACT_CATEGORIES, CONTACT_TYPE_PARAM, type ContactCategory } from "@/lib/constants";
 
 export default function ContactPage() {
   const [form, setForm] = useState<{
@@ -18,6 +18,17 @@ export default function ContactPage() {
   const [error, setError] = useState("");
   // PIPA v2.1 — 문의 폼 개인정보 수집·이용 동의 (필수)
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
+
+  // 주소의 ?type= 으로 문의 유형을 미리 고른다 (예: 제작대행 안내 → /muol/contact?type=production).
+  // useSearchParams 대신 마운트 후 location을 읽는 이유: 이 페이지는 정적 생성되는데,
+  // useSearchParams는 Suspense 경계 없이는 빌드를 깨뜨린다. 미리 선택은 첫 화면 뒤에 붙어도 충분하다.
+  useEffect(() => {
+    const key = new URLSearchParams(window.location.search).get("type");
+    const preset = key ? CONTACT_TYPE_PARAM[key] : undefined;
+    // 주소창(외부 값)을 한 번 읽어 맞추는 동기화라 effect가 맞는 자리다 — 연쇄 렌더 없음(1회)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (preset) setForm((f) => (f.category ? f : { ...f, category: preset }));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

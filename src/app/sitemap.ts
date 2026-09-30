@@ -60,6 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/muol/universities`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE_URL}/muol/about`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/muol/for-business`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/muol/production-service`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/muol/archive`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE_URL}/muol/faq`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/muol/contact`, changeFrequency: "monthly", priority: 0.5 },

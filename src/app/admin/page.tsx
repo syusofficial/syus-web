@@ -51,7 +51,10 @@ type AdminReviewRow = Review & {
 const CATEGORY_COLOR: Record<string, { bg: string; color: string }> = {
   "공연자 신청":     { bg: "#D4E4ED", color: "#2A5E7A" },
   "공연 등록 문의":  { bg: "#E6E1D6", color: "#0B5563" },
+  "제작대행 문의":   { bg: "#EDD4E4", color: "#5C2A42" },
   "예매 / 환불":     { bg: "#EDE0D4", color: "#7A4A2A" },
+  "협업 제안":       { bg: "#EDD4E4", color: "#7A2A5E" },
+  // 2026-09-30 이전 이름 — 이미 접수된 문의가 이 이름으로 DB에 남아 있을 수 있어 색을 유지한다
   "협업 / 후원 제안": { bg: "#EDD4E4", color: "#7A2A5E" },
   "광고 / 제휴":     { bg: "#D4EDE8", color: "#2A7A6A" },
   "미디어 / 인터뷰": { bg: "#E0D4ED", color: "#4A2A7A" },
@@ -1166,7 +1169,11 @@ export default function AdminPage() {
                       const key = c.category ?? "기타";
                       categoryCounts[key] = (categoryCounts[key] ?? 0) + 1;
                     }
-                    const filterOptions = ["전체", ...CONTACT_CATEGORIES];
+                    // 지금 목록에 없는 유형(예: 이름이 바뀌기 전 「협업 / 후원 제안」)으로 들어온 문의도
+                    // 필터에서 골라 볼 수 있게, 실제로 1건 이상 있는 옛 유형은 뒤에 붙인다.
+                    const known = new Set<string>(["전체", ...CONTACT_CATEGORIES]);
+                    const legacy = Object.keys(categoryCounts).filter((k) => !known.has(k));
+                    const filterOptions = ["전체", ...CONTACT_CATEGORIES, ...legacy];
                     return filterOptions.map((opt) => {
                       const isActive = contactFilter === opt;
                       const count = categoryCounts[opt] ?? 0;

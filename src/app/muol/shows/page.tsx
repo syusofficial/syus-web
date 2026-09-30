@@ -565,6 +565,22 @@ export default async function ShowsPage({
                 무대 올리러 가기 →
               </Link>
 
+              {/* 2026-09-30 — 등록을 망설이는 이유가 "올릴 포스터·홍보물이 없어서"인 학과가 있다.
+                  그 자리에서 막히지 않게 제작대행 안내로 한 줄 출구를 둔다(누르는 것 = 청록). */}
+              <p
+                className="mt-5 text-xs leading-relaxed max-w-md mx-auto"
+                style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
+              >
+                포스터가 아직 없다면{" "}
+                <Link
+                  href="/muol/production-service"
+                  className="underline underline-offset-4 text-[#0B5563] hover:text-[#06333D] active:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                  style={{ fontWeight: 500 }}
+                >
+                  사유유사 제작대행 안내 →
+                </Link>
+              </p>
+
               {/* 관객으로 오신 분께도 돌아갈 자리를 둔다.
                   이 화면은 공연이 0건일 때 가장 많이 열리는 문이라,
                   올릴 무대가 없는 사람에게 출구가 하나도 없으면 그대로 빈손으로 나간다. */}

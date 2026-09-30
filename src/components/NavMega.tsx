@@ -97,7 +97,13 @@ type Chapter = {
   // 컬럼 외 별도 그리드 (지역 16개 같은 경우)
   grid?: { heading: string; items: ChapterItem[] };
   // 우측 강조 카드 (소개 챕터의 "공연자 신청" 같은 CTA)
-  feature?: { heading: string; body: string; cta: { label: string; href: string } };
+  // bodyLink: 본문 속 한 구절(text)을 링크로 만든다 — body 안에 text가 그대로 들어 있어야 한다.
+  feature?: {
+    heading: string;
+    body: string;
+    bodyLink?: { text: string; href: string };
+    cta: { label: string; href: string };
+  };
 };
 
 const CHAPTERS: Chapter[] = [
@@ -170,6 +176,7 @@ const CHAPTERS: Chapter[] = [
         tagline: "함께 일할 분과의 거리감",
         items: [
           { label: "B2B 협력", href: "/muol/for-business", desc: "기관 · 인쇄 · 광고주" },
+          { label: "제작대행", href: "/muol/production-service", desc: "공연 홍보물을 대신 만듭니다" },
           { label: "이용약관", href: "/terms" },
           { label: "개인정보처리방침", href: "/privacy" },
         ],
@@ -178,6 +185,8 @@ const CHAPTERS: Chapter[] = [
     feature: {
       heading: "공연팀 게재료 없음",
       body: "공연자·학과로부터 등록·게재 수수료를 받지 않습니다. 제작대행·광고로 운영됩니다.",
+      // 2026-09-30 — 「제작대행」 네 글자를 안내 페이지로 잇는다
+      bodyLink: { text: "제작대행", href: "/muol/production-service" },
       cta: { label: "운영 방식 자세히", href: "/muol/about" },
     },
   },
@@ -204,6 +213,34 @@ const CHAPTERS: Chapter[] = [
     ],
   },
 ];
+
+// ────────────────────────────────────────────────
+// 강조 카드 본문 — bodyLink.text 한 구절만 링크로 바꿔 그린다 (데스크톱·모바일 공용)
+// ────────────────────────────────────────────────
+
+function FeatureBody({
+  feature,
+  linkClassName,
+  onNavigate,
+}: {
+  feature: NonNullable<Chapter["feature"]>;
+  linkClassName: string;
+  onNavigate?: () => void;
+}) {
+  const link = feature.bodyLink;
+  const at = link ? feature.body.indexOf(link.text) : -1;
+  // 구절을 못 찾으면 링크 없이 원문 그대로 — 문구를 고치다 text가 어긋나도 화면은 깨지지 않는다
+  if (!link || at < 0) return <>{feature.body}</>;
+  return (
+    <>
+      {feature.body.slice(0, at)}
+      <Link href={link.href} className={linkClassName} onClick={onNavigate}>
+        {link.text}
+      </Link>
+      {feature.body.slice(at + link.text.length)}
+    </>
+  );
+}
 
 // ────────────────────────────────────────────────
 // 메가 메뉴 패널
@@ -294,7 +331,9 @@ function MegaPanel({ chapter }: { chapter: Chapter }) {
         {chapter.feature && (
           <div className="mega-feature">
             <p className="mega-feature-heading">{chapter.feature.heading}</p>
-            <p className="mega-feature-body">{chapter.feature.body}</p>
+            <p className="mega-feature-body">
+              <FeatureBody feature={chapter.feature} linkClassName="mega-feature-inline-link" />
+            </p>
             <Link href={chapter.feature.cta.href} className="mega-feature-cta">
               {chapter.feature.cta.label} →
             </Link>
@@ -698,7 +737,11 @@ export default function NavMega() {
                             {ch.feature.heading}
                           </p>
                           <p className="navmega-mobile-feature-body">
-                            {ch.feature.body}
+                            <FeatureBody
+                              feature={ch.feature}
+                              linkClassName="navmega-mobile-feature-inline-link"
+                              onNavigate={() => setMobileOpen(false)}
+                            />
                           </p>
                           <Link
                             href={ch.feature.cta.href}
@@ -1155,6 +1198,28 @@ export default function NavMega() {
           line-height: 1.6;
           margin-bottom: 14px;
           word-break: keep-all;
+        }
+        .mega-feature-inline-link,
+        .navmega-mobile-feature-inline-link {
+          color: #0B5563;
+          font-weight: 600;
+          text-decoration: underline;
+          text-decoration-color: rgba(11, 85, 99, 0.4);
+          text-underline-offset: 3px;
+        }
+        .mega-feature-inline-link:hover,
+        .navmega-mobile-feature-inline-link:hover {
+          color: #06333D;
+          text-decoration-color: #06333D;
+        }
+        .mega-feature-inline-link:active,
+        .navmega-mobile-feature-inline-link:active {
+          opacity: 0.7;
+        }
+        .mega-feature-inline-link:focus-visible,
+        .navmega-mobile-feature-inline-link:focus-visible {
+          outline: 2px solid #0B5563;
+          outline-offset: 2px;
         }
         .mega-feature-cta {
           display: inline-block;

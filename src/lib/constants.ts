@@ -82,11 +82,18 @@ export type Region = typeof REGIONS[number];
 export type Genre = typeof GENRES[number];
 export type ShowCategory = typeof SHOW_CATEGORIES[number];
 
+/**
+ * 문의 유형 — contacts.category 에 이 문자열이 그대로 저장된다(자유 텍스트 컬럼, CHECK 제약 없음).
+ * 2026-09-30: 「제작대행 문의」 추가(/muol/production-service 에서 ?type=production 으로 미리 선택).
+ *             「협업 / 후원 제안」 → 「협업 제안」 — 후원 계좌는 2026-08-19 폐기(기부금품법 §4②·§16).
+ *             예전 이름으로 들어온 문의는 DB에 그대로 남아 있고, 관리자 화면이 목록 밖 유형도 필터로 보여준다.
+ */
 export const CONTACT_CATEGORIES = [
   "공연자 신청",
   "공연 등록 문의",
+  "제작대행 문의",
   "예매 / 환불",
-  "협업 / 후원 제안",
+  "협업 제안",
   "광고 / 제휴",
   "미디어 / 인터뷰",
   "사이트 오류 신고",
@@ -95,3 +102,11 @@ export const CONTACT_CATEGORIES = [
 ] as const;
 
 export type ContactCategory = typeof CONTACT_CATEGORIES[number];
+
+/** 문의폼 주소의 ?type= 값 → 미리 고를 문의 유형. 한글을 주소에 싣지 않으려고 짧은 영문 키를 쓴다. */
+export const CONTACT_TYPE_PARAM: Record<string, ContactCategory> = {
+  production: "제작대행 문의",
+  ad: "광고 / 제휴",
+  collab: "협업 제안",
+  register: "공연 등록 문의",
+};

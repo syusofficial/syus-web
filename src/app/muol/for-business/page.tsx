@@ -295,6 +295,17 @@ export default function ForBusinessPage() {
             <br />
             {COMPANY.email}
           </p>
+          {/* 2026-09-30 — 제작대행은 광고와 계약 주체·상품이 달라 이 페이지에 섞지 않고 링크만 둔다 */}
+          <p className="text-sm mt-8" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#F0EEE9", opacity: 0.86 }}>
+            공연 홍보물 제작을 찾으신다면{" "}
+            <Link
+              href="/muol/production-service"
+              className="underline underline-offset-4 hover:opacity-80 active:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F0EEE9]"
+              style={{ color: "#F0EEE9", fontWeight: 600 }}
+            >
+              제작대행 안내 →
+            </Link>
+          </p>
         </div>
       </section>
     </div>
