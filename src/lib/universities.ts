@@ -20,7 +20,7 @@
  * **화면에 링크를 되살리려면 사장님 확인을 먼저 받을 것.**
  *
  * 【실측 수치 — 대외 문서에 쓸 때 이 줄을 기준으로】
- * 학과 162개 · 대학 103개 · 지역 17개
+ * 학과 171개 · 대학 107개 · 지역 17개
  * ("92개 학과"·"16개 지역"·"200여개"는 전부 낡은 오류값이다)
  */
 
@@ -49,6 +49,13 @@ export const DEPARTMENTS: readonly Department[] = [
   { region: "서울", school: "동국대학교", dept: "영화영상학과", genre: "영화", url: null },
   { region: "서울", school: "동덕여자대학교", dept: "공연예술대학 (방송연예/모델/실용음악/뮤지컬/무용)", genre: "연극·뮤지컬·무용·음악", url: null },
   { region: "서울", school: "명지대학교", dept: "영화·뮤지컬학부", genre: "뮤지컬·영화", url: null },
+  { region: "서울", school: "명지전문대학", dept: "실용음악과", genre: "음악", url: null },
+  { region: "서울", school: "명지전문대학", dept: "연극영상학과", genre: "연극·영화", url: "https://acting.mjc.ac.kr" },
+  { region: "서울", school: "백석예술대학교", dept: "뮤지컬과", genre: "뮤지컬", url: null },
+  { region: "서울", school: "백석예술대학교", dept: "실용댄스학부", genre: "무용", url: null },
+  { region: "서울", school: "백석예술대학교", dept: "실용음악과", genre: "음악", url: null },
+  { region: "서울", school: "백석예술대학교", dept: "연기과", genre: "연극", url: null },
+  { region: "서울", school: "백석예술대학교", dept: "한국음악과", genre: "국악", url: null },
   { region: "서울", school: "삼육대학교", dept: "아트앤디자인학과 연기전공", genre: "연극", url: null },
   { region: "서울", school: "상명대학교", dept: "무용예술전공", genre: "무용", url: null },
   { region: "서울", school: "상명대학교", dept: "연극학과", genre: "연극", url: null },
@@ -77,6 +84,7 @@ export const DEPARTMENTS: readonly Department[] = [
   { region: "서울", school: "연세대학교", dept: "음악대학", genre: "음악", url: null },
   { region: "서울", school: "이화여자대학교", dept: "무용과", genre: "무용", url: null },
   { region: "서울", school: "이화여자대학교", dept: "음악대학", genre: "음악·국악", url: null },
+  { region: "서울", school: "인덕대학교", dept: "연기예술학과", genre: "연극", url: "https://www.induk.ac.kr/indukbe/index.do" },
   { region: "서울", school: "정화예술대학교", dept: "융합예술학부 연기전공", genre: "연극", url: null },
   { region: "서울", school: "중앙대학교", dept: "국악대학", genre: "국악·전통예술", url: null },
   { region: "서울", school: "중앙대학교", dept: "무용학과", genre: "무용", url: null },
@@ -150,6 +158,7 @@ export const DEPARTMENTS: readonly Department[] = [
   { region: "경기", school: "수원대학교", dept: "무용학부", genre: "무용", url: null },
   { region: "경기", school: "수원대학교", dept: "연극영화학부", genre: "연극·영화", url: null },
   { region: "경기", school: "수원여자대학교", dept: "방송공연예술과", genre: "연극", url: null },
+  { region: "경기", school: "신한대학교", dept: "공연예술학과", genre: "연극", url: null },
   { region: "경기", school: "안양대학교", dept: "공연예술학과", genre: "연극", url: null },
   { region: "경기", school: "예원예술대학교", dept: "공연예술학부 (양주캠퍼스)", genre: "연극", url: null },
   { region: "경기", school: "용인대학교", dept: "국악과", genre: "국악", url: null },
@@ -206,9 +215,9 @@ export const DEPARTMENTS: readonly Department[] = [
 /** 지역 표시 순서 — 서울부터, 광역시·도 관례 순 */
 export const REGION_ORDER: readonly string[] = ["서울","부산","대구","인천","광주","대전","울산","세종","경기","강원","충북","충남","전북","전남","경북","경남","제주"];
 
-/** 학과 162 · 대학 103 · 지역 17 — 화면 문구에 쓰는 실측 수치 */
-export const DEPARTMENT_COUNT = 162;
-export const SCHOOL_COUNT = 103;
+/** 학과 171 · 대학 107 · 지역 17 — 화면 문구에 쓰는 실측 수치 */
+export const DEPARTMENT_COUNT = 171;
+export const SCHOOL_COUNT = 107;
 
 /** 지역별 학과 수 (0인 지역은 화면에서 칩을 흐리게 처리하는 데 쓴다) */
 export function countByRegion(): Record<string, number> {
