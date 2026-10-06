@@ -5,7 +5,7 @@ import Link from "next/link";
 import { DEPARTMENTS, fullName, type Department } from "@/lib/universities";
 
 /**
- * 우리 학교 찾기 — 무대올림 홈 첫 화면 (2026-10-06 사장님 지시)
+ * 학교 이름으로 무대 찾기 — 무대올림 홈 첫 화면 (2026-10-06 사장님 지시, 처음 이름은 「우리 학교 찾기」)
  *
  * 왜: 학과 명부는 이미 꽉 차 있는데 첫 화면에서 닿을 길이 없었다. 학과 담당자가 들어와
  * 「우리 학교가 여기 있나」를 확인하는 순간이 곧 입점의 첫 걸음이다(Yelp의 「내 가게 찾기」와 같은 자리).
@@ -13,7 +13,11 @@ import { DEPARTMENTS, fullName, type Department } from "@/lib/universities";
  * 명부에 없으면 인스타그램·카카오톡 채널·홈페이지 문의로 알려 달라고 안내한다.
  *
  * 무대올림이 「대신 올려 드린다」는 약속은 하지 않는다(2026-10-06 사장님 결정 — 무료 등록 대행은 열지 않음).
- * 데이터는 lib/universities.ts 상수(171곳, 약 15KB)를 그대로 쓴다 — 서버 왕복 없이 글자를 칠 때마다 걸러진다.
+ * 데이터는 lib/universities.ts 상수(약 15KB)를 그대로 쓴다 — 서버 왕복 없이 글자를 칠 때마다 걸러진다.
+ *
+ * 이름(2026-10-06 사장님 승인): 「우리 학교 찾기」 → 「학교 이름으로 무대 찾기」.
+ * 검색창이 무엇을 찾느냐가 곧 사이트의 정체로 읽힌다 — 「학교」를 찾으면 입시 정보 사이트처럼 보인다.
+ * 찾는 것은 무대이고 학교 이름은 열쇠일 뿐이다. 「우리 학교」는 학과 사람만의 말이라 관객에게도 맞게 바꿨다.
  */
 
 const MAX_RESULTS = 6;
@@ -83,7 +87,7 @@ export default function SchoolFinder({ showCounts }: { showCounts: Record<string
         className="block text-[0.95rem] mb-3"
         style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C", fontWeight: 600 }}
       >
-        우리 학교 찾기
+        학교 이름으로 무대 찾기
       </label>
       <div className="relative">
         <input
