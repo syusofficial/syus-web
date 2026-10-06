@@ -20,7 +20,7 @@
  * **화면에 링크를 되살리려면 사장님 확인을 먼저 받을 것.**
  *
  * 【실측 수치 — 대외 문서에 쓸 때 이 줄을 기준으로】
- * 학과 171개 · 대학 107개 · 지역 17개
+ * 학과 173개 · 대학 109개 · 지역 17개
  * ("92개 학과"·"16개 지역"·"200여개"는 전부 낡은 오류값이다)
  */
 
@@ -143,10 +143,12 @@ export const DEPARTMENTS: readonly Department[] = [
   { region: "울산", school: "울산대학교", dept: "음악학부", genre: "음악", url: null },
   { region: "세종", school: "고려대학교 세종캠퍼스", dept: "문화창의학부", genre: "문예창작", url: null },
   { region: "경기", school: "가천대학교", dept: "연기예술학과", genre: "연극", url: null },
+  { region: "경기", school: "경복대학교", dept: "공연예술학과 (연극/뮤지컬/방송연기)", genre: "연극·뮤지컬", url: "http://info.kbu.ac.kr/pa" },
   { region: "경기", school: "단국대학교", dept: "공연영화학부 (연극/뮤지컬/영화)", genre: "연극·뮤지컬·영화", url: null },
   { region: "경기", school: "단국대학교", dept: "국악과", genre: "국악", url: null },
   { region: "경기", school: "단국대학교", dept: "무용학과", genre: "무용", url: null },
   { region: "경기", school: "단국대학교", dept: "음악학부", genre: "음악", url: null },
+  { region: "경기", school: "대경대학교", dept: "연기예술과 (남양주캠퍼스)", genre: "연극", url: "https://actingarts.tk.ac.kr" },
   { region: "경기", school: "대진대학교", dept: "연극영화학부", genre: "연극·영화", url: null },
   { region: "경기", school: "동서울대학교", dept: "실용음악과", genre: "음악", url: null },
   { region: "경기", school: "동서울대학교", dept: "연기예술학과", genre: "연극", url: null },
@@ -215,9 +217,9 @@ export const DEPARTMENTS: readonly Department[] = [
 /** 지역 표시 순서 — 서울부터, 광역시·도 관례 순 */
 export const REGION_ORDER: readonly string[] = ["서울","부산","대구","인천","광주","대전","울산","세종","경기","강원","충북","충남","전북","전남","경북","경남","제주"];
 
-/** 학과 171 · 대학 107 · 지역 17 — 화면 문구에 쓰는 실측 수치 */
-export const DEPARTMENT_COUNT = 171;
-export const SCHOOL_COUNT = 107;
+/** 학과 173 · 대학 109 · 지역 17 — 화면 문구에 쓰는 실측 수치 */
+export const DEPARTMENT_COUNT = 173;
+export const SCHOOL_COUNT = 109;
 
 /** 지역별 학과 수 (0인 지역은 화면에서 칩을 흐리게 처리하는 데 쓴다) */
 export function countByRegion(): Record<string, number> {
