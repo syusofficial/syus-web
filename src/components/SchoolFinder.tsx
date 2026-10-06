@@ -23,6 +23,7 @@ const INSTAGRAM = "https://www.instagram.com/syus_official";
 const compact = (s: string) => s.replace(/[\s()·]/g, "").toLowerCase();
 
 /** 「동덕여대」→동덕여자대학교, 「한예종」→한국예술종합학교처럼 줄임말을 받기 위해
+ *  (첫 화면 예시는 한예종·성균관대·연세대 — 2026-10-06 사장님 지정)
  *  학교 이름의 첫 글자에서 시작해 글자 순서대로 들어 있는지 본다. */
 function isAbbrevOf(q: string, school: string): boolean {
   if (!q || school[0] !== q[0]) return false;
@@ -91,7 +92,7 @@ export default function SchoolFinder({ showCounts }: { showCounts: Record<string
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onBlur={onBlur}
-          placeholder="학교 이름 — 예: 동덕여대, 한예종"
+          placeholder="예: 한예종, 성균관대, 연세대"
           autoComplete="off"
           enterKeyHint="search"
           aria-describedby="school-finder-hint"
