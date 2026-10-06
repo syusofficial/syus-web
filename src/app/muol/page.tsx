@@ -4,6 +4,7 @@ import ShowCard, { type RatingSummary } from "@/components/ShowCard";
 // → 새 히어로는 nav 밑에 HeroPosterStream(물결처럼 이어지는 가로 흐름)을 크게 띄우고, 그 아래 H1·부제·CTA.
 // HeroUnveilScroll.tsx 파일 자체는 보존(미래 재사용/복원 여지). page.tsx에서만 호출 해제.
 import HeroPosterStream, { type StreamItem } from "@/components/HeroPosterStream";
+import SchoolFinder from "@/components/SchoolFinder";
 import { createClient } from "@/lib/supabase/server";
 import { InstitutionSidebar, PartnerAdSidebar } from "@/components/PartnerSidebars";
 import MobilePartnerStrip from "@/components/MobilePartnerStrip";
@@ -67,6 +68,14 @@ export default async function HomePage() {
   }));
   // 첫 화면에 걸 공연이 하나라도 있는가 — 없으면 히어로가 「0건 모드」로 바뀐다.
   const hasStage = streamItems.length > 0;
+
+  // 우리 학교 찾기 — 학과별 승인 공연 수(지난 공연 포함). 학과 명부 페이지와 같은 기준:
+  // school_department가 명부의 「학교 학과」 표기와 정확히 같을 때만 그 학과로 센다.
+  const showCounts: Record<string, number> = {};
+  for (const s of allApproved) {
+    const name = (s.school_department ?? "").trim();
+    if (name) showCounts[name] = (showCounts[name] ?? 0) + 1;
+  }
 
   // 운영자 픽
   const featured = active.filter((s) => s.featured).slice(0, 6);
@@ -265,6 +274,8 @@ export default async function HomePage() {
                 ))}
               </dl>
             )}
+            {/* 우리 학교 찾기 — 공연 유무와 상관없이 첫 화면에 둔다(학과 담당자의 첫 확인 자리) */}
+            <SchoolFinder showCounts={showCounts} />
             {!hasStage ? (
               /* 0건 동안의 두 문. 「공연 둘러보기」는 빈 목록으로 데려가므로 내리고,
                  채워져 있는 곳(등록 안내·학과 명부)으로 보낸다. 학과 사람의 실질적인 첫 화면이 등록 안내다. */

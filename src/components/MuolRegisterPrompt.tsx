@@ -226,10 +226,23 @@ export default function MuolRegisterPrompt() {
 
     const mountedAt = Date.now();
     let done = false;
+    let retry = 0;
+
+    // 2026-10-06: 무대올림 홈 첫 화면에 「우리 학교 찾기」 입력칸이 생겼다. 글자를 치는 중에 카드가
+    // 올라오면 검색 결과를 덮는다 — 입력칸에 초점이 있는 동안은 띄우지 않고 4초 뒤 다시 본다.
+    const isTyping = () => {
+      const el = document.activeElement as HTMLElement | null;
+      return !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable);
+    };
 
     const show = () => {
       if (done) return;
       if (Date.now() - mountedAt < FLOOR_MS) return; // 5초 바닥
+      if (isTyping()) {
+        window.clearTimeout(retry);
+        retry = window.setTimeout(show, 4000);
+        return;
+      }
       done = true;
       try {
         window.sessionStorage.setItem(SESSION_KEY, "1");
@@ -251,6 +264,7 @@ export default function MuolRegisterPrompt() {
 
     return () => {
       window.clearTimeout(timer);
+      window.clearTimeout(retry);
       window.removeEventListener("scroll", onScroll);
     };
   }, [suppressedByPath, viewer, visible]);
