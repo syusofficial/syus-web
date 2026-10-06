@@ -191,7 +191,7 @@ export default async function HomePage() {
             {/* 미션 eyebrow — 2026-07-24 신설. "한국 대학 무대예술의 진흥" 확정 문구.
                 (A)의 Top5 라벨(Teal)과 색을 구분해 다른 성격의 캡션임을 시각적으로 알림. */}
             <p
-              className="text-[0.7rem] tracking-[0.35em] uppercase mb-3 md:mb-4"
+              className="text-[0.72rem] tracking-[0.3em] uppercase mb-5 md:mb-7"
               style={{
                 fontFamily: "var(--font-inter)",
                 color: "#5C2A42" /* Divine Damson */,
@@ -200,16 +200,19 @@ export default async function HomePage() {
             >
               한국 대학 무대예술의 진흥
             </p>
+            {/* 2026-10-06 사장님: 「글자가 빽빽해 잘려 보이고 답답하다」(모바일·PC 공통).
+                자간 -0.04em·행간 1.08은 한글 명조에서 받침과 다음 줄 첫소리가 맞닿아 보였다.
+                크기를 한 단계 내리고 자간 -0.02em·행간 1.22로 숨을 준다. 아래 덩어리 간격도 함께 넓혔다. */}
             <h1
-              className="font-bold mb-5 md:mb-7"
+              className="font-bold mb-7 md:mb-10"
               style={{
                 fontFamily: "var(--font-noto-serif-kr)",
-                fontSize: "clamp(2.6rem, 6vw, 5.2rem)",
+                fontSize: "clamp(2.15rem, 5vw, 4.4rem)",
                 /* 2026-08-03 색 위계 B안 — 대제목은 먹빛(Ink #2B211C, 13.55:1).
                    청록은 '누를 수 있는 것'에만 남긴다. Silhouette 계열이라 잠금 4색은 유지. */
                 color: "#2B211C",
-                letterSpacing: "-0.04em",
-                lineHeight: "1.08",
+                letterSpacing: "-0.02em",
+                lineHeight: "1.22",
                 wordBreak: "keep-all",
                 textWrap: "balance",
               }}
@@ -218,12 +221,14 @@ export default async function HomePage() {
               {hasStage ? "오늘도 우리들의 막이 오릅니다" : "전국 대학 무대를 한곳에 모읍니다"}
             </h1>
             <p
-              className="leading-relaxed mb-6 md:mb-9 max-w-2xl"
+              className="mb-10 md:mb-14 max-w-2xl"
               style={{
                 fontFamily: "var(--font-noto-sans-kr)",
-                fontSize: "clamp(1rem, 1.6vw, 1.25rem)",
+                fontSize: "clamp(1rem, 1.5vw, 1.2rem)",
+                lineHeight: 1.85,
                 color: "#4A3B33" /* Silhouette */,
                 wordBreak: "keep-all",
+                textWrap: "pretty",
                 fontWeight: 300,
               }}
             >
@@ -231,11 +236,11 @@ export default async function HomePage() {
                 "대학 무대예술의 오늘을 한데 모아두고 기록하고 알립니다"
               ) : (
                 <>
-                  학과와 공연팀이 무대를 올리고, 가까운 관객이 찾아옵니다.
+                  {/* 두 문장을 각자의 줄로 — 한 덩어리로 흘리면 폰에서 「찾아옵니다.」가 홀로 떨어졌다 */}
+                  <span className="block">학과와 공연팀이 무대를 올리고, 가까운 관객이 찾아옵니다.</span>
                   {/* 2026-10-06 사장님: 게재료 문구는 돈에 연연하는 인상 → 올리기를 권하는 말로.
                       아래 공연 칸의 「첫 무대를 기다립니다」와 겹치지 않게 「학과를 찾습니다」 쪽을 쓴다. */}
-                  <br />
-                  이곳의 첫 무대를 올려줄 학과를 찾습니다.
+                  <span className="block mt-2">이곳의 첫 무대를 올려줄 학과를 찾습니다.</span>
                 </>
               )}
             </p>
@@ -244,7 +249,7 @@ export default async function HomePage() {
                  숫자는 universities.ts·constants.ts에서 읽는다(손으로 적은 낡은 수치가 메일로 나간 사고, 2026-08-18).
                  누를 수 없는 정보라 청록을 쓰지 않는다(색 위계 B안). */
               <dl
-                className="grid grid-cols-4 max-w-xl mb-7 md:mb-10"
+                className="grid grid-cols-4 max-w-xl mb-10 md:mb-14"
                 style={{ borderTop: "1px solid #D4CFC1", borderBottom: "1px solid #D4CFC1" }}
               >
                 {[
@@ -253,23 +258,24 @@ export default async function HomePage() {
                   { n: REGION_ORDER.length, label: "지역" },
                   { n: GENRES.length, label: "장르" },
                 ].map((s, i) => (
+                  /* dl 규칙상 dt(이름)가 dd(값)보다 먼저 와야 한다 — 화면에서는 flex-col-reverse로 숫자를 위에 */
                   <div
                     key={s.label}
-                    className="py-3 md:py-4 text-center"
+                    className="flex flex-col-reverse items-center gap-2 md:gap-2.5 py-5 md:py-6"
                     style={i > 0 ? { borderLeft: "1px solid #D4CFC1" } : undefined}
                   >
-                    <dd
-                      className="text-[1.5rem] md:text-[2rem] leading-none mb-1.5"
-                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C", fontWeight: 600 }}
-                    >
-                      {s.n}
-                    </dd>
                     <dt
-                      className="text-xs"
+                      className="text-[0.8rem] tracking-wider"
                       style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
                     >
                       {s.label}
                     </dt>
+                    <dd
+                      className="text-[1.5rem] md:text-[2rem] leading-none"
+                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C", fontWeight: 600 }}
+                    >
+                      {s.n}
+                    </dd>
                   </div>
                 ))}
               </dl>
@@ -279,7 +285,7 @@ export default async function HomePage() {
             {!hasStage ? (
               /* 0건 동안의 두 문. 「공연 둘러보기」는 빈 목록으로 데려가므로 내리고,
                  채워져 있는 곳(등록 안내·학과 명부)으로 보낸다. 학과 사람의 실질적인 첫 화면이 등록 안내다. */
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 md:gap-4">
                 <Link
                   href="/muol/performer"
                   className="inline-block px-7 py-4 text-sm tracking-wider transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
@@ -306,7 +312,7 @@ export default async function HomePage() {
                 </Link>
               </div>
             ) : (
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 md:gap-4">
               <Link
                 href="/muol/shows"
                 className="inline-block px-7 py-4 text-sm tracking-wider transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"

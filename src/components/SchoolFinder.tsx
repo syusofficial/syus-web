@@ -76,10 +76,10 @@ export default function SchoolFinder({ showCounts }: { showCounts: Record<string
   };
 
   return (
-    <div className="max-w-xl mb-7 md:mb-10">
+    <div className="max-w-xl mb-10 md:mb-14">
       <label
         htmlFor="school-finder"
-        className="block text-sm mb-2"
+        className="block text-[0.95rem] mb-3"
         style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C", fontWeight: 600 }}
       >
         우리 학교 찾기
@@ -95,7 +95,7 @@ export default function SchoolFinder({ showCounts }: { showCounts: Record<string
           autoComplete="off"
           enterKeyHint="search"
           aria-describedby="school-finder-hint"
-          className="w-full px-4 py-3.5 text-base outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]"
+          className="w-full px-5 py-4 text-base outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]"
           style={{
             fontFamily: "var(--font-noto-sans-kr)",
             backgroundColor: "#FFFFFF",
@@ -111,27 +111,27 @@ export default function SchoolFinder({ showCounts }: { showCounts: Record<string
       {/* 결과 — 화면 낭독기가 바뀐 결과를 읽도록 polite 영역으로 둔다 */}
       <div aria-live="polite">
         {q && matches.length > 0 && (
-          <ul className="mt-3 space-y-2">
+          <ul className="mt-4 space-y-3">
             {shown.map((d) => {
               const name = fullName(d);
               const count = showCounts[name] ?? 0;
               return (
                 <li
                   key={name}
-                  className="px-4 py-3"
+                  className="px-5 py-4"
                   style={{ backgroundColor: "rgba(255,255,255,0.6)", border: "1px solid #D4CFC1" }}
                 >
                   <p
-                    className="text-sm leading-snug"
+                    className="text-[0.95rem] leading-relaxed"
                     style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2B211C", fontWeight: 600, wordBreak: "keep-all" }}
                   >
                     {d.school} {d.dept}
                   </p>
-                  <p className="text-xs mt-0.5 mb-2" style={{ color: "#5A4A3E", wordBreak: "keep-all" }}>
+                  <p className="text-[0.82rem] leading-relaxed mt-1 mb-3" style={{ color: "#5A4A3E", wordBreak: "keep-all" }}>
                     {d.region} · {d.genre}
                     {count > 0 ? ` · 오른 무대 ${count}` : " · 이 학과의 첫 무대를 기다립니다"}
                   </p>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
+                  <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)" }}>
                     {count > 0 && (
                       <Link
                         href={`/muol/shows?school=${encodeURIComponent(name)}`}
@@ -153,7 +153,7 @@ export default function SchoolFinder({ showCounts }: { showCounts: Record<string
               );
             })}
             {rest > 0 && (
-              <li className="text-xs pt-1" style={{ color: "#5A4A3E" }}>
+              <li className="text-[0.82rem] pt-1 leading-relaxed" style={{ color: "#5A4A3E" }}>
                 외 {rest}곳 더 —{" "}
                 <Link href="/muol/universities" className="underline underline-offset-4" style={{ color: "#0B5563" }}>
                   학과 명부에서 모두 보기
@@ -165,16 +165,16 @@ export default function SchoolFinder({ showCounts }: { showCounts: Record<string
 
         {q && matches.length === 0 && (
           <div
-            className="mt-3 px-4 py-4"
+            className="mt-4 px-5 py-5"
             style={{ backgroundColor: "rgba(255,255,255,0.6)", border: "1px solid #D4CFC1" }}
           >
             <p
-              className="text-sm leading-relaxed mb-1"
+              className="text-[0.95rem] leading-relaxed mb-2"
               style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#2B211C", fontWeight: 600, wordBreak: "keep-all" }}
             >
               「{query.trim()}」은(는) 아직 명부에 없습니다.
             </p>
-            <p className="text-xs leading-relaxed mb-3" style={{ color: "#4A3B33", wordBreak: "keep-all" }}>
+            <p className="text-[0.85rem] mb-4" style={{ color: "#4A3B33", wordBreak: "keep-all", lineHeight: 1.85 }}>
               학교와 학과 이름을 알려 주시면 확인해서 명부에 더하겠습니다.
               <br />
               명부에 없는 학과·동아리·극단도{" "}
@@ -188,7 +188,7 @@ export default function SchoolFinder({ showCounts }: { showCounts: Record<string
       </div>
 
       {q && matches.length > 0 && (
-        <p className="text-xs mt-3" style={{ color: "#5A4A3E", wordBreak: "keep-all" }}>
+        <p className="text-[0.82rem] mt-4" style={{ color: "#5A4A3E", wordBreak: "keep-all", lineHeight: 1.9 }}>
           찾는 학과가 없나요? <ContactLinks inline />
         </p>
       )}
@@ -214,7 +214,7 @@ function ContactLinks({ inline = false }: { inline?: boolean }) {
             <a
               href={it.href}
               {...(it.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="underline underline-offset-4"
+              className="underline underline-offset-4 whitespace-nowrap"
               style={{ color: "#0B5563" }}
             >
               {it.label}
@@ -227,13 +227,13 @@ function ContactLinks({ inline = false }: { inline?: boolean }) {
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2.5">
       {items.map((it) => (
         <a
           key={it.href}
           href={it.href}
           {...(it.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-          className="inline-block px-3.5 py-2 text-xs tracking-wide transition-opacity hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]"
+          className="inline-block px-4 py-2.5 text-[0.8rem] tracking-wide transition-opacity hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B5563]"
           style={{ fontFamily: "var(--font-noto-sans-kr)", border: "1px solid #0B5563", color: "#0B5563", fontWeight: 600 }}
         >
           {it.label}

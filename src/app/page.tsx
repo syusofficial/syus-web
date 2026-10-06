@@ -123,8 +123,8 @@ export default function GatewayPage() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 3px;
-          padding: 8px 22px 9px;
+          gap: 5px;
+          padding: 9px 24px 11px;
           background: rgba(255, 255, 255, 0.95);
           border: 1px solid rgba(74, 59, 51, 0.12);
           border-radius: 22px; /* 두 줄이 되어 100px(알약형)에서 낮춤 */
@@ -136,7 +136,7 @@ export default function GatewayPage() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.74rem;
           font-weight: 500;
-          letter-spacing: 0.01em;
+          letter-spacing: 0.03em;
           color: #4A3B33; /* 흰 배지 위 9.6:1 */
           white-space: nowrap;
         }
@@ -283,9 +283,9 @@ export default function GatewayPage() {
         .gw-headline {
           font-family: var(--font-noto-serif-kr);
           font-size: clamp(2.1rem, 4.6vw, 3.4rem);
-          line-height: 1.12;
+          line-height: 1.2; /* 2026-10-06 1.12→1.2: 「빽빽하다」는 사장님 지적 */
           font-weight: 700;
-          letter-spacing: -0.02em;
+          letter-spacing: -0.01em;
           word-break: keep-all;
           margin-bottom: 22px;
         }
@@ -296,7 +296,7 @@ export default function GatewayPage() {
         .gw-desc {
           font-family: var(--font-noto-sans-kr);
           font-size: clamp(0.95rem, 1.4vw, 1.1rem);
-          line-height: 1.7;
+          line-height: 1.85;
           font-weight: 300;
           word-break: keep-all;
           margin-bottom: 34px;
