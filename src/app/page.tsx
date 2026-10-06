@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import LegalStrip from "@/components/LegalStrip";
-import { DEPARTMENT_COUNT } from "@/lib/universities";
 
 /**
  * 게이트웨이 (루트 /) — 3층 구조. (2026-06-30 3차: 색 반전 + 워터마크 + 문구 정리)
@@ -60,8 +59,8 @@ export default function GatewayPage() {
           <p className="gw-desc gw-desc--muol">
             대학 공연을 찾고, 무대를 올립니다.
             <br />
-            {/* 게재료 문구는 voice-guide §3-2 잠금 10자안 그대로 */}
-            학과 {DEPARTMENT_COUNT}곳 · 공연팀 게재료 없음
+            {/* 2026-10-06 사장님: 「게재료 없음」은 돈에 연연하는 인상 → 올리기를 권하는 말로 */}
+            당신의 첫 무대를 기다립니다.
           </p>
           <span className="gw-cta gw-cta--muol">
             무대올림 들어가기
