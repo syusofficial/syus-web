@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import LegalStrip from "@/components/LegalStrip";
+import { DEPARTMENT_COUNT } from "@/lib/universities";
 
 /**
  * 게이트웨이 (루트 /) — 3층 구조. (2026-06-30 3차: 색 반전 + 워터마크 + 문구 정리)
@@ -23,33 +24,44 @@ export default function GatewayPage() {
           배지에만 auto를 줘서 여기만 눌린다. 범위를 넓히면 두 문이 안 눌리니 건드리지 말 것.
           2026-08-19: 배지가 /company(사유유사 소개·CI)로 들어가는 제3의 문이 됐다. */}
       <div className="gw-roof">
+        {/* 2026-10-06: 배지 안에 정의 한 문장을 넣는다. 이 화면에는 사유유사가 무엇을 하는 곳인지
+            말하는 문장이 없었다(착지 세션의 절반이 여기서 끝남). 6/30에 배지 "밑"의 흰 슬로건이
+            배경에 묻혀 안 보여 뺐으므로, 이번에는 배지의 흰 바탕 "안"에 둔다 — 어느 문 위에서도 읽힌다. */}
         <Link href="/company" className="gw-roof-badge" aria-label="사유유사 SYUS 소개">
-          <Image
-            src="/sayuyusa-logo.png"
-            alt="사유유사 SYUS"
-            width={104}
-            height={42}
-            className="gw-roof-logo"
-            priority
-          />
-          <span className="gw-roof-name">사유유사 SYUS</span>
+          <span className="gw-roof-id">
+            <Image
+              src="/sayuyusa-logo.png"
+              alt="사유유사 SYUS"
+              width={104}
+              height={42}
+              className="gw-roof-logo"
+              priority
+            />
+            <span className="gw-roof-name">사유유사 SYUS</span>
+          </span>
+          <span className="gw-roof-def">한국 대학 무대예술을 기록하고, 잇고, 알립니다</span>
         </Link>
       </div>
 
-      {/* ── 왼쪽: 무대올림 (5, 청+버건디) ── */}
-      <Link href="/muol" className="gw-door gw-door--muol group" aria-label="무대올림으로 들어가기">
+      {/* ── 왼쪽: 무대올림 (5, 청+버건디) ──
+          2026-10-06: 「넓게 — 둘러보다 / 깊게 — 머물다」는 분위기만 있고 무엇을 하는 문인지 말하지 않았다.
+          인스타에서 연기 글을 찾아온 사람이 글의 문을 못 찾고 빈 공연 쪽으로 들어갔다(8~10월 실측).
+          대구(對句)의 결은 살리고 동사를 하는 일로 바꾼다 — 찾고·올리다 / 읽고·머물다.
+          모바일은 문 두 개가 화면을 꽉 채워 세로 여유가 0이므로 헤드라인·설명 길이를 예전과 맞췄다. */}
+      <Link href="/muol" className="gw-door gw-door--muol group" aria-label="무대올림으로 들어가기 — 대학 공연을 찾고 올리는 곳">
         <span className="gw-layer gw-muol-watermark" aria-hidden="true" />
         <span className="gw-layer gw-muol-l3" aria-hidden="true" />
         <span className="gw-overlay gw-overlay--muol" aria-hidden="true" />
         <div className="gw-door-inner">
           <p className="gw-label gw-label--muol">STAGE · 무대올림</p>
           <h2 className="gw-headline gw-headline--muol">
-            넓게 <span className="gw-dash">—</span> 둘러보다
+            찾고 <span className="gw-dash">—</span> 올리다
           </h2>
           <p className="gw-desc gw-desc--muol">
-            한국 대학 무대예술의 진흥을 향해.
+            대학 공연을 찾고, 무대를 올립니다.
             <br />
-            가까운 무대와 관객을 잇습니다.
+            {/* 게재료 문구는 voice-guide §3-2 잠금 10자안 그대로 */}
+            학과 {DEPARTMENT_COUNT}곳 · 공연팀 게재료 없음
           </p>
           <span className="gw-cta gw-cta--muol">
             무대올림 들어가기
@@ -59,7 +71,7 @@ export default function GatewayPage() {
       </Link>
 
       {/* ── 오른쪽: 시우스 (5, 화이트톤) ── */}
-      <Link href="/syus" className="gw-door gw-door--syus group" aria-label="시우스로 들어가기">
+      <Link href="/syus" className="gw-door gw-door--syus group" aria-label="시우스로 들어가기 — 연기에 관한 글을 읽는 곳">
         <span className="gw-layer gw-syus-watermark" aria-hidden="true" />
         <span className="gw-layer gw-syus-glow" aria-hidden="true" />
         <span className="gw-strokes" aria-hidden="true">
@@ -72,12 +84,12 @@ export default function GatewayPage() {
         <div className="gw-door-inner">
           <p className="gw-label gw-label--syus">SYUS · 시우스</p>
           <h2 className="gw-headline gw-headline--syus">
-            깊게 <span className="gw-dash">—</span> 머물다
+            읽고 <span className="gw-dash">—</span> 머물다
           </h2>
           <p className="gw-desc gw-desc--syus">
-            연기를 기록하고, 고민을 나누고,
+            배우와 연기에 관한 글을 읽고,
             <br />
-            무대를 오래 들여다봅니다.
+            독백과 고민을 나눕니다.
           </p>
           <span className="gw-cta gw-cta--syus">
             시우스 들어가기
@@ -110,14 +122,24 @@ export default function GatewayPage() {
           cursor: pointer;
           transition: transform 0.2s ease, box-shadow 0.2s ease;
           display: flex;
+          flex-direction: column;
           align-items: center;
-          gap: 12px;
-          padding: 9px 22px;
+          gap: 3px;
+          padding: 8px 22px 9px;
           background: rgba(255, 255, 255, 0.95);
           border: 1px solid rgba(74, 59, 51, 0.12);
-          border-radius: 100px;
+          border-radius: 22px; /* 두 줄이 되어 100px(알약형)에서 낮춤 */
           box-shadow: 0 6px 22px rgba(36, 28, 24, 0.16);
           backdrop-filter: blur(3px);
+        }
+        .gw-roof-id { display: flex; align-items: center; gap: 12px; }
+        .gw-roof-def {
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.74rem;
+          font-weight: 500;
+          letter-spacing: 0.01em;
+          color: #4A3B33; /* 흰 배지 위 9.6:1 */
+          white-space: nowrap;
         }
         .gw-roof-logo { height: 38px; width: auto; display: block; }
         .gw-roof-name {
@@ -330,10 +352,13 @@ export default function GatewayPage() {
              투명도는 데스크톱과 같은 값(0.55 / 0.46) — 터치엔 hover가 없어 기본값이
              곧 최종 인상이다. */
           .gw-door-inner { margin-top: 16vh; }
+          .gw-door--muol .gw-door-inner { margin-top: 19vh; }
           .gw-muol-watermark {
             /* 12%는 상단 중앙 사유유사 배지(y 30~88) 뒤로 로고가 들어가 가려졌다.
                배지 아래로 내리고 크기를 줄여 설명글과도 안 겹치게 한다. */
-            background-position: center 27%;
+            /* 2026-10-06: 배지가 두 줄(y 30~107)이 되어 27%에선 로고 윗선이 배지 밑에 닿았다 → 29%,
+               무대올림 글자도 아래(.gw-door--muol margin 18vh)로 조금 내려 로고와 라벨 사이를 띄운다. */
+            background-position: center 29%;
             background-size: min(32%, 20svh) auto;
             opacity: 0.55;
           }
@@ -380,6 +405,9 @@ export default function GatewayPage() {
            남아 허전하지 않다. */
         @media (max-width: 1023px) and (max-height: 780px) {
           .gw-door-inner { margin-top: 8vh; }
+          /* 2026-10-06: 배지가 두 줄이 되어 아래로 ~20px 자랐다. 배지가 얹힌 무대올림 문만
+             글자를 그만큼 내린다(시우스 "들어가기"는 360x740에서 화면 안 유지 — 실측). */
+          .gw-door--muol .gw-door-inner { margin-top: 15vh; } /* 문 안 세로 가운데 정렬이라 늘린 값의 절반만 내려간다 */
           .gw-muol-watermark, .gw-syus-watermark { opacity: 0; }
         }
 
@@ -388,6 +416,37 @@ export default function GatewayPage() {
         }
       `}</style>
     </div>
+
+      {/* 2026-10-06: 공연팀의 문. 두 문은 모두 관객의 동사라 학과·공연팀이 들어갈 곳이 없었다.
+          두 문(100svh) 구도는 건드리지 않고 그 아래 얇은 띠로 둔다. */}
+      <Link href="/muol/performer" className="gw-performer-strip">
+        <span>학과·공연팀이신가요</span>
+        <span className="gw-performer-strip-cta">공연 올리는 법 →</span>
+      </Link>
+      <style>{`
+        .gw-performer-strip {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: baseline;
+          gap: 6px 14px;
+          padding: 18px 16px;
+          background: #F0EEE9;
+          border-top: 1px solid #E0DBD0;
+          font-family: var(--font-noto-sans-kr);
+          font-size: 0.92rem;
+          color: #4A3B33;
+          text-decoration: none;
+          word-break: keep-all;
+        }
+        .gw-performer-strip-cta {
+          color: #0B5563; /* 누르는 것 = 청록 (색 위계 B안) */
+          font-weight: 600;
+          border-bottom: 1px solid currentColor;
+        }
+        .gw-performer-strip:hover .gw-performer-strip-cta { opacity: 0.8; }
+        .gw-performer-strip:focus-visible { outline: 2px solid #0B5563; outline-offset: -4px; }
+      `}</style>
 
       {/* 전자상거래법 §10 사업자 정보 — 게이트웨이에는 푸터가 없어 여기서 표시한다.
           두 문(100svh)의 구도는 건드리지 않고 그 아래에 얇은 띠로만 덧붙였다. */}

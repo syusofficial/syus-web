@@ -10,6 +10,8 @@ import MobilePartnerStrip from "@/components/MobilePartnerStrip";
 import { isEnded, todayKey } from "@/lib/showFilters";
 import { showDateKey } from "@/lib/showDate";
 import { buildRatingMap } from "@/lib/ratings";
+import { DEPARTMENT_COUNT, SCHOOL_COUNT, REGION_ORDER } from "@/lib/universities";
+import { GENRES } from "@/lib/constants";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
@@ -63,6 +65,8 @@ export default async function HomePage() {
     schedule_start: s.schedule_start ?? null,
     venue: s.venue ?? null,
   }));
+  // 첫 화면에 걸 공연이 하나라도 있는가 — 없으면 히어로가 「0건 모드」로 바뀐다.
+  const hasStage = streamItems.length > 0;
 
   // 운영자 픽
   const featured = active.filter((s) => s.featured).slice(0, 6);
@@ -131,7 +135,7 @@ export default async function HomePage() {
         *   (A) nav 밑에 HeroPosterStream(물결처럼 가로로 흐르는 포스터) — 크게
         *   (B) 그 아래 H1 "오늘도 우리들의 막이 오릅니다" + 부제 + CTA 2개
         * 첫 viewport 안에 (A)+(B)가 자연스럽게 들어가도록 패딩 조절.
-        * 빈 상태(공연 0개): (A)는 안내 카드 1줄로 대체, (B)는 그대로 노출.
+        * 빈 상태(공연 0개): 2026-10-06부터 (A)를 빼고 (B)를 「0건 모드」로 — 아래 주석 참고.
         */}
       <section
         className="relative"
@@ -143,61 +147,37 @@ export default async function HomePage() {
           * 처음 열었을 때 이 사이트가 무엇인지 말해주는 문장이 화면 밖에 있던 셈이다.
           * 폰에서만 위·아래 여백을 줄여 H1 첫 줄과 CTA 상단이 첫 화면에 걸치게 한다.
           * 768px 이상(md:)은 가로·세로가 모두 넉넉하므로 지금 그대로 둔다. */}
-        <div className="pt-20 md:pt-32 pb-4 md:pb-12">
-          <div className="px-6 md:px-12 lg:px-20 mb-2 md:mb-4">
-            <p
-              className="text-[0.7rem] tracking-[0.35em] uppercase"
-              style={{
-                fontFamily: "var(--font-inter)",
-                // 2026-08-03 색 위계 B안: 청록은 '누르는 것' 전담으로 회수.
-                // 이 라벨은 누를 수 없는 설명이므로 먹빛 보조 텍스트(#5F5145, 6.59:1)로 내린다.
-                color: "#5F5145",
-                fontWeight: 600,
-              }}
-            >
-              Top 5 · 지금 가장 주목받는 무대
-            </p>
-          </div>
-          {streamItems.length > 0 ? (
-            <HeroPosterStream items={streamItems} />
-          ) : (
-            <div className="px-6 md:px-12 lg:px-20">
-              {/* 승인된 공연 0건일 때 TOP 5 자리에 들어가는 안내.
-                  좁은 슬롯이라 제목 1줄 + 본문 1줄로만 둔다(CTA는 바로 아래 히어로 버튼이 받는다). */}
-              <div
-                className="py-10 px-6 text-center"
+        {/* 2026-10-06 0건 모드 — 공연이 0건일 때 (A)를 통째로 뺀다.
+          * 그전에는 「Top 5 · 지금 가장 주목받는 무대」 라벨 밑에 빈 상자 「아직 오르지 않은 막」이 떠서,
+          * 가장 높은 자리가 0건을 알리고 아래 공연 칸이 「첫 무대를 기다립니다」로 한 번 더 같은 말을 했다.
+          * 빈 자리는 아래 공연 칸에서 한 번만 말하고, 첫 화면은 가진 사실(명부·게재료 없음)로 채운다.
+          * 라벨도 5칸이 다 차기 전에는 「Top 5」를 약속하지 않는다. */}
+        {hasStage && (
+          <div className="pt-20 md:pt-32 pb-4 md:pb-12">
+            <div className="px-6 md:px-12 lg:px-20 mb-2 md:mb-4">
+              <p
+                className="text-[0.7rem] tracking-[0.35em] uppercase"
                 style={{
-                  border: "1px solid #D4CFC1",
-                  backgroundColor: "rgba(255,255,255,0.5)",
+                  fontFamily: "var(--font-inter)",
+                  // 2026-08-03 색 위계 B안: 청록은 '누르는 것' 전담으로 회수.
+                  // 이 라벨은 누를 수 없는 설명이므로 먹빛 보조 텍스트(#5F5145, 6.59:1)로 내린다.
+                  color: "#5F5145",
+                  fontWeight: 600,
                 }}
               >
-                <p
-                  className="text-base mb-2"
-                  style={{
-                    fontFamily: "var(--font-noto-serif-kr)",
-                    color: "#3A2E27" /* 색 위계 B안 — 읽는 소제목은 먹빛 (11.32:1) */,
-                    wordBreak: "keep-all",
-                  }}
-                >
-                  아직 오르지 않은 막
-                </p>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{
-                    fontFamily: "var(--font-noto-sans-kr)",
-                    color: "#5A4A3E",
-                    wordBreak: "keep-all",
-                  }}
-                >
-                  첫 무대가 오르면, 이 자리는 그 무대의 것이 됩니다.
-                </p>
-              </div>
+                {streamItems.length >= 5 ? "Top 5 · 지금 가장 주목받는 무대" : "지금 오르는 무대"}
+              </p>
             </div>
-          )}
-        </div>
+            <HeroPosterStream items={streamItems} />
+          </div>
+        )}
 
         {/* (B) 텍스트 + CTA */}
-        <div className="px-6 md:px-12 lg:px-20 pt-2 md:pt-10 pb-20 md:pb-28">
+        <div
+          className={`px-6 md:px-12 lg:px-20 ${
+            hasStage ? "pt-2 md:pt-10" : "pt-24 md:pt-40"
+          } pb-20 md:pb-28`}
+        >
           <div className="max-w-[1800px] mx-auto">
             {/* 미션 eyebrow — 2026-07-24 신설. "한국 대학 무대예술의 진흥" 확정 문구.
                 (A)의 Top5 라벨(Teal)과 색을 구분해 다른 성격의 캡션임을 시각적으로 알림. */}
@@ -225,7 +205,8 @@ export default async function HomePage() {
                 textWrap: "balance",
               }}
             >
-              오늘도 우리들의 막이 오릅니다
+              {/* 0건인데 「오늘도 막이 오릅니다」는 사실과 어긋난다 — 0건 동안은 하는 일을 말한다. */}
+              {hasStage ? "오늘도 우리들의 막이 오릅니다" : "전국 대학 무대를 한곳에 모읍니다"}
             </h1>
             <p
               className="leading-relaxed mb-6 md:mb-9 max-w-2xl"
@@ -237,8 +218,82 @@ export default async function HomePage() {
                 fontWeight: 300,
               }}
             >
-              대학 무대예술의 오늘을 한데 모아두고 기록하고 알립니다
+              {hasStage ? (
+                "대학 무대예술의 오늘을 한데 모아두고 기록하고 알립니다"
+              ) : (
+                <>
+                  학과와 공연팀이 무대를 올리고, 가까운 관객이 찾아옵니다.
+                  {/* 게재료 문구는 voice-guide §3-2 잠금 22자안 그대로 — 임의 변형 금지 */}
+                  <br />
+                  무대를 올리는 쪽에 게재료를 받지 않습니다.
+                </>
+              )}
             </p>
+            {!hasStage && (
+              /* 0건 동안 첫 화면의 증거 — 이미 채워져 있는 학과 명부의 실측 수치.
+                 숫자는 universities.ts·constants.ts에서 읽는다(손으로 적은 낡은 수치가 메일로 나간 사고, 2026-08-18).
+                 누를 수 없는 정보라 청록을 쓰지 않는다(색 위계 B안). */
+              <dl
+                className="grid grid-cols-4 max-w-xl mb-7 md:mb-10"
+                style={{ borderTop: "1px solid #D4CFC1", borderBottom: "1px solid #D4CFC1" }}
+              >
+                {[
+                  { n: DEPARTMENT_COUNT, label: "학과" },
+                  { n: SCHOOL_COUNT, label: "대학" },
+                  { n: REGION_ORDER.length, label: "지역" },
+                  { n: GENRES.length, label: "장르" },
+                ].map((s, i) => (
+                  <div
+                    key={s.label}
+                    className="py-3 md:py-4 text-center"
+                    style={i > 0 ? { borderLeft: "1px solid #D4CFC1" } : undefined}
+                  >
+                    <dd
+                      className="text-[1.5rem] md:text-[2rem] leading-none mb-1.5"
+                      style={{ fontFamily: "var(--font-noto-serif-kr)", color: "#2B211C", fontWeight: 600 }}
+                    >
+                      {s.n}
+                    </dd>
+                    <dt
+                      className="text-xs"
+                      style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
+                    >
+                      {s.label}
+                    </dt>
+                  </div>
+                ))}
+              </dl>
+            )}
+            {!hasStage ? (
+              /* 0건 동안의 두 문. 「공연 둘러보기」는 빈 목록으로 데려가므로 내리고,
+                 채워져 있는 곳(등록 안내·학과 명부)으로 보낸다. 학과 사람의 실질적인 첫 화면이 등록 안내다. */
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/muol/performer"
+                  className="inline-block px-7 py-4 text-sm tracking-wider transition-transform duration-150 hover:opacity-85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    backgroundColor: "#5C2A42" /* Divine Damson */,
+                    color: "#F0EEE9",
+                    fontWeight: 600,
+                  }}
+                >
+                  우리 학과 공연 올리기 →
+                </Link>
+                <Link
+                  href="/muol/universities"
+                  className="inline-block px-7 py-4 text-sm tracking-wider transition-transform duration-150 hover:opacity-75 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
+                  style={{
+                    fontFamily: "var(--font-noto-sans-kr)",
+                    border: "1px solid #4A3B33",
+                    color: "#4A3B33",
+                    fontWeight: 500,
+                  }}
+                >
+                  학과 명부 보기
+                </Link>
+              </div>
+            ) : (
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/muol/shows"
@@ -268,6 +323,7 @@ export default async function HomePage() {
                 무대 올리기
               </Link>
             </div>
+            )}
           </div>
         </div>
       </section>
