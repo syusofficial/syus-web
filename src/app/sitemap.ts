@@ -74,8 +74,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/syus/flex`, changeFrequency: "weekly", priority: 0.7 },        // 창작 독백 아카이브
     { url: `${BASE_URL}/syus/corridor`, changeFrequency: "weekly", priority: 0.7 },    // 책 서재
     // 공통
-    { url: `${BASE_URL}/auth/login`, changeFrequency: "yearly", priority: 0.4 },
-    { url: `${BASE_URL}/auth/signup`, changeFrequency: "yearly", priority: 0.4 },
+    // 2026-10-07 — 로그인·가입 화면(/auth/*)은 뺐다. 검색 결과에 걸려도 읽을 내용이 없는 문이고,
+    // 사이트맵에 올리면 검색엔진이 실제 콘텐츠보다 먼저 이 화면들을 긁어 간다.
+    // 대신 src/app/auth/layout.tsx 에서 noindex(follow는 유지)를 건다.
     { url: `${BASE_URL}/terms`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
     ...showEntries,
