@@ -24,6 +24,10 @@ import { formatShowPeriod } from "@/lib/showDate";
  * 포스터 3장은 운영자가 만든 예시자료이고 public/muol/samples/ 에 정적 파일로 둔다
  * (7.0MB PNG → 115KB webp). DB의 예시 공연 행(rejected 5건)을 지워도 이 화면은 깨지지 않는다.
  * 카드에 적는 날짜·장소는 포스터 안에 인쇄된 값과 똑같이 맞춘다 — 어긋나면 그게 더 이상하다.
+ *
+ * AI 생성 표시(2026-10-07, AI 기본법 §31): 뮤지컬 포스터의 배경은 AI 생성 이미지다(제작대행 페이지
+ * /muol/production-service 견본과 같은 그림). 그 페이지처럼 카드 아래에 「AI 생성 이미지」 한 줄을 붙인다.
+ * 연극·전통연희 두 장은 AI 생성이 아니므로 붙이지 않는다 — 아닌 것에 붙이면 그것도 거짓 표시다(법무팀 09-22).
  */
 
 const SAMPLES = [
@@ -42,6 +46,7 @@ const SAMPLES = [
     venue: "대학로 큰무대",
     start: "2026-10-02",
     end: "2026-10-05",
+    ai: true, // 배경 = AI 생성 이미지 → 카드 아래 표시
   },
   {
     src: "/muol/samples/sample-traditional.webp",
@@ -117,6 +122,15 @@ export default function ShowSamplePreview() {
                 {/* 목록과 같은 포맷 함수를 그대로 쓴다 — 표기가 다르면 미리보기가 아니다 */}
                 {formatShowPeriod(s.start, s.end, { weekday: false })}
               </p>
+              {"ai" in s && s.ai && (
+                // 제작대행 페이지 견본 카드의 표기와 같은 글자·같은 색(--c-cta Damson)·같은 굵기
+                <p
+                  className="text-xs leading-snug"
+                  style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5C2A42", fontWeight: 600, wordBreak: "keep-all" }}
+                >
+                  AI 생성 이미지
+                </p>
+              )}
             </div>
           </li>
         ))}
