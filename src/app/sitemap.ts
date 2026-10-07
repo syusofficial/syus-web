@@ -48,6 +48,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
+  // 시우스 책 서재 — 2026-10-07 추가(책 상세를 서버 렌더링으로 바꾼 날).
+  // syus_books에는 비공개·숨김 칸이 없고 RLS "syus_b read"가 모두에게 열려 있다 — 서가 목록(/syus/corridor)과 같은 범위.
+  const { data: books } = await supabase
+    .from("syus_books")
+    .select("id, updated_at, created_at");
+
+  const bookEntries: MetadataRoute.Sitemap = (books ?? []).map((b) => ({
+    url: `${BASE_URL}/syus/books/${b.id}`,
+    lastModified: new Date(b.updated_at ?? b.created_at),
+    changeFrequency: "monthly",
+    priority: 0.5,
+  }));
+
   return [
     { url: BASE_URL, changeFrequency: "daily", priority: 1.0 },
     // 사유유사 (회사 소개·CI) — 게이트웨이 지붕 배지에서만 연결되므로 내부 링크가 하나뿐이다.
@@ -82,5 +95,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...showEntries,
     ...essayEntries,
     ...monologueEntries,
+    ...bookEntries,
   ];
 }

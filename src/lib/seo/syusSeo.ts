@@ -185,3 +185,57 @@ export const MONOLOGUE_SEO: Record<string, SeoEntry> = {
     description: "25~28세 남성 인물, 509자. 1분판에, 삼 년 동안 하루도 밀리지 않았다는 항변과 오늘 여기서 날짜를 종이에 적어 달라는 요구가 더해졌습니다. 저자세가 분노로 꺾입니다. 입시 실기 연습용, 생성형 AI로 지은 창작 독백입니다.",
   },
 };
+
+/**
+ * 책 서재 상세(/syus/books/[id])의 검색용 제목·설명 — 2026-10-07 기록팀(규칙) · 제작팀(연결).
+ *
+ * 견해글·독백처럼 손으로 쓴 표가 아니라 '규칙'으로 만든다. 서가는 회원 누구나 책을 올리는 곳이라
+ * 손으로 쓴 표는 새 책이 올라오는 순간부터 빠진다. 규칙과 24권 미리보기 표:
+ *   Content_Report/output/archive/04_검색제목·색인/2026-10-07_책서재·독백모음_검색제목표.md
+ *
+ * - 제목: 「{DB 제목} — {저자 이름} 책 소개」 (뒤의 「 · 시우스 SYUS」는 레이아웃 템플릿이 붙인다)
+ * - 설명: intro(AI 초안 소개)가 있으면 문장 단위로 115자까지 + AI 표시 문장(AI 기본법 §31②).
+ *         intro가 없고 note(등록자 본인 후기)만 있으면 note 앞부분 — 사람이 쓴 글이라 AI 표시를 붙이지 않는다.
+ */
+const BOOK_DESC_MAX = 115;
+const BOOK_DESC_MIN = 70;
+const BOOK_AI_NOTE = " 시우스 서가의 AI 초안 소개입니다.";
+
+/** DB author에서 사람 이름만 — 첫 " (" 앞까지, 끝의 「엮음·지음·편」은 뗀다. */
+export function bookAuthorName(author: string | null | undefined): string | null {
+  if (!author) return null;
+  const name = author.split(" (")[0].trim().replace(/\s*(엮음|지음|편)$/, "");
+  return name || null;
+}
+
+export function bookSeo(b: { title: string; author: string | null; intro?: string | null; note: string | null }): SeoEntry {
+  const name = bookAuthorName(b.author);
+  const title = name ? `${b.title} — ${name} 책 소개` : `${b.title} — 책 소개`;
+  return { title, description: bookDescription(b, name) };
+}
+
+function bookDescription(b: { title: string; intro?: string | null; note: string | null }, name: string | null): string {
+  const intro = b.intro?.replace(/\s+/g, " ").trim();
+  if (intro) {
+    // 문장 단위로 자른다 — 마침표 뒤 공백에서 나눈다.
+    // (기록팀 원안은 split(/(?<=\.)\s+/)인데, 이 프로젝트의 TS 대상(ES2017)은 lookbehind를 허용하지 않아
+    //  같은 결과를 내는 방식으로 바꿨다: 마침표 뒤 공백을 표지로 바꾼 뒤 그 표지로 나눈다.)
+    const sentences = intro.replace(/\.\s+/g, ".\u0000").split("\u0000");
+    let out = "";
+    let rest: string | null = null;
+    for (const s of sentences) {
+      const cand = out ? `${out} ${s}` : s;
+      if (cand.length <= BOOK_DESC_MAX) out = cand;
+      else { rest = cand; break; }
+    }
+    if (out.length < BOOK_DESC_MIN && rest) {
+      const cut = rest.slice(0, BOOK_DESC_MAX - 1);
+      const sp = cut.lastIndexOf(" ");
+      out = (sp > out.length ? cut.slice(0, sp) : cut).replace(/[,·]+$/, "") + "…";
+    }
+    return out + BOOK_AI_NOTE; // AI가 쓴 소개에서 나온 문장 — 표시를 뗄 수 없다
+  }
+  const note = b.note?.replace(/\s+/g, " ").trim();
+  if (note) return note.length > BOOK_DESC_MAX ? `${note.slice(0, BOOK_DESC_MAX - 1)}…` : note; // 등록자 본인 글 — AI 표시 없음
+  return `${name ? `${name}의 ` : ""}《${b.title}》. 시우스 책 서재에 놓인 한 권입니다.`;
+}
