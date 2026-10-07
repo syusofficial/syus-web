@@ -2,14 +2,39 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import SyusWriteCta from "@/components/SyusWriteCta";
+import { OG_SYUS } from "@/lib/ogCards";
 
 /** 창작 독백 아카이브 허브 (/syus/flex) — 변형 무대. syus_monologues(공개분). */
 const COLOR = "var(--color-syus-stage-flex)";
 
+// 2026-10-07 검색 제목·설명 교체 — 기록팀 표 1안(Content_Report/output/archive/04_검색제목·색인/2026-10-07_책서재·독백모음_검색제목표.md).
+// 「변형 무대」는 시우스 안의 이름이라 아무도 검색하지 않는다. 사람들이 치는 말(입시 독백·1분 독백·남자/여자 독백)을 앞에 둔다.
+// 설명의 사실은 시드(supabase/syus_monologue_seed_2026-09-09.sql)로 확인: 남·여 배역, 1분판·2분판, 현대극·경상도 말씨 시대극.
+// 화면의 h1 「창작 독백 아카이브」는 그대로 둔다. 「생성형 AI가 지은」 = AI 기본법 §31 표시.
+const FLEX_TITLE = "입시 독백 모음 — 남자·여자 1분 독백, 2분 독백";
+const FLEX_DESC =
+  "연기 입시 실기와 오디션 연습에 쓸 수 있는 창작 독백을 모았습니다. 남자·여자 배역, 1분판과 2분판, 현대극과 사투리 시대극. 모두 생성형 AI가 지은 창작 원본이며, 원하는 결을 적으면 새로 지어 드립니다(하루 3건).";
+
 export const metadata: Metadata = {
-  title: "창작 독백 아카이브 · 변형 무대",
-  description: "요청할 때마다 새 독백이 지어지는 서고. AI가 요청 즉시 창작 원본을 지어 곧바로 건넵니다. 시우스는 연기 커뮤니티입니다.",
+  title: FLEX_TITLE,
+  description: FLEX_DESC,
   alternates: { canonical: "https://syus.co.kr/syus/flex" },
+  // Next.js는 openGraph·twitter를 통째로 교체하므로 layout의 siteName·locale·images를 다시 적는다.
+  openGraph: {
+    title: `${FLEX_TITLE} · 시우스 SYUS`,
+    description: FLEX_DESC,
+    url: "https://syus.co.kr/syus/flex",
+    siteName: "사유유사 SYUS",
+    locale: "ko_KR",
+    type: "website",
+    images: [OG_SYUS],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${FLEX_TITLE} · 시우스 SYUS`,
+    description: FLEX_DESC,
+    images: [OG_SYUS.url],
+  },
 };
 
 type Row = { id: string; char_type: string | null; emotion: string | null; tone: string | null; generated_text: string | null; created_at: string };
