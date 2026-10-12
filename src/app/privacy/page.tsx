@@ -5,6 +5,9 @@ import { COMPANY } from "@/lib/company";
 export const metadata: Metadata = {
   title: "개인정보처리방침",
   description: "사유유사의 개인정보처리방침",
+  // 2026-10-12 — 자기 canonical이 없으면 루트 layout의 홈 주소를 물려받아
+  // 「이 페이지는 홈의 중복」이라고 검색엔진에 말하게 된다.
+  alternates: { canonical: "https://syus.co.kr/privacy" },
 };
 
 // 변경 고지 배너의 날짜 게이트(shouldShowBanner)가 매 요청마다 재평가되도록 1시간 단위 SSR 재실행

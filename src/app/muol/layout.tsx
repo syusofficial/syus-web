@@ -15,8 +15,13 @@ const SITE_DESCRIPTION =
   "한국 대학 무대예술의 진흥을 위해 — 무대올림은 대학 무대예술 공연을 올리고 지역 관객이 좌석을 예약하는 플랫폼입니다. 공연팀 게재료 없음. 연극·뮤지컬·무용·국악·음악·전통연희.";
 
 export const metadata: Metadata = {
+  /**
+   * 2026-10-12 사이트맵 점검 — `default`로 두면 루트 template("%s · 사유유사 SYUS")이 한 번 더 붙어
+   * 「무대올림 · 운영: 사유유사 SYUS · 사유유사 SYUS」가 됐다. `absolute`는 상위 꼬리표를 받지 않는다.
+   * 하위 페이지는 계속 "%s · 무대올림"을 받는다.
+   */
   title: {
-    default: `${SITE_NAME} · ${SITE_TAGLINE}`,
+    absolute: `${SITE_NAME} · ${SITE_TAGLINE}`,
     template: "%s · 무대올림",
   },
   description: SITE_DESCRIPTION,

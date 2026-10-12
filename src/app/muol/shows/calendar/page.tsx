@@ -1,8 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ShowsCalendar from "@/components/ShowsCalendar";
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import type { Show } from "@/types";
+
+// 2026-10-12 — 자기 제목이 없어 무대올림 메인과 같은 제목으로 검색에 나가던 것 정리
+// (「· 무대올림」은 muol/layout.tsx template이 붙인다)
+export const metadata: Metadata = {
+  title: "공연 캘린더",
+  description: "대학 무대예술 공연을 날짜별로 봅니다. 연극·뮤지컬·무용·국악·음악·전통연희 — 무대올림 공연 캘린더.",
+};
 
 export const revalidate = 60;
 

@@ -60,7 +60,8 @@ const PAGE_DESC =
   "대학 무대예술 공연의 카드뉴스·캡션을 사유유사가 대신 만듭니다. 한 무대·한 시즌·한 해의 기록 세 가지 구성과 7개 장르 견본, 진행 순서를 안내합니다.";
 
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  // absolute — 상위 「· 무대올림」 꼬리표가 붙어 「… · 사유유사 SYUS · 무대올림」이 되던 것 정리(2026-10-12)
+  title: { absolute: PAGE_TITLE },
   description: PAGE_DESC,
   alternates: { canonical: "/muol/production-service" },
   openGraph: {

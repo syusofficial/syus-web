@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import ShowCard from "@/components/ShowCard";
@@ -8,6 +9,13 @@ import { sanitizeSearchTerm, todayKey, showEndKey, isEnded } from "@/lib/showFil
 import { buildBreadcrumbList } from "@/lib/structuredData";
 import { buildRatingMap } from "@/lib/ratings";
 import type { Show } from "@/types";
+
+// 2026-10-12 — 자기 제목이 없어 무대올림 메인과 같은 제목으로 검색에 나가던 것 정리
+// (「· 무대올림」은 muol/layout.tsx template이 붙인다)
+export const metadata: Metadata = {
+  title: "지난 공연",
+  description: "지나갔지만 사라지지 않은 대학 무대들. 무대올림에 올라온 지난 공연을 장르·지역·학교별로 모아 봅니다.",
+};
 
 export const revalidate = 60;
 

@@ -5,7 +5,8 @@ import { COMPANY, COMPANY_ONELINE } from "@/lib/company";
 import { OG_MUOL } from "@/lib/ogCards";
 
 export const metadata: Metadata = {
-  title: "광고주를 위한 안내 · 무대올림",
+  // 「· 무대올림」은 muol/layout.tsx template이 붙인다(직접 적으면 두 번 나온다 — 2026-10-12)
+  title: "광고주를 위한 안내",
   description:
     "한국 대학 무대예술의 진흥을 지향하는 무대올림에 광고를 게재해보세요. 공연·문화 인접 브랜드를 위한 광고 안내 페이지입니다. 운영: 사유유사 SYUS.",
   openGraph: {

@@ -23,7 +23,8 @@ import { DEPARTMENT_COUNT, SCHOOL_COUNT } from "@/lib/universities";
  */
 
 export const metadata: Metadata = {
-  title: "사유유사 SYUS",
+  // 루트 template이 「· 사유유사 SYUS」를 붙인다 — 「사유유사 SYUS · 사유유사 SYUS」 중복 정리(2026-10-12)
+  title: "회사 소개",
   description:
     "사유유사(思惟流沙)는 한국 대학 무대예술을 기록하고 연결하고 알리는 작은 통로입니다. 이름의 뜻, 시작한 이유, 방향과 가치, 그리고 브랜드 정체성(CI)을 담았습니다.",
   alternates: { canonical: "https://syus.co.kr/company" },
