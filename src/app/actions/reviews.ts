@@ -127,7 +127,7 @@ export async function reportReview(
   }
 
   revalidatePath(`/muol/shows/${showId}`);
-  return { ok: true, message: "신고가 접수되었습니다. 운영자가 24시간 내 확인합니다." };
+  return { ok: true, message: "신고가 접수되었습니다. 운영자가 영업일 기준 1~3일 안에 확인합니다." };
 }
 
 // ─── 관리자 전용 ─────────────────────────────────────────────────────

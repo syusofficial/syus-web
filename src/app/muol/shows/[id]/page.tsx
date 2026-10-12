@@ -690,7 +690,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ id:
                   className="text-[0.7rem] mb-4 leading-relaxed"
                   style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E", wordBreak: "keep-all" }}
                 >
-                  비방·욕설·차별 표현은 자동 차단되며, 누락된 부적절 후기는 신고하시면 운영자가 24시간 내 확인합니다.
+                  비방·욕설·차별 표현은 자동 차단되며, 누락된 부적절 후기는 신고하시면 운영자가 영업일 기준 1~3일 안에 확인합니다.
                   본인이 작성한 후기는 언제든 삭제할 수 있습니다.
                 </p>
 

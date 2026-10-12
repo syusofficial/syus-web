@@ -157,7 +157,7 @@ function ReviewCard({ review, showId }: { review: ReviewView; showId: string }) 
             className="text-xs mb-2"
             style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}
           >
-            신고 사유를 선택해주세요. 운영자가 24시간 내 확인합니다.
+            신고 사유를 선택해주세요. 운영자가 영업일 기준 1~3일 안에 확인합니다.
           </p>
           <div className="flex flex-wrap gap-1.5 mb-3">
             {REPORT_REASONS.map((r) => (
