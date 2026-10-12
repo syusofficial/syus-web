@@ -120,7 +120,7 @@ export function PerformerApprovedEmail({ name }: Props) {
             <Link href="https://syus.co.kr/muol/performer" style={LINK_STYLE}>syus.co.kr/muol/performer</Link>
           </Text>
           <Text style={PARAGRAPH}>
-            공연 등록은 폼 한 번으로 끝납니다. 등록해 주신 무대는 운영자가 24시간 안에
+            공연 등록은 폼 한 번으로 끝납니다. 등록해 주신 무대는 운영자가 영업일 기준 1~3일 안에
             한 번 더 살펴본 뒤 사이트와 카드뉴스 후보로 함께 흐릅니다.
             사진·줄거리·일정이 미리 정리되어 있으면 한 번에 마칠 수 있습니다.
           </Text>

@@ -167,7 +167,7 @@ export function WelcomeEmail({ name }: Props) {
             </Text>
             <Text style={LIST_DESC}>
               직접 무대를 올리시는 분이라면, 공연자 권한을 신청해 두실 수 있습니다.
-              검토는 24시간 안에 마치고 따로 안내드립니다.
+              검토는 영업일 기준 1~3일 안에 마치고 따로 안내드립니다.
             </Text>
           </Section>
 
