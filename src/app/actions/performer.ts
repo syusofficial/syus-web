@@ -18,6 +18,7 @@
 
 import { revalidatePath } from "next/cache";
 import { assertAdmin } from "@/lib/adminGuard";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { sendMail } from "@/lib/email/send";
 import { PerformerApprovedEmail } from "@/lib/email/templates/performer-approved";
 
@@ -25,7 +26,12 @@ type ActionResult = { ok: boolean; message: string };
 
 /* 관리자 검증(assertAdmin)은 2026-09-10에 `@/lib/adminGuard`로 옮겼다.
  * 공연 승인·반려·대리 등록(app/actions/shows.ts)에서도 같은 검사가 필요해졌는데,
- * 권한 검사를 복사해 두면 한쪽만 고쳐지는 순간 조용히 뚫리기 때문이다. */
+ * 권한 검사를 복사해 두면 한쪽만 고쳐지는 순간 조용히 뚫리기 때문이다.
+ *
+ * 2026-10-17: 검증은 로그인 세션으로, 저장은 service role로 나눈다.
+ * profiles의 역할 변경 방지 트리거가 로그인 세션(관리자 포함)의 role 변경을 막아
+ * 승인이 「role 변경은 허용되지 않습니다」로 실패했다. 역할 선택 상자
+ * (/api/admin/update-role)는 2026-06-26에 이미 같은 방식으로 옮겨져 있었다. */
 
 /**
  * 공연자 신청 승인 — role을 performer로, status를 approved로,
@@ -34,8 +40,9 @@ type ActionResult = { ok: boolean; message: string };
 export async function approvePerformerApplication(profileId: string): Promise<ActionResult> {
   if (!profileId) return { ok: false, message: "잘못된 요청입니다." };
 
-  const { supabase, error: authError } = await assertAdmin();
+  const { error: authError } = await assertAdmin();
   if (authError) return { ok: false, message: authError };
+  const supabase = createAdminClient();
 
   // 1) 대상 프로필 조회 — 메일·이름을 미리 확보
   const { data: target, error: fetchError } = await supabase
@@ -91,8 +98,9 @@ export async function approvePerformerApplication(profileId: string): Promise<Ac
 export async function rejectPerformerApplication(profileId: string): Promise<ActionResult> {
   if (!profileId) return { ok: false, message: "잘못된 요청입니다." };
 
-  const { supabase, error: authError } = await assertAdmin();
+  const { error: authError } = await assertAdmin();
   if (authError) return { ok: false, message: authError };
+  const supabase = createAdminClient();
 
   const { error } = await supabase
     .from("profiles")
