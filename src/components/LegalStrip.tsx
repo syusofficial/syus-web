@@ -61,13 +61,15 @@ export default function LegalStrip() {
           font-family: var(--font-noto-sans-kr);
           font-size: 0.72rem;
           font-weight: 400;
-          color: #8A7D6E;
+          color: var(--c-text-faint);
           margin-left: 10px;
         }
 
         .gwl-rows { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-bottom: 20px; }
         .gwl-row { display: inline-flex; gap: 7px; }
-        .gwl-label { font-family: var(--font-noto-sans-kr); font-size: 0.74rem; color: #8A7D6E; }
+        /* 2026-10-28: 라벨·부제·저작권 줄을 --c-text-faint(#6B5C50, 5.54:1)로.
+           구 #8A7D6E는 3.46:1, #A79E90은 2.28:1로 본문 기준 4.5:1 미달이었다. */
+        .gwl-label { font-family: var(--font-noto-sans-kr); font-size: 0.74rem; color: var(--c-text-faint); }
         .gwl-value { font-family: var(--font-noto-sans-kr); font-size: 0.74rem; color: #5A4A3E; word-break: keep-all; }
 
         .gwl-bottom {
@@ -86,7 +88,7 @@ export default function LegalStrip() {
         .gwl-link:hover { color: #0B5563; }
         .gwl-link:focus-visible { outline: 2px solid #0B5563; outline-offset: 3px; border-radius: 2px; }
         .gwl-link:active { color: #5C2A42; }
-        .gwl-copy { font-family: var(--font-noto-sans-kr); font-size: 0.72rem; color: #A79E90; }
+        .gwl-copy { font-family: var(--font-noto-sans-kr); font-size: 0.72rem; color: var(--c-text-faint); }
 
         @media (max-width: 640px) {
           .gwl-rows { flex-direction: column; gap: 5px; }
