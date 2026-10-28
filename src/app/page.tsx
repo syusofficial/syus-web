@@ -9,7 +9,7 @@ import LegalStrip from "@/components/LegalStrip";
  *   - 시우스   = 밝은 화이트톤 + SYUS 붓터치색 유지, 뒷배경에 Afterimage 사진 워터마크
  *   - 지붕 배지 밑 흰색 슬로건이 안 보이던 문제 → 슬로건 제거(배지에 로고+이름만)
  *   - "관람료 없이" 등 관객 대상 단언 문구 제외(학과가 관람료를 받을 여지)
- * 워터마크: /wm-muol-v3.png(한글 로고타입 + 확정 배색), /wm-syus-v3.png(알파 누끼 — 배경 무관).
+ * 워터마크: /wm-muol-v4.png(한글 로고타입 + 확정 배색, 2026-10-28 획 10→17), /wm-syus-v3.png(알파 누끼 — 배경 무관).
  *
  * 안전: 서버 컴포넌트 + CSS group-hover만(클라이언트 JS 0), 레이어 pointer-events:none. reduced-motion 존중.
  * metadata는 루트 layout.tsx(사유유사)가 제공.
@@ -192,8 +192,12 @@ export default function GatewayPage() {
              따뜻한 크림과 싸운다는 지적에 따라 사진 배경으로 교체. 빈 극장의 무대 뒤
              윙 — FLUX 생성 후 브랜드 4색 듀오톤(#061317→#2E767C)으로 재도색하고,
              글자가 앉는 하단 절반에 행별 휘도 상한을 걸어 흰 글자 대비를 확보했다.
-             배경색은 이미지 로딩 전·실패 시의 바탕. */
-          background: #0B1518 url('/muol-bg-backstage.jpg') no-repeat center center;
+             배경색은 이미지 로딩 전·실패 시의 바탕.
+             2026-10-28 사장님 선택: 빈 무대 → 「밤 공연」(무대 위 두 배우 + 객석). 닫힌 빈 무대는
+             「공연이 열리는 곳」을 말하지 못했다. 배우가 글자 뒤에 겹치지 않도록 원본을 잘라
+             배우를 문 왼쪽 가장자리(데스크톱)에 두었다 — 위쪽은 로고, 가운데 아래는 글자 자리라
+             사진의 주인공이 설 곳은 가장자리뿐이다. 로고 「림」 옆에 떠 있던 빛 한 점은 지웠다. */
+          background: #0B1518 url('/muol-bg-night.jpg') no-repeat center center;
           background-size: cover;
           min-height: 50svh;
         }
@@ -203,9 +207,14 @@ export default function GatewayPage() {
              로고 PNG는 위 40%가 빈 천장(잉크 2.8%)이고 네 글자는 아래 60%에 몰려
              있어, 이미지 위치와 글자가 보이는 위치가 다르다는 점에 주의.
              60svh는 화면이 낮을 때만 작동하는 안전장치(1080p·1440p에선 760px 유지). */
-          background: url('/wm-muol-v3.png') no-repeat center 28%;
+          /* 2026-10-28 사장님: 로고 획을 키워 첫 시야에 먼저 들어오게.
+             v4 = v3과 같은 SVG 원본에 같은 색 외곽선을 덧입혀 획만 10 → 17px(1400폭 기준) 굵힌 판.
+             20부터는 「대」의 두 기둥·「올」의 ㄹ 안쪽 틈이 좁아져 17에서 멈췄다.
+             원본: Content_Report/output/design/갈림길_무대올림_최종후보_2026-10-28/시공재료/wm-muol-t17.svg */
+          background: url('/wm-muol-v4.png') no-repeat center 28%;
           background-size: min(88%, 760px, 60svh) auto;
-          opacity: 0.55; /* 2026-08-23 사장님: "너무 옅다" → 0.30에서 상향.
+          opacity: 0.8; /* 2026-10-28: 0.55 → 0.8 (획 상향과 함께 사장님 지시). 아래는 0.55 때의 기록.
+             2026-08-23 사장님: "너무 옅다" → 0.30에서 상향.
              워터마크는 문 위쪽(28%)에, 글자는 아래에 있어 서로 겹치지 않는다.
              실측 결과 0.30/0.42/0.55 어느 값에서도 글자 자리 대비가 동일했다
              (무대올림 라벨 10.57 / 헤드라인 17.70). 즉 여기서는 선명도와 가독성이
@@ -222,7 +231,7 @@ export default function GatewayPage() {
         .gw-door--muol:hover .gw-overlay--muol,
         .gw-door--muol:focus-visible .gw-overlay--muol { opacity: 1; }
         .gw-door--muol:hover .gw-muol-watermark,
-        .gw-door--muol:focus-visible .gw-muol-watermark { opacity: 0.66; }
+        .gw-door--muol:focus-visible .gw-muol-watermark { opacity: 0.92; }
 
         /* ── 시우스 — 화이트톤 + SYUS색, 워터마크 ── */
         .gw-door--syus {
@@ -232,8 +241,11 @@ export default function GatewayPage() {
              걸면 지워지므로, 그레이딩 단계에서 등이 선 좌측 띠를 마스크로 제외했다
              (output/brand/갈림길_배경/ghostlight/grade_ghostlight.py).
              background-position은 center 고정 — 20%로 당기면 등이 글자 쪽으로 들어와
-             라벨 대비가 4.47로 기준(4.5) 아래로 떨어진다. */
-          background: #F4F2ED url('/syus-bg-ghostlight.jpg') no-repeat center center;
+             라벨 대비가 4.47로 기준(4.5) 아래로 떨어진다.
+             2026-10-28 사장님 확정: 고스트라이트 → 「창가 독백 연습」(밝은 연습실 창가에서 대본을 든 사람).
+             흰 방의 등은 「읽고 — 머물다」를 말하지 못했다. 인물이 사진 왼쪽에 있어 오른쪽 맞춤(100%)으로
+             두면 문 경계 쪽 가장자리에 서고 글자와 떨어진다(가운데 맞춤이면 손이 「읽고」에 닿았다). */
+          background: #F4F2ED url('/syus-bg-window.jpg') no-repeat 100% center;
           background-size: cover;
           min-height: 50svh;
           border-top: 1px solid #E0DBD0;
@@ -268,14 +280,20 @@ export default function GatewayPage() {
           .gw-door-inner { margin-left: auto; margin-right: auto; }
         }
 
-        /* ── 라벨/헤드라인/설명/CTA ── */
+        /* ── 라벨/헤드라인/설명/CTA ──
+           2026-10-28 글자 미세 조정(사장님 지시 — 서비스 로고 외 안내 글자의 가독성):
+           라벨 자간 0.34→0.24em(한글이 「무 대 올 림」 낱자로 흩어졌다)·크기 0.72→0.78rem,
+           설명 300→400(가는 획은 사진 위에서 흐려진다)·행간 1.85→1.75, 들어가기 0.9→0.95rem.
+           사진 위 글자는 뒤에만 은은한 그림자/빛으로 받친다 — 배경 전체를 어둡게 하지 않는다. */
+        .gw-door--muol .gw-door-inner { text-shadow: 0 1px 14px rgba(0,0,0,0.5), 0 0 2px rgba(0,0,0,0.35); }
+        .gw-door--syus .gw-door-inner { text-shadow: 0 0 16px rgba(244,242,237,0.9), 0 0 3px rgba(244,242,237,0.7); }
         .gw-label {
           font-family: var(--font-inter);
-          font-size: 0.72rem;
-          letter-spacing: 0.34em;
+          font-size: 0.78rem;
+          letter-spacing: 0.24em;
           text-transform: uppercase;
           font-weight: 600;
-          margin-bottom: 18px;
+          margin-bottom: 16px;
         }
         .gw-label--muol { color: #9AD3DE; }   /* 밝은 teal (진한 배경 위) */
         .gw-label--syus { color: #0B5563; }   /* SYUS 블루 (화이트 위) */
@@ -287,7 +305,7 @@ export default function GatewayPage() {
           font-weight: 700;
           letter-spacing: -0.01em;
           word-break: keep-all;
-          margin-bottom: 22px;
+          margin-bottom: 18px;
         }
         .gw-headline--muol { color: #F0EEE9; }
         .gw-headline--syus { color: #241C18; }
@@ -295,13 +313,13 @@ export default function GatewayPage() {
 
         .gw-desc {
           font-family: var(--font-noto-sans-kr);
-          font-size: clamp(0.95rem, 1.4vw, 1.1rem);
-          line-height: 1.85;
-          font-weight: 300;
+          font-size: clamp(1rem, 1.45vw, 1.15rem);
+          line-height: 1.75;
+          font-weight: 400;
           word-break: keep-all;
-          margin-bottom: 34px;
+          margin-bottom: 30px;
         }
-        .gw-desc--muol { color: rgba(240,238,233,0.82); }
+        .gw-desc--muol { color: rgba(240,238,233,0.92); }
         .gw-desc--syus { color: #4A3B33; }
 
         .gw-cta {
@@ -309,10 +327,10 @@ export default function GatewayPage() {
           align-items: center;
           gap: 10px;
           font-family: var(--font-noto-sans-kr);
-          font-size: 0.9rem;
+          font-size: 0.95rem;
           font-weight: 600;
           letter-spacing: 0.06em;
-          padding-bottom: 4px;
+          padding-bottom: 6px;
           border-bottom: 1px solid currentColor;
         }
         .gw-cta--muol { color: #F0EEE9; }
@@ -350,7 +368,7 @@ export default function GatewayPage() {
           /* 문이 각각 50svh(합 100svh)라 세로 여유가 0이다. 데스크톱의 23vh를 그대로
              쓰면 문이 자라 시우스 "들어가기"가 첫 화면 밖으로 나간다. 텍스트는
              7vh로 되돌리고, 대신 워터마크를 줄여 문 위쪽에 올려 겹침을 피한다.
-             투명도는 데스크톱과 같은 값(0.55 / 0.46) — 터치엔 hover가 없어 기본값이
+             투명도는 데스크톱과 같은 값(0.8 / 0.46) — 터치엔 hover가 없어 기본값이
              곧 최종 인상이다. */
           .gw-door-inner { margin-top: 16vh; }
           .gw-door--muol .gw-door-inner { margin-top: 19vh; }
@@ -361,51 +379,23 @@ export default function GatewayPage() {
                무대올림 글자도 아래(.gw-door--muol margin 18vh)로 조금 내려 로고와 라벨 사이를 띄운다. */
             background-position: center 29%;
             background-size: min(32%, 20svh) auto;
-            opacity: 0.55;
+            opacity: 0.8;
           }
           .gw-syus-watermark {
             background-position: center 14%;
             background-size: min(62%, 30svh) auto;
             opacity: 0.46;
           }
-          /* 모바일 기본값 — 등을 화면 밖으로 보낸다. 폭이 좁은 폰(360px 미만)에서는
-             헤드라인이 화면을 거의 다 쓰기 때문에 등이 설 자리가 물리적으로 없다.
-             빛의 그라데이션과 바닥선은 남아 빈 화면이 되지 않는다. */
+          /* 2026-10-28: 폰·태블릿은 글자가 왼쪽 정렬이라, 두 문 모두 좌우를 뒤집은 판을 써서
+             사진의 인물(무대올림 두 배우 / 시우스 창가의 사람)을 오른쪽 빈 자리로 보낸다.
+             cover + center라 어떤 화면 비율에서도 문을 꽉 채운다(전 고스트라이트의
+             「auto 160%」가 눕힌 태블릿에서 빈 띠를 남기던 문제도 함께 사라진다). */
+          .gw-door--muol { background-image: url('/muol-bg-night-mobile.jpg'); }
           .gw-door--syus {
-            background-size: auto 160%;
-            background-position: 72% center;
+            background-image: url('/syus-bg-window-mobile.jpg');
+            background-size: cover;
+            background-position: center;
           }
-        }
-
-        /* 폭 360px 이상의 폰에서는 고스트라이트를 되살린다.
-           등은 사진 왼쪽 9.7~17.4%에 있는데 배경이 화면보다 크므로 offset은 음수뿐이다
-           — 어느 쪽으로 밀어도 등은 글자와 같은 왼쪽에 남는다. 그래서 폰 전용으로 좌우를
-           뒤집은 판을 따로 둔다. 뒤집으면 등이 82.6~90.3%로 가고, 93%에서 헤드라인
-           오른쪽 빈 자리에 정확히 선다(85%는 등 기둥이 4색 스트로크를 관통, 100%는
-           헤드라인 쪽으로 붙는다).
-
-           경계를 360px로 잡은 근거 — 폭을 훑어 글자 사각형의 최악 픽셀로 잰 대비.
-           헤드라인은 34px(AA Large 3.0), 나머지는 본문(AA 4.5) 기준.
-             320px  라벨 4.56 / 헤드라인 1.51 / 설명 3.51  ← 등이 헤드라인을 관통
-             344px  라벨 4.56 / 헤드라인 4.95 / 설명 4.02  ← 설명 미달
-             360px  라벨 4.62 / 헤드라인 5.67 / 설명 4.94  ← 전 항목 통과
-             390px  라벨 4.87 / 헤드라인 7.49 / 설명 5.97
-             428px  라벨 4.96 / 헤드라인 9.42 / 설명 6.76 */
-        @media (max-width: 1023px) and (min-width: 360px) {
-          .gw-door--syus {
-            background-image: url('/syus-bg-ghostlight-mobile.jpg');
-            background-position: 93% center;
-          }
-        }
-
-        /* 2026-10-28: 가로로 넓은 쌓임 화면(눕힌 태블릿·낮은 노트북 창)의 빈 띠.
-           위 「auto 160%」는 정사각 사진의 폭을 문 높이의 1.6배로 정한다. 문 높이는 50svh
-           이상이므로 화면 가로가 세로의 0.8배를 넘으면(4/5) 사진 폭이 문 폭보다 좁아진다
-           — 1023x768 실측에서 왼쪽 330px가 빈 바탕(#F4F2ED)으로 드러났다.
-           이 구간만 cover로 채운다. 세로로 긴 폰·태블릿(375x812, 768x1024, 834x1194)은
-           4/5 미만이라 지금 배치 그대로다. */
-        @media (max-width: 1023px) and (min-aspect-ratio: 4/5) {
-          .gw-door--syus { background-size: cover; }
         }
 
         /* 세로가 짧은 폰(iPhone SE급, 높이 ~780px). 상단 배지 + 워터마크 + 설명글
