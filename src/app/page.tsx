@@ -74,10 +74,10 @@ export default function GatewayPage() {
         <span className="gw-layer gw-syus-watermark" aria-hidden="true" />
         <span className="gw-layer gw-syus-glow" aria-hidden="true" />
         <span className="gw-strokes" aria-hidden="true">
-          <span style={{ background: "#3B82C4" }} />
-          <span style={{ background: "#5AA86B" }} />
-          <span style={{ background: "#D54545" }} />
-          <span style={{ background: "#E0A93B" }} />
+          <span style={{ background: "var(--color-syus-brand-blue)" }} />
+          <span style={{ background: "var(--color-syus-brand-green)" }} />
+          <span style={{ background: "var(--color-syus-brand-red)" }} />
+          <span style={{ background: "var(--color-syus-brand-yellow)" }} />
         </span>
         <span className="gw-overlay gw-overlay--syus" aria-hidden="true" />
         <div className="gw-door-inner">
@@ -253,8 +253,8 @@ export default function GatewayPage() {
           transform-origin: center center;
           transition: opacity 0.5s ease, transform 0.5s ease;
         }
-        .gw-syus-glow { background: radial-gradient(ellipse at 64% 42%, rgba(59,130,196,0.10), transparent 62%); }
-        .gw-overlay--syus { background: radial-gradient(ellipse at 64% 50%, rgba(90,168,107,0.10), transparent 66%); }
+        .gw-syus-glow { background: radial-gradient(ellipse at 64% 42%, color-mix(in srgb, var(--color-syus-brand-blue) 10%, transparent), transparent 62%); }
+        .gw-overlay--syus { background: radial-gradient(ellipse at 64% 50%, color-mix(in srgb, var(--color-syus-brand-green) 10%, transparent), transparent 66%); }
         .gw-door--syus:hover .gw-overlay--syus,
         .gw-door--syus:focus-visible .gw-overlay--syus { opacity: 1; }
         .gw-door--syus:hover .gw-syus-watermark,
@@ -316,7 +316,9 @@ export default function GatewayPage() {
           border-bottom: 1px solid currentColor;
         }
         .gw-cta--muol { color: #F0EEE9; }
-        .gw-cta--syus { color: #5C2A42; }
+        /* 2026-10-28: 자두(#5C2A42) → 청록. 색 위계 B안에서 자두는 「결심하는 것」(주 버튼),
+           문을 여는 이동 링크는 「누르는 것」= 청록이다. 같은 문의 라벨과도 색이 맞는다. */
+        .gw-cta--syus { color: var(--c-link); }
         .gw-arrow { display: inline-block; transition: transform 0.25s ease; }
         .gw-door:hover .gw-arrow,
         .gw-door:focus-visible .gw-arrow { transform: translateX(5px); }
@@ -394,6 +396,16 @@ export default function GatewayPage() {
             background-image: url('/syus-bg-ghostlight-mobile.jpg');
             background-position: 93% center;
           }
+        }
+
+        /* 2026-10-28: 가로로 넓은 쌓임 화면(눕힌 태블릿·낮은 노트북 창)의 빈 띠.
+           위 「auto 160%」는 정사각 사진의 폭을 문 높이의 1.6배로 정한다. 문 높이는 50svh
+           이상이므로 화면 가로가 세로의 0.8배를 넘으면(4/5) 사진 폭이 문 폭보다 좁아진다
+           — 1023x768 실측에서 왼쪽 330px가 빈 바탕(#F4F2ED)으로 드러났다.
+           이 구간만 cover로 채운다. 세로로 긴 폰·태블릿(375x812, 768x1024, 834x1194)은
+           4/5 미만이라 지금 배치 그대로다. */
+        @media (max-width: 1023px) and (min-aspect-ratio: 4/5) {
+          .gw-door--syus { background-size: cover; }
         }
 
         /* 세로가 짧은 폰(iPhone SE급, 높이 ~780px). 상단 배지 + 워터마크 + 설명글
