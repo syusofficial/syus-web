@@ -194,9 +194,10 @@ export default function GatewayPage() {
              글자가 앉는 하단 절반에 행별 휘도 상한을 걸어 흰 글자 대비를 확보했다.
              배경색은 이미지 로딩 전·실패 시의 바탕.
              2026-10-28 사장님 선택: 빈 무대 → 「밤 공연」(무대 위 두 배우 + 객석). 닫힌 빈 무대는
-             「공연이 열리는 곳」을 말하지 못했다. 배우가 글자 뒤에 겹치지 않도록 원본을 잘라
-             배우를 문 왼쪽 가장자리(데스크톱)에 두었다 — 위쪽은 로고, 가운데 아래는 글자 자리라
-             사진의 주인공이 설 곳은 가장자리뿐이다. 로고 「림」 옆에 떠 있던 빛 한 점은 지웠다. */
+             「공연이 열리는 곳」을 말하지 못했다.
+             2026-10-29 사장님: PC는 원래 구도(무대 한가운데 두 배우), 폰·태블릿은 배우를 가장자리로
+             잘라 낸 판(아래 max-width 1023px 규칙의 -mobile). 두 판 모두 로고 「림」 옆에 떠 있던
+             빛 한 점은 지웠다. PC에서 배우가 헤드라인 줄표 뒤에 서지만 대비 5.2:1(큰 글자 기준 3)로 읽힌다. */
           background: #0B1518 url('/muol-bg-night.jpg') no-repeat center center;
           background-size: cover;
           min-height: 50svh;
@@ -242,10 +243,11 @@ export default function GatewayPage() {
              (output/brand/갈림길_배경/ghostlight/grade_ghostlight.py).
              background-position은 center 고정 — 20%로 당기면 등이 글자 쪽으로 들어와
              라벨 대비가 4.47로 기준(4.5) 아래로 떨어진다.
-             2026-10-28 사장님 확정: 고스트라이트 → 「창가 독백 연습」(밝은 연습실 창가에서 대본을 든 사람).
-             흰 방의 등은 「읽고 — 머물다」를 말하지 못했다. 인물이 사진 왼쪽에 있어 오른쪽 맞춤(100%)으로
-             두면 문 경계 쪽 가장자리에 서고 글자와 떨어진다(가운데 맞춤이면 손이 「읽고」에 닿았다). */
-          background: #F4F2ED url('/syus-bg-window.jpg') no-repeat 100% center;
+             2026-10-29 사장님 확정: 고스트라이트 → 「연습실에 둘러앉아 읽기」(남2·여3, 대본을 함께 읽는 다섯 명).
+             흰 방의 등은 「읽고 — 머물다」를 말하지 못했고, 혼자 읽는 사진보다 시우스의 글·독백과
+             커뮤니티(나누다)를 한 장에 담는다. 원본(남1·여4)을 편집해 성비만 바꾸고 구도·자리·각도는 맞췄다.
+             다섯 명이 글자 뒤에 앉지만 아이보리 보정(글자 자리 밝기 하한)으로 대비 4.5:1 이상을 지킨다. */
+          background: #F4F2ED url('/syus-bg-circle.jpg') no-repeat center center;
           background-size: cover;
           min-height: 50svh;
           border-top: 1px solid #E0DBD0;
@@ -386,13 +388,12 @@ export default function GatewayPage() {
             background-size: min(62%, 30svh) auto;
             opacity: 0.46;
           }
-          /* 2026-10-28: 폰·태블릿은 글자가 왼쪽 정렬이라, 두 문 모두 좌우를 뒤집은 판을 써서
-             사진의 인물(무대올림 두 배우 / 시우스 창가의 사람)을 오른쪽 빈 자리로 보낸다.
-             cover + center라 어떤 화면 비율에서도 문을 꽉 채운다(전 고스트라이트의
-             「auto 160%」가 눕힌 태블릿에서 빈 띠를 남기던 문제도 함께 사라진다). */
+          /* 2026-10-28: 폰·태블릿은 글자가 왼쪽 정렬이라, 무대올림은 배우를 오른쪽 가장자리로
+             보낸 판(좌우 반전)을 쓴다. 시우스 둘러앉은 다섯 명은 화면 전체에 퍼져 있어
+             뒤집어도 차이가 없으므로 같은 사진 그대로. cover + center라 어떤 화면 비율에서도
+             문을 꽉 채운다(전 고스트라이트의 「auto 160%」가 눕힌 태블릿에서 빈 띠를 남기던 문제도 사라진다). */
           .gw-door--muol { background-image: url('/muol-bg-night-mobile.jpg'); }
           .gw-door--syus {
-            background-image: url('/syus-bg-window-mobile.jpg');
             background-size: cover;
             background-position: center;
           }
