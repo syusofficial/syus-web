@@ -19,11 +19,16 @@ export default function SyusAdminLink({ style }: { style?: React.CSSProperties }
       const { data: prof } = await supabase.from("profiles").select("role").eq("id", data.user.id).maybeSingle();
       if (mounted) setIsAdmin(prof?.role === "admin");
     });
-    const { data: sub } = supabase.auth.onAuthStateChange(async (_e, session) => {
+    // 콜백 안에서 Supabase 조회를 바로 기다리면 인증 잠금과 서로 기다리는 교착이 생길 수 있다
+    // (Supabase 공식 문서 경고). 조회는 콜백이 끝난 뒤로 미룬다. 되돌리지 말 것. (2026-10-29)
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       if (!mounted) return;
       if (!session?.user) { setIsAdmin(false); return; }
-      const { data: prof } = await supabase.from("profiles").select("role").eq("id", session.user.id).maybeSingle();
-      if (mounted) setIsAdmin(prof?.role === "admin");
+      const userId = session.user.id;
+      setTimeout(async () => {
+        const { data: prof } = await supabase.from("profiles").select("role").eq("id", userId).maybeSingle();
+        if (mounted) setIsAdmin(prof?.role === "admin");
+      }, 0);
     });
     return () => { mounted = false; sub.subscription.unsubscribe(); };
   }, []);

@@ -39,6 +39,10 @@ export default function OnboardingPage() {
         "";
       setName(fallbackName);
       setLoading(false);
+    }).catch((err) => {
+      // 로그인 확인 자체가 실패하면 빈 로딩 화면에 머물지 않고 로그인 화면으로 보낸다
+      console.error("[onboarding] 로그인 확인 실패", err);
+      router.push("/auth/login");
     });
   }, [router]);
 
@@ -66,54 +70,68 @@ export default function OnboardingPage() {
     }
 
     setSubmitting(true);
-    const supabase = createClient();
-    const now = new Date().toISOString();
+    try {
+      const supabase = createClient();
+      const now = new Date().toISOString();
 
-    // user metadata 업데이트 — requiredChecked(terms && privacy && age14)를 통과해야만
-    // 여기 도달하므로, 세 필수 동의 없이는 온보딩(가입 완료)이 끝나지 않는다.
-    const { error: metaError } = await supabase.auth.updateUser({
-      data: {
-        name: name.trim(),
-        terms_agreed_at: now,
-        privacy_agreed_at: now,
-        age14_confirmed_at: now,
-        marketing_opt_in: marketing,
-      },
-    });
+      // user metadata 업데이트 — requiredChecked(terms && privacy && age14)를 통과해야만
+      // 여기 도달하므로, 세 필수 동의 없이는 온보딩(가입 완료)이 끝나지 않는다.
+      const { error: metaError } = await supabase.auth.updateUser({
+        data: {
+          name: name.trim(),
+          terms_agreed_at: now,
+          privacy_agreed_at: now,
+          age14_confirmed_at: now,
+          marketing_opt_in: marketing,
+        },
+      });
 
-    if (metaError) {
-      setError("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
-      setSubmitting(false);
-      return;
-    }
-
-    // profiles의 name 동기화 — 실패를 무시하지 않고 로그를 남긴다.
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ name: name.trim() })
-        .eq("id", user.id);
-      if (profileError) {
-        console.warn("[onboarding] profiles name 업데이트 실패", profileError);
+      if (metaError) {
+        setError("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+        setSubmitting(false);
+        return;
       }
 
-      // 환영 메일 — 2026-08-06 신설. 소셜 가입자에게는 이 자리가 유일한 발송 지점이다.
-      //
-      // 왜 여기인가: 카카오·구글 가입자는 /auth/callback → 이 온보딩 화면을 타는데,
-      // 두 경로 어디에도 환영 메일 호출이 없었다. triggerWelcomeEmail 호출은
-      // signup/page.tsx(이메일 가입 폼) 한 곳뿐이었고, 실측상 회원 14명 중 9명(64%)이
-      // 소셜 가입자다. 즉 다수가 처음부터 발송 경로 밖에 있었다.
-      // 온보딩 완료 = 필수 동의 3종을 마친 실제 가입 완료 시점이므로 여기가 맞다.
-      //
-      // await 하는 이유는 signup/page.tsx와 같다 — 기다리지 않으면 아래 router.push가
-      // 요청을 잘라먹는다. 중복 발송은 welcome-trigger.ts의 멱등 처리
-      // (welcome_email_sent_at + in-memory Set)가 막으므로, 웹훅 경로와 겹쳐도 안전하다.
-      await triggerWelcomeEmail(user.id);
-    }
+      // profiles의 name 동기화 — 실패를 무시하지 않고 로그를 남긴다.
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .update({ name: name.trim() })
+          .eq("id", user.id);
+        if (profileError) {
+          console.warn("[onboarding] profiles name 업데이트 실패", profileError);
+        }
 
-    router.push("/");
-    router.refresh();
+        // 환영 메일 — 2026-08-06 신설. 소셜 가입자에게는 이 자리가 유일한 발송 지점이다.
+        //
+        // 왜 여기인가: 카카오·구글 가입자는 /auth/callback → 이 온보딩 화면을 타는데,
+        // 두 경로 어디에도 환영 메일 호출이 없었다. triggerWelcomeEmail 호출은
+        // signup/page.tsx(이메일 가입 폼) 한 곳뿐이었고, 실측상 회원 14명 중 9명(64%)이
+        // 소셜 가입자다. 즉 다수가 처음부터 발송 경로 밖에 있었다.
+        // 온보딩 완료 = 필수 동의 3종을 마친 실제 가입 완료 시점이므로 여기가 맞다.
+        //
+        // await 하는 이유는 signup/page.tsx와 같다 — 기다리지 않으면 아래 router.push가
+        // 요청을 잘라먹는다. 중복 발송은 welcome-trigger.ts의 멱등 처리
+        // (welcome_email_sent_at + in-memory Set)가 막으므로, 웹훅 경로와 겹쳐도 안전하다.
+        //
+        // 2026-10-29 보강 — 단, 최대 8초만 기다리고 실패해도 넘어간다. 요청이 실패하면(네트워크·배포 교체 중)
+        // 예외로 빠져 아래 이동에 닿지 못하고 「처리 중...」에 멈췄다(이메일 가입 화면과 같은 구조).
+        // 남은 발송은 웹훅 경로(on-signup/route.ts)가 맡는다.
+        await Promise.race([
+          triggerWelcomeEmail(user.id).catch((err) => console.warn("[onboarding] 환영 메일 요청 실패", err)),
+          new Promise((resolve) => setTimeout(resolve, 8000)),
+        ]);
+      }
+
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      // 어떤 단계에서 실패해도 버튼이 「처리 중...」에 묶이지 않게 한다
+      console.error("[onboarding] 가입 마무리 실패", err);
+      setError("저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      setSubmitting(false);
+    }
   };
 
   if (loading) {
