@@ -1,14 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { createClient } from "@/lib/supabase/client";
+
+const noSubscribe = () => () => {};
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+
+  // 재설정 링크가 만료·이미 사용된 경우 /auth/confirm 이 ?error=link_invalid 를 붙여 돌려보낸다
+  const linkInvalid = useSyncExternalStore(
+    noSubscribe,
+    () => new URLSearchParams(window.location.search).get("error") === "link_invalid",
+    () => false,
+  );
+  const shownError =
+    error || (linkInvalid ? "재설정 링크가 만료되었거나 이미 사용되었습니다. 이메일을 넣고 다시 받아주세요." : "");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,16 +115,16 @@ export default function ForgotPasswordPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 text-sm outline-none transition-colors"
+              className="w-full px-4 py-3 text-base outline-none transition-colors"
               style={inputStyle}
               onFocus={(e) => (e.currentTarget.style.borderColor = "#0B5563")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "transparent")}
             />
           </div>
 
-          {error && (
+          {shownError && (
             <p className="text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#C0392B" }}>
-              {error}
+              {shownError}
             </p>
           )}
 

@@ -1,10 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
+
+const noSubscribe = () => () => {};
+function readLinkError() {
+  const params = new URLSearchParams(window.location.search + window.location.hash.replace(/^#/, "&"));
+  return Boolean(params.get("error_code") || params.get("error"));
+}
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -13,25 +19,28 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
+  const [invalid, setInvalid] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    const supabase = createClient();
-    // Supabase는 이메일 링크로 접속 시 자동으로 세션을 설정
-    // PASSWORD_RECOVERY 이벤트로 세션이 준비되었는지 확인
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "INITIAL_SESSION" || event === "SIGNED_IN") {
-        setReady(true);
-      }
-    });
+  // 링크가 만료·이미 사용된 경우 Supabase가 주소에 error_code를 붙여 보낸다
+  const linkError = useSyncExternalStore(noSubscribe, readLinkError, () => false);
 
-    // 이미 세션이 있는 경우
+  useEffect(() => {
+    if (linkError) return;
+    const supabase = createClient();
+    // 2026-10-29: 세션이 실제로 있을 때만 입력 폼을 연다. 이전엔 세션이 없어도 오는
+    // INITIAL_SESSION 알림만으로 폼을 열어, 다른 브라우저에서 연 링크도 정상처럼 보였다가
+    // 저장할 때 「오류」만 떴다. getSession은 주소의 ?code= 교환이 끝난 뒤 답한다.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") setReady(true);
+    });
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) setReady(true);
-    });
+      else setInvalid(true);
+    }).catch(() => setInvalid(true));
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [linkError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,7 +100,22 @@ export default function ResetPasswordPage() {
           </h1>
         </div>
 
-        {!ready ? (
+        {!ready && (invalid || linkError) ? (
+          <div className="text-center space-y-5 py-4">
+            <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
+              링크가 만료되었거나, 재설정을 요청한 브라우저가 아닌 곳에서 열렸습니다.
+              <br />
+              번거로우시겠지만 한 번 더 요청해주세요.
+            </p>
+            <Link
+              href="/auth/forgot-password"
+              className="inline-block px-8 py-3 text-sm tracking-wider"
+              style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#0B5563", color: "#F0EEE9" }}
+            >
+              재설정 링크 다시 받기
+            </Link>
+          </div>
+        ) : !ready ? (
           <p className="text-center text-sm py-8" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
             링크를 확인하는 중...
           </p>
