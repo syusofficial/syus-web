@@ -9,7 +9,7 @@ import LegalStrip from "@/components/LegalStrip";
  *   - 시우스   = 밝은 화이트톤 + SYUS 붓터치색 유지, 뒷배경에 Afterimage 사진 워터마크
  *   - 지붕 배지 밑 흰색 슬로건이 안 보이던 문제 → 슬로건 제거(배지에 로고+이름만)
  *   - "관람료 없이" 등 관객 대상 단언 문구 제외(학과가 관람료를 받을 여지)
- * 워터마크: /wm-muol-v4.png(한글 로고타입 + 확정 배색, 2026-10-28 획 10→17), /wm-syus-v3.png(알파 누끼 — 배경 무관).
+ * 워터마크: /wm-muol-v4.png(한글 로고타입 + 확정 배색, 2026-10-29 획 10→20), /wm-syus-v3.png(알파 누끼 — 배경 무관).
  *
  * 안전: 서버 컴포넌트 + CSS group-hover만(클라이언트 JS 0), 레이어 pointer-events:none. reduced-motion 존중.
  * metadata는 루트 layout.tsx(사유유사)가 제공.
@@ -209,9 +209,10 @@ export default function GatewayPage() {
              있어, 이미지 위치와 글자가 보이는 위치가 다르다는 점에 주의.
              60svh는 화면이 낮을 때만 작동하는 안전장치(1080p·1440p에선 760px 유지). */
           /* 2026-10-28 사장님: 로고 획을 키워 첫 시야에 먼저 들어오게.
-             v4 = v3과 같은 SVG 원본에 같은 색 외곽선을 덧입혀 획만 10 → 17px(1400폭 기준) 굵힌 판.
-             20부터는 「대」의 두 기둥·「올」의 ㄹ 안쪽 틈이 좁아져 17에서 멈췄다.
-             원본: Content_Report/output/design/갈림길_무대올림_최종후보_2026-10-28/시공재료/wm-muol-t17.svg */
+             v4 = v3과 같은 SVG 원본에 같은 색 외곽선을 덧입혀 획만 10 → 20px(1400폭 기준) 굵힌 판.
+             디자인팀 권장은 17(20부터 「대」의 두 기둥·「올」의 ㄹ 안쪽 틈이 좁아진다)이었으나,
+             실사용 화면 17·20 비교 후 사장님이 존재감이 더 큰 20으로 결정(2026-10-29).
+             원본: Content_Report/output/design/갈림길_무대올림_최종후보_2026-10-28/시공재료/wm-muol-t20.svg */
           background: url('/wm-muol-v4.png') no-repeat center 28%;
           background-size: min(88%, 760px, 60svh) auto;
           opacity: 0.8; /* 2026-10-28: 0.55 → 0.8 (획 상향과 함께 사장님 지시). 아래는 0.55 때의 기록.
