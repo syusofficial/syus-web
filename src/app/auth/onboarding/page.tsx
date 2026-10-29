@@ -6,6 +6,12 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
 import { triggerWelcomeEmail } from "@/app/auth/signup/actions";
+import { safeNextPath } from "@/lib/safeNext";
+
+/** 동의를 마친 뒤 돌아갈 곳(?next=, callback/route.ts·proxy.ts가 붙여 보냄). 없으면 첫 화면. */
+function nextPath() {
+  return safeNextPath(new URLSearchParams(window.location.search).get("next"));
+}
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -26,7 +32,7 @@ export default function OnboardingPage() {
       // 이미 동의 완료한 사용자는 홈으로
       const meta = data.user.user_metadata ?? {};
       if (meta.terms_agreed_at && meta.privacy_agreed_at) {
-        router.push("/");
+        router.push(nextPath());
         return;
       }
 
@@ -124,7 +130,7 @@ export default function OnboardingPage() {
         ]);
       }
 
-      router.push("/");
+      router.push(nextPath());
       router.refresh();
     } catch (err) {
       // 어떤 단계에서 실패해도 버튼이 「처리 중...」에 묶이지 않게 한다
@@ -232,6 +238,21 @@ export default function OnboardingPage() {
             {submitting ? "처리 중..." : "가입 완료"}
           </button>
         </form>
+
+        {/* 동의하지 않을 사람의 출구 — 동의 전에는 다른 화면이 이 화면으로 되돌아오므로(proxy.ts) 꼭 필요하다 */}
+        <p className="mt-6 text-center text-xs" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
+          <button
+            type="button"
+            onClick={async () => {
+              await createClient().auth.signOut({ scope: "local" }).catch(() => {});
+              window.location.href = "/";
+            }}
+            className="underline"
+            style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "#5A4A3E" }}
+          >
+            가입하지 않고 나가기
+          </button>
+        </p>
       </div>
     </div>
   );

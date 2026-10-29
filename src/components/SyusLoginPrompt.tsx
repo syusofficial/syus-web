@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback } from "react";
 import Link from "next/link";
+import { safeNextPath } from "@/lib/safeNext";
 
 /**
  * 로그인 안내 팝업 (전 섹션 공용).
@@ -38,8 +39,7 @@ export default function SyusLoginPrompt({
   if (!open) return null;
 
   // 오픈 리다이렉트 방지: 내부 경로만(널 안전).
-  const safeNext =
-    next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\") ? next : "/syus";
+  const safeNext = safeNextPath(next, "/syus");
 
   return (
     <div className="syc-modal-backdrop" onClick={close}>

@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 import { useLoginLockout } from "@/hooks/useLoginLockout";
 import { readSignupEmail } from "@/lib/signupHandoff";
+import { safeNextPath } from "@/lib/safeNext";
 
 /**
  * 시우스 독립 로그인 페이지 (/syus/login)
@@ -42,9 +43,7 @@ function SyusLoginInner() {
 
   // 로그인 후 복귀 목적지(기본 /syus). 오픈 리다이렉트 방지: 내부 경로만 허용.
   const nextParam = searchParams.get("next");
-  const safeNext =
-    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") && !nextParam.startsWith("/\\")
-      ? nextParam : "/syus";
+  const safeNext = safeNextPath(nextParam, "/syus");
 
   // 자동 로그아웃(?reason=) · 가입 완료(?signup=success)
   // · 소셜 로그인 실패(?error=missing_code|oauth_failed, callback/route.ts가 붙여서 보냄)

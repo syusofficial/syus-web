@@ -8,6 +8,7 @@ import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 import { useLoginLockout } from "@/hooks/useLoginLockout";
 import { readSignupEmail } from "@/lib/signupHandoff";
+import { safeNextPath } from "@/lib/safeNext";
 
 const SAVED_EMAIL_KEY = "syus-saved-email";
 
@@ -32,9 +33,7 @@ function LoginPageInner() {
 
   // 로그인 후 복귀 목적지(?next=/syus 등). 오픈 리다이렉트 방지: 내부 경로만 허용.
   const nextParam = searchParams.get("next");
-  const safeNext =
-    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") && !nextParam.startsWith("/\\")
-      ? nextParam : "/";
+  const safeNext = safeNextPath(nextParam);
 
   // 자동 로그아웃 메시지 (?reason=absolute|idle) · 가입 완료 (?signup=success)
   // · 소셜 로그인 실패 (?error=missing_code|oauth_failed, callback/route.ts가 붙여서 보냄)

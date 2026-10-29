@@ -8,6 +8,7 @@ import { supabasePublishableKey } from "@/lib/supabase/keys";
 import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 import { handOffSignupEmail } from "@/lib/signupHandoff";
+import { safeNextPath } from "@/lib/safeNext";
 import { triggerWelcomeEmail } from "./actions";
 
 /**
@@ -59,7 +60,7 @@ function SignupInner() {
   const searchParams = useSearchParams();
   // 가입 후 복귀 목적지(기본 무대올림 "/"). 시우스에서 온 경우 next=/syus… → 시우스로 복귀·시우스 로그인으로.
   const nextParam = searchParams.get("next");
-  const safeNext = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") && !nextParam.startsWith("/\\") ? nextParam : "/";
+  const safeNext = safeNextPath(nextParam);
   const backToLogin = safeNext.startsWith("/syus") ? "/syus/login" : "/auth/login";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

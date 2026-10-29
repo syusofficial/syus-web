@@ -421,9 +421,11 @@ export default function NavMega() {
     }
 
     const meta = currentUser.user_metadata ?? {};
-    const isAuthPage = pathname?.startsWith("/auth/");
-    if (!isAuthPage && (!meta.terms_agreed_at || !meta.privacy_agreed_at)) {
-      router.replace("/auth/onboarding");
+    // 2026-10-29: 동의 화면에서 「보기」로 여는 약관·방침까지 막아, 읽으려 하면 동의 화면으로 튕겼다.
+    // 서버 관문(src/proxy.ts)과 같은 예외를 둔다.
+    const consentFree = ["/auth/", "/terms", "/privacy"].some((p) => pathname?.startsWith(p));
+    if (!consentFree && (!meta.terms_agreed_at || !meta.privacy_agreed_at)) {
+      router.replace(`/auth/onboarding?next=${encodeURIComponent(pathname)}`);
       return;
     }
 
