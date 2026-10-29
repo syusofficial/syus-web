@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getRecentIds } from "@/lib/recentViews";
+import { loginHref } from "@/lib/safeNext";
 import { cancelReservationAction } from "@/app/actions/reservations";
 import PageLoader from "@/components/PageLoader";
 import ShowCard from "@/components/ShowCard";
@@ -65,6 +66,7 @@ export default function MyPage() {
   const [pendingConfirm, setPendingConfirm] = useState<PendingConfirm>(null);
   const [tab, setTab] = useState<Tab>(initialTabFromSearch);
   const [loading, setLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [applying, setApplying] = useState(false);
   const [authProvider, setAuthProvider] = useState<string>("email");
 
@@ -85,8 +87,11 @@ export default function MyPage() {
 
   useEffect(() => {
     const supabase = createClient();
+    // 2026-10-29: 조회 중 하나라도 예외가 나면 setLoading(false)에 닿지 못해 로딩 화면이 영영 남았다.
+    // 실패하면 「다시 시도」 안내로 바꾼다.
     supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user) { router.push("/auth/login"); return; }
+      // 로그인 뒤 마이페이지(보던 탭 포함)로 돌아오게 한다
+      if (!data.user) { router.push(loginHref(window.location.pathname + window.location.search)); return; }
 
       // 가입 경로 (email | google | kakao)
       const provider = data.user.app_metadata?.provider ?? "email";
@@ -165,6 +170,10 @@ export default function MyPage() {
         setWaitlistPositions(positions);
       }
 
+      setLoading(false);
+    }).catch((err) => {
+      console.error("[mypage] 불러오기 실패", err);
+      setLoadFailed(true);
       setLoading(false);
     });
   }, [router]);
@@ -254,8 +263,16 @@ export default function MyPage() {
 
   const executeWithdraw = async () => {
     setPendingConfirm(null);
-    const res = await fetch("/api/account/delete", { method: "POST" });
-    const json = await res.json();
+    // 서버가 오류 페이지(HTML)를 돌려주면 res.json()이 예외를 던져 아무 반응이 없었다 (2026-10-29)
+    let res: Response;
+    let json: { error?: string } = {};
+    try {
+      res = await fetch("/api/account/delete", { method: "POST" });
+      json = await res.json().catch(() => ({}));
+    } catch {
+      alert("네트워크 문제로 탈퇴 요청을 보내지 못했습니다. 연결을 확인하고 다시 시도해주세요.");
+      return;
+    }
     if (res.ok) {
       alert("탈퇴가 완료되었습니다. 그동안 이용해주셔서 감사합니다.");
       router.push("/");
@@ -273,7 +290,28 @@ export default function MyPage() {
     );
   }
 
-  if (!profile) return null;
+  // 회원 정보를 못 불러온 경우 — 이전엔 빈 화면(return null)이었다
+  if (loadFailed || !profile) {
+    return (
+      <div className="pt-24 md:pt-36 min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "#F0EEE9" }}>
+        <div className="w-full max-w-sm text-center space-y-5">
+          <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33" }}>
+            회원 정보를 불러오지 못했습니다.
+            <br />
+            잠시 후 다시 시도해주세요. 계속되면 운영자(syusflux@gmail.com)에게 알려주세요.
+          </p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="px-8 py-3 text-sm tracking-wider"
+            style={{ fontFamily: "var(--font-noto-sans-kr)", backgroundColor: "#0B5563", color: "#F0EEE9" }}
+          >
+            다시 시도
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const roleLabel = { member: "일반 회원", performer: "공연자", admin: "관리자" }[profile.role];
 

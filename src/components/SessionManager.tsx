@@ -3,12 +3,20 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { loginHref, requiresLogin } from "@/lib/safeNext";
 
 /**
  * 자동 로그아웃 정책
  * - Absolute timeout: 12시간 (로그인 시점부터)
  * - Idle timeout: 3시간 (마지막 활동부터)
  * - 만료 5분 전 토스트 경고 + (idle 한정) 활동 연장 버튼
+ *
+ * 2026-10-29 정정 — 되돌리지 말 것:
+ * - 만료되면 「이 기기」에서만 로그아웃한다(scope: local). 이전엔 기본값(global)이라 PC에 켜 둔 탭 하나가
+ *   만료되면 폰까지 함께 로그아웃됐다.
+ * - 로그인 화면으로 보내는 건 로그인이 필요한 화면(마이페이지·관리·글쓰기)에서만. 공연 페이지처럼
+ *   비로그인으로도 보는 화면은 그대로 두고 안내만 띄운다. 이전엔 3시간 넘게 지나 인스타 링크로 공연을 열면
+ *   열자마자 로그인 화면으로 끌려가 내용을 못 봤다.
  */
 
 const STORAGE = {
@@ -24,7 +32,29 @@ const ACTIVITY_THROTTLE_MS = 30 * 1000;    // 활동 갱신 throttle
 
 const ACTIVITY_EVENTS = ["mousemove", "keydown", "click", "scroll", "touchstart"] as const;
 
-type WarningState = { message: string; canExtend: boolean } | null;
+/** loggedOut: 이미 자동 로그아웃된 뒤의 안내 — 로그아웃 이벤트·주기 점검이 지우지 않고, 사용자가 닫는다 */
+type WarningState = { message: string; canExtend: boolean; loggedOut?: boolean } | null;
+
+const AUTO_LOGOUT_REASON_KEY = "syus-auto-logout-reason";
+
+/**
+ * 로그인 화면이 「왜 로그아웃됐는지」 보여주도록 남긴 사유를 읽고 지운다.
+ * 주소(?reason=)에만 실으면, 마이페이지처럼 스스로 로그인 화면으로 보내는 화면이 먼저 이동시켜 사유가 사라졌다.
+ */
+export function takeAutoLogoutReason(): "absolute" | "idle" | null {
+  try {
+    const reason = sessionStorage.getItem(AUTO_LOGOUT_REASON_KEY);
+    sessionStorage.removeItem(AUTO_LOGOUT_REASON_KEY);
+    return reason === "absolute" || reason === "idle" ? reason : null;
+  } catch {
+    return null;
+  }
+}
+
+const LOGGED_OUT_MESSAGE: Record<"absolute" | "idle", string> = {
+  absolute: "보안상 12시간 한도가 지나 로그아웃되었습니다. 보던 화면은 그대로 보실 수 있습니다.",
+  idle: "3시간 동안 활동이 없어 로그아웃되었습니다. 보던 화면은 그대로 보실 수 있습니다.",
+};
 
 export default function SessionManager() {
   const router = useRouter();
@@ -72,7 +102,7 @@ export default function SessionManager() {
       } else if (event === "SIGNED_OUT") {
         localStorage.removeItem(STORAGE.loginAt);
         localStorage.removeItem(STORAGE.lastActivity);
-        setWarning(null);
+        setWarning((w) => (w?.loggedOut ? w : null));
       }
     });
 
@@ -83,19 +113,26 @@ export default function SessionManager() {
   useEffect(() => {
     const autoLogout = async (reason: "absolute" | "idle") => {
       const supabase = createClient();
-      await supabase.auth.signOut();
+      await supabase.auth.signOut({ scope: "local" }).catch(() => {});
       localStorage.removeItem(STORAGE.loginAt);
       localStorage.removeItem(STORAGE.lastActivity);
-      setWarning(null);
-      router.push(`/auth/login?reason=${reason}`);
-      router.refresh();
+      const here = window.location.pathname;
+      if (requiresLogin(here)) {
+        setWarning(null);
+        try { sessionStorage.setItem(AUTO_LOGOUT_REASON_KEY, reason); } catch {}
+        const login = loginHref(here + window.location.search);
+        router.push(`${login}${login.includes("?") ? "&" : "?"}reason=${reason}`);
+      } else {
+        setWarning({ message: LOGGED_OUT_MESSAGE[reason], canExtend: false, loggedOut: true });
+        router.refresh();
+      }
     };
 
     const check = async () => {
       const loginAtStr = localStorage.getItem(STORAGE.loginAt);
       const lastActivityStr = localStorage.getItem(STORAGE.lastActivity);
       if (!loginAtStr || !lastActivityStr) {
-        setWarning(null);
+        setWarning((w) => (w?.loggedOut ? w : null));
         return;
       }
 

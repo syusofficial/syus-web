@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { loginHref } from "@/lib/safeNext";
 import { submitReview } from "@/app/actions/reviews";
 
 type Props = {
@@ -16,6 +18,7 @@ type Props = {
  * 비로그인 시 로그인 유도. 본인 후기가 있으면 수정 모드.
  */
 export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) {
+  const pathname = usePathname(); // 로그인 뒤 이 공연으로 돌아오게
   const [body, setBody] = useState(initialBody ?? "");
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ ok: boolean; message: string } | null>(null);
@@ -42,7 +45,7 @@ export default function ReviewInput({ showId, isLoggedIn, initialBody }: Props) 
       >
         후기를 작성하시려면{" "}
         <Link
-          href="/auth/login"
+          href={loginHref(pathname)}
           className="underline"
           style={{ color: "#0B5563", fontWeight: 600 }}
         >

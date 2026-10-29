@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { loginHref } from "@/lib/safeNext";
 import PageLoader from "@/components/PageLoader";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import ShowSamplePreview from "@/components/ShowSamplePreview";
@@ -539,7 +540,7 @@ export default function PerformerPage() {
 
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.push("/auth/login"); return; }
+    if (!user) { router.push(loginHref("/muol/performer")); return; }
 
     const { data: profile } = await supabase
       .from("profiles")

@@ -16,6 +16,30 @@ const LOCK_DURATION_MS = 60_000;
  */
 type LoginAttemptRecord = { count: number; lockedUntil: number | null };
 
+/**
+ * 비밀번호가 틀린 게 아닌 로그인 실패를 골라 그 사실대로 안내한다 (2026-10-29).
+ * 이전엔 인터넷 끊김·요청 과다(429)까지 모두 「이메일 또는 비밀번호가 올바르지 않습니다」로 나오고
+ * 잠금 횟수까지 깎였다. 반환값이 null이면 비밀번호 오류로 보고 recordFailure로 센다.
+ */
+export function nonCredentialLoginError(
+  error: { name?: string; status?: number; code?: string } | null | undefined
+): string | null {
+  if (!error) return null;
+  if (error.name === "AuthRetryableFetchError" || error.status === 0) {
+    return "인터넷 연결이 불안정해 로그인하지 못했습니다. 연결을 확인하고 다시 시도해주세요.";
+  }
+  if (error.status === 429 || error.code === "over_request_rate_limit") {
+    return "짧은 시간에 요청이 많아 잠시 막혔습니다. 몇 분 뒤 다시 시도해주세요.";
+  }
+  if (error.code === "email_not_confirmed") {
+    return "이메일 인증이 끝나지 않은 계정입니다. 운영자(syusflux@gmail.com)에게 알려주시면 바로 확인하겠습니다.";
+  }
+  if (error.status && error.status >= 500) {
+    return "로그인 서버에 일시적인 문제가 있습니다. 잠시 후 다시 시도해주세요.";
+  }
+  return null;
+}
+
 function attemptKey(email: string): string {
   return LOGIN_ATTEMPT_KEY_PREFIX + email.trim().toLowerCase();
 }
@@ -107,7 +131,8 @@ export function useLoginLockout(email: string) {
         return `로그인 시도가 ${MAX_ATTEMPTS}회 실패하여 60초간 잠금됩니다.`;
       }
       saveAttemptRecord(targetEmail, { count: newCount, lockedUntil: null });
-      return `이메일 또는 비밀번호가 올바르지 않습니다. (남은 시도: ${MAX_ATTEMPTS - newCount}회)`;
+      // 카카오·구글로 가입한 계정은 비밀번호가 없어 여기서 막힌다 — 계정 존재 여부는 밝히지 않고 길만 알려 준다
+      return `이메일 또는 비밀번호가 올바르지 않습니다. (남은 시도: ${MAX_ATTEMPTS - newCount}회) 카카오·구글로 가입하셨다면 위의 버튼으로 로그인해주세요.`;
     },
     [attemptCount]
   );

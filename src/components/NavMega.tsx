@@ -35,6 +35,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { loginHref } from "@/lib/safeNext";
 import { REGIONS_EXCLUDE_ALL, GENRES, GENRE_DETAILS, GENRE_DETAIL_GROUPS, hasGenreDetails } from "@/lib/constants";
 import type { User } from "@supabase/supabase-js";
 import { SyusLogoSvg } from "@/components/SyusLogoSvg";
@@ -492,7 +493,7 @@ export default function NavMega() {
 
   const handleLogout = async () => {
     const supabase = createClient();
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: "local" }); // 이 기기에서만 (2026-10-29)
     setMobileOpen(false);
     router.push("/muol");
     router.refresh();
@@ -578,7 +579,7 @@ export default function NavMega() {
               </>
             ) : (
               <>
-                <Link href="/auth/login" className="navmega-side">
+                <Link href={loginHref(pathname)} className="navmega-side">
                   로그인
                 </Link>
                 <Link href="/auth/signup" className="navmega-cta">
@@ -785,7 +786,7 @@ export default function NavMega() {
                 </>
               ) : (
                 <>
-                  <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
+                  <Link href={loginHref(pathname)} onClick={() => setMobileOpen(false)}>
                     로그인
                   </Link>
                   <Link

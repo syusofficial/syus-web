@@ -5,8 +5,9 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
-import { useLoginLockout } from "@/hooks/useLoginLockout";
+import { useLoginLockout, nonCredentialLoginError } from "@/hooks/useLoginLockout";
 import { readSignupEmail } from "@/lib/signupHandoff";
+import { takeAutoLogoutReason } from "@/components/SessionManager";
 import { safeNextPath } from "@/lib/safeNext";
 
 /**
@@ -48,7 +49,7 @@ function SyusLoginInner() {
   // 자동 로그아웃(?reason=) · 가입 완료(?signup=success)
   // · 소셜 로그인 실패(?error=missing_code|oauth_failed, callback/route.ts가 붙여서 보냄)
   useEffect(() => {
-    const reason = searchParams.get("reason");
+    const reason = searchParams.get("reason") ?? takeAutoLogoutReason();
     const oauthError = searchParams.get("error");
     if (reason === "absolute") setInfo("보안상 12시간 한도가 지나 자동 로그아웃되었습니다. 다시 로그인해주세요.");
     else if (reason === "idle") setInfo("3시간 동안 활동이 없어 자동 로그아웃되었습니다.");
@@ -79,7 +80,8 @@ function SyusLoginInner() {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error || !data.user) {
         // 5회 실패 시 60초 잠금 — 새로고침해도 유지되도록 localStorage에도 기록(useLoginLockout이 처리)
-        setError(recordFailure(email));
+        // 비밀번호가 틀린 경우만 잠금 횟수에 센다 (네트워크·요청 과다는 그 사실대로 안내)
+        setError(nonCredentialLoginError(error) ?? recordFailure(email));
         return;
       }
       recordSuccess(email);

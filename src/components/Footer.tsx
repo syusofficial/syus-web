@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { loginHref } from "@/lib/safeNext";
 import { LAUNCH_PARTNERS } from "@/lib/partners";
 import { COMPANY_ROWS } from "@/lib/company";
 import type { User } from "@supabase/supabase-js";
@@ -31,8 +32,9 @@ export default function Footer() {
 
   const handleLogout = async () => {
     const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/");
+    // 이 기기에서만 로그아웃(다른 기기는 그대로). 무대올림 화면의 메뉴와 같은 곳(/muol)으로 — 2026-10-29
+    await supabase.auth.signOut({ scope: "local" });
+    router.push("/muol");
     router.refresh();
   };
 
@@ -148,7 +150,7 @@ export default function Footer() {
               ) : (
                 <>
                   <Link
-                    href="/auth/login"
+                    href={loginHref(pathname)}
                     className={linkCls}
                     style={linkStyle}
                     onMouseEnter={(e) => (e.currentTarget.style.color = FOOTER_LINK_HOVER)}

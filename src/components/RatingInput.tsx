@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { loginHref } from "@/lib/safeNext";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
@@ -19,6 +20,7 @@ type Props = {
  * 마우스 호버 시 별이 채워짐. 클릭 시 점수 저장.
  */
 export default function RatingInput({ showId, isLoggedIn, initialMyScore }: Props) {
+  const pathname = usePathname(); // 로그인 뒤 이 공연으로 돌아오게
   const router = useRouter();
   const [myScore, setMyScore] = useState<number | null>(initialMyScore);
   const [hoverScore, setHoverScore] = useState<number | null>(null);
@@ -87,7 +89,7 @@ export default function RatingInput({ showId, isLoggedIn, initialMyScore }: Prop
       <div className="text-sm" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#5A4A3E" }}>
         별점을 부여하시려면{" "}
         <Link
-          href="/auth/login"
+          href={loginHref(pathname)}
           className="underline"
           style={{ color: "#0B5563", fontWeight: 600 }}
         >

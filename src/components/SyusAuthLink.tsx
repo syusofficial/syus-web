@@ -41,7 +41,7 @@ export default function SyusAuthLink({ style }: { style?: React.CSSProperties })
 
   const handleLogout = async () => {
     const supabase = createClient();
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: "local" }); // 이 기기에서만 (2026-10-29)
     router.push("/syus");
     router.refresh();
   };
