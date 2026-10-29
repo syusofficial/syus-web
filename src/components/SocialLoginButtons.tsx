@@ -1,18 +1,79 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { safeNextPath } from "@/lib/safeNext";
 
 type Provider = "google" | "kakao";
+const PROVIDER_LABEL: Record<Provider, string> = { google: "구글", kakao: "카카오" };
+
+/**
+ * 앱 안 브라우저(인스타·페이스북·카카오톡·네이버 앱 등) 알아보기 — 2026-10-29
+ *
+ * 구글은 앱 안 브라우저에서의 로그인을 막는다(「403 disallowed_useragent」 화면).
+ * 지금 사람이 들어오는 주된 길이 인스타 링크라, 구글 버튼을 누른 학생이 그 오류 화면에서 떠날 수 있었다.
+ * 카카오 로그인·이메일 로그인은 앱 안에서도 되므로 그대로 두고, 구글만 바깥 브라우저로 넘긴다.
+ * - 카카오톡: 카카오톡이 제공하는 「바깥 브라우저로 열기」 주소로 바로 넘긴다
+ * - 안드로이드: intent 주소로 크롬에서 연다
+ * - 아이폰: 앱이 바깥으로 넘겨주는 길을 막아 두어, 메뉴에서 여는 방법을 안내한다
+ */
+type InApp = "kakaotalk" | "android" | "ios" | null;
+const IN_APP_UA = /Instagram|FBAN|FBAV|FB_IAB|KAKAOTALK|NAVER\(inapp|Line\/|DaumApps|everytimeApp|; wv\)/i;
+
+function detectInApp(): InApp {
+  const ua = navigator.userAgent;
+  if (!IN_APP_UA.test(ua)) return null;
+  if (/KAKAOTALK/i.test(ua)) return "kakaotalk";
+  if (/Android/i.test(ua)) return "android";
+  return "ios";
+}
+const noSubscribe = () => () => {};
 
 export default function SocialLoginButtons({ mode = "login", next }: { mode?: "login" | "signup"; next?: string }) {
   const [loading, setLoading] = useState<Provider | null>(null);
+  const [showGuide, setShowGuide] = useState(false);
+  const [copied, setCopied] = useState(false);
+  // 서버에서 그릴 땐 알 수 없으므로 null(일반 브라우저처럼) → 화면이 뜬 뒤 실제 값
+  const inApp = useSyncExternalStore(noSubscribe, detectInApp, () => null);
+
+  // 카카오·구글로 갔다가 뒤로 가기로 돌아오면 브라우저가 이전 화면을 그대로 복원해
+  // 버튼이 「이동 중...」으로 묶여 있었다 — 복원될 때 풀어 준다
+  useEffect(() => {
+    const onPageShow = (e: PageTransitionEvent) => { if (e.persisted) setLoading(null); };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
+
+  const openInBrowser = () => {
+    const here = window.location.href;
+    if (inApp === "kakaotalk") {
+      window.location.href = `kakaotalk://web/openExternal?url=${encodeURIComponent(here)}`;
+    } else if (inApp === "android") {
+      const { host, pathname, search } = window.location;
+      window.location.href = `intent://${host}${pathname}${search}#Intent;scheme=https;package=com.android.chrome;end`;
+    } else {
+      setShowGuide(true);
+    }
+  };
+
+  const copyAddress = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+    } catch {
+      setShowGuide(true);
+    }
+  };
 
   const handleSocial = async (provider: Provider) => {
+    if (provider === "google" && inApp) {
+      openInBrowser();
+      return;
+    }
     setLoading(provider);
     const supabase = createClient();
     // 로그인 후 복귀 목적지를 콜백으로 전달(내부 경로만). /auth/callback 이 next로 최종 리다이렉트.
-    const safeNext = next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\") ? next : null;
+    const safeNext = next ? safeNextPath(next, "") : "";
     const callbackUrl = `${window.location.origin}/auth/callback${safeNext ? `?next=${encodeURIComponent(safeNext)}` : ""}`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -21,7 +82,7 @@ export default function SocialLoginButtons({ mode = "login", next }: { mode?: "l
       },
     });
     if (error) {
-      alert(`${provider} 로그인 중 오류가 발생했습니다.`);
+      alert(`${PROVIDER_LABEL[provider]} 로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.`);
       setLoading(null);
     }
     // 성공 시 외부로 리다이렉트되므로 setLoading 호출 없음
@@ -72,6 +133,30 @@ export default function SocialLoginButtons({ mode = "login", next }: { mode?: "l
         <KakaoIcon />
         {loading === "kakao" ? "이동 중..." : `카카오로 ${verb}`}
       </button>
+
+      {inApp && (
+        <div className="p-3 space-y-2 text-xs leading-relaxed" style={{ fontFamily: "var(--font-noto-sans-kr)", color: "#4A3B33", backgroundColor: "#E6E1D6" }}>
+          <p>
+            앱 안에서 여신 화면이라 구글 {verb}은 브라우저로 옮겨서 진행됩니다.
+            카카오와 이메일은 여기서 바로 하실 수 있습니다.
+          </p>
+          {showGuide && (
+            <>
+              <p style={{ color: "#0B5563", fontWeight: 600 }}>
+                화면 위나 아래의 ⋯ 메뉴에서 「외부 브라우저에서 열기」(또는 Safari로 열기)를 누른 뒤, 구글 버튼을 다시 눌러주세요.
+              </p>
+              <button
+                type="button"
+                onClick={copyAddress}
+                className="underline"
+                style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "#0B5563" }}
+              >
+                {copied ? "주소를 복사했습니다 — 브라우저 주소창에 붙여 넣어주세요" : "이 페이지 주소 복사하기"}
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
