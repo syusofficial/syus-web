@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 import { useLoginLockout } from "@/hooks/useLoginLockout";
+import { readSignupEmail } from "@/lib/signupHandoff";
 
 /**
  * 시우스 독립 로그인 페이지 (/syus/login)
@@ -52,16 +53,19 @@ function SyusLoginInner() {
     const oauthError = searchParams.get("error");
     if (reason === "absolute") setInfo("보안상 12시간 한도가 지나 자동 로그아웃되었습니다. 다시 로그인해주세요.");
     else if (reason === "idle") setInfo("3시간 동안 활동이 없어 자동 로그아웃되었습니다.");
-    else if (searchParams.get("signup") === "success") setInfo("가입이 완료되었습니다. 로그인해주세요.");
+    else if (searchParams.get("signup") === "success") setInfo("가입이 완료되었습니다. 방금 만든 이메일과 비밀번호로 로그인해주세요.");
     else if (oauthError === "missing_code") setError("소셜 로그인 인증 정보를 받지 못했습니다. 다시 시도해주세요.");
     else if (oauthError === "oauth_failed") setError("소셜 로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
     else if (oauthError) setError("로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
   }, [searchParams]);
 
+  // 막 가입하고 넘어온 경우엔 방금 가입한 이메일이 저장 아이디보다 우선
   useEffect(() => {
+    const justSignedUp = searchParams.get("signup") === "success" ? readSignupEmail() : null;
     const saved = localStorage.getItem(SAVED_EMAIL_KEY);
-    if (saved) { setEmail(saved); setRememberId(true); }
-  }, []);
+    if (justSignedUp) setEmail(justSignedUp);
+    else if (saved) { setEmail(saved); setRememberId(true); }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
 import { useLoginLockout } from "@/hooks/useLoginLockout";
+import { readSignupEmail } from "@/lib/signupHandoff";
 
 const SAVED_EMAIL_KEY = "syus-saved-email";
 
@@ -45,7 +46,7 @@ function LoginPageInner() {
     } else if (reason === "idle") {
       setInfo("3시간 동안 활동이 없어 자동 로그아웃되었습니다.");
     } else if (searchParams.get("signup") === "success") {
-      setInfo("가입이 완료되었습니다. 로그인해주세요.");
+      setInfo("가입이 완료되었습니다. 방금 만든 이메일과 비밀번호로 로그인해주세요.");
     } else if (oauthError === "missing_code") {
       setError("소셜 로그인 인증 정보를 받지 못했습니다. 다시 시도해주세요.");
     } else if (oauthError === "oauth_failed") {
@@ -55,14 +56,17 @@ function LoginPageInner() {
     }
   }, [searchParams]);
 
-  // 저장된 아이디 자동 채움
+  // 저장된 아이디 자동 채움 — 막 가입하고 넘어온 경우엔 방금 가입한 이메일이 우선
   useEffect(() => {
+    const justSignedUp = searchParams.get("signup") === "success" ? readSignupEmail() : null;
     const saved = localStorage.getItem(SAVED_EMAIL_KEY);
-    if (saved) {
+    if (justSignedUp) {
+      setEmail(justSignedUp);
+    } else if (saved) {
       setEmail(saved);
       setRememberId(true);
     }
-  }, []);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

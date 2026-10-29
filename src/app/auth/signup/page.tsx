@@ -3,10 +3,41 @@
 import Link from "next/link";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { createClient as createSupabaseClient, type SupabaseClient } from "@supabase/supabase-js";
+import { supabasePublishableKey } from "@/lib/supabase/keys";
 import PasswordInput from "@/components/PasswordInput";
 import SocialLoginButtons, { SocialDivider } from "@/components/SocialLoginButtons";
+import { handOffSignupEmail } from "@/lib/signupHandoff";
 import { triggerWelcomeEmail } from "./actions";
+
+/**
+ * 가입 전용 Supabase 클라이언트 — 세션을 브라우저에 저장하지 않는다 (2026-10-29).
+ *
+ * 되돌리지 말 것. 이전엔 사이트 공용 클라이언트(@/lib/supabase/client)로 signUp을 불렀다.
+ * 컨펌 절차가 없어 signUp이 곧바로 세션을 발급하므로, 같은 클라이언트를 듣던 상단 메뉴가
+ * 그 즉시 「마이페이지 · 로그아웃」으로 바뀌었다. 그런데 화면은 환영 메일 요청을 기다리며
+ * 가입 페이지에 「처리 중...」으로 남았고, 그 요청이 늦거나 실패하면 이동 코드에 닿지 못해
+ * 그대로 멈췄다 (2026-10-28 사장님 목격).
+ * 이제 가입은 계정만 만들고, 로그인은 로그인 화면에서 따로 한다.
+ * storageKey를 따로 둬서 공용 클라이언트와 저장소·탭 간 알림이 섞이지 않는다.
+ */
+let signupClient: SupabaseClient | null = null;
+function getSignupClient() {
+  if (!signupClient) {
+    signupClient = createSupabaseClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, supabasePublishableKey()!, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        storageKey: "syus-signup-only",
+      },
+    });
+  }
+  return signupClient;
+}
+
+/** 환영 메일을 기다리는 최대 시간. 넘으면 웹훅 경로(on-signup/route.ts)에 맡기고 화면을 넘긴다. */
+const WELCOME_WAIT_MS = 8000;
 
 type Consents = {
   terms: boolean;       // 이용약관 (필수)
@@ -71,20 +102,29 @@ function SignupInner() {
 
     setLoading(true);
 
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          name: name.trim(),
-          marketing_opt_in: consents.marketing,
-          terms_agreed_at: new Date().toISOString(),
-          privacy_agreed_at: new Date().toISOString(),
-          age14_confirmed_at: new Date().toISOString(),
+    let result: Awaited<ReturnType<SupabaseClient["auth"]["signUp"]>>;
+    try {
+      result = await getSignupClient().auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name.trim(),
+            marketing_opt_in: consents.marketing,
+            terms_agreed_at: new Date().toISOString(),
+            privacy_agreed_at: new Date().toISOString(),
+            age14_confirmed_at: new Date().toISOString(),
+          },
         },
-      },
-    });
+      });
+    } catch (err) {
+      // 네트워크 끊김 등 — 버튼이 「처리 중...」에 묶이지 않게 풀어 준다
+      console.error("[SIGNUP ERROR] 요청 실패", err);
+      setError("네트워크 문제로 가입 요청을 보내지 못했습니다. 연결을 확인하고 다시 시도해주세요.");
+      setLoading(false);
+      return;
+    }
+    const { data, error } = result;
 
     if (error) {
       // DB 레벨 14세 게이트(check constraint)가 막은 경우 안내문 통일
@@ -113,28 +153,30 @@ function SignupInner() {
       return;
     }
 
-    // 2026-07-28: 이메일 컨펌 절차 제거 — 가입과 동시에 세션이 발급되는 것이 기본 동작.
-    // data.session이 있으면 바로 로그인 처리하고, 환영 메일도 이 순간 직접 트리거한다
-    // (Database Webhook 도착 여부와 무관하게 확실히 나가도록 — welcome-trigger.ts 참고).
+    // 2026-10-29: 가입 = 계정 만들기까지. 로그인은 로그인 화면에서 따로 한다(사장님 지시).
+    // 가입 전용 클라이언트가 세션을 들고 있지 않으므로 이 순간에도 메뉴는 「로그인」 그대로다.
     //
-    // 2026-08-06 수정 — 반드시 await 할 것. 되돌리지 말 것.
-    //   이전에는 화면 전환을 막지 않으려고 기다리지 않았는데(fire-and-forget), 그 결과
-    //   server action(POST)이 채 끝나기 전에 router.push + router.refresh가 렌더 트리를
-    //   갈아치우면서 진행 중이던 요청이 잘려나갔다. 실측: 회원 14명 전원
-    //   profiles.welcome_email_sent_at = null, Resend 발송 이력 0건.
-    //   triggerWelcomeEmail은 내부에서 모든 예외를 삼키므로(actions.ts) await해도
-    //   가입 흐름이 막히지 않는다. 늘어나는 대기는 1~2초이고, 그 값을 치를 만하다.
-    if (data.session) {
-      if (data.user?.id) {
-        await triggerWelcomeEmail(data.user.id);
-      }
-      router.push(safeNext);
-      router.refresh();
-    } else {
-      // 드물게 컨펌이 ON으로 남아있거나 세션 발급이 지연되는 경우의 안전장치 —
-      // 이 경우엔 웹훅 경로(on-signup/route.ts)가 환영 메일을 대신 처리한다.
-      router.push(`${backToLogin}?signup=success`);
+    // 환영 메일은 이 화면에서 직접 트리거한다(Database Webhook 도착 여부와 무관하게 — welcome-trigger.ts 참고).
+    // 2026-08-06 수정 — 반드시 기다릴 것. 되돌리지 말 것.
+    //   기다리지 않으면 화면 전환이 진행 중이던 server action(POST)을 잘라먹는다.
+    //   실측: 회원 14명 전원 profiles.welcome_email_sent_at = null, Resend 발송 이력 0건.
+    // 2026-10-29 보강 — 다만 무한정 기다리지 않는다. 요청 자체가 실패하거나(네트워크·배포 교체 중)
+    //   늦어지면 예전엔 이동 코드에 닿지 못해 가입 화면에 그대로 멈췄다. 최대 8초만 기다리고
+    //   나머지는 웹훅 경로(on-signup/route.ts)에 맡긴다. 중복 발송은 welcome-trigger.ts가 막는다.
+    if (data.session && data.user?.id) {
+      await Promise.race([
+        triggerWelcomeEmail(data.user.id).catch((err) => console.warn("[signup] 환영 메일 요청 실패", err)),
+        new Promise((resolve) => setTimeout(resolve, WELCOME_WAIT_MS)),
+      ]);
     }
+    // 쓰지 않을 일회용 세션은 서버에서도 폐기한다(브라우저 쿠키는 처음부터 건드리지 않았다).
+    // 막 만든 계정이라 이 세션 하나뿐이다.
+    await getSignupClient().auth.signOut().catch(() => {});
+
+    handOffSignupEmail(email);
+    const loginQuery = new URLSearchParams({ signup: "success" });
+    if (safeNext !== "/") loginQuery.set("next", safeNext);
+    router.replace(`${backToLogin}?${loginQuery.toString()}`);
   };
 
   const inputStyle: React.CSSProperties = {
