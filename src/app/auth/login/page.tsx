@@ -10,6 +10,7 @@ import { useLoginLockout, nonCredentialLoginError } from "@/hooks/useLoginLockou
 import { readSignupEmail } from "@/lib/signupHandoff";
 import { takeAutoLogoutReason } from "@/components/SessionManager";
 import { safeNextPath } from "@/lib/safeNext";
+import { goAfterLogin } from "@/lib/afterLogin";
 
 const SAVED_EMAIL_KEY = "syus-saved-email";
 
@@ -78,6 +79,7 @@ function LoginPageInner() {
     }
 
     setLoading(true);
+    let movingOn = false; // 로그인 성공 → 화면이 바뀔 때까지 버튼을 「로그인 중...」으로 둔다
 
     try {
       const supabase = createClient();
@@ -107,17 +109,13 @@ function LoginPageInner() {
         .eq("id", data.user.id)
         .maybeSingle();
 
-      if (profile?.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push(safeNext);
-      }
-      router.refresh();
+      movingOn = true;
+      goAfterLogin(router, profile?.role === "admin" ? "/admin" : safeNext);
     } catch (err) {
       console.error("[login] unexpected error", err);
       setError("로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
     } finally {
-      setLoading(false);
+      if (!movingOn) setLoading(false);
     }
   };
 

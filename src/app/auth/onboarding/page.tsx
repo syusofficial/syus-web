@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import PageLoader from "@/components/PageLoader";
 import { triggerWelcomeEmail } from "@/app/auth/signup/actions";
 import { safeNextPath } from "@/lib/safeNext";
+import { goAfterLogin } from "@/lib/afterLogin";
 
 /** 동의를 마친 뒤 돌아갈 곳(?next=, callback/route.ts·proxy.ts가 붙여 보냄). 없으면 첫 화면. */
 function nextPath() {
@@ -130,8 +131,8 @@ export default function OnboardingPage() {
         ]);
       }
 
-      router.push(nextPath());
-      router.refresh();
+      // 버튼은 「처리 중...」 그대로 두고 화면이 바뀌기를 기다린다 (afterLogin.ts 참고)
+      goAfterLogin(router, nextPath());
     } catch (err) {
       // 어떤 단계에서 실패해도 버튼이 「처리 중...」에 묶이지 않게 한다
       console.error("[onboarding] 가입 마무리 실패", err);

@@ -9,6 +9,7 @@ import { useLoginLockout, nonCredentialLoginError } from "@/hooks/useLoginLockou
 import { readSignupEmail } from "@/lib/signupHandoff";
 import { takeAutoLogoutReason } from "@/components/SessionManager";
 import { safeNextPath } from "@/lib/safeNext";
+import { goAfterLogin } from "@/lib/afterLogin";
 
 /**
  * 시우스 독립 로그인 페이지 (/syus/login)
@@ -75,6 +76,7 @@ function SyusLoginInner() {
       return;
     }
     setLoading(true);
+    let movingOn = false; // 로그인 성공 → 화면이 바뀔 때까지 버튼을 「로그인 중...」으로 둔다
     try {
       const supabase = createClient();
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -88,13 +90,13 @@ function SyusLoginInner() {
       if (rememberId) localStorage.setItem(SAVED_EMAIL_KEY, email);
       else localStorage.removeItem(SAVED_EMAIL_KEY);
       // 시우스에서 로그인하면 시우스로 복귀(관리자도 여기선 시우스에 머문다 — 검수는 /syus/monologues/review).
-      router.push(safeNext);
-      router.refresh();
+      movingOn = true;
+      goAfterLogin(router, safeNext);
     } catch (err) {
       console.error("[syus/login] unexpected error", err);
       setError("로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
     } finally {
-      setLoading(false);
+      if (!movingOn) setLoading(false);
     }
   };
 
