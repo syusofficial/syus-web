@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import SyusMonologueView, {
@@ -100,8 +101,12 @@ export async function generateMetadata({
   const { m } = await getMonologue(id);
   const canonical = `${SITE_URL}/syus/monologues/${id}`;
 
-  // 없는 독백 / 비공개 요청 — 본인·운영자만 보는 화면이라 검색에 남기지 않는다.
-  if (!m || !isIndexable(m)) {
+  // 없는 독백(비로그인에게 안 보이는 비공개 독백 포함) — 사이트 404 화면 + noindex (2026-11-10).
+  // 응답 코드는 루트 loading.tsx 때문에 200으로 남는다 — 자세한 사정은 muol/shows/[id]/page.tsx 같은 자리 주석.
+  if (!m) notFound();
+
+  // 비공개 요청 — 본인·운영자만 보는 화면이라 검색에 남기지 않는다.
+  if (!isIndexable(m)) {
     return {
       title: "창작 독백",
       robots: { index: false, follow: false },

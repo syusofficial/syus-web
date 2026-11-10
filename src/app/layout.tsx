@@ -93,7 +93,12 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: { canonical: SITE_URL },
+  // 2026-11-10 — 예전엔 SITE_URL(첫 화면 주소)로 못박혀 있어, 자기 대표주소를 따로 적지 않은
+  // 모든 페이지(로그인·가입 화면, 예약 확인, 마이페이지, 404 화면 등)가 「나는 첫 화면의 사본」이라고 선언했다.
+  // 서치콘솔 「적절한 표준 태그가 포함된 대체 페이지」가 새로 잡힌 원인 중 하나다.
+  // "./"는 metadataBase(SITE_URL) 기준으로 각 페이지 자기 경로(물음표 뒤 값 제외)가 된다 — muol·syus 레이아웃과 같은 방식.
+  // 첫 화면은 그대로 https://syus.co.kr 이 된다.
+  alternates: { canonical: "./" },
   verification: {
     google: "tZSn6BAkcc2u0SCQamwi31rLK6zYSPJxoH1tZTHKSYM",
     other: {

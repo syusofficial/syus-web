@@ -40,8 +40,21 @@ const nextConfig: NextConfig = {
   // :path* 는 부모 경로까지 매치(/shows, /shows/calendar, /shows/<id> 모두 커버), 쿼리스트링은 자동 보존.
   async redirects() {
     return [
+      // 2026-11-10 — "/shows"·"/performer" 자체는 아래 :path* 규칙으로 가면 끝에 「/」가 붙어
+      // (/muol/shows/ → /muol/shows) 두 번 넘어갔다. 한 번에 가도록 정확한 주소를 먼저 둔다.
+      { source: "/shows", destination: "/muol/shows", permanent: true },
+      { source: "/performer", destination: "/muol/performer", permanent: true },
       { source: "/shows/:path*", destination: "/muol/shows/:path*", permanent: true },
       { source: "/performer/:path*", destination: "/muol/performer/:path*", permanent: true },
+      // 2026-11-10 서치콘솔 「찾을 수 없음(404)」 정리 — 상세 주소(/syus/essays/<id> 등)의 앞부분만 남은
+      // 목록 주소는 페이지가 없어 404였다(/syus/essays는 09-10까지 공연 목록에서 실제로 링크했다).
+      // 같은 내용을 모아 둔 무대(목록)로 보낸다. 상세 주소(/syus/essays/<id>)는 건드리지 않는다.
+      { source: "/syus/essays", destination: "/syus/proscenium", permanent: true },
+      { source: "/syus/monologues", destination: "/syus/flex", permanent: true },
+      { source: "/syus/books", destination: "/syus/corridor", permanent: true },
+      { source: "/syus/community", destination: "/syus/arena", permanent: true },
+      { source: "/syus/qna", destination: "/syus/thrust", permanent: true },
+      { source: "/syus/reviews", destination: "/syus/blackbox", permanent: true },
       { source: "/archive", destination: "/muol/archive", permanent: true },
       { source: "/universities", destination: "/muol/universities", permanent: true },
       { source: "/about", destination: "/muol/about", permanent: true },

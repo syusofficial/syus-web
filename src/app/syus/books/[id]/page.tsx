@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import SyusLikeButton from "@/components/SyusLikeButton";
@@ -90,14 +91,9 @@ export async function generateMetadata({
   const found = await getBook(id);
   const canonical = `${SITE_URL}/syus/books/${id}`;
 
-  // 없는 책 — 검색에 남기지 않는다.
-  if (!found) {
-    return {
-      title: "책 서재",
-      robots: { index: false, follow: false },
-      alternates: { canonical },
-    };
-  }
+  // 없는 책(삭제된 책) — 사이트 404 화면 + noindex (2026-11-10).
+  // 응답 코드는 루트 loading.tsx 때문에 200으로 남는다 — 자세한 사정은 muol/shows/[id]/page.tsx 같은 자리 주석.
+  if (!found) notFound();
 
   const { title, description } = bookSeo(found.book);
   // 제목은 syus/layout.tsx의 title.template("%s · 시우스 SYUS")을 탄다. og:title은 템플릿이 적용되지 않아 직접 붙인다.

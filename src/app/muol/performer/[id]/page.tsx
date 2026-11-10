@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -6,6 +7,35 @@ import { parseShowDate } from "@/lib/showDate";
 import type { Show } from "@/types";
 
 export const revalidate = 60;
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * 2026-11-10 서치콘솔 색인 점검 — 본문과 같은 조건(형식·존재·공연자 권한)을 메타데이터 단계에서 먼저 본다.
+ * 없으면 사이트 404 화면 + noindex. 응답 코드는 루트 loading.tsx 때문에 200으로 남는다
+ * (자세한 사정은 muol/shows/[id]/page.tsx 같은 자리 주석). 있으면 공연자 이름과 자기 주소를 대표주소로 싣는다.
+ * ⚠ 현재 profiles는 본인·운영자만 읽을 수 있어(RLS), 로그인하지 않은 방문자에게는 모든 공연자 프로필이 404다.
+ *   이 함수가 만든 문제가 아니라 예전부터 본문도 같았다 — 공개 프로필을 열려면 RLS 결정이 먼저다.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  if (!UUID_RE.test(id)) notFound();
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("name, role")
+    .eq("id", id)
+    .maybeSingle();
+  if (!profile || (profile.role !== "performer" && profile.role !== "admin")) notFound();
+  return {
+    title: profile.name ? `${profile.name} — 공연자` : "공연자",
+    alternates: { canonical: `https://syus.co.kr/muol/performer/${id}` },
+  };
+}
 
 export default async function PerformerProfilePage({
   params,

@@ -74,8 +74,19 @@ export async function generateMetadata({
 
   const canonical = `${SITE_URL}/muol/shows/${id}`;
 
-  // 없는 공연 / 승인 전·반려 공연 — 소유자·관리자만 보는 화면이라 검색에 남기지 않는다.
-  if (!show || show.status !== "approved") {
+  // 2026-11-10 서치콘솔 색인 점검 — 없는 공연은 메타데이터 단계에서 바로 404 화면으로 보낸다.
+  // ⚠ 응답 코드는 200으로 남는다(로컬 실측): 루트 loading.tsx가 화면 틀을 먼저 보내고, 구글봇은
+  //   메타데이터도 흘려받는 로봇이라 404 코드를 붙일 틈이 없다. 대신 Next가 noindex를 붙여 색인에서 빠진다.
+  //   진짜 404 코드가 필요해지면 루트 loading.tsx를 걷어내거나 proxy에서 존재 확인을 해야 한다.
+  // 반려·승인 전 공연은 로그인하지 않은 방문자(검색 로봇 포함)에게 본문도 404이므로 같이 보낸다.
+  if (!show) notFound();
+  if (show.status !== "approved") {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) notFound();
+  }
+
+  // 승인 전·반려 공연을 소유자·관리자가 보는 화면 — 검색에 남기지 않는다.
+  if (show.status !== "approved") {
     return {
       title: "공연",
       robots: { index: false, follow: false },
