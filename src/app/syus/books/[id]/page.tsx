@@ -43,7 +43,34 @@ type Book = {
   cover_url: string | null;
   created_at: string;
   updated_at: string | null;
+  // 2026-11-11 — 운영자가 넣는 읽기 안내(독자 반응 요약·배우 지망생 활용). 칸 추가 SQL:
+  // supabase/syus_books_reader_guide_2026-11-11.sql. SQL 실행 전에도 화면이 깨지지 않도록 모두 선택 칸으로 둔다.
+  reader_reception?: string | null;
+  reader_sources?: unknown;
+  actor_guide?: string | null;
+  read_level?: number | null;
+  for_whom?: string | null;
 };
+
+type Source = { name: string; url: string };
+
+/** reader_sources(jsonb) → 화면에 걸 출처 목록. http(s) 주소만 링크로 쓴다. */
+function sourcesOf(raw: unknown): Source[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((s) => {
+    if (!s || typeof s !== "object") return [];
+    const { name, url } = s as { name?: unknown; url?: unknown };
+    if (typeof name !== "string" || !name.trim()) return [];
+    if (typeof url !== "string" || !/^https?:\/\//.test(url)) return [];
+    return [{ name: name.trim(), url }];
+  });
+}
+
+/** 난이도 1~3 → ●●○ */
+function levelDots(n: number) {
+  const v = Math.min(3, Math.max(1, Math.round(n)));
+  return "●".repeat(v) + "○".repeat(3 - v);
+}
 
 function fmt(iso: string) {
   const d = new Date(iso);
@@ -70,7 +97,9 @@ const getBook = cache(async (id: string): Promise<{ book: Book; ownerName: strin
     const supabase = await createClient();
     const { data } = await supabase
       .from("syus_books")
-      .select("id, user_id, title, author, topic, rating, note, intro, cover_url, created_at, updated_at")
+      // 2026-11-11 — 칸 이름을 나열하지 않고 "*"로 읽는다. 읽기 안내 칸(reader_*)을 추가하는 SQL이
+      // 코드 배포보다 늦게 실행돼도 「없는 칸」 오류로 책 화면 전체가 멈추지 않게 하기 위해서다.
+      .select("*")
       .eq("id", id)
       .maybeSingle();
     if (!data) return null;
@@ -187,6 +216,41 @@ export default async function BookDetail({ params }: { params: Promise<{ id: str
           <div className="syc-detail-body">
             <span className="syc-hint">책 소개 · AI 생성 초안, 운영자 검토</span>
             <p>{book.intro}</p>
+          </div>
+        )}
+        {/* 2026-11-11 — 읽기 안내 두 칸(서치콘솔 「크롤링됨-색인 안 됨」 대응, 사장님 결정).
+            등록자 본인 후기(note·rating)와 섞지 않는다 — 별점 없이 난이도·추천 대상만. 출처는 링크로 밝힌다.
+            표시 방침: 사장님 11-11 지시로 이 두 칸에는 AI 표시를 달지 않는다(위 「책 소개」의 표시는 그대로). */}
+        {book.reader_reception && (
+          <div className="syc-detail-body">
+            <span className="syc-hint">독자 반응</span>
+            <p>{book.reader_reception}</p>
+            {sourcesOf(book.reader_sources).length > 0 && (
+              <p className="syc-hint" style={{ marginTop: 8 }}>
+                출처:{" "}
+                {sourcesOf(book.reader_sources).map((s, i) => (
+                  <span key={`${i}-${s.url}`}>
+                    {i > 0 && " · "}
+                    <a href={s.url} target="_blank" rel="nofollow noopener noreferrer" style={{ textDecoration: "underline" }}>
+                      {s.name}
+                    </a>
+                  </span>
+                ))}
+              </p>
+            )}
+          </div>
+        )}
+        {book.actor_guide && (
+          <div className="syc-detail-body">
+            <span className="syc-hint">배우 지망생에게</span>
+            <p>{book.actor_guide}</p>
+            {(book.read_level || book.for_whom) && (
+              <p className="syc-hint" style={{ marginTop: 8 }}>
+                {book.read_level ? <>난이도 <span aria-label={`3단계 중 ${book.read_level}단계`}>{levelDots(book.read_level)}</span></> : null}
+                {book.read_level && book.for_whom ? " · " : null}
+                {book.for_whom ? `이런 분께: ${book.for_whom}` : null}
+              </p>
+            )}
           </div>
         )}
         {book.note && (
